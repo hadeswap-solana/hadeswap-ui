@@ -3,6 +3,19 @@
 @import './abstracts/fonts.scss';
 @import './abstracts/variables.scss';
 
+:global {
+  a {
+    &,
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+}
+
 // body {
 //   background: var(--black-color);
 //   color: var(--white-color);
@@ -21,14 +34,14 @@
 //   .rc-tooltip {
 //     opacity: 1 !important;
 //   }
-  
+
 //   .rc-tooltip-placement-bottom .rc-tooltip-arrow,
 //   .rc-tooltip-placement-bottomLeft .rc-tooltip-arrow,
 //   .rc-tooltip-placement-bottomRight .rc-tooltip-arrow {
 //     // border-bottom-color: var(--white-color);
 //     opacity: 0 !important;
 //   }
-  
+
 //   .rc-tooltip-inner {
 //     border-radius: 0 !important;
 //     border: none !important;
@@ -36,7 +49,7 @@
 //     font-size: 16px !important;
 //     padding: 8px !important;
 //   }
-  
+
 //   .rc-tooltip.custom-animation-appear,
 //   .rc-tooltip.custom-animation-enter {
 //     opacity: 0 !important;
@@ -85,5 +98,3 @@
 //     }
 //   }
 // }
-
-

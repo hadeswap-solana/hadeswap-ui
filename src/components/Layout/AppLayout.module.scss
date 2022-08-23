@@ -1,6 +1,5 @@
 .header {
   display: flex;
-  align-items: center;
 }
 
 .content {
@@ -9,21 +8,47 @@
 }
 
 .logo {
-  width: 120px;
-  height: 31px;
   margin-right: 16px;
-  padding: 0 8px;
-  background: rgba(255, 255, 255, 0.3);
   display: flex;
   align-items: center;
-  line-height: 1;
+  font-size: 28px;
+  font-weight: 700;
+
+  &,
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
-.connectWalletContainer {
-  flex-grow: 1;
+.nav {
   display: flex;
-  justify-content: flex-end;
+  flex-grow: 1;
   align-items: center;
+  justify-content: space-between;
+}
+
+.navLink {
+  padding: 0 12px;
+  transition: background var(--ease-base-out) var(--animation-duration-slow);
+  font-size: 16px;
+  &:hover,
+  &:active {
+    background: var(--primary-color);
+  }
+}
+.navLinkActive {
+  background: var(--primary-color);
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+}
+
+.connectBtn {
+  margin-left: 16px;
 }
 
 .footer {

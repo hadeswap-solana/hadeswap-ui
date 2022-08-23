@@ -1,8 +1,9 @@
+import { FC } from 'react';
+
 import { AppLayout } from '../../components/Layout/AppLayout';
+import styles from './Home.module.scss';
 
-import styles from './HomePage.module.scss';
-
-export const HomePage = (): JSX.Element => {
+export const Home: FC = () => {
   return (
     <AppLayout>
       <div className={styles.root}>

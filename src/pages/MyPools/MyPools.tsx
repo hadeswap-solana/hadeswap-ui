@@ -2,10 +2,10 @@ import { FC } from 'react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 
-export const Page404: FC = () => {
+export const MyPools: FC = () => {
   return (
     <AppLayout>
-      <h1>404</h1>
+      <h1>My Pools</h1>
     </AppLayout>
   );
 };
