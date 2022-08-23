@@ -44,9 +44,7 @@ const InfinityScroll = ({
 
   if (!children.length) {
     return (
-      <div className={classNames(emptyMessageClassName)}>
-        {emptyMessage}
-      </div>
+      <div className={classNames(emptyMessageClassName)}>{emptyMessage}</div>
     );
   }
 
