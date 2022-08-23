@@ -4,13 +4,11 @@ import { all, call, takeLatest, put, select } from 'redux-saga/effects';
 
 import { selectConnection, selectWalletPublicKey } from './selectors';
 import { commonTypes, commonActions } from './actions';
-import { tokenListActions } from '../tokenList/actions';
 import { networkRequest, connectSocket } from '../../utils/state';
 import { parseSolanaHealth } from './helpers';
 
 const appInitSaga = function* () {
   yield put(commonActions.fetchSolanaHealth());
-  yield put(tokenListActions.fetchTokenList());
   const socket = yield call(connectSocket);
   yield put(commonActions.setSocket(socket));
 };
