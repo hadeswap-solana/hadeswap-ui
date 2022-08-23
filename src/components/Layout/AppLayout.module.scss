@@ -54,6 +54,12 @@
 .cartSider {
   position: relative;
   height: 100vh;
+
+  :global {
+    .ant-layout-sider-children {
+      width: 320px;
+    }
+  }
 }
 
 .toggleCartSiderBtn {
