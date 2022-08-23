@@ -1,0 +1,22 @@
+{
+  "short_name": "Frakt",
+  "name": "Frakt",
+  "display": "standalone",
+  "start_url": "./",
+  "theme_color": "#ffffff",
+  "background_color": "#000000",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/icon-32x32.png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512"
+    }
+  ]
+}

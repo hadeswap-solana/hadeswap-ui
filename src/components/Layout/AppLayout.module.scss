@@ -1,0 +1,31 @@
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  min-height: 280px;
+  padding: 24px 50px;
+}
+
+.logo {
+  width: 120px;
+  height: 31px;
+  margin-right: 16px;
+  padding: 0 8px;
+  background: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.connectWalletContainer {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.footer {
+  text-align: center;
+}

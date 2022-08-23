@@ -1,0 +1,19 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+}
+
+.gridItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  cursor: pointer;
+
+  img {
+    max-width: 50px;
+    width: 100%;
+  }
+}
