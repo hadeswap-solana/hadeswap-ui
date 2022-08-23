@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import { web3, BN, TokenInfo } from '@frakt-protocol/frakt-sdk';
+import { web3, BN } from '@project-serum/anchor';
 import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
@@ -30,18 +30,18 @@ export const DECIMALS_PER_FRKT = 1e8;
 //? Using for fetching prices of tokens in USD
 export const COINGECKO_URL = process.env.COINGECKO_URL;
 
-export const SOL_TOKEN: TokenInfo = {
-  chainId: 101,
-  address: 'So11111111111111111111111111111111111111112',
-  name: 'SOL',
-  decimals: 9,
-  symbol: 'SOL',
-  logoURI:
-    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
-  extensions: {
-    coingeckoId: 'solana',
-  },
-};
+// export const SOL_TOKEN: TokenInfo = {
+//   chainId: 101,
+//   address: 'So11111111111111111111111111111111111111112',
+//   name: 'SOL',
+//   decimals: 9,
+//   symbol: 'SOL',
+//   logoURI:
+//     'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
+//   extensions: {
+//     coingeckoId: 'solana',
+//   },
+// };
 
 export const USDT_TOKEN = {
   chainId: 101,

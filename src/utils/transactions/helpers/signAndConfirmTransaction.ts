@@ -1,4 +1,4 @@
-import { web3 } from '@frakt-protocol/frakt-sdk';
+import { web3 } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
 import { notify } from '../..';
