@@ -36,12 +36,12 @@ const wallets = [
 const App: FC = () => {
   return (
     <ReduxProvider store={store}>
-      <ConnectionProvider endpoint={ENDPOINT}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <Router />
-          <Confetti />
-        </WalletProvider>
-      </ConnectionProvider>
+      {/* <ConnectionProvider endpoint={ENDPOINT}> */}
+      <WalletProvider wallets={wallets} autoConnect>
+        <Router />
+        <Confetti />
+      </WalletProvider>
+      {/* </ConnectionProvider> */}
     </ReduxProvider>
   );
 };
