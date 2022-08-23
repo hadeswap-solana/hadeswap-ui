@@ -19,6 +19,7 @@ import {
   WalletState,
   UserState,
   ConfettiState,
+  CartSiderState,
 } from './types';
 
 export const initialSolanaHealthState: AsyncState<SolanaHealthState> =
@@ -44,6 +45,8 @@ export const initialNotificationState: NotificationState = {
 };
 export const initialModalState: ModalState = { isVisible: false };
 export const initialConfettiState: ModalState = { isVisible: false };
+
+export const initialCartSiderState: CartSiderState = { isVisible: false };
 
 const solanaHealthReducer = createReducer(
   initialSolanaHealthState,
@@ -125,6 +128,24 @@ const setConfettiReducer = createReducer<ConfettiState>(initialConfettiState, {
   }),
 });
 
+const setCartSiderReducer = createReducer<CartSiderState>(
+  initialCartSiderState,
+  {
+    [commonTypes.SET_WALLET]: (
+      state,
+      action: ReturnType<typeof commonActions.setCartSider>,
+    ) => ({
+      ...state,
+      ...action.payload,
+    }),
+  },
+);
+const toggleCartSiderReducer = createReducer<ModalState>(initialModalState, {
+  [commonTypes.TOGGLE_CART_SIDER]: (state) => ({
+    isVisible: !state.isVisible,
+  }),
+});
+
 export default combineReducers({
   connection: setConnectionReducer,
   socket: setSocketReducer,
@@ -136,4 +157,5 @@ export default combineReducers({
   walletModal: composeReducers(setWalletModalReducer, toggleWalletModalReducer),
   discordModal: toggleDiscordModalReducer,
   confetti: setConfettiReducer,
+  cartSider: composeReducers(setCartSiderReducer, toggleCartSiderReducer),
 });

@@ -51,6 +51,18 @@
   margin-left: 16px;
 }
 
+.cartSider {
+  position: relative;
+  height: 100vh;
+}
+
+.toggleCartSiderBtn {
+  position: absolute !important;
+  top: unset;
+  bottom: 20%;
+  left: -40px;
+}
+
 .footer {
   text-align: center;
 }

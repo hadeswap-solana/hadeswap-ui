@@ -56,3 +56,7 @@ export interface ModalState {
 export interface ConfettiState {
   isVisible: boolean;
 }
+
+export interface CartSiderState {
+  isVisible: boolean;
+}

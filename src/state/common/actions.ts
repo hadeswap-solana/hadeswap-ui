@@ -8,6 +8,7 @@ import {
   WalletModalState,
   SolanaHealthState,
   ConfettiState,
+  CartSiderState,
 } from './types';
 
 export const commonTypes = {
@@ -34,6 +35,8 @@ export const commonTypes = {
   FETCH_USER__FAILED: 'common/FETCH_USER__FAILED',
   TOGGLE_DISCORD_MODAL: 'common/TOGGLE_DISCORD_MODAL',
   SET_CONFETTI: 'common/SET_CONFETTI',
+  SET_CART_SIDER: 'common/SET_CART_SIDER',
+  TOGGLE_CART_SIDER: 'common/SET_CART_SIDER',
 };
 
 export const commonActions = {
@@ -124,5 +127,13 @@ export const commonActions = {
   setConfetti: createCustomAction(
     commonTypes.SET_CONFETTI,
     (payload: ConfettiState) => ({ payload }),
+  ),
+  setCartSider: createCustomAction(
+    commonTypes.SET_CART_SIDER,
+    (payload: CartSiderState) => ({ payload }),
+  ),
+  toggleCartSider: createCustomAction(
+    commonTypes.TOGGLE_CART_SIDER,
+    () => null,
   ),
 };

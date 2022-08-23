@@ -57,3 +57,8 @@ export const selectConfettiVisible = createSelector(
   [pathOr(false, ['common', 'confetti', 'isVisible'])],
   identity,
 );
+
+export const selectCartSiderVisible = createSelector(
+  [pathOr(false, ['common', 'cartSider', 'isVisible'])],
+  identity,
+);

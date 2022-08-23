@@ -8,6 +8,7 @@ import { SelectWalletModal } from '../SelectWalletModal/SelectWalletModal';
 import styles from './AppLayout.module.scss';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
+import { CartSider } from './CartSider';
 
 const { Header, Content, Footer } = Layout;
 
@@ -32,39 +33,42 @@ export const AppLayout: FC<LayoutProps> = ({
 
   return (
     <Layout className={className}>
-      <Header className={styles.header}>
-        <NavLink className={styles.logo} to={PATHS.ROOT}>
-          Hadeswap
-        </NavLink>
-        <nav className={styles.nav}>
-          <NavLink
-            to={PATHS.COLLECTIONS}
-            className={styles.navLink}
-            activeClassName={styles.navLinkActive}
-          >
-            Collections
+      <Layout>
+        <Header className={styles.header}>
+          <NavLink className={styles.logo} to={PATHS.ROOT}>
+            Hadeswap
           </NavLink>
-          <div className={styles.navRight}>
+          <nav className={styles.nav}>
             <NavLink
-              to={PATHS.MY_POOLS}
+              to={PATHS.COLLECTIONS}
               className={styles.navLink}
               activeClassName={styles.navLinkActive}
             >
-              My Pools
+              Collections
             </NavLink>
-            <NavLink
-              to={PATHS.MY_NFTS}
-              className={styles.navLink}
-              activeClassName={styles.navLinkActive}
-            >
-              My NFTs
-            </NavLink>
-            <ConnectWalletButton className={styles.connectBtn} />
-          </div>
-        </nav>
-      </Header>
-      <Content className={styles.content}>{children}</Content>
-      <Footer className={styles.footer}>Footer?</Footer>
+            <div className={styles.navRight}>
+              <NavLink
+                to={PATHS.MY_POOLS}
+                className={styles.navLink}
+                activeClassName={styles.navLinkActive}
+              >
+                My Pools
+              </NavLink>
+              <NavLink
+                to={PATHS.MY_NFTS}
+                className={styles.navLink}
+                activeClassName={styles.navLinkActive}
+              >
+                My NFTs
+              </NavLink>
+              <ConnectWalletButton className={styles.connectBtn} />
+            </div>
+          </nav>
+        </Header>
+        <Content className={styles.content}>{children}</Content>
+        <Footer className={styles.footer}>Footer?</Footer>
+      </Layout>
+      <CartSider />
       <SelectWalletModal />
     </Layout>
   );
