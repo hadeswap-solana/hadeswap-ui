@@ -18,3 +18,4 @@ build
 libs
 serviceWorker.js
 cypress/*
+**/*.d.ts
