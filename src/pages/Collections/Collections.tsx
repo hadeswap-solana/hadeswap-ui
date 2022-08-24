@@ -121,6 +121,7 @@ export const Collections: FC = () => {
               return {
                 onClick: () => {
                   history.push(createCollectionLink(COLLECTION_TABS.BUY, slug));
+                  window.scrollTo(0, 0);
                 },
               };
             }}
