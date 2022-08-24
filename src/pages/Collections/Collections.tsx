@@ -1,6 +1,6 @@
 import { Typography, Row, Col, Table, Avatar } from 'antd';
 import { FC } from 'react';
-import data from './mockData';
+import data, { CollectionData } from './mockData';
 import type { ColumnsType } from 'antd/es/table';
 import { Link } from 'react-router-dom';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -8,15 +8,8 @@ import { PriceWithIcon } from './PriceWithIcon';
 import { TitleWithInfo } from './TitleWithInfo';
 
 const { Title, Text } = Typography;
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
-}
 
-const columns: ColumnsType<DataType> = [
+const columns: ColumnsType<CollectionData> = [
   {
     key: 'name',
     title: 'Name',
@@ -95,8 +88,6 @@ const columns: ColumnsType<DataType> = [
     render: (text) => <PriceWithIcon price={text} />,
   },
 ];
-
-// ? shoul we use /create route? (see second link in description): https://sudoswap.xyz/#/collections
 
 export const Collections: FC = () => {
   return (

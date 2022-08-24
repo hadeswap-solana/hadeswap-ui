@@ -4,7 +4,12 @@ import { FC } from 'react';
 
 const { Text } = Typography;
 
-export const TitleWithInfo: FC = ({ title, infoText }) => {
+interface TitleWithInfoProps {
+  title: string;
+  infoText: string;
+}
+
+export const TitleWithInfo: FC<TitleWithInfoProps> = ({ title, infoText }) => {
   return (
     <Row align="middle" justify="start" gutter={[8, 0]}>
       <Col>

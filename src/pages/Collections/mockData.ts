@@ -101,7 +101,18 @@ const names = [
   'Bunny',
 ];
 
-const data = names.map((name) => {
+export type CollectionData = {
+  id: string;
+  imageLink: string;
+  name: string;
+  listingsCount: number;
+  floorPrice: number;
+  bestOfferPrice: number;
+  offerTVL: number;
+  volume: number;
+};
+
+const data: CollectionData[] = names.map((name) => {
   const getNormalizedNumber = (
     initial: number,
     multiplier: number,
