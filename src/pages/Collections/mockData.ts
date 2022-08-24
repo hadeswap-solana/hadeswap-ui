@@ -110,6 +110,7 @@ export type CollectionData = {
   bestOfferPrice: number;
   offerTVL: number;
   volume: number;
+  slug: string;
 };
 
 const data: CollectionData[] = names.map((name) => {
@@ -144,6 +145,7 @@ const data: CollectionData[] = names.map((name) => {
     bestOfferPrice,
     offerTVL,
     volume,
+    slug: name,
   };
 });
 
