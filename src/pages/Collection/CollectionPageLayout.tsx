@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { COLLECTION_TABS, createCollectionLink } from '../../constants';
+import { useScrollRestore } from '../../hooks';
 import styles from './Collection.module.scss';
 import { CollectionGeneralInfo } from './CollectionGeneralInfo';
 import { mockData } from './mockData';
@@ -14,6 +15,7 @@ const { TabPane } = Tabs;
 export const CollectionPageLayout: FC = ({ children }) => {
   const { slug } = mockData;
   const history = useHistory();
+  useScrollRestore();
 
   const activeTab = useMemo(
     () => history.location.pathname.split('/').at(-1) as COLLECTION_TABS,
