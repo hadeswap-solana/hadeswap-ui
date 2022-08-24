@@ -43,7 +43,3 @@ export const CollectionSell: FC = () => {
     </CollectionPageLayout>
   );
 };
-
-export const CollectionPools: FC = () => {
-  return <CollectionPageLayout>Pools here</CollectionPageLayout>;
-};

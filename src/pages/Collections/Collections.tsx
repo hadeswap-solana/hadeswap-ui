@@ -117,10 +117,13 @@ export const Collections: FC = () => {
             columns={columns}
             dataSource={data}
             pagination={false}
-            onRow={({ slug }) => {
+            style={{ cursor: 'pointer' }}
+            onRow={({ publicKey }) => {
               return {
                 onClick: () => {
-                  history.push(createCollectionLink(COLLECTION_TABS.BUY, slug));
+                  history.push(
+                    createCollectionLink(COLLECTION_TABS.BUY, publicKey),
+                  );
                   window.scrollTo(0, 0);
                 },
               };

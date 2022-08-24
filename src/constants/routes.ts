@@ -4,13 +4,10 @@ import { PATHS } from './paths';
 import { Home } from '../pages/HomePage/Home';
 import { Page404 } from '../pages/Page404/Page404';
 import { Collections } from '../pages/Collections/Collections';
-import {
-  CollectionBuy,
-  CollectionPools,
-  CollectionSell,
-} from '../pages/Collection/Collection';
+import { CollectionBuy, CollectionSell } from '../pages/Collection/Collection';
 import { MyNfts } from '../pages/MyNfts/MyNfts';
 import { MyPools } from '../pages/MyPools/MyPools';
+import { CollectionPoolsPage } from '../pages/Collection/CollectionPoolsPage';
 
 interface Route {
   path: string;
@@ -42,7 +39,7 @@ export const routes: Route[] = [
   {
     exact: true,
     path: PATHS.COLLECTION_POOLS,
-    component: CollectionPools,
+    component: CollectionPoolsPage,
   },
   {
     exact: true,
