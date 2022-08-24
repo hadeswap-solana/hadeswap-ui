@@ -7,7 +7,7 @@ export enum COLLECTION_TABS {
 export const createCollectionLink = (
   tab = COLLECTION_TABS.BUY,
   slug = ':slug',
-): string => `/collections/${slug}/${tab}`;
+): string => `/collection/${slug}/${tab}`;
 
 export const PATHS = {
   ROOT: '/', //? Main page with common bullshit texts

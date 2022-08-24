@@ -17,8 +17,8 @@ export const Router = (): JSX.Element => {
     <BrowserRouter>
       <Switch>
         <Redirect
-          from={`${PATHS.COLLECTION}/:poolPubkey`}
-          to={`${PATHS.COLLECTION}/:poolPubkey/${COLLECTION_TABS.BUY}`}
+          from={`${PATHS.COLLECTION}/:slug`}
+          to={`${PATHS.COLLECTION}/:slug/${COLLECTION_TABS.BUY}`}
           exact
         />
         {routes.map(({ exact, path, component: Component }, index) => (
