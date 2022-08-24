@@ -2,10 +2,11 @@ import { Typography, Row, Col, Table, Avatar } from 'antd';
 import { FC } from 'react';
 import data, { CollectionData } from './mockData';
 import type { ColumnsType } from 'antd/es/table';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { PriceWithIcon } from './PriceWithIcon';
 import { TitleWithInfo } from './TitleWithInfo';
+import { COLLECTION_TABS, createCollectionLink } from '../../constants';
 
 const { Title, Text } = Typography;
 
@@ -90,6 +91,8 @@ const columns: ColumnsType<CollectionData> = [
 ];
 
 export const Collections: FC = () => {
+  const history = useHistory();
+
   return (
     <AppLayout>
       <Row justify="center">
@@ -110,7 +113,18 @@ export const Collections: FC = () => {
 
       <Row>
         <Col span={24}>
-          <Table columns={columns} dataSource={data} pagination={false}></Table>
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={false}
+            onRow={({ name }) => {
+              return {
+                onClick: () => {
+                  history.push(createCollectionLink(COLLECTION_TABS.BUY, name));
+                },
+              };
+            }}
+          ></Table>
         </Col>
       </Row>
     </AppLayout>
