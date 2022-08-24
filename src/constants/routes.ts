@@ -8,6 +8,7 @@ import { CollectionBuy, CollectionSell } from '../pages/Collection/Collection';
 import { MyNfts } from '../pages/MyNfts/MyNfts';
 import { MyPools } from '../pages/MyPools/MyPools';
 import { CollectionPoolsPage } from '../pages/Collection/CollectionPoolsPage';
+import { PoolPage } from '../pages/Pool/PoolPage';
 
 interface Route {
   path: string;
@@ -40,6 +41,11 @@ export const routes: Route[] = [
     exact: true,
     path: PATHS.COLLECTION_POOLS,
     component: CollectionPoolsPage,
+  },
+  {
+    exact: true,
+    path: PATHS.POOL_PAGE,
+    component: PoolPage,
   },
   {
     exact: true,

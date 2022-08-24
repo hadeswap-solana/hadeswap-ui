@@ -173,7 +173,7 @@ export const CollectionPoolsPage: FC = () => {
         onRow={({ publicKey }) => {
           return {
             onClick: () => {
-              history.push(`/pool/${publicKey}`);
+              history.push(`/pools/${publicKey}`);
               window.scrollTo(0, 0);
             },
           };
