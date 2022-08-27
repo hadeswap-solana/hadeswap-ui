@@ -71,12 +71,10 @@ const fetchCertainMarketReducer = createReducer<MarketsState>(
     ) => ({
       ...state,
       marketInfos: [
-        ...new Map(
-          [...state.marketInfos, action.payload].map((m) => [
-            m.marketPubkey,
-            m,
-          ]),
-        ).values(),
+        ...state.marketInfos.filter(
+          (m) => m.marketPubkey !== action.payload.marketPubkey,
+        ),
+        action.payload,
       ],
       fetchCertainStatus: {
         ...state.fetchCertainStatus,

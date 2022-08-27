@@ -1,18 +1,16 @@
-import { web3 } from '@project-serum/anchor';
-
 export type WalletNft = {
-  mint: web3.PublicKey;
+  mint: string;
   imageUrl: string;
   name: string;
   traits: [string, string];
   collectionName: string;
-  market: web3.PublicKey;
-  nftValidationAdapter: web3.PublicKey;
+  market: string;
+  nftValidationAdapter: string;
   pairs: Pair[]; //? buy || liquidity
 };
 
 export type MarketInfo = {
-  marketPubkey: web3.PublicKey;
+  marketPubkey: string;
   collectionName: string;
   collectionImage: string;
 
@@ -20,27 +18,27 @@ export type MarketInfo = {
   floorPrice: string;
   bestoffer: string;
   offerTVL: string;
-  nftValidationAdapter: web3.PublicKey;
+  nftValidationAdapter: string;
 };
 
 export interface MarketPair {
-  pairPubkey: web3.PublicKey;
+  pairPubkey: string;
   type: string;
   fundsSolOrTokenBalance: string | null;
   nftsCount: number;
   bondingCurve: string;
   delta: number;
-  assetReceiver: web3.PublicKey;
+  assetReceiver: string;
   pairState: string;
   spotPrice: number; //? For sell: Real price for sell order is sum of spotPrice+delta(spotPrice*delta) For buy: Real price
   fee: number;
 }
 
 export type PairSellOrder = {
-  mint: web3.PublicKey;
+  mint: string;
   imageUrl: string;
-  nftPairBox: web3.PublicKey;
-  vaultNftTokenAccount: web3.PublicKey;
+  nftPairBox: string;
+  vaultNftTokenAccount: string;
   name: string;
   traits: [string, string];
 };

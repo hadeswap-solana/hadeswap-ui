@@ -1,8 +1,7 @@
-import { web3 } from '@project-serum/anchor';
 import { createCustomAction } from 'typesafe-actions';
 
 import { ServerError } from '../../../utils/state';
-import { MarketInfo, MarketPair, Pair, WalletNft } from '../types';
+import { MarketInfo, Pair, WalletNft } from '../types';
 
 export const fetchTypes = {
   FETCH_WALLET_NFTS: 'core/FETCH_WALLET_NFTS',
@@ -38,13 +37,10 @@ export const fetchTypes = {
 
 export const fetchActions = {
   //? fetchWalletNfts
-  fetchWalletNfts: createCustomAction(
-    fetchTypes.FETCH_WALLET_NFTS,
-    (walletAddress: web3.PublicKey) => ({ payload: walletAddress }),
-  ),
+  fetchWalletNfts: createCustomAction(fetchTypes.FETCH_WALLET_NFTS, () => null),
   fetchWalletNftsPending: createCustomAction(
     fetchTypes.FETCH_WALLET_NFTS__PENDING,
-    () => null,
+    (walletAddress: string) => ({ payload: walletAddress }),
   ),
   fetchWalletNftsFulfilled: createCustomAction(
     fetchTypes.FETCH_WALLET_NFTS__FULFILLED,
@@ -58,15 +54,15 @@ export const fetchActions = {
   //? fetchWalletPairs
   fetchWalletPairs: createCustomAction(
     fetchTypes.FETCH_WALLET_PAIRS,
-    (walletAddress: web3.PublicKey) => ({ payload: walletAddress }),
+    () => null,
   ),
   fetchWalletPairsPending: createCustomAction(
     fetchTypes.FETCH_WALLET_PAIRS__PENDING,
-    () => null,
+    (walletAddress: string) => ({ payload: walletAddress }),
   ),
-  fetchWalletPairsPairsFulfilled: createCustomAction(
+  fetchWalletPairsFulfilled: createCustomAction(
     fetchTypes.FETCH_WALLET_PAIRS__FULFILLED,
-    (marketPairs: MarketPair[]) => ({ payload: marketPairs }),
+    (marketPairs: Pair[]) => ({ payload: marketPairs }),
   ),
   fetchWalletPairsFailed: createCustomAction(
     fetchTypes.FETCH_WALLET_PAIRS__FAILED,
@@ -109,11 +105,11 @@ export const fetchActions = {
   //? fetchPair
   fetchPair: createCustomAction(
     fetchTypes.FETCH_PAIR,
-    (pairPubkey: web3.PublicKey) => ({ payload: pairPubkey }),
+    (pairPubkey: string) => ({ payload: pairPubkey }),
   ),
   fetchPairPending: createCustomAction(
     fetchTypes.FETCH_PAIR__PENDING,
-    () => null,
+    (pairPubkey: string) => ({ payload: pairPubkey }),
   ),
   fetchPairFulfilled: createCustomAction(
     fetchTypes.FETCH_PAIR__FULFILLED,
@@ -127,11 +123,11 @@ export const fetchActions = {
   //? fetchMarketPairs
   fetchMarketPairs: createCustomAction(
     fetchTypes.FETCH_MARKET_PAIRS,
-    (marketPubkey: web3.PublicKey) => ({ payload: marketPubkey }),
+    (marketPubkey: string) => ({ payload: marketPubkey }),
   ),
   fetchMarketPairsPending: createCustomAction(
     fetchTypes.FETCH_MARKET_PAIRS__PENDING,
-    () => null,
+    (marketPubkey: string) => ({ payload: marketPubkey }),
   ),
   fetchMarketPairsFulfilled: createCustomAction(
     fetchTypes.FETCH_MARKET_PAIRS__FULFILLED,
