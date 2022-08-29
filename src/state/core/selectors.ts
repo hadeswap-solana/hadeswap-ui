@@ -32,7 +32,7 @@ export const selectPoolsPageTableInfo = createSelector(
         collectionImage: marketInfo?.collectionImage || '',
         type: pair?.type,
         fundsSolOrTokenBalance: formatBNToString(
-          new BN(pair?.fundsSolOrTokenBalance),
+          new BN(pair?.fundsSolOrTokenBalance || '0'),
         ),
         nftsCount: pair?.nftsCount,
         currentPrice: pair?.spotPrice,

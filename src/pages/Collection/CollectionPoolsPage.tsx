@@ -45,11 +45,11 @@ const poolTableColumns: ColumnsType<
       parseFloat(a?.fundsSolOrTokenBalance) -
       parseFloat(b?.fundsSolOrTokenBalance),
     showSorterTooltip: false,
-    render: (text) =>
-      text ? (
-        <PriceWithIcon price={text} />
-      ) : (
+    render: (text, record) =>
+      record.type === 'nftForToken' ? (
         <Typography.Text>--</Typography.Text>
+      ) : (
+        <PriceWithIcon price={text} />
       ),
   },
   {
@@ -59,7 +59,11 @@ const poolTableColumns: ColumnsType<
     sorter: ({ nftsCount: nftsAmountA = 0 }, { nftsCount: nftsAmountB = 0 }) =>
       nftsAmountA - nftsAmountB,
     showSorterTooltip: false,
-    render: (text = '--') => <Typography.Text>{text}</Typography.Text>,
+    render: (text = 0, record) => (
+      <Typography.Text>
+        {record.type === 'tokenForNft' ? '--' : text}
+      </Typography.Text>
+    ),
   },
   {
     key: 'bondingCurve',
@@ -101,6 +105,7 @@ export const CollectionPoolsPage: FC = () => {
         dataSource={poolsTableInfo}
         pagination={false}
         style={{ cursor: 'pointer' }}
+        rowKey={(record) => record.pairPubkey}
         onRow={({ pairPubkey }) => {
           return {
             onClick: () => {
