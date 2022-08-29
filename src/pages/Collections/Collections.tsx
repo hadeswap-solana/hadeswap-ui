@@ -1,38 +1,41 @@
 import { Typography, Row, Col, Table, Avatar } from 'antd';
-import { FC } from 'react';
-import data, { CollectionData } from './mockData';
+import { FC, useEffect } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Link, useHistory } from 'react-router-dom';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { PriceWithIcon } from './PriceWithIcon';
 import { TitleWithInfo } from './TitleWithInfo';
 import { COLLECTION_TABS, createCollectionLink } from '../../constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { coreActions } from '../../state/core/actions';
+import { selectAllMarkets } from '../../state/core/selectors';
+import { MarketInfo } from '../../state/core/types';
 
 const { Title, Text } = Typography;
 
-const columns: ColumnsType<CollectionData> = [
+const columns: ColumnsType<MarketInfo> = [
   {
-    key: 'name',
+    key: 'collectionName',
     title: 'Name',
-    dataIndex: 'name',
-    sorter: (a, b) => a?.name.localeCompare(b?.name),
+    dataIndex: 'collectionName',
+    sorter: (a, b) => a?.collectionName.localeCompare(b?.collectionName),
     showSorterTooltip: false,
     render: (text, record) => {
       return (
         <Row align="middle" gutter={[8, 0]}>
           <Col>
-            <Avatar src={record?.imageLink} />
+            <Avatar src={record?.collectionImage} />
           </Col>
-          <Col>{text}</Col>
+          <Col>{text || 'Undefinded Collection'}</Col>
         </Row>
       );
     },
   },
   {
-    key: 'listingsCount',
+    key: 'listingsAmount',
     title: 'Listings',
-    dataIndex: 'listingsCount',
-    sorter: (a, b) => a?.listingsCount - b?.listingsCount,
+    dataIndex: 'listingsAmount',
+    sorter: (a, b) => a?.listingsAmount - b?.listingsAmount,
     showSorterTooltip: false,
     render: (text) => <Text>{text}</Text>,
   },
@@ -45,20 +48,20 @@ const columns: ColumnsType<CollectionData> = [
       />
     ),
     dataIndex: 'floorPrice',
-    sorter: (a, b) => a?.floorPrice - b?.floorPrice,
+    sorter: (a, b) => parseFloat(a?.floorPrice) - parseFloat(b?.floorPrice),
     showSorterTooltip: false,
     render: (text) => <PriceWithIcon price={text} />,
   },
   {
-    key: 'bestOfferPrice',
+    key: 'bestoffer',
     title: (
       <TitleWithInfo
         title="Best Offer"
         infoText="The value of the highest collection offer."
       />
     ),
-    dataIndex: 'bestOfferPrice',
-    sorter: (a, b) => a?.bestOfferPrice - b?.bestOfferPrice,
+    dataIndex: 'bestoffer',
+    sorter: (a, b) => parseFloat(a?.bestoffer) - parseFloat(b?.bestoffer),
     showSorterTooltip: false,
     render: (text) => <PriceWithIcon price={text} />,
   },
@@ -66,25 +69,12 @@ const columns: ColumnsType<CollectionData> = [
     key: 'offerTVL',
     title: (
       <TitleWithInfo
-        title="Best Offer"
+        title="Offer TVL"
         infoText="The total amount of SOL locked in collection offers."
       />
     ),
     dataIndex: 'offerTVL',
-    sorter: (a, b) => a?.offerTVL - b?.offerTVL,
-    showSorterTooltip: false,
-    render: (text) => <PriceWithIcon price={text} />,
-  },
-  {
-    key: 'volume',
-    title: (
-      <TitleWithInfo
-        title="Volume"
-        infoText="The total amount of SOL traded."
-      />
-    ),
-    dataIndex: 'volume',
-    sorter: (a, b) => a?.volume - b?.volume,
+    sorter: (a, b) => parseFloat(a?.offerTVL) - parseFloat(b?.offerTVL),
     showSorterTooltip: false,
     render: (text) => <PriceWithIcon price={text} />,
   },
@@ -92,6 +82,14 @@ const columns: ColumnsType<CollectionData> = [
 
 export const Collections: FC = () => {
   const history = useHistory();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(coreActions.fetchAllMarkets());
+  }, [dispatch]);
+
+  const markets = useSelector(selectAllMarkets) as MarketInfo[];
 
   return (
     <AppLayout>
@@ -115,14 +113,14 @@ export const Collections: FC = () => {
         <Col span={24}>
           <Table
             columns={columns}
-            dataSource={data}
+            dataSource={markets}
             pagination={false}
             style={{ cursor: 'pointer' }}
-            onRow={({ publicKey }) => {
+            onRow={({ marketPubkey }) => {
               return {
                 onClick: () => {
                   history.push(
-                    createCollectionLink(COLLECTION_TABS.BUY, publicKey),
+                    createCollectionLink(COLLECTION_TABS.BUY, marketPubkey),
                   );
                   window.scrollTo(0, 0);
                 },

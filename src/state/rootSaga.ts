@@ -4,6 +4,5 @@ import commonSagas from './common/sagas';
 import coreSagas from './core/sagas';
 
 export default function* rootSaga(): Generator {
-  yield all([call(commonSagas)]);
-  yield all([call(coreSagas)]);
+  yield all([call(commonSagas), call(coreSagas)]);
 }

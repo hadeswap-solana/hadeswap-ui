@@ -8,7 +8,7 @@ import { networkRequest } from '../../utils/state';
 import { parseSolanaHealth } from './helpers';
 
 const appInitSaga = function* () {
-  yield put(commonActions.fetchSolanaHealth());
+  // yield put(commonActions.fetchSolanaHealth());
   // const socket = yield call(connectSocket);
   // yield put(commonActions.setSocket(socket));
 };

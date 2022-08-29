@@ -1,101 +1,30 @@
-import { composeReducers } from './../../../utils/state/reducers';
-import { fetchTypes, fetchActions } from './../actions/fetchActions';
+import { combineReducers } from 'redux';
+import {
+  createHandlers,
+  createInitialAsyncState,
+} from './../../../utils/state/reducers';
 import { createReducer } from 'typesafe-actions';
-
-import { RequestStatus, ServerError } from '../../../utils/state';
+import { AsyncState } from '../../../utils/state';
 import { MarketInfo } from '../types';
+import { coreTypes } from '../actions';
 
-type MarketsState = {
-  marketInfos: MarketInfo[];
-  fetchAllStatus: RequestStatus;
-  fetchCertainStatus: {
-    status: RequestStatus;
-    pubkey: string | null;
-  };
+const initialAllMarketsState: AsyncState<MarketInfo[]> =
+  createInitialAsyncState<MarketInfo[]>([]);
 
-  messages: ServerError[];
-};
+const initialCertainMarketState: AsyncState<MarketInfo> =
+  createInitialAsyncState<MarketInfo>(null);
 
-const initialMarketsState: MarketsState = {
-  marketInfos: [],
-  fetchAllStatus: RequestStatus.IDLE,
-  fetchCertainStatus: {
-    status: RequestStatus.IDLE,
-    pubkey: null,
-  },
-  messages: [],
-};
-
-const fetchAllMarketsReducer = createReducer<MarketsState>(
-  initialMarketsState,
-  {
-    [fetchTypes.FETCH_ALL_MARKETS__PENDING]: (state) => ({
-      ...state,
-      fetchAllStatus: RequestStatus.PENDING,
-    }),
-    [fetchTypes.FETCH_ALL_MARKETS__FULFILLED]: (
-      state,
-      action: ReturnType<typeof fetchActions.fetchAllMarketsFulfilled>,
-    ) => ({
-      ...state,
-      marketInfos: action.payload,
-      fetchAllStatus: RequestStatus.FULFILLED,
-    }),
-    [fetchTypes.FETCH_ALL_MARKETS__FAILED]: (
-      state,
-      action: ReturnType<typeof fetchActions.fetchAllMarketsFailed>,
-    ) => ({
-      ...state,
-      fetchAllStatus: RequestStatus.FAILED,
-      messages: [...state.messages, action.payload],
-    }),
-  },
+const fetchAllMarketsReducer = createReducer(
+  initialAllMarketsState,
+  createHandlers<MarketInfo[]>(coreTypes.FETCH_ALL_MARKETS),
 );
 
-const fetchCertainMarketReducer = createReducer<MarketsState>(
-  initialMarketsState,
-  {
-    [fetchTypes.FETCH_MARKET__PENDING]: (
-      state,
-      action: ReturnType<typeof fetchActions.fetchMarketPending>,
-    ) => ({
-      ...state,
-      fetchCertainStatus: {
-        pubkey: action.payload,
-        status: RequestStatus.PENDING,
-      },
-    }),
-    [fetchTypes.FETCH_MARKET__FULFILLED]: (
-      state,
-      action: ReturnType<typeof fetchActions.fetchMarketFulfilled>,
-    ) => ({
-      ...state,
-      marketInfos: [
-        ...state.marketInfos.filter(
-          (m) => m.marketPubkey !== action.payload.marketPubkey,
-        ),
-        action.payload,
-      ],
-      fetchCertainStatus: {
-        ...state.fetchCertainStatus,
-        status: RequestStatus.FULFILLED,
-      },
-    }),
-    [fetchTypes.FETCH_MARKET__FAILED]: (
-      state,
-      action: ReturnType<typeof fetchActions.fetchMarketFailed>,
-    ) => ({
-      ...state,
-      fetchCertainStatus: {
-        ...state.fetchCertainStatus,
-        status: RequestStatus.FAILED,
-      },
-      messages: [...state.messages, action.payload],
-    }),
-  },
+const fetchCertainMarketReducer = createReducer(
+  initialCertainMarketState,
+  createHandlers<MarketInfo>(coreTypes.FETCH_MARKET),
 );
 
-export const marketsReducer = composeReducers(
-  fetchAllMarketsReducer,
-  fetchCertainMarketReducer,
-);
+export const marketsReducer = combineReducers({
+  markets: fetchAllMarketsReducer,
+  market: fetchCertainMarketReducer,
+});
