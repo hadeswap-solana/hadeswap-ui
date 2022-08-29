@@ -129,14 +129,14 @@ const getBestOfferFromNftPairs = (
       if (pairCartOccurrences < pair.buyOrdersAmount) {
         return {
           ...pair,
-          price: pair.spotPrice + pair.delta * pairCartOccurrences,
+          price: pair.spotPrice - pair.delta * pairCartOccurrences,
         };
       }
 
       return null;
     })
     .filter((v) => v)
-    .sort((a, b) => a.price - b.price)[0] || null;
+    .sort((a, b) => b.price - a.price)[0] || null;
 
 export const selectAllBuyOrdersForMarket = createSelector(
   [selectMarketWalletNfts, selectBuyOrdersInCartByPair],
@@ -173,6 +173,6 @@ export const selectAllBuyOrdersForMarket = createSelector(
 
         return [...orders, buyOrder];
       }, [])
-      .sort((a, b) => a.price - b.price) as BuyOrder[];
+      .sort((a, b) => b.price - a.price) as BuyOrder[];
   },
 );
