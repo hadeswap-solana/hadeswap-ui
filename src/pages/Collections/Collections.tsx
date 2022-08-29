@@ -116,6 +116,7 @@ export const Collections: FC = () => {
             dataSource={markets}
             pagination={false}
             style={{ cursor: 'pointer' }}
+            rowKey={(record) => record.marketPubkey}
             onRow={({ marketPubkey }) => {
               return {
                 onClick: () => {
@@ -126,7 +127,7 @@ export const Collections: FC = () => {
                 },
               };
             }}
-          ></Table>
+          />
         </Col>
       </Row>
     </AppLayout>
