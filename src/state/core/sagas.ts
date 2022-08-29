@@ -35,6 +35,32 @@ const fetchMarketSaga = function* (
   }
 };
 
+const fetchMarketInfoAndPairsSaga = function* (
+  action: ReturnType<typeof coreActions.fetchMarketInfoAndPairs>,
+) {
+  if (!action.payload) {
+    return;
+  }
+  yield put(coreActions.fetchMarketPending(action.payload));
+  yield put(coreActions.fetchMarketPairsPending(action.payload));
+  try {
+    const marketInfo: MarketInfo = yield call(networkRequest, {
+      url: `https://${process.env.BACKEND_DOMAIN}/markets/${action.payload}`,
+    });
+    yield put(coreActions.fetchMarketFulfilled(marketInfo));
+  } catch (error) {
+    yield put(coreActions.fetchMarketFailed(error));
+  }
+  try {
+    const marketPairs: Pair[] = yield call(networkRequest, {
+      url: `https://${process.env.BACKEND_DOMAIN}/pairs/${action.payload}`,
+    });
+    yield put(coreActions.fetchMarketPairsFulfilled(marketPairs));
+  } catch (error) {
+    yield put(coreActions.fetchMarketPairsFailed(error));
+  }
+};
+
 const fetchWalletNftsSaga = function* () {
   const walletPubkey: web3.PublicKey = yield select(selectWalletPublicKey);
 
@@ -116,6 +142,12 @@ const coreSagas = function* (): Generator {
   yield all([takeLatest(coreTypes.FETCH_WALLET_PAIRS, fetchWalletPairsSaga)]);
   yield all([takeLatest(coreTypes.FETCH_MARKET_PAIRS, fetchMarketPairsSaga)]);
   yield all([takeLatest(coreTypes.FETCH_PAIR, fetchPairSaga)]);
+  yield all([
+    takeLatest(
+      coreTypes.FETCH_MARKET_INFO_AND_PAIRS,
+      fetchMarketInfoAndPairsSaga,
+    ),
+  ]);
 };
 
 export default coreSagas;

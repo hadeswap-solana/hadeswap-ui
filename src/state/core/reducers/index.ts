@@ -1,7 +1,18 @@
 import { combineReducers } from 'redux';
-
-import { marketsReducer } from './marketsReducer';
+import {
+  fetchAllMarketsReducer,
+  fetchCertainMarketReducer,
+} from './marketsReducers';
+import {
+  fetchMarketPairsReducer,
+  fetchPairReducer,
+  fetchWalletPairsReducer,
+} from './pairsReducers';
 
 export default combineReducers({
-  markets: marketsReducer,
+  marketPairs: fetchMarketPairsReducer,
+  pair: fetchPairReducer,
+  walletPairs: fetchWalletPairsReducer,
+  markets: fetchAllMarketsReducer,
+  market: fetchCertainMarketReducer,
 });

@@ -24,7 +24,7 @@ export type MarketInfo = {
 export interface MarketPair {
   pairPubkey: string;
   type: string;
-  fundsSolOrTokenBalance: string | null;
+  fundsSolOrTokenBalance: number | null;
   nftsCount: number;
   bondingCurve: string;
   delta: number;

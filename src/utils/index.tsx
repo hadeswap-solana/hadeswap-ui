@@ -210,3 +210,20 @@ export const compareNumbers = (
     if (numberA > numberB) return -1;
   } else if (numberB > numberA) return -1;
 };
+
+export const formatBNToString = (
+  number: BN,
+  decimals = 9,
+  precision = 2,
+): string => {
+  try {
+    if (number.eq(new BN(0))) {
+      return '0';
+    } else {
+      return (number.toNumber() / 10 ** decimals).toFixed(precision);
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

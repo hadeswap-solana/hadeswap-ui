@@ -1,13 +1,25 @@
 import { Avatar, Col, Row, Typography } from 'antd';
 import { FC } from 'react';
-import { mockData } from './mockData';
 
 import styles from './Collection.module.scss';
 
 const { Title, Text } = Typography;
 
-export const CollectionGeneralInfo: FC = () => {
-  const { name, imageUrl, floorPrice, bestOffer, offerTVL, volume } = mockData;
+interface CollectionGeneralInfoProps {
+  collectionName?: string;
+  collectionImage?: string;
+  floorPrice?: string;
+  bestoffer?: string;
+  offerTVL?: string;
+}
+
+export const CollectionGeneralInfo: FC<CollectionGeneralInfoProps> = ({
+  collectionName = 'Untitled collection',
+  collectionImage = '',
+  floorPrice = '0',
+  bestoffer = '0',
+  offerTVL = '0',
+}) => {
   return (
     <>
       <Row justify="center">
@@ -18,8 +30,8 @@ export const CollectionGeneralInfo: FC = () => {
             alignItems: 'center',
           }}
         >
-          <Avatar src={imageUrl} size={128} />
-          <Title>{name}</Title>
+          <Avatar src={collectionImage} size={128} />
+          <Title>{collectionName}</Title>
         </Col>
       </Row>
       <div className={styles.infoBlock}>
@@ -29,16 +41,16 @@ export const CollectionGeneralInfo: FC = () => {
         </div>
         <div className={styles.info}>
           <Text strong>Best offer</Text>
-          <Text>{bestOffer} SOL</Text>
+          <Text>{bestoffer} SOL</Text>
         </div>
         <div className={styles.info}>
           <Text strong>Offer TVL</Text>
           <Text>{offerTVL} SOL</Text>
         </div>
-        <div className={styles.info}>
+        {/* <div className={styles.info}>
           <Text strong>Volume</Text>
           <Text>{volume} SOL</Text>
-        </div>
+        </div> */}
       </div>
     </>
   );

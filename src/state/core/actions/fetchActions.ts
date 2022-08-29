@@ -33,6 +33,8 @@ export const fetchTypes = {
   FETCH_MARKET_PAIRS__PENDING: 'core/FETCH_MARKET_PAIRS__PENDING',
   FETCH_MARKET_PAIRS__FULFILLED: 'core/FETCH_MARKET_PAIRS__FULFILLED',
   FETCH_MARKET_PAIRS__FAILED: 'core/FETCH_MARKET_PAIRS__FAILED',
+
+  FETCH_MARKET_INFO_AND_PAIRS: 'core/FETCH_MARKET_INFO_AND_PAIRS',
 };
 
 export const fetchActions = {
@@ -136,5 +138,10 @@ export const fetchActions = {
   fetchMarketPairsFailed: createCustomAction(
     fetchTypes.FETCH_MARKET_PAIRS__FAILED,
     (error: ServerError) => ({ payload: error }),
+  ),
+
+  fetchMarketInfoAndPairs: createCustomAction(
+    fetchTypes.FETCH_MARKET_INFO_AND_PAIRS,
+    (marketPubkey: string) => ({ payload: marketPubkey }),
   ),
 };

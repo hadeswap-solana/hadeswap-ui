@@ -1,80 +1,17 @@
 import { FC } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Avatar, Col, Row, Table, Typography } from 'antd';
-
 import { CollectionPageLayout } from './CollectionPageLayout';
-import deGodsLogo from '../../assets/mockImages/deGodsLogo.jpg';
 import { PriceWithIcon } from '../Collections/PriceWithIcon';
 import { TitleWithInfo } from '../Collections/TitleWithInfo';
 import { shortenAddress } from '../../utils/solanaUtils';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectPoolsPageTableInfo } from '../../state/core/selectors';
 
-enum PoolType {
-  BUY = 'Buy',
-  SELL = 'Sell',
-  liquidity = 'Liquidity',
-}
-
-enum BondingCurveType {
-  EXPONENTIAL = 'Exponential',
-  LINEAR = 'Linear',
-}
-
-export type PoolData = {
-  publicKey: string;
-  ownerPublicKey: string;
-  collectionName: string;
-  collectionImage: string;
-  type: PoolType;
-  solBalance?: string;
-  nftsAmount?: number;
-  currentPrice: string;
-  bondingCurve: BondingCurveType;
-  delta: string;
-  volume: string;
-};
-
-const mockData: PoolData[] = [
-  {
-    publicKey: '11111111111111111111111111111111',
-    ownerPublicKey: '11111111111111111111111111111111',
-    collectionName: 'DeGods',
-    collectionImage: deGodsLogo,
-    type: PoolType.liquidity,
-    solBalance: '709.23',
-    nftsAmount: 5,
-    currentPrice: '400.01',
-    bondingCurve: BondingCurveType.LINEAR,
-    delta: '5',
-    volume: '545.45',
-  },
-  {
-    publicKey: '11111111111111111111111111111111',
-    ownerPublicKey: '11111111111111111111111111111111',
-    collectionName: 'DeGods',
-    collectionImage: deGodsLogo,
-    type: PoolType.BUY,
-    solBalance: '540.23',
-    currentPrice: '400.01',
-    bondingCurve: BondingCurveType.LINEAR,
-    delta: '5',
-    volume: '545.45',
-  },
-  {
-    publicKey: '11111111111111111111111111111111',
-    ownerPublicKey: '11111111111111111111111111111111',
-    collectionName: 'DeGods',
-    collectionImage: deGodsLogo,
-    type: PoolType.SELL,
-    nftsAmount: 50,
-    currentPrice: '420.01',
-    bondingCurve: BondingCurveType.EXPONENTIAL,
-    delta: '5',
-    volume: '545.45',
-  },
-];
-
-const poolTableColumns: ColumnsType<PoolData> = [
+const poolTableColumns: ColumnsType<
+  ReturnType<typeof selectPoolsPageTableInfo>[0]
+> = [
   {
     key: 'collection',
     title: 'Collection',
@@ -101,10 +38,12 @@ const poolTableColumns: ColumnsType<PoolData> = [
     render: (text) => <Typography.Text>{text}</Typography.Text>,
   },
   {
-    key: 'solBalance',
+    key: 'fundsSolOrTokenBalance',
     title: 'SOL balance',
-    dataIndex: 'solBalance',
-    sorter: (a, b) => parseFloat(a?.solBalance) - parseFloat(b?.solBalance),
+    dataIndex: 'fundsSolOrTokenBalance',
+    sorter: (a, b) =>
+      parseFloat(a?.fundsSolOrTokenBalance) -
+      parseFloat(b?.fundsSolOrTokenBalance),
     showSorterTooltip: false,
     render: (text) =>
       text ? (
@@ -114,13 +53,11 @@ const poolTableColumns: ColumnsType<PoolData> = [
       ),
   },
   {
-    key: 'nftsAmount',
+    key: 'nftsCount',
     title: 'NFTs amount',
-    dataIndex: 'nftsAmount',
-    sorter: (
-      { nftsAmount: nftsAmountA = 0 },
-      { nftsAmount: nftsAmountB = 0 },
-    ) => nftsAmountA - nftsAmountB,
+    dataIndex: 'nftsCount',
+    sorter: ({ nftsCount: nftsAmountA = 0 }, { nftsCount: nftsAmountB = 0 }) =>
+      nftsAmountA - nftsAmountB,
     showSorterTooltip: false,
     render: (text = '--') => <Typography.Text>{text}</Typography.Text>,
   },
@@ -141,14 +78,6 @@ const poolTableColumns: ColumnsType<PoolData> = [
     render: (text) => <Typography.Text>{text}</Typography.Text>,
   },
   {
-    key: 'volume',
-    title: 'Volume',
-    dataIndex: 'volume',
-    sorter: (a, b) => parseFloat(a?.volume) - parseFloat(b?.volume),
-    showSorterTooltip: false,
-    render: (text) => <Typography.Text>{text}</Typography.Text>,
-  },
-  {
     key: 'ownerPublicKey',
     title: 'Owner',
     dataIndex: 'ownerPublicKey',
@@ -163,17 +92,19 @@ const poolTableColumns: ColumnsType<PoolData> = [
 export const CollectionPoolsPage: FC = () => {
   const history = useHistory();
 
+  const poolsTableInfo = useSelector(selectPoolsPageTableInfo);
+
   return (
     <CollectionPageLayout>
       <Table
         columns={poolTableColumns}
-        dataSource={mockData}
+        dataSource={poolsTableInfo}
         pagination={false}
         style={{ cursor: 'pointer' }}
-        onRow={({ publicKey }) => {
+        onRow={({ pairPubkey }) => {
           return {
             onClick: () => {
-              history.push(`/pools/${publicKey}`);
+              history.push(`/pools/${pairPubkey}`);
               window.scrollTo(0, 0);
             },
           };
