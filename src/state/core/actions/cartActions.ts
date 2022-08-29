@@ -2,9 +2,9 @@ import { createCustomAction } from 'typesafe-actions';
 
 export const cartTypes = {
   ADD_BUY_ITEM: 'core/ADD_BUY_ITEM',
-  ADD_SELL_TO_LIQUIDITY_ITEM: 'core/ADD_SELL_TO_LIQUIDITY_ITEM',
-  ADD_SELL_TO_TOKEN_ITEM: 'core/ADD_SELL_TO_TOKEN_ITEM',
   REMOVE_BUY_ITEM: 'core/REMOVE_BUY_ITEM',
+  ADD_SELL_ITEM: 'core/ADD_SELL_ITEM',
+  REMOVE_SELL_ITEM: 'core/REMOVE_SELL_ITEM',
 };
 
 interface NftGeneral {
@@ -21,13 +21,14 @@ interface CartNft extends NftGeneral {
   spotPrice: number;
   bondingCurve: string;
   pair: string;
+  selected: boolean;
+  price: number;
+  type: string;
 }
 
 export interface SellOrder extends CartNft {
   vaultNftTokenAccount: string;
   nftPairBox: string;
-  price: number;
-  selected: boolean;
 }
 
 export interface BuyOrder extends CartNft {
@@ -44,16 +45,13 @@ export const cartActions = {
       payload: { pair, mint },
     }),
   ),
-  addSellToLiquidityItem: createCustomAction(
-    cartTypes.ADD_SELL_TO_LIQUIDITY_ITEM,
-    (nft: BuyOrder) => ({
-      payload: nft,
-    }),
-  ),
-  addSellToTokenItem: createCustomAction(
-    cartTypes.ADD_SELL_TO_TOKEN_ITEM,
-    (nft: BuyOrder) => ({
-      payload: nft,
+  addSellItem: createCustomAction(cartTypes.ADD_SELL_ITEM, (nft: BuyOrder) => ({
+    payload: nft,
+  })),
+  removeSellItem: createCustomAction(
+    cartTypes.REMOVE_SELL_ITEM,
+    (pair: string, mint: string) => ({
+      payload: { pair, mint },
     }),
   ),
 };

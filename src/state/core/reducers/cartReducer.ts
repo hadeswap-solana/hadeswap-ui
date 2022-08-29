@@ -5,14 +5,12 @@ import { SellOrder, BuyOrder } from '../actions/cartActions';
 
 type CartState = {
   buy: Dictionary<SellOrder[]>;
-  sellToToken: BuyOrder[];
-  sellToLiquidity: BuyOrder[];
+  sell: Dictionary<BuyOrder[]>;
 };
 
 const initialCartState: CartState = {
   buy: {},
-  sellToToken: [],
-  sellToLiquidity: [],
+  sell: {},
 };
 
 export const cartReducer = createReducer<CartState>(initialCartState, {
@@ -47,18 +45,33 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     };
   },
 
-  [coreTypes.ADD_SELL_TO_TOKEN_ITEM]: (
+  [coreTypes.ADD_SELL_ITEM]: (
     state,
-    { payload }: ReturnType<typeof coreActions.addSellToTokenItem>,
-  ) => ({
-    ...state,
-    sellToToken: [...state.sellToToken, payload],
-  }),
-  [coreTypes.ADD_SELL_TO_LIQUIDITY_ITEM]: (
+    { payload }: ReturnType<typeof coreActions.addSellItem>,
+  ) => {
+    const ordersByPair = state.sell?.[payload.pair] || [];
+    return {
+      ...state,
+      sell: { ...state.sell, [payload.pair]: [...ordersByPair, payload] },
+    };
+  },
+  [coreTypes.REMOVE_SELL_ITEM]: (
     state,
-    { payload }: ReturnType<typeof coreActions.addSellToLiquidityItem>,
-  ) => ({
-    ...state,
-    sellToLiquidity: [...state.sellToLiquidity, payload],
-  }),
+    { payload }: ReturnType<typeof coreActions.removeSellItem>,
+  ) => {
+    const ordersByPair = state.sell?.[payload.pair];
+
+    const nextOrdersByPair = ordersByPair
+      ? {
+          [payload.pair]: ordersByPair.filter(
+            ({ mint }) => mint !== payload.mint,
+          ),
+        }
+      : {};
+
+    return {
+      ...state,
+      sell: { ...state.sell, ...nextOrdersByPair },
+    };
+  },
 });

@@ -87,12 +87,15 @@ export const selectAllSellOrdersForMarket = createSelector(
             selected: isSelectedIndex !== -1,
             vaultNftTokenAccount: order.vaultNftTokenAccount,
             nftPairBox: order.nftPairBox,
+            type: pair.type,
           };
         });
 
         return [...orders, ...sellOrders];
       }, [])
-      .sort((a, b) => a.price - b.price) as SellOrder[];
+      .sort(
+        (a, b) => a.price - b.price || Number(b.selected) - Number(a.selected),
+      ) as SellOrder[];
   },
 );
 
@@ -127,6 +130,7 @@ export const selectAllWalletNfts = createSelector(
 export const selectMarketWalletNfts = createSelector(
   selectAllWalletNfts,
   (_: never, marketPubkey: string) => marketPubkey,
-  (walletNfts: NftWithPrice[], marketPubkey: string) =>
-    walletNfts.filter((nft) => nft.market === marketPubkey),
+  (walletNfts: NftWithPrice[], marketPubkey: string) => {
+    return walletNfts.filter((nft) => nft.market === marketPubkey);
+  },
 );
