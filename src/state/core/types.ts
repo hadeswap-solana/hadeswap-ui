@@ -34,14 +34,14 @@ export interface MarketPair {
   fee: number;
 }
 
-export type PairSellOrder = {
+export interface PairSellOrder {
   mint: string;
   imageUrl: string;
   nftPairBox: string;
   vaultNftTokenAccount: string;
   name: string;
   traits: [string, string];
-};
+}
 
 export interface Pair extends MarketPair {
   sellOrders: PairSellOrder[];

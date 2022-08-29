@@ -5,12 +5,14 @@ import { routes } from './constants/routes';
 import {
   useConnectionInit,
   useAppInit,
+  useWalletInit,
   // useWebSocketSubscriptions,
 } from './hooks';
 
 export const Router = (): JSX.Element => {
   useAppInit();
   useConnectionInit();
+  useWalletInit();
   // useWebSocketSubscriptions();
 
   return (

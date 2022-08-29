@@ -35,30 +35,31 @@ const fetchMarketSaga = function* (
   }
 };
 
+const fetchMarketPairsSaga = function* (
+  action: ReturnType<typeof coreActions.fetchMarketPairs>,
+) {
+  if (!action.payload) {
+    return;
+  }
+  yield put(coreActions.fetchMarketPairsPending(action.payload));
+  try {
+    const data: Pair[] = yield call(networkRequest, {
+      url: `https://${process.env.BACKEND_DOMAIN}/pairs/${action.payload}`,
+    });
+    yield put(coreActions.fetchMarketPairsFulfilled(data));
+  } catch (error) {
+    yield put(coreActions.fetchMarketPairsFailed(error));
+  }
+};
+
 const fetchMarketInfoAndPairsSaga = function* (
   action: ReturnType<typeof coreActions.fetchMarketInfoAndPairs>,
 ) {
   if (!action.payload) {
     return;
   }
-  yield put(coreActions.fetchMarketPending(action.payload));
-  yield put(coreActions.fetchMarketPairsPending(action.payload));
-  try {
-    const marketInfo: MarketInfo = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/markets/${action.payload}`,
-    });
-    yield put(coreActions.fetchMarketFulfilled(marketInfo));
-  } catch (error) {
-    yield put(coreActions.fetchMarketFailed(error));
-  }
-  try {
-    const marketPairs: Pair[] = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/pairs/${action.payload}`,
-    });
-    yield put(coreActions.fetchMarketPairsFulfilled(marketPairs));
-  } catch (error) {
-    yield put(coreActions.fetchMarketPairsFailed(error));
-  }
+  yield call(fetchMarketSaga, action);
+  yield call(fetchMarketPairsSaga, action);
 };
 
 const fetchWalletNftsSaga = function* () {
@@ -98,23 +99,6 @@ const fetchWalletPairsSaga = function* () {
     yield put(coreActions.fetchWalletPairsFulfilled(data));
   } catch (error) {
     yield put(coreActions.fetchWalletPairsFailed(error));
-  }
-};
-
-const fetchMarketPairsSaga = function* (
-  action: ReturnType<typeof coreActions.fetchMarketPairs>,
-) {
-  if (!action.payload) {
-    return;
-  }
-  yield put(coreActions.fetchMarketPairsPending(action.payload));
-  try {
-    const data: Pair[] = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/pairs/${action.payload}`,
-    });
-    yield put(coreActions.fetchMarketPairsFulfilled(data));
-  } catch (error) {
-    yield put(coreActions.fetchMarketPairsFailed(error));
   }
 };
 

@@ -12,3 +12,4 @@ export { useConnection } from './useConnection';
 export { useOnFulfilled, useOnFailed, usePrevious } from './useRequestStatus';
 export { useWebSocketSubscriptions } from './useWebSocketSubscriptions';
 export { useScrollRestore } from './useScrollRestore';
+export { useWalletInit } from './useWalletInit';

@@ -1,25 +1,29 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { CollectionPageLayout } from './CollectionPageLayout';
 import styles from './Collection.module.scss';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
-
-const cardMockData = {
-  name: 'DeGod #3721',
-  imageUrl: 'https://metadata.degods.com/g/3720-dead.png',
-  price: '350.25',
-};
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectAllSellOrdersForMarket,
+  selectMarketWalletNfts,
+} from '../../state/core/selectors';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { coreActions } from '../../state/core/actions';
+import { useParams } from 'react-router-dom';
 
 export const CollectionBuy: FC = () => {
+  const orders = useSelector(selectAllSellOrdersForMarket);
+
   return (
     <CollectionPageLayout>
       <div className={styles.cards}>
-        {new Array(50).fill(null).map((_, idx) => (
+        {orders.map((order) => (
           <NFTCard
-            key={idx}
-            imageUrl={cardMockData.imageUrl}
-            name={cardMockData.name}
-            price={cardMockData.price}
+            key={order.mint}
+            imageUrl={order.imageUrl}
+            name={order.name}
+            price={order.price}
           />
         ))}
       </div>
@@ -28,15 +32,28 @@ export const CollectionBuy: FC = () => {
 };
 
 export const CollectionSell: FC = () => {
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
+
+  const { connected } = useWallet();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    connected && marketPublicKey && dispatch(coreActions.fetchWalletNfts());
+  }, [dispatch, connected, marketPublicKey]);
+
+  const walletNfts = useSelector((state: never) =>
+    selectMarketWalletNfts(state, marketPublicKey),
+  );
+
   return (
     <CollectionPageLayout>
       <div className={styles.cards}>
-        {new Array(2).fill(null).map((_, idx) => (
+        {walletNfts.map((nft) => (
           <NFTCard
-            key={idx}
-            imageUrl={cardMockData.imageUrl}
-            name={cardMockData.name}
-            price={cardMockData.price}
+            key={nft.mint}
+            imageUrl={nft.imageUrl}
+            name={nft.name}
+            price={nft.price}
           />
         ))}
       </div>
