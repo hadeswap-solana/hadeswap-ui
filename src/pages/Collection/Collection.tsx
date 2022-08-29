@@ -1,5 +1,5 @@
-import { FC, useEffect } from 'react';
-
+import { FC, useCallback, useEffect } from 'react';
+import BN from 'bn.js';
 import { CollectionPageLayout } from './CollectionPageLayout';
 import styles from './Collection.module.scss';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
@@ -11,21 +11,37 @@ import {
 import { useWallet } from '@solana/wallet-adapter-react';
 import { coreActions } from '../../state/core/actions';
 import { useParams } from 'react-router-dom';
+import { formatBNToString } from '../../utils';
+import { SellOrder } from '../../state/core/actions/cartActions';
 
 export const CollectionBuy: FC = () => {
   const orders = useSelector(selectAllSellOrdersForMarket);
+  const dispatch = useDispatch();
+
+  const createOnBtnClick = useCallback(
+    (order: SellOrder) => () => {
+      order?.selected
+        ? dispatch(coreActions.removeBuyItem(order.pair, order.mint))
+        : dispatch(coreActions.addBuyItem(order));
+    },
+    [dispatch],
+  );
 
   return (
     <CollectionPageLayout>
       <div className={styles.cards}>
-        {orders.map((order) => (
-          <NFTCard
-            key={order.mint}
-            imageUrl={order.imageUrl}
-            name={order.name}
-            price={order.price}
-          />
-        ))}
+        {orders.map((order) => {
+          return (
+            <NFTCard
+              key={order.mint}
+              imageUrl={order.imageUrl}
+              name={order.name}
+              price={formatBNToString(new BN(order.price))}
+              onBtnClick={createOnBtnClick(order)}
+              selected={order?.selected}
+            />
+          );
+        })}
       </div>
     </CollectionPageLayout>
   );

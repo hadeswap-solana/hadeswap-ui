@@ -21,7 +21,16 @@ export type MarketInfo = {
   nftValidationAdapter: string;
 };
 
-export interface MarketPair {
+export interface PairSellOrder {
+  mint: string;
+  imageUrl: string;
+  nftPairBox: string;
+  vaultNftTokenAccount: string;
+  name: string;
+  traits: [string, string];
+}
+
+export interface Pair {
   pairPubkey: string;
   type: string;
   fundsSolOrTokenBalance: number | null;
@@ -32,18 +41,6 @@ export interface MarketPair {
   pairState: string;
   spotPrice: number; //? For sell: Real price for sell order is sum of spotPrice+delta(spotPrice*delta) For buy: Real price
   fee: number;
-}
-
-export interface PairSellOrder {
-  mint: string;
-  imageUrl: string;
-  nftPairBox: string;
-  vaultNftTokenAccount: string;
-  name: string;
-  traits: [string, string];
-}
-
-export interface Pair extends MarketPair {
   sellOrders: PairSellOrder[];
   buyOrdersAmount: number;
 }

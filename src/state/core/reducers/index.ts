@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { cartReducer } from './cartReducer';
 import {
   fetchAllMarketsReducer,
   fetchCertainMarketReducer,
@@ -17,4 +18,5 @@ export default combineReducers({
   markets: fetchAllMarketsReducer,
   market: fetchCertainMarketReducer,
   walletNfts: fetchWalletNftsReducer,
+  cart: cartReducer,
 });

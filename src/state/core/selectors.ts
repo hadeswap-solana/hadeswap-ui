@@ -2,7 +2,9 @@ import BN from 'bn.js';
 import { identity } from 'ramda';
 import { createSelector } from 'reselect';
 import { formatBNToString } from '../../utils';
-import { MarketInfo, Pair, PairSellOrder, WalletNft } from './types';
+import { SellOrder } from './actions/cartActions';
+import { MarketInfo, Pair, WalletNft } from './types';
+import { Dictionary } from 'lodash';
 
 export const selectAllMarkets = createSelector(
   (store: any) => (store?.core?.markets?.data as MarketInfo[]) || [],
@@ -50,23 +52,47 @@ export const selectMarketInfoAndPairs = createSelector(
   },
 );
 
-interface PairSellOrderWithPrice extends PairSellOrder {
-  price: string;
-}
+export const selectBuyItemsInCartByPair = createSelector(
+  (store: any) => (store?.core?.cart?.buy as Dictionary<SellOrder[]>) || {},
+  identity<Dictionary<SellOrder[]>>,
+);
 
 export const selectAllSellOrdersForMarket = createSelector(
-  selectMarketPairs,
-  (pairs) => {
-    return pairs.reduce((orders: PairSellOrderWithPrice[], pair) => {
-      const ordersWithPrice: PairSellOrderWithPrice[] = (
-        pair?.sellOrders || []
-      ).map((order) => ({
-        ...order,
-        price: formatBNToString(new BN(pair.spotPrice).add(new BN(pair.delta))),
-      }));
+  [selectMarketPairs, selectBuyItemsInCartByPair],
+  (pairs, buyItemsInCartByPair) => {
+    return pairs
+      .reduce((orders: SellOrder[], pair) => {
+        const buyItemsCart: SellOrder[] =
+          buyItemsInCartByPair[pair.pairPubkey] || [];
+        const buyItemsCartMints = buyItemsCart.map(({ mint }) => mint);
 
-      return [...orders, ...ordersWithPrice];
-    }, []);
+        const sellOrders = (pair?.sellOrders || []).map((order) => {
+          const isSelectedIndex = buyItemsCartMints.indexOf(order.mint);
+
+          const price =
+            isSelectedIndex !== -1
+              ? pair.spotPrice + pair.delta * (isSelectedIndex + 1)
+              : pair.spotPrice + pair.delta * (buyItemsCartMints.length + 1);
+
+          return {
+            mint: order.mint,
+            imageUrl: order.imageUrl,
+            name: order.name,
+            traits: order.traits || null,
+            assetReceiver: pair.assetReceiver,
+            spotPrice: pair.spotPrice,
+            price,
+            bondingCurve: pair.bondingCurve,
+            pair: pair.pairPubkey,
+            selected: isSelectedIndex !== -1,
+            vaultNftTokenAccount: order.vaultNftTokenAccount,
+            nftPairBox: order.nftPairBox,
+          };
+        });
+
+        return [...orders, ...sellOrders];
+      }, [])
+      .sort((a, b) => a.price - b.price) as SellOrder[];
   },
 );
 
