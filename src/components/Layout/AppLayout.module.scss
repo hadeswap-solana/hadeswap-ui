@@ -72,3 +72,63 @@
 .footer {
   text-align: center;
 }
+
+.siderContent {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+}
+
+.cardsSection {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32px;
+  gap: 8px;
+}
+
+.submitWrapper {
+  display: flex;
+  align-items: flex-end;
+  flex-grow: 1;
+}
+
+.card {
+  background: var(--ant-gray);
+  display: flex;
+  height: 64px;
+}
+
+.cardImage {
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.cardContent {
+  padding: 8px;
+}
+
+.cardTitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-bottom: 0 !important;
+}
+
+.cardPrice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.btnWrapper {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 12px;
+}

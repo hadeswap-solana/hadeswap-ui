@@ -15,7 +15,7 @@ interface NftGeneral {
   collectionName?: string;
 }
 
-interface CartNft extends NftGeneral {
+export interface CartNft extends NftGeneral {
   assetReceiver: string;
   market?: string;
   spotPrice: number;

@@ -3,7 +3,7 @@ import { Dictionary } from 'lodash';
 import { coreActions, coreTypes } from '../actions';
 import { SellOrder, BuyOrder } from '../actions/cartActions';
 
-type CartState = {
+export type CartState = {
   buy: Dictionary<SellOrder[]>;
   sell: Dictionary<BuyOrder[]>;
 };

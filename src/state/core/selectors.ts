@@ -5,6 +5,7 @@ import { formatBNToString } from '../../utils';
 import { BuyOrder, SellOrder } from './actions/cartActions';
 import { MarketInfo, Pair, WalletNft } from './types';
 import { Dictionary } from 'lodash';
+import { CartState } from './reducers/cartReducer';
 
 export const selectAllMarkets = createSelector(
   (store: any) => (store?.core?.markets?.data as MarketInfo[]) || [],
@@ -175,4 +176,12 @@ export const selectAllBuyOrdersForMarket = createSelector(
       }, [])
       .sort((a, b) => b.price - a.price) as BuyOrder[];
   },
+);
+
+export const selectCartItems = createSelector(
+  (store: any) => store?.core?.cart as CartState,
+  (cartState) => ({
+    sell: Object.values(cartState.sell).flat(),
+    buy: Object.values(cartState.buy).flat(),
+  }),
 );
