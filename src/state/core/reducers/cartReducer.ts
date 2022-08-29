@@ -52,7 +52,10 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     const ordersByPair = state.sell?.[payload.pair] || [];
     return {
       ...state,
-      sell: { ...state.sell, [payload.pair]: [...ordersByPair, payload] },
+      sell: {
+        ...state.sell,
+        [payload.pair]: [...ordersByPair, { ...payload, selected: true }],
+      },
     };
   },
   [coreTypes.REMOVE_SELL_ITEM]: (

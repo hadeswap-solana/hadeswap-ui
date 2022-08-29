@@ -5,14 +5,14 @@ import styles from './Collection.module.scss';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  selectAllBuyOrdersForMarket,
   selectAllSellOrdersForMarket,
-  selectMarketWalletNfts,
 } from '../../state/core/selectors';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { coreActions } from '../../state/core/actions';
 import { useParams } from 'react-router-dom';
 import { formatBNToString } from '../../utils';
-import { SellOrder } from '../../state/core/actions/cartActions';
+import { BuyOrder, SellOrder } from '../../state/core/actions/cartActions';
 
 export const CollectionBuy: FC = () => {
   const orders = useSelector(selectAllSellOrdersForMarket);
@@ -57,19 +57,30 @@ export const CollectionSell: FC = () => {
     connected && marketPublicKey && dispatch(coreActions.fetchWalletNfts());
   }, [dispatch, connected, marketPublicKey]);
 
-  const walletNfts = useSelector((state: never) =>
-    selectMarketWalletNfts(state, marketPublicKey),
+  const orders = useSelector((state: never) =>
+    selectAllBuyOrdersForMarket(state, marketPublicKey),
+  );
+
+  const createOnBtnClick = useCallback(
+    (order: BuyOrder) => () => {
+      order?.selected
+        ? dispatch(coreActions.removeSellItem(order.pair, order.mint))
+        : dispatch(coreActions.addSellItem(order));
+    },
+    [dispatch],
   );
 
   return (
     <CollectionPageLayout>
       <div className={styles.cards}>
-        {walletNfts.map((nft) => (
+        {orders.map((order) => (
           <NFTCard
-            key={nft.mint}
-            imageUrl={nft.imageUrl}
-            name={nft.name}
-            price={nft.price}
+            key={order.mint}
+            imageUrl={order.imageUrl}
+            name={order.name}
+            price={formatBNToString(new BN(order.price))}
+            onBtnClick={createOnBtnClick(order)}
+            selected={order?.selected}
           />
         ))}
       </div>
