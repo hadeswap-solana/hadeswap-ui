@@ -4,10 +4,11 @@ import { createSelector } from 'reselect';
 import { formatBNToString } from '../../utils';
 import { BuyOrder, SellOrder } from './actions/cartActions';
 import { MarketInfo, Pair, WalletNft } from './types';
-import { Dictionary } from 'lodash';
+import { Dictionary, maxBy } from 'lodash';
 import { CartState } from './reducers/cartReducer';
 import {
   calcSellOrderPrice,
+  getPairsNextPriceBuy,
   getSellOrderCartPairIndex,
   getSellOrdersMintsByPair,
 } from './helpers';
@@ -123,67 +124,61 @@ export const selectMarketWalletNfts = createSelector(
     walletNfts.filter((nft) => nft.market === marketPubkey),
 );
 
-export const selectBuyOrdersInCartByPair = createSelector(
+export const selectBuyOrdersByMarketInCart = createSelector(
   (store: any) => (store?.core?.cart?.sell as Dictionary<BuyOrder[]>) || {},
   identity<Dictionary<BuyOrder[]>>,
 );
 
-const getBestOfferFromNftPairs = (
-  pairs: Pair[] = [],
-  buyItemsInCartByPair: Dictionary<BuyOrder[]> = {},
-) =>
-  pairs
-    .filter((pair) => pair.type !== 'nftForToken')
-    .map((pair) => {
-      const pairCartOccurrences =
-        buyItemsInCartByPair?.[pair.pairPubkey]?.length || 0;
-
-      if (pairCartOccurrences < pair.buyOrdersAmount) {
-        return {
-          ...pair,
-          price: pair.spotPrice - pair.delta * pairCartOccurrences,
-        };
-      }
-
-      return null;
-    })
-    .filter((v) => v)
-    .sort((a, b) => b.price - a.price)?.[0] || null;
-
 export const selectAllBuyOrdersForMarket = createSelector(
-  [selectMarketWalletNfts, selectBuyOrdersInCartByPair],
-  (walletNfts, buyItemsInCartByPair) => {
-    return walletNfts
+  [selectMarketWalletNfts, selectMarketPairs, selectBuyOrdersByMarketInCart],
+  (marketWalletNfts, marketPairs, buyOrdersByMarket) => {
+    const marketPubkey = marketWalletNfts[0]?.market;
+
+    if (!marketPubkey || !marketPairs?.length) return [];
+
+    const occupiedBuyOrders = buyOrdersByMarket[marketPubkey];
+
+    const pairsNextPriceBuy = getPairsNextPriceBuy(
+      marketPairs,
+      occupiedBuyOrders,
+    );
+
+    const [bestAvailablePairPubkey, bestAvailablePrice] = maxBy(
+      Object.entries(pairsNextPriceBuy),
+      (entry) => entry?.[1],
+    );
+
+    return marketWalletNfts
       .reduce((orders: BuyOrder[], nft) => {
-        const selectedOrder: BuyOrder = Object.values(buyItemsInCartByPair)
+        const orderSelected: BuyOrder = Object.values(buyOrdersByMarket)
           .flat()
           .find((order) => order.mint === nft.mint);
 
-        const bestOffer = getBestOfferFromNftPairs(
-          nft?.pairs,
-          buyItemsInCartByPair,
-        );
-
-        if (selectedOrder) {
-          return [...orders, selectedOrder];
+        if (orderSelected) {
+          return [...orders, orderSelected];
         }
 
-        const buyOrder = {
+        const bestPair = nft.pairs.find(
+          ({ pairPubkey }) => bestAvailablePairPubkey === pairPubkey,
+        );
+
+        const order = {
           mint: nft.mint,
           imageUrl: nft.imageUrl,
           name: nft.name,
           traits: nft.traits || null,
-          assetReceiver: bestOffer.assetReceiver,
-          spotPrice: bestOffer.spotPrice,
-          price: bestOffer.price,
-          bondingCurve: bestOffer.bondingCurve,
-          pair: bestOffer.pairPubkey,
+          assetReceiver: bestPair.assetReceiver,
+          spotPrice: bestPair.spotPrice,
+          price: bestAvailablePrice,
+          bondingCurve: bestPair.bondingCurve,
+          pair: bestPair.pairPubkey,
           selected: false,
           nftValidationAdapter: nft.nftValidationAdapter,
-          type: bestOffer.type,
+          type: bestPair.type,
+          market: marketPubkey,
         };
 
-        return [...orders, buyOrder];
+        return [...orders, order];
       }, [])
       .sort((a, b) => b.price - a.price) as BuyOrder[];
   },

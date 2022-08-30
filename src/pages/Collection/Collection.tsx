@@ -64,7 +64,7 @@ export const CollectionSell: FC = () => {
   const createOnBtnClick = useCallback(
     (order: BuyOrder) => () => {
       order?.selected
-        ? dispatch(coreActions.removeSellItem(order.pair, order.mint))
+        ? dispatch(coreActions.removeSellItem(order.market, order.mint))
         : dispatch(coreActions.addSellItem(order));
     },
     [dispatch],

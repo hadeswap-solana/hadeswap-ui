@@ -51,8 +51,8 @@ export const cartActions = {
   })),
   removeSellItem: createCustomAction(
     cartTypes.REMOVE_SELL_ITEM,
-    (pair: string, mint: string) => ({
-      payload: { pair, mint },
+    (market: string, mint: string) => ({
+      payload: { market, mint },
     }),
   ),
 };
