@@ -3,6 +3,7 @@
 }
 
 .content {
+  position: relative;
   min-height: 280px;
   padding: 24px 50px;
 }
@@ -52,14 +53,10 @@
 }
 
 .cartSider {
-  position: relative;
   height: 100vh;
-
-  :global {
-    .ant-layout-sider-children {
-      width: 320px;
-    }
-  }
+  position: sticky !important;
+  top: 0;
+  left: 0;
 }
 
 .toggleCartSiderBtn {
