@@ -26,7 +26,7 @@ export const CartSider: FC = () => {
     (order: CartNft, isSell = false) =>
     () => {
       isSell
-        ? dispatch(coreActions.removeSellItem(order.pair, order.mint))
+        ? dispatch(coreActions.removeSellItem(order.market, order.mint))
         : dispatch(coreActions.removeBuyItem(order.pair, order.mint));
     };
 

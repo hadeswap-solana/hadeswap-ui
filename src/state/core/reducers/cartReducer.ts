@@ -4,8 +4,8 @@ import { coreActions, coreTypes } from '../actions';
 import { SellOrder, BuyOrder } from '../actions/cartActions';
 
 export type CartState = {
-  buy: Dictionary<SellOrder[]>;
-  sell: Dictionary<BuyOrder[]>;
+  buy: Dictionary<SellOrder[]>; //? Dictionary by pairPubkey
+  sell: Dictionary<BuyOrder[]>; //? Dictionary by marketPubkey
 };
 
 const initialCartState: CartState = {
@@ -56,12 +56,12 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     state,
     { payload }: ReturnType<typeof coreActions.addSellItem>,
   ) => {
-    const ordersByPair = state.sell?.[payload.pair] || [];
+    const ordersByMarket = state.sell?.[payload.market] || [];
     return {
       ...state,
       sell: {
         ...state.sell,
-        [payload.pair]: [...ordersByPair, { ...payload, selected: true }],
+        [payload.market]: [...ordersByMarket, { ...payload, selected: true }],
       },
     };
   },
@@ -69,19 +69,38 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     state,
     { payload }: ReturnType<typeof coreActions.removeSellItem>,
   ) => {
-    const ordersByPair = state.sell?.[payload.pair];
+    const marketOrders = state.sell?.[payload.market];
 
-    const nextOrdersByPair = ordersByPair
-      ? {
-          [payload.pair]: ordersByPair.filter(
-            ({ mint }) => mint !== payload.mint,
-          ),
-        }
-      : {};
+    const removableItem = marketOrders.find(
+      ({ mint }) => mint === payload.mint,
+    );
+
+    const isLastIndex =
+      marketOrders.map(({ mint }) => mint).indexOf(payload.mint) ===
+      marketOrders.length;
+
+    const filteredOrders = marketOrders.filter(
+      ({ mint }) => mint !== payload.mint,
+    );
+
+    if (filteredOrders.length && !isLastIndex) {
+      const lastItem = filteredOrders.pop();
+      filteredOrders.push({
+        ...removableItem,
+        mint: lastItem.mint,
+        imageUrl: lastItem.imageUrl,
+        name: lastItem.name,
+        traits: lastItem.traits,
+        collectionName: lastItem.collectionName,
+      } as BuyOrder);
+    }
 
     return {
       ...state,
-      sell: { ...state.sell, ...nextOrdersByPair },
+      sell: {
+        ...state.sell,
+        [payload.market]: filteredOrders,
+      },
     };
   },
 });
