@@ -20,6 +20,7 @@ export interface CartNft extends NftGeneral {
   market?: string;
   spotPrice: number;
   bondingCurve: string;
+  delta: number;
   pair: string;
   selected: boolean;
   price: number;

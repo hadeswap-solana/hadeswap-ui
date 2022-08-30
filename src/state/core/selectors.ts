@@ -6,6 +6,11 @@ import { BuyOrder, SellOrder } from './actions/cartActions';
 import { MarketInfo, Pair, WalletNft } from './types';
 import { Dictionary } from 'lodash';
 import { CartState } from './reducers/cartReducer';
+import {
+  calcSellOrderPrice,
+  getSellOrderCartPairIndex,
+  getSellOrdersMintsByPair,
+} from './helpers';
 
 export const selectAllMarkets = createSelector(
   (store: any) => (store?.core?.markets?.data as MarketInfo[]) || [],
@@ -63,17 +68,22 @@ export const selectAllSellOrdersForMarket = createSelector(
   (pairs, sellOrdersInCartByPair) => {
     return pairs
       .reduce((orders: SellOrder[], pair) => {
-        const sellOrdersCart: SellOrder[] =
-          sellOrdersInCartByPair[pair.pairPubkey] || [];
-        const sellOrdersCartMints = sellOrdersCart.map(({ mint }) => mint);
+        const sellOrdersCartMints = getSellOrdersMintsByPair(
+          pair.pairPubkey,
+          sellOrdersInCartByPair,
+        );
 
         const sellOrders = (pair?.sellOrders || []).map((order) => {
-          const isSelectedIndex = sellOrdersCartMints.indexOf(order.mint);
+          const orderCartPairIndex = getSellOrderCartPairIndex(
+            order.mint,
+            sellOrdersCartMints,
+          );
 
-          const price =
-            isSelectedIndex !== -1
-              ? pair.spotPrice + pair.delta * (isSelectedIndex + 1)
-              : pair.spotPrice + pair.delta * (sellOrdersCartMints.length + 1);
+          const price = calcSellOrderPrice(
+            orderCartPairIndex,
+            sellOrdersCartMints,
+            pair,
+          );
 
           return {
             mint: order.mint,
@@ -82,10 +92,11 @@ export const selectAllSellOrdersForMarket = createSelector(
             traits: order.traits || null,
             assetReceiver: pair.assetReceiver,
             spotPrice: pair.spotPrice,
+            delta: pair.delta,
             price,
             bondingCurve: pair.bondingCurve,
             pair: pair.pairPubkey,
-            selected: isSelectedIndex !== -1,
+            selected: orderCartPairIndex !== -1,
             vaultNftTokenAccount: order.vaultNftTokenAccount,
             nftPairBox: order.nftPairBox,
             type: pair.type,
@@ -137,25 +148,25 @@ const getBestOfferFromNftPairs = (
       return null;
     })
     .filter((v) => v)
-    .sort((a, b) => b.price - a.price)[0] || null;
+    .sort((a, b) => b.price - a.price)?.[0] || null;
 
 export const selectAllBuyOrdersForMarket = createSelector(
   [selectMarketWalletNfts, selectBuyOrdersInCartByPair],
   (walletNfts, buyItemsInCartByPair) => {
     return walletNfts
       .reduce((orders: BuyOrder[], nft) => {
-        const selectedOrder = Object.values(buyItemsInCartByPair)
+        const selectedOrder: BuyOrder = Object.values(buyItemsInCartByPair)
           .flat()
           .find((order) => order.mint === nft.mint);
-
-        if (selectedOrder) {
-          return [...orders, selectedOrder];
-        }
 
         const bestOffer = getBestOfferFromNftPairs(
           nft?.pairs,
           buyItemsInCartByPair,
         );
+
+        if (selectedOrder) {
+          return [...orders, selectedOrder];
+        }
 
         const buyOrder = {
           mint: nft.mint,
@@ -180,8 +191,10 @@ export const selectAllBuyOrdersForMarket = createSelector(
 
 export const selectCartItems = createSelector(
   (store: any) => store?.core?.cart as CartState,
-  (cartState) => ({
-    sell: Object.values(cartState.sell).flat(),
-    buy: Object.values(cartState.buy).flat(),
-  }),
+  (cartState) => {
+    return {
+      sell: Object.values(cartState.sell).flat(),
+      buy: Object.values(cartState.buy).flat(),
+    };
+  },
 );

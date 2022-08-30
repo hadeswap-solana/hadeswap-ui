@@ -29,19 +29,26 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     state,
     { payload }: ReturnType<typeof coreActions.removeBuyItem>,
   ) => {
-    const ordersByPair = state.buy?.[payload.pair];
+    const pairOrders = state.buy?.[payload.pair];
 
-    const nextOrdersByPair = ordersByPair
-      ? {
-          [payload.pair]: ordersByPair.filter(
-            ({ mint }) => mint !== payload.mint,
-          ),
-        }
-      : {};
+    const isLastIndex =
+      pairOrders.map(({ mint }) => mint).indexOf(payload.mint) ===
+      pairOrders.length;
+
+    const filteredOrders = pairOrders.filter(
+      ({ mint }) => mint !== payload.mint,
+    );
+
+    const nextOrders = isLastIndex
+      ? filteredOrders
+      : filteredOrders.map((order, idx) => ({
+          ...order,
+          price: order.spotPrice + order.delta * (idx + 1),
+        }));
 
     return {
       ...state,
-      buy: { ...state.buy, ...nextOrdersByPair },
+      buy: { ...state.buy, [payload.pair]: nextOrders },
     };
   },
 
