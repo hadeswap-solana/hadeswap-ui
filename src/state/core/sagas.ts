@@ -3,7 +3,7 @@ import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 import { web3 } from '@project-serum/anchor';
 
 import { networkRequest } from '../../utils/state';
-import { MarketInfo, WalletNft, Pair } from './types';
+import { MarketInfo, Nft, Pair } from './types';
 import { selectWalletPublicKey } from '../common/selectors';
 
 const fetchAllMarketsSaga = function* () {
@@ -46,6 +46,7 @@ const fetchMarketPairsSaga = function* (
     const data: Pair[] = yield call(networkRequest, {
       url: `https://${process.env.BACKEND_DOMAIN}/pairs/${action.payload}`,
     });
+
     yield put(coreActions.fetchMarketPairsFulfilled(data));
   } catch (error) {
     yield put(coreActions.fetchMarketPairsFailed(error));
@@ -62,23 +63,25 @@ const fetchMarketInfoAndPairsSaga = function* (
   yield call(fetchMarketPairsSaga, action);
 };
 
-const fetchWalletNftsSaga = function* () {
+const fetchMarketWalletNftsSaga = function* (
+  action: ReturnType<typeof coreActions.fetchMarketWalletNfts>,
+) {
   const walletPubkey: web3.PublicKey = yield select(selectWalletPublicKey);
 
   if (!walletPubkey) {
     return;
   }
 
-  yield put(coreActions.fetchWalletNftsPending(walletPubkey.toBase58()));
+  yield put(coreActions.fetchMarketWalletNftsPending());
   try {
-    const data: WalletNft[] = yield call(networkRequest, {
+    const data: Nft[] = yield call(networkRequest, {
       url: `https://${
         process.env.BACKEND_DOMAIN
-      }/nfts/${walletPubkey.toBase58()}`,
+      }/nfts/${walletPubkey.toBase58()}/${action.payload}`,
     });
-    yield put(coreActions.fetchWalletNftsFulfilled(data));
+    yield put(coreActions.fetchMarketWalletNftsFulfilled(data));
   } catch (error) {
-    yield put(coreActions.fetchWalletNftsFailed(error));
+    yield put(coreActions.fetchMarketWalletNftsFailed(error));
   }
 };
 
@@ -122,7 +125,9 @@ const fetchPairSaga = function* (
 const coreSagas = function* (): Generator {
   yield all([takeLatest(coreTypes.FETCH_ALL_MARKETS, fetchAllMarketsSaga)]);
   yield all([takeLatest(coreTypes.FETCH_MARKET, fetchMarketSaga)]);
-  yield all([takeLatest(coreTypes.FETCH_WALLET_NFTS, fetchWalletNftsSaga)]);
+  yield all([
+    takeLatest(coreTypes.FETCH_MARKET_WALLET_NFTS, fetchMarketWalletNftsSaga),
+  ]);
   yield all([takeLatest(coreTypes.FETCH_WALLET_PAIRS, fetchWalletPairsSaga)]);
   yield all([takeLatest(coreTypes.FETCH_MARKET_PAIRS, fetchMarketPairsSaga)]);
   yield all([takeLatest(coreTypes.FETCH_PAIR, fetchPairSaga)]);

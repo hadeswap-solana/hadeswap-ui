@@ -1,15 +1,15 @@
-import { Dictionary, countBy } from 'lodash';
-import { BuyOrder, SellOrder } from './actions/cartActions';
-import { Pair } from './types';
+import { Dictionary } from 'lodash';
+import { hadeswap } from 'hadeswap-sdk';
+import {
+  BasePair,
+  CartOrder,
+  CartPair,
+  OrderType,
+  Pair,
+  PairSellOrder,
+} from './types';
 
-export const getSellOrdersMintsByPair = (
-  pairPubkey: string,
-  sellOrdersInCartByPair: Dictionary<SellOrder[]>,
-): string[] => {
-  const sellOrdersCart: SellOrder[] = sellOrdersInCartByPair[pairPubkey] || [];
-
-  return sellOrdersCart.map(({ mint }) => mint);
-};
+const { OrderType: HadeOrderType, BondingCurveType } = hadeswap.types;
 
 export const getSellOrderCartPairIndex = (
   orderMint: string,
@@ -26,30 +26,43 @@ export const calcSellOrderPrice = (
     : pair.spotPrice + pair.delta * (sellOrdersCartMints.length + 1);
 };
 
-export const getPairOccurrencesInOrdersArray = (
-  buyOrders: BuyOrder[] = [],
-): Dictionary<number> => {
-  return countBy(buyOrders.map(({ pair }) => pair));
+export const calcNextSpotPrice = (
+  pair: BasePair,
+  orderType: OrderType,
+): number => {
+  return hadeswap.helpers.next_spot_price({
+    orderType:
+      orderType === OrderType.BUY ? HadeOrderType.Buy : HadeOrderType.Sell,
+    spot_price: pair.spotPrice,
+    delta: pair.delta,
+    bondingCurveType:
+      pair.bondingCurve === 'linear'
+        ? BondingCurveType.Linear
+        : BondingCurveType.Exponential,
+  });
 };
 
-export const getPairsNextPriceBuy = (
-  pairs: Pair[] = [],
-  buyOrders: BuyOrder[] = [],
-): Dictionary<number> => {
-  const pairsOccurrences = getPairOccurrencesInOrdersArray(buyOrders);
+export const convertCartOrderToPairSellOrder = (
+  order: CartOrder,
+): PairSellOrder => ({
+  mint: order.mint,
+  imageUrl: order.imageUrl,
+  nftPairBox: order.nftPairBox,
+  vaultNftTokenAccount: order.vaultNftTokenAccount,
+  name: order.name,
+  traits: order.traits,
+});
 
-  return Object.fromEntries(
-    pairs
-      .filter((pair) => pair.type !== 'nftForToken')
-      .map(({ pairPubkey, delta, spotPrice, buyOrdersAmount }) => {
-        const occurrences = pairsOccurrences[pairPubkey] || 0;
+export const findCartOrder = (
+  nftMint: string,
+  orders: Dictionary<CartOrder[]>,
+): CartOrder | null =>
+  Object.values(orders)
+    .flat()
+    .find(({ mint }) => mint === nftMint) || null;
 
-        const nextBuyPrice =
-          occurrences === buyOrdersAmount
-            ? -1
-            : spotPrice - delta * occurrences;
-
-        return [pairPubkey, nextBuyPrice];
-      }),
-  );
+export const convertCartPairToMarketPair = (cartPair: CartPair): Pair => {
+  const cartPairCopy: CartPair = { ...cartPair };
+  delete cartPairCopy.takenMints;
+  return cartPairCopy;
 };

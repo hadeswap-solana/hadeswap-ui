@@ -1,58 +1,19 @@
 import { createCustomAction } from 'typesafe-actions';
+import { CartOrder, OrderType, Pair } from '../types';
 
 export const cartTypes = {
-  ADD_BUY_ITEM: 'core/ADD_BUY_ITEM',
-  REMOVE_BUY_ITEM: 'core/REMOVE_BUY_ITEM',
-  ADD_SELL_ITEM: 'core/ADD_SELL_ITEM',
-  REMOVE_SELL_ITEM: 'core/REMOVE_SELL_ITEM',
+  ADD_ORDER: 'core/ADD_ORDER',
+  REMOVE_ORDER: 'core/REMOVE_ORDER',
 };
 
-interface NftGeneral {
-  mint: string;
-  imageUrl: string;
-  name: string;
-  traits?: [string, string];
-  collectionName?: string;
-}
-
-export interface CartNft extends NftGeneral {
-  assetReceiver: string;
-  market?: string;
-  spotPrice: number;
-  bondingCurve: string;
-  delta: number;
-  pair: string;
-  selected: boolean;
-  price: number;
-  type: string;
-}
-
-export interface SellOrder extends CartNft {
-  vaultNftTokenAccount: string;
-  nftPairBox: string;
-}
-
-export interface BuyOrder extends CartNft {
-  nftValidationAdapter: string;
-}
-
 export const cartActions = {
-  addBuyItem: createCustomAction(cartTypes.ADD_BUY_ITEM, (nft: SellOrder) => ({
-    payload: nft,
-  })),
-  removeBuyItem: createCustomAction(
-    cartTypes.REMOVE_BUY_ITEM,
-    (pair: string, mint: string) => ({
-      payload: { pair, mint },
+  addOrder: createCustomAction(
+    cartTypes.ADD_ORDER,
+    (pair: Pair, order: CartOrder, orderType: OrderType) => ({
+      payload: { pair, order, orderType },
     }),
   ),
-  addSellItem: createCustomAction(cartTypes.ADD_SELL_ITEM, (nft: BuyOrder) => ({
-    payload: nft,
+  removeOrder: createCustomAction(cartTypes.REMOVE_ORDER, (mint: string) => ({
+    payload: { mint },
   })),
-  removeSellItem: createCustomAction(
-    cartTypes.REMOVE_SELL_ITEM,
-    (market: string, mint: string) => ({
-      payload: { market, mint },
-    }),
-  ),
 };

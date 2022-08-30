@@ -9,8 +9,8 @@ import { selectCartItems } from '../../state/core/selectors';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 import { formatBNToString } from '../../utils';
 import BN from 'bn.js';
-import { CartNft } from '../../state/core/actions/cartActions';
 import { coreActions } from '../../state/core/actions';
+import { CartOrder } from '../../state/core/types';
 
 const { Sider } = Layout;
 
@@ -22,13 +22,9 @@ export const CartSider: FC = () => {
 
   const itemsAmount = cartItems.buy.length + cartItems.sell.length;
 
-  const createOnDeselectHandler =
-    (order: CartNft, isSell = false) =>
-    () => {
-      isSell
-        ? dispatch(coreActions.removeSellItem(order.market, order.mint))
-        : dispatch(coreActions.removeBuyItem(order.pair, order.mint));
-    };
+  const createOnDeselectHandler = (order: CartOrder) => () => {
+    dispatch(coreActions.removeOrder(order.mint));
+  };
 
   return (
     <Sider
@@ -79,7 +75,7 @@ export const CartSider: FC = () => {
                 name={item.name}
                 imageUrl={item.imageUrl}
                 price={formatBNToString(new BN(item.price))}
-                onDeselect={createOnDeselectHandler(item, true)}
+                onDeselect={createOnDeselectHandler(item)}
               />
             ))}
           </div>

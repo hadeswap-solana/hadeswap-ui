@@ -2,16 +2,18 @@ import BN from 'bn.js';
 import { identity } from 'ramda';
 import { createSelector } from 'reselect';
 import { formatBNToString } from '../../utils';
-import { BuyOrder, SellOrder } from './actions/cartActions';
-import { MarketInfo, Pair, WalletNft } from './types';
-import { Dictionary, maxBy } from 'lodash';
-import { CartState } from './reducers/cartReducer';
 import {
-  calcSellOrderPrice,
-  getPairsNextPriceBuy,
-  getSellOrderCartPairIndex,
-  getSellOrdersMintsByPair,
-} from './helpers';
+  CartPair,
+  MarketInfo,
+  OrderType,
+  Pair,
+  CartOrder,
+  Nft,
+  MarketOrder,
+} from './types';
+import { Dictionary } from 'lodash';
+import { CartState } from './reducers/cartReducer';
+import { calcNextSpotPrice, convertCartPairToMarketPair } from './helpers';
 
 export const selectAllMarkets = createSelector(
   (store: any) => (store?.core?.markets?.data as MarketInfo[]) || [],
@@ -23,13 +25,33 @@ export const selectCertainMarket = createSelector(
   identity<MarketInfo | null>,
 );
 
-export const selectMarketPairs = createSelector(
+export const selectCartPairs = createSelector(
+  (store: any) => (store?.core?.cart?.pairs as Dictionary<CartPair>) || {},
+  identity<Dictionary<CartPair>>,
+);
+
+export const selectCartOrders = createSelector(
+  (store: any) => (store?.core?.cart?.orders as Dictionary<CartOrder[]>) || [],
+  identity<Dictionary<CartOrder[]>>,
+);
+
+const selectRawMarketPairs = createSelector(
   (store: any) => (store?.core?.marketPairs?.data as Pair[]) || [],
   identity<Pair[]>,
 );
 
+export const selectMarketPairs = createSelector(
+  [selectCartPairs, selectRawMarketPairs],
+  (cartPairs, rawMarketPairs): Pair[] => {
+    return rawMarketPairs.map((rawPair) => {
+      const cartPair = cartPairs[rawPair.pairPubkey];
+      return cartPair ? convertCartPairToMarketPair(cartPair) : rawPair;
+    });
+  },
+);
+
 export const selectPoolsPageTableInfo = createSelector(
-  [selectCertainMarket, selectMarketPairs],
+  [selectCertainMarket, selectRawMarketPairs],
   (marketInfo, pairs) =>
     pairs.map((pair) => {
       return {
@@ -59,137 +81,105 @@ export const selectMarketInfoAndPairs = createSelector(
   },
 );
 
-const selectSellOrdersInCartByPair = createSelector(
-  (store: any) => (store?.core?.cart?.buy as Dictionary<SellOrder[]>) || {},
-  identity<Dictionary<SellOrder[]>>,
-);
+export const selectAllBuyOrdersForMarket = createSelector(
+  [selectMarketPairs, selectCartPairs, selectCartOrders],
+  (marketPairs, cartPairs, cartOrders) => {
+    const buyOrders = marketPairs
+      .reduce((orders: MarketOrder[], pair) => {
+        const selectedPairOrders: MarketOrder[] =
+          cartOrders[pair.pairPubkey]
+            ?.filter(({ type }) => type === OrderType.BUY)
+            ?.map((order) => ({
+              ...order,
+              selected: true,
+            })) || [];
 
-export const selectAllSellOrdersForMarket = createSelector(
-  [selectMarketPairs, selectSellOrdersInCartByPair],
-  (pairs, sellOrdersInCartByPair) => {
-    return pairs
-      .reduce((orders: SellOrder[], pair) => {
-        const sellOrdersCartMints = getSellOrdersMintsByPair(
-          pair.pairPubkey,
-          sellOrdersInCartByPair,
-        );
+        const cartPair = cartPairs[pair.pairPubkey];
 
-        const sellOrders = (pair?.sellOrders || []).map((order) => {
-          const orderCartPairIndex = getSellOrderCartPairIndex(
-            order.mint,
-            sellOrdersCartMints,
-          );
+        const freePairOrders: MarketOrder[] =
+          pair?.sellOrders?.map((sellOrder) => ({
+            ...sellOrder,
+            type: OrderType.BUY,
+            targetPairPukey: pair.pairPubkey,
+            price: calcNextSpotPrice(cartPair || pair, OrderType.BUY),
+            selected: false,
+          })) || [];
 
-          const price = calcSellOrderPrice(
-            orderCartPairIndex,
-            sellOrdersCartMints,
-            pair,
-          );
-
-          return {
-            mint: order.mint,
-            imageUrl: order.imageUrl,
-            name: order.name,
-            traits: order.traits || null,
-            assetReceiver: pair.assetReceiver,
-            spotPrice: pair.spotPrice,
-            delta: pair.delta,
-            price,
-            bondingCurve: pair.bondingCurve,
-            pair: pair.pairPubkey,
-            selected: orderCartPairIndex !== -1,
-            vaultNftTokenAccount: order.vaultNftTokenAccount,
-            nftPairBox: order.nftPairBox,
-            type: pair.type,
-          };
-        });
-
-        return [...orders, ...sellOrders];
+        return [...orders, ...selectedPairOrders, ...freePairOrders];
       }, [])
       .sort(
-        (a, b) => a.price - b.price || Number(b.selected) - Number(a.selected),
-      ) as SellOrder[];
+        (a: MarketOrder, b: MarketOrder) =>
+          a.price - b.price || a?.name?.localeCompare(b?.name),
+      ) as MarketOrder[];
+
+    return buyOrders;
   },
 );
 
 export const selectAllWalletNfts = createSelector(
-  (store: any) => (store?.core?.walletNfts?.data as WalletNft[]) || [],
-  identity<WalletNft[]>,
+  (store: any) => (store?.core?.walletNfts?.data as Nft[]) || [],
+  identity<Nft[]>,
 );
 
 export const selectMarketWalletNfts = createSelector(
-  selectAllWalletNfts,
-  (_: never, marketPubkey: string) => marketPubkey,
-  (walletNfts, marketPubkey: string) =>
-    walletNfts.filter((nft) => nft.market === marketPubkey),
+  (store: any) => (store?.core?.marketWalletNfts?.data as Nft[]) || [],
+  identity<Nft[]>,
 );
 
-export const selectBuyOrdersByMarketInCart = createSelector(
-  (store: any) => (store?.core?.cart?.sell as Dictionary<BuyOrder[]>) || {},
-  identity<Dictionary<BuyOrder[]>>,
-);
+export const selectAllSellOrdersForMarket = createSelector(
+  [
+    selectMarketPairs,
+    selectCartOrders,
+    selectMarketWalletNfts,
+    (_, marketPublicKey: string) => marketPublicKey,
+  ],
+  (marketPairs, cartOrders, marketWalletNfts, marketPublicKey) => {
+    const pairs = marketPairs
+      .filter(({ type }) => type !== 'nftForToken')
+      .filter(({ buyOrdersAmount }) => buyOrdersAmount > 0)
+      .sort((a, b) => a.spotPrice - b.spotPrice);
 
-export const selectAllBuyOrdersForMarket = createSelector(
-  [selectMarketWalletNfts, selectMarketPairs, selectBuyOrdersByMarketInCart],
-  (marketWalletNfts, marketPairs, buyOrdersByMarket) => {
-    const marketPubkey = marketWalletNfts[0]?.market;
+    const bestPair = pairs.at(-1);
 
-    if (!marketPubkey || !marketPairs?.length) return [];
+    const cartSellOrders: MarketOrder[] = Object.values(cartOrders)
+      .flat()
+      .filter(({ type }) => type === OrderType.SELL)
+      .map((order) => ({ ...order, selected: true }))
+      .filter(({ market }) => market === marketPublicKey);
 
-    const occupiedBuyOrders = buyOrdersByMarket[marketPubkey];
+    const sellOrders: MarketOrder[] =
+      marketWalletNfts
+        .filter(
+          ({ mint }) =>
+            !cartSellOrders.find(({ mint: cartMint }) => cartMint === mint),
+        )
+        .map((nft) => {
+          return {
+            ...nft,
+            type: OrderType.SELL,
+            targetPairPukey:
+              bestPair?.pairPubkey || '11111111111111111111111111111111',
+            price: bestPair.spotPrice || -1,
+            selected: false,
+          };
+        }) || [];
 
-    const pairsNextPriceBuy = getPairsNextPriceBuy(
-      marketPairs,
-      occupiedBuyOrders,
-    );
-
-    const [bestAvailablePairPubkey, bestAvailablePrice] = maxBy(
-      Object.entries(pairsNextPriceBuy),
-      (entry) => entry?.[1],
-    );
-
-    return marketWalletNfts
-      .reduce((orders: BuyOrder[], nft) => {
-        const orderSelected: BuyOrder = Object.values(buyOrdersByMarket)
-          .flat()
-          .find((order) => order.mint === nft.mint);
-
-        if (orderSelected) {
-          return [...orders, orderSelected];
-        }
-
-        const bestPair = nft.pairs.find(
-          ({ pairPubkey }) => bestAvailablePairPubkey === pairPubkey,
-        );
-
-        const order = {
-          mint: nft.mint,
-          imageUrl: nft.imageUrl,
-          name: nft.name,
-          traits: nft.traits || null,
-          assetReceiver: bestPair.assetReceiver,
-          spotPrice: bestPair.spotPrice,
-          price: bestAvailablePrice,
-          bondingCurve: bestPair.bondingCurve,
-          pair: bestPair.pairPubkey,
-          selected: false,
-          nftValidationAdapter: nft.nftValidationAdapter,
-          type: bestPair.type,
-          market: marketPubkey,
-        };
-
-        return [...orders, order];
-      }, [])
-      .sort((a, b) => b.price - a.price) as BuyOrder[];
+    return [...cartSellOrders, ...sellOrders].sort(
+      (a: MarketOrder, b: MarketOrder) =>
+        a.price - b.price || a?.name?.localeCompare(b?.name),
+    ) as MarketOrder[];
   },
 );
 
 export const selectCartItems = createSelector(
   (store: any) => store?.core?.cart as CartState,
-  (cartState) => {
+  (cartState): { buy: CartOrder[]; sell: CartOrder[] } => {
+    const allOrders = Object.values(cartState.orders).flat();
     return {
-      sell: Object.values(cartState.sell).flat(),
-      buy: Object.values(cartState.buy).flat(),
+      buy: allOrders
+        .filter(({ type }) => type === OrderType.BUY)
+        .sort((a: CartOrder, b: CartOrder) => a.price - b.price) as CartOrder[],
+      sell: allOrders.filter(({ type }) => type === OrderType.SELL),
     };
   },
 );

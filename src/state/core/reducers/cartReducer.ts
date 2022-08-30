@@ -1,106 +1,150 @@
 import { createReducer } from 'typesafe-actions';
 import { Dictionary } from 'lodash';
 import { coreActions, coreTypes } from '../actions';
-import { SellOrder, BuyOrder } from '../actions/cartActions';
+import { CartOrder, CartPair, OrderType } from '../types';
+import {
+  calcNextSpotPrice,
+  convertCartOrderToPairSellOrder,
+  findCartOrder,
+} from '../helpers';
 
 export type CartState = {
-  buy: Dictionary<SellOrder[]>; //? Dictionary by pairPubkey
-  sell: Dictionary<BuyOrder[]>; //? Dictionary by marketPubkey
+  pairs: Dictionary<CartPair>;
+  orders: Dictionary<CartOrder[]>;
 };
 
 const initialCartState: CartState = {
-  buy: {},
-  sell: {},
+  pairs: {},
+  orders: {},
 };
 
 export const cartReducer = createReducer<CartState>(initialCartState, {
-  [coreTypes.ADD_BUY_ITEM]: (
+  [coreTypes.ADD_ORDER]: (
     state,
-    { payload }: ReturnType<typeof coreActions.addBuyItem>,
+    { payload }: ReturnType<typeof coreActions.addOrder>,
   ) => {
-    const ordersByPair = state.buy?.[payload.pair] || [];
+    const { pair: payloadPair, order: payloadOrder, orderType } = payload;
+    const isBuyOrder = orderType === OrderType.BUY;
 
-    return {
-      ...state,
-      buy: { ...state.buy, [payload.pair]: [...ordersByPair, payload] },
+    const pairBeforeChanges: CartPair = state.pairs?.[
+      payloadPair.pairPubkey
+    ] || {
+      ...payloadPair,
+      takenMints: [],
     };
-  },
-  [coreTypes.REMOVE_BUY_ITEM]: (
-    state,
-    { payload }: ReturnType<typeof coreActions.removeBuyItem>,
-  ) => {
-    const pairOrders = state.buy?.[payload.pair];
 
-    const isLastIndex =
-      pairOrders.map(({ mint }) => mint).indexOf(payload.mint) ===
-      pairOrders.length;
+    const nextSpotPrice = calcNextSpotPrice(pairBeforeChanges, orderType);
 
-    const filteredOrders = pairOrders.filter(
-      ({ mint }) => mint !== payload.mint,
-    );
+    const order: CartOrder = {
+      type: orderType,
+      targetPairPukey: pairBeforeChanges.pairPubkey,
+      price: isBuyOrder ? nextSpotPrice : pairBeforeChanges.spotPrice,
 
-    const nextOrders = isLastIndex
-      ? filteredOrders
-      : filteredOrders.map((order, idx) => ({
-          ...order,
-          price: order.spotPrice + order.delta * (idx + 1),
-        }));
+      mint: payloadOrder.mint,
+      imageUrl: payloadOrder.imageUrl,
+      name: payloadOrder.name,
+      traits: payloadOrder.traits,
+      collectionName: payloadOrder.collectionName,
+      market: payloadOrder.market,
 
-    return {
-      ...state,
-      buy: { ...state.buy, [payload.pair]: nextOrders },
+      nftPairBox: isBuyOrder ? payloadOrder.nftPairBox : null,
+      vaultNftTokenAccount: isBuyOrder
+        ? payloadOrder.vaultNftTokenAccount
+        : null,
+      nftValidationAdapter: !isBuyOrder
+        ? payloadOrder.nftValidationAdapter
+        : null,
     };
-  },
 
-  [coreTypes.ADD_SELL_ITEM]: (
-    state,
-    { payload }: ReturnType<typeof coreActions.addSellItem>,
-  ) => {
-    const ordersByMarket = state.sell?.[payload.market] || [];
+    const pairAfterChanges: CartPair = {
+      ...pairBeforeChanges,
+      nftsCount: isBuyOrder
+        ? pairBeforeChanges.nftsCount - 1
+        : pairBeforeChanges.nftsCount,
+      buyOrdersAmount: isBuyOrder
+        ? pairBeforeChanges.buyOrdersAmount
+        : pairBeforeChanges.buyOrdersAmount - 1,
+      spotPrice: nextSpotPrice,
+      sellOrders:
+        pairBeforeChanges?.sellOrders?.filter(
+          ({ mint }) => mint !== order.mint,
+        ) || [],
+      takenMints: [...pairBeforeChanges.takenMints, order.mint],
+    };
+
     return {
-      ...state,
-      sell: {
-        ...state.sell,
-        [payload.market]: [...ordersByMarket, { ...payload, selected: true }],
+      pairs: {
+        ...state.pairs,
+        [pairAfterChanges.pairPubkey]: pairAfterChanges,
+      },
+      orders: {
+        ...state.orders,
+        [pairAfterChanges.pairPubkey]: [
+          ...(state.orders[pairAfterChanges.pairPubkey] || []),
+          order,
+        ],
       },
     };
   },
-  [coreTypes.REMOVE_SELL_ITEM]: (
+  [coreTypes.REMOVE_ORDER]: (
     state,
-    { payload }: ReturnType<typeof coreActions.removeSellItem>,
+    { payload }: ReturnType<typeof coreActions.removeOrder>,
   ) => {
-    const marketOrders = state.sell?.[payload.market];
+    const { mint: removableMint } = payload;
 
-    const removableItem = marketOrders.find(
-      ({ mint }) => mint === payload.mint,
+    const cartOrder = findCartOrder(removableMint, state.orders);
+
+    const { type: orderType, targetPairPukey: cartPairPubkey } = cartOrder;
+    const isBuyOrder = orderType === OrderType.BUY;
+
+    const linkedPair = state.pairs[cartPairPubkey];
+
+    const nextSpotPrice = calcNextSpotPrice(
+      linkedPair,
+      isBuyOrder ? OrderType.SELL : OrderType.BUY,
     );
 
-    const isLastIndex =
-      marketOrders.map(({ mint }) => mint).indexOf(payload.mint) ===
-      marketOrders.length;
+    const pair = {
+      ...linkedPair,
+      spotPrice: nextSpotPrice,
+      nftsCount: isBuyOrder ? linkedPair.nftsCount + 1 : linkedPair.nftsCount,
+      buyOrdersAmount: isBuyOrder
+        ? linkedPair.buyOrdersAmount
+        : linkedPair.buyOrdersAmount + 1,
+      takenMints: linkedPair.takenMints.filter(
+        (mint) => mint !== cartOrder.mint,
+      ),
+      sellOrders: isBuyOrder
+        ? [...linkedPair.sellOrders, convertCartOrderToPairSellOrder(cartOrder)]
+        : [],
+    };
 
-    const filteredOrders = marketOrders.filter(
-      ({ mint }) => mint !== payload.mint,
-    );
+    //TODO: Implement cross-pair calc for Sell orders
 
-    if (filteredOrders.length && !isLastIndex) {
-      const lastItem = filteredOrders.pop();
-      filteredOrders.push({
-        ...removableItem,
-        mint: lastItem.mint,
-        imageUrl: lastItem.imageUrl,
-        name: lastItem.name,
-        traits: lastItem.traits,
-        collectionName: lastItem.collectionName,
-      } as BuyOrder);
+    const remainingOrders: CartOrder[] = state.orders[cartPairPubkey]
+      .filter(({ mint }) => mint !== cartOrder.mint)
+      .sort((a, b) => a.price - b.price);
+
+    if (isBuyOrder) {
+      const mostExpensiveOrder = remainingOrders.at(-1);
+
+      if (mostExpensiveOrder && mostExpensiveOrder.price > cartOrder.price) {
+        mostExpensiveOrder.price = cartOrder.price;
+      }
+    } else {
+      const cheapestOrder = remainingOrders.at(0);
+
+      if (cheapestOrder && cheapestOrder.price < cartOrder.price) {
+        cheapestOrder.price = cartOrder.price;
+      }
     }
 
     return {
-      ...state,
-      sell: {
-        ...state.sell,
-        [payload.market]: filteredOrders,
+      pairs: {
+        ...state.pairs,
+        [pair.pairPubkey]: pair.takenMints.length ? pair : null,
       },
+      orders: { ...state.orders, [pair.pairPubkey]: remainingOrders },
     };
   },
 });

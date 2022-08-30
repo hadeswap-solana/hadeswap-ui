@@ -1,13 +1,14 @@
 import { createCustomAction } from 'typesafe-actions';
 
 import { ServerError } from '../../../utils/state';
-import { MarketInfo, Pair, WalletNft } from '../types';
+import { MarketInfo, Nft, Pair } from '../types';
 
 export const fetchTypes = {
-  FETCH_WALLET_NFTS: 'core/FETCH_WALLET_NFTS',
-  FETCH_WALLET_NFTS__PENDING: 'core/FETCH_WALLET_NFTS__PENDING',
-  FETCH_WALLET_NFTS__FULFILLED: 'core/FETCH_WALLET_NFTS__FULFILLED',
-  FETCH_WALLET_NFTS__FAILED: 'core/FETCH_WALLET_NFTS__FAILED',
+  FETCH_MARKET_WALLET_NFTS: 'core/FETCH_MARKET_WALLET_NFTS',
+  FETCH_MARKET_WALLET_NFTS__PENDING: 'core/FETCH_MARKET_WALLET_NFTS__PENDING',
+  FETCH_MARKET_WALLET_NFTS__FULFILLED:
+    'core/FETCH_MARKET_WALLET_NFTS__FULFILLED',
+  FETCH_MARKET_WALLET__FAILED: 'core/FETCH_MARKET_WALLET__FAILED',
 
   FETCH_WALLET_PAIRS: 'core/FETCH_WALLET_PAIRS',
   FETCH_WALLET_PAIRS__PENDING: 'core/FETCH_WALLET_PAIRS__PENDING',
@@ -39,17 +40,20 @@ export const fetchTypes = {
 
 export const fetchActions = {
   //? fetchWalletNfts
-  fetchWalletNfts: createCustomAction(fetchTypes.FETCH_WALLET_NFTS, () => null),
-  fetchWalletNftsPending: createCustomAction(
-    fetchTypes.FETCH_WALLET_NFTS__PENDING,
-    (walletAddress: string) => ({ payload: walletAddress }),
+  fetchMarketWalletNfts: createCustomAction(
+    fetchTypes.FETCH_MARKET_WALLET_NFTS,
+    (marketPubkey: string) => ({ payload: marketPubkey }),
   ),
-  fetchWalletNftsFulfilled: createCustomAction(
-    fetchTypes.FETCH_WALLET_NFTS__FULFILLED,
-    (walletNfts: WalletNft[]) => ({ payload: walletNfts }),
+  fetchMarketWalletNftsPending: createCustomAction(
+    fetchTypes.FETCH_MARKET_WALLET_NFTS__PENDING,
+    () => null,
   ),
-  fetchWalletNftsFailed: createCustomAction(
-    fetchTypes.FETCH_WALLET_NFTS__FAILED,
+  fetchMarketWalletNftsFulfilled: createCustomAction(
+    fetchTypes.FETCH_MARKET_WALLET_NFTS__FULFILLED,
+    (nfts: Nft[]) => ({ payload: nfts }),
+  ),
+  fetchMarketWalletNftsFailed: createCustomAction(
+    fetchTypes.FETCH_MARKET_WALLET__FAILED,
     (error: ServerError) => ({ payload: error }),
   ),
 

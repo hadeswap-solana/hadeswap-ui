@@ -7,24 +7,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   selectAllBuyOrdersForMarket,
   selectAllSellOrdersForMarket,
+  selectMarketPairs,
 } from '../../state/core/selectors';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { coreActions } from '../../state/core/actions';
 import { useParams } from 'react-router-dom';
 import { formatBNToString } from '../../utils';
-import { BuyOrder, SellOrder } from '../../state/core/actions/cartActions';
+import { MarketOrder, OrderType } from '../../state/core/types';
 
 export const CollectionBuy: FC = () => {
-  const orders = useSelector(selectAllSellOrdersForMarket);
+  const orders = useSelector(selectAllBuyOrdersForMarket);
+  const pairs = useSelector(selectMarketPairs);
   const dispatch = useDispatch();
 
   const createOnBtnClick = useCallback(
-    (order: SellOrder) => () => {
+    (order: MarketOrder) => () => {
       order?.selected
-        ? dispatch(coreActions.removeBuyItem(order.pair, order.mint))
-        : dispatch(coreActions.addBuyItem(order));
+        ? dispatch(coreActions.removeOrder(order.mint))
+        : dispatch(
+            coreActions.addOrder(
+              pairs.find((pair) => pair.pairPubkey === order.targetPairPukey),
+              order,
+              OrderType.BUY,
+            ),
+          );
     },
-    [dispatch],
+    [dispatch, pairs],
   );
 
   return (
@@ -54,20 +62,29 @@ export const CollectionSell: FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    connected && marketPublicKey && dispatch(coreActions.fetchWalletNfts());
+    connected &&
+      marketPublicKey &&
+      dispatch(coreActions.fetchMarketWalletNfts(marketPublicKey));
   }, [dispatch, connected, marketPublicKey]);
 
   const orders = useSelector((state: never) =>
-    selectAllBuyOrdersForMarket(state, marketPublicKey),
+    selectAllSellOrdersForMarket(state, marketPublicKey),
   );
+  const pairs = useSelector(selectMarketPairs);
 
   const createOnBtnClick = useCallback(
-    (order: BuyOrder) => () => {
+    (order: MarketOrder) => () => {
       order?.selected
-        ? dispatch(coreActions.removeSellItem(order.market, order.mint))
-        : dispatch(coreActions.addSellItem(order));
+        ? dispatch(coreActions.removeOrder(order.mint))
+        : dispatch(
+            coreActions.addOrder(
+              pairs.find((pair) => pair.pairPubkey === order.targetPairPukey),
+              order,
+              OrderType.SELL,
+            ),
+          );
     },
-    [dispatch],
+    [dispatch, pairs],
   );
 
   return (
