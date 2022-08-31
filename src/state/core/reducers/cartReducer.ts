@@ -4,7 +4,10 @@ import { coreActions, coreTypes } from '../actions';
 import { CartOrder, CartPair, OrderType } from '../types';
 import {
   calcNextSpotPrice,
-  convertCartOrderToPairSellOrder,
+  changePairOnOrderAdd,
+  changePairOnOrderRemove,
+  computeNewCartStateAfterBuyOrderRemove,
+  computeNewCartStateAfterSellOrderRemove,
   findCartOrder,
 } from '../helpers';
 
@@ -26,19 +29,17 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     const { pair: payloadPair, order: payloadOrder, orderType } = payload;
     const isBuyOrder = orderType === OrderType.BUY;
 
-    const pairBeforeChanges: CartPair = state.pairs?.[
-      payloadPair.pairPubkey
-    ] || {
+    const affectedPair: CartPair = state.pairs?.[payloadPair.pairPubkey] || {
       ...payloadPair,
       takenMints: [],
     };
 
-    const nextSpotPrice = calcNextSpotPrice(pairBeforeChanges, orderType);
+    const nextSpotPrice = calcNextSpotPrice(affectedPair, orderType);
 
-    const order: CartOrder = {
+    const appendableOrder: CartOrder = {
       type: orderType,
-      targetPairPukey: pairBeforeChanges.pairPubkey,
-      price: isBuyOrder ? nextSpotPrice : pairBeforeChanges.spotPrice,
+      targetPairPukey: affectedPair.pairPubkey,
+      price: isBuyOrder ? nextSpotPrice : affectedPair.spotPrice,
 
       mint: payloadOrder.mint,
       imageUrl: payloadOrder.imageUrl,
@@ -56,32 +57,21 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
         : null,
     };
 
-    const pairAfterChanges: CartPair = {
-      ...pairBeforeChanges,
-      nftsCount: isBuyOrder
-        ? pairBeforeChanges.nftsCount - 1
-        : pairBeforeChanges.nftsCount,
-      buyOrdersAmount: isBuyOrder
-        ? pairBeforeChanges.buyOrdersAmount
-        : pairBeforeChanges.buyOrdersAmount - 1,
-      spotPrice: nextSpotPrice,
-      sellOrders:
-        pairBeforeChanges?.sellOrders?.filter(
-          ({ mint }) => mint !== order.mint,
-        ) || [],
-      takenMints: [...pairBeforeChanges.takenMints, order.mint],
-    };
+    const affectedPairAfterChanges: CartPair = changePairOnOrderAdd(
+      affectedPair,
+      appendableOrder,
+    );
 
     return {
       pairs: {
         ...state.pairs,
-        [pairAfterChanges.pairPubkey]: pairAfterChanges,
+        [affectedPairAfterChanges.pairPubkey]: affectedPairAfterChanges,
       },
       orders: {
         ...state.orders,
-        [pairAfterChanges.pairPubkey]: [
-          ...(state.orders[pairAfterChanges.pairPubkey] || []),
-          order,
+        [affectedPairAfterChanges.pairPubkey]: [
+          ...(state.orders[affectedPairAfterChanges.pairPubkey] || []),
+          appendableOrder,
         ],
       },
     };
@@ -92,59 +82,30 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
   ) => {
     const { mint: removableMint } = payload;
 
-    const cartOrder = findCartOrder(removableMint, state.orders);
+    const removableOrder = findCartOrder(removableMint, state.orders);
 
-    const { type: orderType, targetPairPukey: cartPairPubkey } = cartOrder;
+    const { type: orderType, targetPairPukey: cartPairPubkey } = removableOrder;
     const isBuyOrder = orderType === OrderType.BUY;
 
-    const linkedPair = state.pairs[cartPairPubkey];
+    const affectedPair = state.pairs[cartPairPubkey];
 
-    const nextSpotPrice = calcNextSpotPrice(
-      linkedPair,
-      isBuyOrder ? OrderType.SELL : OrderType.BUY,
+    const affectedPairAfterChanges = changePairOnOrderRemove(
+      affectedPair,
+      removableOrder,
     );
 
-    const pair = {
-      ...linkedPair,
-      spotPrice: nextSpotPrice,
-      nftsCount: isBuyOrder ? linkedPair.nftsCount + 1 : linkedPair.nftsCount,
-      buyOrdersAmount: isBuyOrder
-        ? linkedPair.buyOrdersAmount
-        : linkedPair.buyOrdersAmount + 1,
-      takenMints: linkedPair.takenMints.filter(
-        (mint) => mint !== cartOrder.mint,
-      ),
-      sellOrders: isBuyOrder
-        ? [...linkedPair.sellOrders, convertCartOrderToPairSellOrder(cartOrder)]
-        : [],
-    };
-
-    //TODO: Implement cross-pair calc for Sell orders
-
-    const remainingOrders: CartOrder[] = state.orders[cartPairPubkey]
-      .filter(({ mint }) => mint !== cartOrder.mint)
-      .sort((a, b) => a.price - b.price);
-
-    if (isBuyOrder) {
-      const mostExpensiveOrder = remainingOrders.at(-1);
-
-      if (mostExpensiveOrder && mostExpensiveOrder.price > cartOrder.price) {
-        mostExpensiveOrder.price = cartOrder.price;
-      }
-    } else {
-      const cheapestOrder = remainingOrders.at(0);
-
-      if (cheapestOrder && cheapestOrder.price < cartOrder.price) {
-        cheapestOrder.price = cartOrder.price;
-      }
+    if (!isBuyOrder) {
+      return computeNewCartStateAfterSellOrderRemove(
+        state,
+        affectedPairAfterChanges,
+        removableOrder,
+      );
     }
 
-    return {
-      pairs: {
-        ...state.pairs,
-        [pair.pairPubkey]: pair.takenMints.length ? pair : null,
-      },
-      orders: { ...state.orders, [pair.pairPubkey]: remainingOrders },
-    };
+    return computeNewCartStateAfterBuyOrderRemove(
+      state,
+      affectedPairAfterChanges,
+      removableOrder,
+    );
   },
 });

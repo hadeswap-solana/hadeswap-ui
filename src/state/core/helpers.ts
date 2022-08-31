@@ -8,6 +8,7 @@ import {
   Pair,
   PairSellOrder,
 } from './types';
+import { CartState } from './reducers/cartReducer';
 
 const { OrderType: HadeOrderType, BondingCurveType } = hadeswap.types;
 
@@ -65,4 +66,166 @@ export const convertCartPairToMarketPair = (cartPair: CartPair): Pair => {
   const cartPairCopy: CartPair = { ...cartPair };
   delete cartPairCopy.takenMints;
   return cartPairCopy;
+};
+
+export const changePairOnOrderAdd = (
+  affectedPair: CartPair,
+  appendableOrder: CartOrder,
+): CartPair => {
+  const isBuyOrder = appendableOrder.type === OrderType.BUY;
+
+  return {
+    ...affectedPair,
+    nftsCount: isBuyOrder ? affectedPair.nftsCount - 1 : affectedPair.nftsCount,
+    buyOrdersAmount: isBuyOrder
+      ? affectedPair.buyOrdersAmount
+      : affectedPair.buyOrdersAmount - 1,
+    spotPrice: calcNextSpotPrice(affectedPair, appendableOrder.type),
+    sellOrders:
+      affectedPair?.sellOrders?.filter(
+        ({ mint }) => mint !== appendableOrder.mint,
+      ) || [],
+    takenMints: [...affectedPair.takenMints, appendableOrder.mint],
+  };
+};
+
+export const changePairOnOrderRemove = (
+  affectedPair: CartPair,
+  removableOrder: CartOrder,
+): CartPair => {
+  const isBuyOrder = removableOrder.type === OrderType.BUY;
+
+  return {
+    ...affectedPair,
+    spotPrice: calcNextSpotPrice(
+      affectedPair,
+      isBuyOrder ? OrderType.SELL : OrderType.BUY,
+    ),
+    nftsCount: isBuyOrder ? affectedPair.nftsCount + 1 : affectedPair.nftsCount,
+    buyOrdersAmount: isBuyOrder
+      ? affectedPair.buyOrdersAmount
+      : affectedPair.buyOrdersAmount + 1,
+    takenMints: affectedPair.takenMints.filter(
+      (mint) => mint !== removableOrder.mint,
+    ),
+    sellOrders: isBuyOrder
+      ? [
+          ...affectedPair.sellOrders,
+          convertCartOrderToPairSellOrder(removableOrder),
+        ]
+      : [...(affectedPair.sellOrders || [])],
+  };
+};
+
+export const computeNewCartStateAfterBuyOrderRemove = (
+  state: CartState,
+  affectedPair: CartPair,
+  removableOrder: CartOrder,
+): CartState => {
+  const remainingOrdersForPair: CartOrder[] = state.orders[
+    affectedPair.pairPubkey
+  ]
+    .filter(({ mint }) => mint !== removableOrder.mint)
+    .sort((a, b) => a.price - b.price);
+
+  const mostExpensiveOrder = remainingOrdersForPair.at(-1);
+
+  if (mostExpensiveOrder && mostExpensiveOrder.price > removableOrder.price) {
+    mostExpensiveOrder.price = removableOrder.price;
+  }
+
+  return {
+    pairs: {
+      ...state.pairs,
+      [affectedPair.pairPubkey]: affectedPair.takenMints.length
+        ? affectedPair
+        : null,
+    },
+    orders: {
+      ...state.orders,
+      [affectedPair.pairPubkey]: remainingOrdersForPair,
+    },
+  };
+};
+
+export const computeNewCartStateAfterSellOrderRemove = (
+  state: CartState,
+  affectedPair: CartPair,
+  removableOrder: CartOrder,
+): CartState => {
+  const remainingOrdersByMarket: CartOrder[] = Object.values(state.orders)
+    .flat()
+    .filter(({ market }) => market === removableOrder.market)
+    .filter(({ mint }) => mint !== removableOrder.mint)
+    .sort((a, b) => b.price - a.price);
+
+  const cheapestOrder = remainingOrdersByMarket.at(-1);
+
+  if (cheapestOrder && cheapestOrder.price < removableOrder.price) {
+    if (cheapestOrder.targetPairPukey === removableOrder.targetPairPukey) {
+      //* Just change price
+      cheapestOrder.price = removableOrder.price;
+    } else {
+      //* Crosspair changes
+      //? 1. Remove cheapestOrder from its pair
+      //? 2. Change cheapestOrder pair info
+      //? 3. Change cheapestOrder price and targetPair
+      //? 4. Put cheapestOrder into affectedPair
+      //? 5. Compute state
+
+      const cheapestOrderPair = state.pairs[cheapestOrder.targetPairPukey];
+
+      const nextCheapestOrderPair = changePairOnOrderRemove(
+        cheapestOrderPair,
+        cheapestOrder,
+      );
+
+      cheapestOrder.targetPairPukey = removableOrder.targetPairPukey;
+      cheapestOrder.price = removableOrder.price;
+
+      const affectedPairAfterChages = changePairOnOrderAdd(
+        affectedPair,
+        cheapestOrder,
+      );
+
+      return {
+        pairs: {
+          ...state.pairs,
+          [nextCheapestOrderPair.pairPubkey]: nextCheapestOrderPair.takenMints
+            .length
+            ? nextCheapestOrderPair
+            : null,
+          [affectedPairAfterChages.pairPubkey]: affectedPairAfterChages,
+        },
+        orders: {
+          ...state.orders,
+          [cheapestOrderPair.pairPubkey]: state.orders[
+            cheapestOrderPair.pairPubkey
+          ].filter(({ mint }) => mint !== cheapestOrder.mint),
+
+          [affectedPairAfterChages.pairPubkey]: [
+            ...(state.orders[affectedPairAfterChages.pairPubkey]?.filter(
+              ({ mint }) => mint !== removableOrder.mint,
+            ) || []),
+            cheapestOrder,
+          ],
+        },
+      };
+    }
+  }
+
+  return {
+    pairs: {
+      ...state.pairs,
+      [affectedPair.pairPubkey]: affectedPair?.takenMints?.length
+        ? affectedPair
+        : null,
+    },
+    orders: {
+      ...state.orders,
+      [affectedPair.pairPubkey]: state.orders[affectedPair.pairPubkey].filter(
+        ({ mint }) => mint !== removableOrder.mint,
+      ),
+    },
+  };
 };

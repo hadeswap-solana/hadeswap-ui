@@ -159,7 +159,7 @@ export const selectAllSellOrdersForMarket = createSelector(
             type: OrderType.SELL,
             targetPairPukey:
               bestPair?.pairPubkey || '11111111111111111111111111111111',
-            price: bestPair.spotPrice || -1,
+            price: bestPair?.spotPrice || -1,
             selected: false,
           };
         }) || [];
