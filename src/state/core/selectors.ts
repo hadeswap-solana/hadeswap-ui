@@ -166,7 +166,7 @@ export const selectAllSellOrdersForMarket = createSelector(
 
     return [...cartSellOrders, ...sellOrders].sort(
       (a: MarketOrder, b: MarketOrder) =>
-        a.price - b.price || a?.name?.localeCompare(b?.name),
+        b.price - a.price || a?.name?.localeCompare(b?.name),
     ) as MarketOrder[];
   },
 );
