@@ -5,18 +5,68 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCartSiderVisible } from '../../state/common/selectors';
 import { commonActions } from '../../state/common/actions';
 import styles from './AppLayout.module.scss';
-import { selectCartItems } from '../../state/core/selectors';
+import {
+  selectCartItems,
+  selectCartOrders,
+  selectCartPairs,
+} from '../../state/core/selectors';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 import { formatBNToString } from '../../utils';
 import BN from 'bn.js';
 import { coreActions } from '../../state/core/actions';
 import { CartOrder } from '../../state/core/types';
+import { chunk } from 'lodash';
+import { useConnection } from '../../hooks';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { createIx, mergeIxsIntoTxn, signTransactionsInSeries } from './helpers';
 
 const { Sider } = Layout;
+
+const useSwap = () => {
+  const IX_PER_TXN = 3;
+
+  const connection = useConnection();
+  const wallet = useWallet();
+
+  const orders = useSelector(selectCartOrders);
+  const pairs = useSelector(selectCartPairs);
+
+  const onSwap = async () => {
+    const ordersArray = Object.values(orders).flat();
+
+    const ixsAndSigners = await Promise.all(
+      ordersArray.map((order) =>
+        createIx({
+          connection,
+          walletPubkey: wallet.publicKey,
+          pair: pairs[order.targetPairPukey],
+          order,
+        }),
+      ),
+    );
+
+    const ixsAndSignersChunks = chunk(ixsAndSigners, IX_PER_TXN);
+
+    const txnAndSigners = ixsAndSignersChunks.map((ixsAndSigners) =>
+      mergeIxsIntoTxn(ixsAndSigners),
+    );
+
+    await signTransactionsInSeries({
+      txnAndSigners,
+      connection,
+      wallet,
+    });
+  };
+
+  return {
+    onSwap,
+  };
+};
 
 export const CartSider: FC = () => {
   const dispatch = useDispatch();
   const visible = useSelector(selectCartSiderVisible);
+  const { onSwap } = useSwap();
 
   const cartItems = useSelector(selectCartItems);
 
@@ -82,7 +132,7 @@ export const CartSider: FC = () => {
         )}
 
         <div className={styles.submitWrapper}>
-          <Button type="primary" block size="large">
+          <Button type="primary" block size="large" onClick={onSwap}>
             Swap
           </Button>
         </div>

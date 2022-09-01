@@ -14,7 +14,7 @@ interface SignAndConfirmTransactionProps {
 
 type SignAndConfirmTransaction = (
   props: SignAndConfirmTransactionProps,
-) => Promise<void>;
+) => Promise<web3.RpcResponseAndContext<web3.SignatureResult>>;
 
 export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
   transaction,
@@ -36,7 +36,7 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
   const signedTransaction = await wallet.signTransaction(transaction);
   const txid = await connection.sendRawTransaction(
     signedTransaction.serialize(),
-    // { skipPreflight: true },
+    { skipPreflight: false },
   );
 
   notify({
@@ -45,7 +45,7 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
     type: NotifyType.INFO,
   });
 
-  await connection.confirmTransaction(
+  return await connection.confirmTransaction(
     {
       signature: txid,
       blockhash,

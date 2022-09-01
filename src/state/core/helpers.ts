@@ -49,7 +49,7 @@ export const convertCartOrderToPairSellOrder = (
   mint: order.mint,
   imageUrl: order.imageUrl,
   nftPairBox: order.nftPairBox,
-  vaultNftTokenAccount: order.vaultNftTokenAccount,
+  vaultTokenAccount: order.vaultTokenAccount,
   name: order.name,
   traits: order.traits,
 });
