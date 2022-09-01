@@ -23,3 +23,10 @@
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
 }
+
+.nftCard {
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+  margin-bottom: 20px;
+}
