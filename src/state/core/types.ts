@@ -16,7 +16,7 @@ export interface PairSellOrder {
   mint: string;
   imageUrl: string;
   nftPairBox: string;
-  vaultNftTokenAccount: string;
+  vaultTokenAccount: string;
   name: string;
   traits: [string, string];
 }
@@ -57,7 +57,7 @@ export interface Nft {
   collectionName?: string;
   market?: string;
   nftPairBox?: string; //? Exists for Buy orders
-  vaultNftTokenAccount?: string; //? Exists for Buy orders
+  vaultTokenAccount?: string; //? Exists for Buy orders
   nftValidationAdapter?: string; //? Exists for Sell orders
 }
 
