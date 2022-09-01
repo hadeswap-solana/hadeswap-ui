@@ -118,15 +118,14 @@ export const signTransactionsInSeries: SignTransactionsInSeries = async ({
   connection,
   wallet,
 }) => {
-  for await (const _ of txnAndSigners.map(({ transaction, signers }) =>
-    signAndConfirmTransaction({
-      transaction,
-      signers,
+  //TODO: Refactor this shit to for of
+  for (let i = 0; i < txnAndSigners.length; ++i) {
+    await signAndConfirmTransaction({
+      transaction: txnAndSigners[i].transaction,
+      signers: txnAndSigners[i].signers,
       connection,
       wallet,
       commitment: 'finalized',
-    }),
-  )) {
-    return null;
+    });
   }
 };
