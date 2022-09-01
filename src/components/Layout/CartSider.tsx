@@ -103,15 +103,17 @@ export const CartSider: FC = () => {
             <Typography.Title level={4}>
               Buy {cartItems.buy.length} NFTs
             </Typography.Title>
-            {cartItems.buy.map((item) => (
-              <SiderCart
-                key={item.mint}
-                name={item.name}
-                imageUrl={item.imageUrl}
-                price={formatBNToString(new BN(item.price))}
-                onDeselect={createOnDeselectHandler(item)}
-              />
-            ))}
+            <div className={styles.cartItems}>
+              {cartItems.buy.map((item) => (
+                <SiderCart
+                  key={item.mint}
+                  name={item.name}
+                  imageUrl={item.imageUrl}
+                  price={formatBNToString(new BN(item.price))}
+                  onDeselect={createOnDeselectHandler(item)}
+                />
+              ))}
+            </div>
           </div>
         )}
         {!!cartItems.sell.length && (
@@ -119,15 +121,17 @@ export const CartSider: FC = () => {
             <Typography.Title level={4}>
               Sell {cartItems.sell.length} NFTs
             </Typography.Title>
-            {cartItems.sell.map((item) => (
-              <SiderCart
-                key={item.mint}
-                name={item.name}
-                imageUrl={item.imageUrl}
-                price={formatBNToString(new BN(item.price))}
-                onDeselect={createOnDeselectHandler(item)}
-              />
-            ))}
+            <div className={styles.cartItems}>
+              {cartItems.sell.map((item) => (
+                <SiderCart
+                  key={item.mint}
+                  name={item.name}
+                  imageUrl={item.imageUrl}
+                  price={formatBNToString(new BN(item.price))}
+                  onDeselect={createOnDeselectHandler(item)}
+                />
+              ))}
+            </div>
           </div>
         )}
 
