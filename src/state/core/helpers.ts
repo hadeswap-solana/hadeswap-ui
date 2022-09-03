@@ -122,7 +122,7 @@ export const computeNewCartStateAfterBuyOrderRemove = (
   affectedPair: CartPair,
   removableOrder: CartOrder,
 ): CartState => {
-  const remainingOrdersForPair: CartOrder[] = state.orders[
+  const remainingOrdersForPair: CartOrder[] = state.pendingOrders[
     affectedPair.pairPubkey
   ]
     .filter(({ mint }) => mint !== removableOrder.mint)
@@ -135,14 +135,15 @@ export const computeNewCartStateAfterBuyOrderRemove = (
   }
 
   return {
+    ...state,
     pairs: {
       ...state.pairs,
       [affectedPair.pairPubkey]: affectedPair.takenMints.length
         ? affectedPair
         : null,
     },
-    orders: {
-      ...state.orders,
+    pendingOrders: {
+      ...state.pendingOrders,
       [affectedPair.pairPubkey]: remainingOrdersForPair,
     },
   };
@@ -153,7 +154,9 @@ export const computeNewCartStateAfterSellOrderRemove = (
   affectedPair: CartPair,
   removableOrder: CartOrder,
 ): CartState => {
-  const remainingOrdersByMarket: CartOrder[] = Object.values(state.orders)
+  const remainingOrdersByMarket: CartOrder[] = Object.values(
+    state.pendingOrders,
+  )
     .flat()
     .filter(({ market }) => market === removableOrder.market)
     .filter(({ mint }) => mint !== removableOrder.mint)
@@ -189,6 +192,7 @@ export const computeNewCartStateAfterSellOrderRemove = (
       );
 
       return {
+        ...state,
         pairs: {
           ...state.pairs,
           [nextCheapestOrderPair.pairPubkey]: nextCheapestOrderPair.takenMints
@@ -197,14 +201,14 @@ export const computeNewCartStateAfterSellOrderRemove = (
             : null,
           [affectedPairAfterChages.pairPubkey]: affectedPairAfterChages,
         },
-        orders: {
-          ...state.orders,
-          [cheapestOrderPair.pairPubkey]: state.orders[
+        pendingOrders: {
+          ...state.pendingOrders,
+          [cheapestOrderPair.pairPubkey]: state.pendingOrders[
             cheapestOrderPair.pairPubkey
           ].filter(({ mint }) => mint !== cheapestOrder.mint),
 
           [affectedPairAfterChages.pairPubkey]: [
-            ...(state.orders[affectedPairAfterChages.pairPubkey]?.filter(
+            ...(state.pendingOrders[affectedPairAfterChages.pairPubkey]?.filter(
               ({ mint }) => mint !== removableOrder.mint,
             ) || []),
             cheapestOrder,
@@ -215,17 +219,18 @@ export const computeNewCartStateAfterSellOrderRemove = (
   }
 
   return {
+    ...state,
     pairs: {
       ...state.pairs,
       [affectedPair.pairPubkey]: affectedPair?.takenMints?.length
         ? affectedPair
         : null,
     },
-    orders: {
-      ...state.orders,
-      [affectedPair.pairPubkey]: state.orders[affectedPair.pairPubkey].filter(
-        ({ mint }) => mint !== removableOrder.mint,
-      ),
+    pendingOrders: {
+      ...state.pendingOrders,
+      [affectedPair.pairPubkey]: state.pendingOrders[
+        affectedPair.pairPubkey
+      ].filter(({ mint }) => mint !== removableOrder.mint),
     },
   };
 };

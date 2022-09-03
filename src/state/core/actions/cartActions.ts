@@ -2,18 +2,28 @@ import { createCustomAction } from 'typesafe-actions';
 import { CartOrder, OrderType, Pair } from '../types';
 
 export const cartTypes = {
-  ADD_ORDER: 'core/ADD_ORDER',
-  REMOVE_ORDER: 'core/REMOVE_ORDER',
+  ADD_ORDER_TO_CART: 'cart/ADD_ORDER',
+  REMOVE_ORDER_FROM_CART: 'cart/REMOVE_ORDER',
+  ADD_FINISHED_ORDER_MINT: 'cart/ADD_FINISHED_ORDER_MINT',
 };
 
 export const cartActions = {
-  addOrder: createCustomAction(
-    cartTypes.ADD_ORDER,
+  addOrderToCart: createCustomAction(
+    cartTypes.ADD_ORDER_TO_CART,
     (pair: Pair, order: CartOrder, orderType: OrderType) => ({
       payload: { pair, order, orderType },
     }),
   ),
-  removeOrder: createCustomAction(cartTypes.REMOVE_ORDER, (mint: string) => ({
-    payload: { mint },
-  })),
+  removeOrderFromCart: createCustomAction(
+    cartTypes.REMOVE_ORDER_FROM_CART,
+    (mint: string) => ({
+      payload: { mint },
+    }),
+  ),
+  addFinishedOrderMint: createCustomAction(
+    cartTypes.ADD_FINISHED_ORDER_MINT,
+    (mint: string) => ({
+      payload: { mint },
+    }),
+  ),
 };

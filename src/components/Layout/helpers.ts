@@ -19,17 +19,19 @@ interface CreateIxParams {
   order: CartOrder;
 }
 
-interface IxAndSigners {
+export interface IxnsData {
   instructions: web3.TransactionInstruction[];
   signers: web3.Signer[];
+  nftMint: string;
 }
 
-interface TxnAndSigners {
+interface TxnData {
   transaction: web3.Transaction;
   signers: web3.Signer[];
+  nftMints: string[];
 }
 
-type CreateIx = (params: CreateIxParams) => Promise<IxAndSigners>;
+type CreateIx = (params: CreateIxParams) => Promise<IxnsData>;
 
 const createBuyNftFromPairIx: CreateIx = async ({
   connection,
@@ -55,7 +57,7 @@ const createBuyNftFromPairIx: CreateIx = async ({
     },
   });
 
-  return { instructions, signers };
+  return { instructions, signers, nftMint: order.mint };
 };
 
 const createSellNftFromPairIx: CreateIx = async ({
@@ -83,7 +85,7 @@ const createSellNftFromPairIx: CreateIx = async ({
     },
   });
 
-  return { instructions, signers };
+  return { instructions, signers, nftMint: order.mint };
 };
 
 export const createIx: CreateIx = async (params) => {
@@ -94,34 +96,53 @@ export const createIx: CreateIx = async (params) => {
   return await createBuyNftFromPairIx(params);
 };
 
-export const mergeIxsIntoTxn = (ixs: IxAndSigners[]): TxnAndSigners => {
+export const mergeIxsIntoTxn = (ixs: IxnsData[]): TxnData => {
   const transaction = new web3.Transaction();
 
   transaction.add(...ixs.map(({ instructions }) => instructions).flat());
 
   const signers = ixs.map(({ signers }) => signers).flat();
 
+  const nftMints = ixs.map(({ nftMint }) => nftMint).flat();
+
   return {
     transaction,
     signers,
+    nftMints,
   };
 };
 
+interface TxnDataWithHandlers extends TxnData {
+  onSuccess?: () => void;
+  onError?: () => void;
+}
+
 type SignTransactionsInSeries = (params: {
-  txnAndSigners: TxnAndSigners[];
+  txnData: TxnDataWithHandlers[];
   connection: web3.Connection;
   wallet: WalletContextState;
-}) => Promise<void>;
+}) => Promise<boolean>;
 
 export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
-  async ({ txnAndSigners, connection, wallet }) => {
-    for (let i = 0; i < txnAndSigners.length; ++i) {
-      await signAndSendTransaction({
-        transaction: txnAndSigners[i].transaction,
-        signers: txnAndSigners[i].signers,
-        connection,
-        wallet,
-        commitment: 'finalized',
-      });
+  async ({ txnData, connection, wallet }) => {
+    for (let i = 0; i < txnData.length; ++i) {
+      const { transaction, signers, onSuccess, onError } = txnData[i];
+      try {
+        await signAndSendTransaction({
+          transaction,
+          signers,
+          connection,
+          wallet,
+          commitment: 'finalized',
+        });
+
+        onSuccess?.();
+      } catch (error) {
+        console.error(error);
+        onError?.();
+        return false;
+      }
     }
+
+    return true;
   };

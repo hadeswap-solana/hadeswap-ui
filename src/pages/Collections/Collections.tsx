@@ -8,8 +8,12 @@ import { TitleWithInfo } from './TitleWithInfo';
 import { COLLECTION_TABS, createCollectionLink } from '../../constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { coreActions } from '../../state/core/actions';
-import { selectAllMarkets } from '../../state/core/selectors';
+import {
+  selectAllMarkets,
+  selectAllMarketsLoading,
+} from '../../state/core/selectors';
 import { MarketInfo } from '../../state/core/types';
+import { Spinner } from '../../components/Spinner/Spinner';
 
 const { Title, Text } = Typography;
 
@@ -85,6 +89,8 @@ export const Collections: FC = () => {
 
   const dispatch = useDispatch();
 
+  const collectionsLoading = useSelector(selectAllMarketsLoading);
+
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
   }, [dispatch]);
@@ -98,38 +104,43 @@ export const Collections: FC = () => {
           <Title>Collections</Title>
         </Col>
       </Row>
-
-      <Row justify="center">
-        <Col>
-          <Title level={4}>
-            Don&apos;t see a collection? Directly
-            <Link to="/my-nfts"> list your NFTs</Link>, or create a new pool to
-            buy and sell in bulk.
-          </Title>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col span={24}>
-          <Table
-            columns={columns}
-            dataSource={markets}
-            pagination={false}
-            style={{ cursor: 'pointer' }}
-            rowKey={(record) => record.marketPubkey}
-            onRow={({ marketPubkey }) => {
-              return {
-                onClick: () => {
-                  history.push(
-                    createCollectionLink(COLLECTION_TABS.BUY, marketPubkey),
-                  );
-                  window.scrollTo(0, 0);
-                },
-              };
-            }}
-          />
-        </Col>
-      </Row>
+      {collectionsLoading ? (
+        <Spinner />
+      ) : (
+        <>
+          {' '}
+          <Row justify="center">
+            <Col>
+              <Title level={4}>
+                Don&apos;t see a collection? Directly
+                <Link to="/my-nfts"> list your NFTs</Link>, or create a new pool
+                to buy and sell in bulk.
+              </Title>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Table
+                columns={columns}
+                dataSource={markets}
+                pagination={false}
+                style={{ cursor: 'pointer' }}
+                rowKey={(record) => record.marketPubkey}
+                onRow={({ marketPubkey }) => {
+                  return {
+                    onClick: () => {
+                      history.push(
+                        createCollectionLink(COLLECTION_TABS.BUY, marketPubkey),
+                      );
+                      window.scrollTo(0, 0);
+                    },
+                  };
+                }}
+              />
+            </Col>
+          </Row>
+        </>
+      )}
     </AppLayout>
   );
 };

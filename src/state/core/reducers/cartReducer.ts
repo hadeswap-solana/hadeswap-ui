@@ -13,18 +13,20 @@ import {
 
 export type CartState = {
   pairs: Dictionary<CartPair>;
-  orders: Dictionary<CartOrder[]>;
+  pendingOrders: Dictionary<CartOrder[]>;
+  finishedOrdersMints: string[];
 };
 
 const initialCartState: CartState = {
   pairs: {},
-  orders: {},
+  pendingOrders: {},
+  finishedOrdersMints: [],
 };
 
 export const cartReducer = createReducer<CartState>(initialCartState, {
-  [coreTypes.ADD_ORDER]: (
+  [coreTypes.ADD_ORDER_TO_CART]: (
     state,
-    { payload }: ReturnType<typeof coreActions.addOrder>,
+    { payload }: ReturnType<typeof coreActions.addOrderToCart>,
   ) => {
     const { pair: payloadPair, order: payloadOrder, orderType } = payload;
     const isBuyOrder = orderType === OrderType.BUY;
@@ -61,26 +63,27 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     );
 
     return {
+      ...state,
       pairs: {
         ...state.pairs,
         [affectedPairAfterChanges.pairPubkey]: affectedPairAfterChanges,
       },
-      orders: {
-        ...state.orders,
+      pendingOrders: {
+        ...state.pendingOrders,
         [affectedPairAfterChanges.pairPubkey]: [
-          ...(state.orders[affectedPairAfterChanges.pairPubkey] || []),
+          ...(state.pendingOrders[affectedPairAfterChanges.pairPubkey] || []),
           appendableOrder,
         ],
       },
     };
   },
-  [coreTypes.REMOVE_ORDER]: (
+  [coreTypes.REMOVE_ORDER_FROM_CART]: (
     state,
-    { payload }: ReturnType<typeof coreActions.removeOrder>,
+    { payload }: ReturnType<typeof coreActions.removeOrderFromCart>,
   ) => {
     const { mint: removableMint } = payload;
 
-    const removableOrder = findCartOrder(removableMint, state.orders);
+    const removableOrder = findCartOrder(removableMint, state.pendingOrders);
 
     const { type: orderType, targetPairPukey: cartPairPubkey } = removableOrder;
     const isBuyOrder = orderType === OrderType.BUY;
@@ -105,5 +108,14 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
       affectedPairAfterChanges,
       removableOrder,
     );
+  },
+  [coreTypes.ADD_FINISHED_ORDER_MINT]: (
+    state,
+    { payload }: ReturnType<typeof coreActions.addFinishedOrderMint>,
+  ) => {
+    return {
+      ...state,
+      finishedOrdersMints: [...state.finishedOrdersMints, payload.mint],
+    };
   },
 });

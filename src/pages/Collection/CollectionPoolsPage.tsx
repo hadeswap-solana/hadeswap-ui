@@ -7,7 +7,11 @@ import { TitleWithInfo } from '../Collections/TitleWithInfo';
 import { shortenAddress } from '../../utils/solanaUtils';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectPoolsPageTableInfo } from '../../state/core/selectors';
+import {
+  selectMarketPairsLoading,
+  selectPoolsPageTableInfo,
+} from '../../state/core/selectors';
+import { Spinner } from '../../components/Spinner/Spinner';
 
 const poolTableColumns: ColumnsType<
   ReturnType<typeof selectPoolsPageTableInfo>[0]
@@ -97,24 +101,29 @@ export const CollectionPoolsPage: FC = () => {
   const history = useHistory();
 
   const poolsTableInfo = useSelector(selectPoolsPageTableInfo);
+  const loading = useSelector(selectMarketPairsLoading);
 
   return (
     <CollectionPageLayout>
-      <Table
-        columns={poolTableColumns}
-        dataSource={poolsTableInfo}
-        pagination={false}
-        style={{ cursor: 'pointer' }}
-        rowKey={(record) => record.pairPubkey}
-        onRow={({ pairPubkey }) => {
-          return {
-            onClick: () => {
-              history.push(`/pools/${pairPubkey}`);
-              window.scrollTo(0, 0);
-            },
-          };
-        }}
-      />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Table
+          columns={poolTableColumns}
+          dataSource={poolsTableInfo}
+          pagination={false}
+          style={{ cursor: 'pointer' }}
+          rowKey={(record) => record.pairPubkey}
+          onRow={({ pairPubkey }) => {
+            return {
+              onClick: () => {
+                history.push(`/pools/${pairPubkey}`);
+                window.scrollTo(0, 0);
+              },
+            };
+          }}
+        />
+      )}
     </CollectionPageLayout>
   );
 };

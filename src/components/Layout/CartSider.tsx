@@ -25,7 +25,7 @@ export const CartSider: FC = () => {
   const itemsAmount = cartItems.buy.length + cartItems.sell.length;
 
   const createOnDeselectHandler = (order: CartOrder) => () => {
-    dispatch(coreActions.removeOrder(order.mint));
+    dispatch(coreActions.removeOrderFromCart(order.mint));
   };
 
   return (
