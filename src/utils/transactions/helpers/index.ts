@@ -1,2 +1,2 @@
-export * from './signAndConfirmTransaction';
+export * from './signAndSendTransaction';
 export * from './showSolscanLinkNotification';

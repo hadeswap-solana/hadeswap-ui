@@ -26,7 +26,7 @@ const columns: ColumnsType<MarketInfo> = [
           <Col>
             <Avatar src={record?.collectionImage} />
           </Col>
-          <Col>{text || 'Undefinded Collection'}</Col>
+          <Col>{text || 'Untitled Collection'}</Col>
         </Row>
       );
     },

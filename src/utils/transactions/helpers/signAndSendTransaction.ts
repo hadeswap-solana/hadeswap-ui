@@ -4,7 +4,7 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 import { notify } from '../..';
 import { NotifyType } from '../../solanaUtils';
 
-interface SignAndConfirmTransactionProps {
+interface SignAndSendTransactionProps {
   transaction: web3.Transaction;
   signers?: web3.Signer[];
   connection: web3.Connection;
@@ -12,11 +12,11 @@ interface SignAndConfirmTransactionProps {
   commitment?: web3.Commitment;
 }
 
-type SignAndConfirmTransaction = (
-  props: SignAndConfirmTransactionProps,
+type SignAndSendTransaction = (
+  props: SignAndSendTransactionProps,
 ) => Promise<web3.RpcResponseAndContext<web3.SignatureResult>>;
 
-export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
+export const signAndSendTransaction: SignAndSendTransaction = async ({
   transaction,
   signers = [],
   connection,
@@ -41,7 +41,6 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
 
   notify({
     message: 'Transaction sent',
-    // description: onSuccessMessage?.description,
     type: NotifyType.INFO,
   });
 

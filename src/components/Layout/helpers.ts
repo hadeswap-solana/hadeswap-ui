@@ -1,7 +1,7 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 import { CartOrder, CartPair, OrderType } from '../../state/core/types';
-import { signAndConfirmTransaction } from '../../utils/transactions';
+import { signAndSendTransaction } from '../../utils/transactions';
 
 const {
   buyNftFromPair: createBuyNftFromPairIxLib,
@@ -113,19 +113,15 @@ type SignTransactionsInSeries = (params: {
   wallet: WalletContextState;
 }) => Promise<void>;
 
-export const signTransactionsInSeries: SignTransactionsInSeries = async ({
-  txnAndSigners,
-  connection,
-  wallet,
-}) => {
-  //TODO: Refactor this shit to for of
-  for (let i = 0; i < txnAndSigners.length; ++i) {
-    await signAndConfirmTransaction({
-      transaction: txnAndSigners[i].transaction,
-      signers: txnAndSigners[i].signers,
-      connection,
-      wallet,
-      commitment: 'finalized',
-    });
-  }
-};
+export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
+  async ({ txnAndSigners, connection, wallet }) => {
+    for (let i = 0; i < txnAndSigners.length; ++i) {
+      await signAndSendTransaction({
+        transaction: txnAndSigners[i].transaction,
+        signers: txnAndSigners[i].signers,
+        connection,
+        wallet,
+        commitment: 'finalized',
+      });
+    }
+  };
