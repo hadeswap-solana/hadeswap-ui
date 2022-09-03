@@ -113,6 +113,8 @@ export const mergeIxsIntoTxn = (ixs: IxnsData[]): TxnData => {
 };
 
 interface TxnDataWithHandlers extends TxnData {
+  onBeforeApprove?: () => void;
+  onAfterSend?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
 }
@@ -126,7 +128,14 @@ type SignTransactionsInSeries = (params: {
 export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
   async ({ txnData, connection, wallet }) => {
     for (let i = 0; i < txnData.length; ++i) {
-      const { transaction, signers, onSuccess, onError } = txnData[i];
+      const {
+        transaction,
+        signers,
+        onSuccess,
+        onError,
+        onBeforeApprove,
+        onAfterSend,
+      } = txnData[i];
       try {
         await signAndSendTransaction({
           transaction,
@@ -134,6 +143,8 @@ export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
           connection,
           wallet,
           commitment: 'finalized',
+          onBeforeApprove,
+          onAfterSend,
         });
 
         onSuccess?.();

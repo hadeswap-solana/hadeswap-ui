@@ -9,6 +9,7 @@ import styles from './AppLayout.module.scss';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import { CartSider } from './CartSider';
+import { SwapTransactionsLoadingModal } from '../SwapTransactionsLoadingModal/SwapTransactionsLoadingModal';
 
 const { Header, Content, Footer } = Layout;
 
@@ -70,6 +71,7 @@ export const AppLayout: FC<LayoutProps> = ({
       </Layout>
       <CartSider />
       <SelectWalletModal />
+      <SwapTransactionsLoadingModal />
     </Layout>
   );
 };

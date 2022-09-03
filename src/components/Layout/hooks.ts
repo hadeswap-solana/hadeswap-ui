@@ -4,7 +4,7 @@ import {
   selectCartPendingOrders,
   selectCartPairs,
 } from '../../state/core/selectors';
-import { chunk } from 'lodash';
+import { chunk, keyBy } from 'lodash';
 import { useConnection } from '../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
 import {
@@ -15,13 +15,15 @@ import {
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { commonActions } from '../../state/common/actions';
+import { swapTxsLoadingModalActions } from '../../state/swapTxsLoadingModal/actions';
+import { SwapTxsLoadingModalTextStatus } from '../../state/swapTxsLoadingModal/reducers';
 
 type UseSwap = () => {
   swap: () => Promise<void>;
 };
 
 export const useSwap: UseSwap = () => {
-  const IX_PER_TXN = 3;
+  const IX_PER_TXN = 1;
 
   const connection = useConnection();
   const wallet = useWallet();
@@ -32,6 +34,7 @@ export const useSwap: UseSwap = () => {
 
   const swap = async () => {
     const ordersArray = Object.values(orders).flat();
+    const ordersByMint = keyBy(ordersArray, 'mint');
 
     const ixsData = await Promise.all(
       ordersArray.map((order) =>
@@ -50,9 +53,29 @@ export const useSwap: UseSwap = () => {
       mergeIxsIntoTxn(ixsAndSigners),
     );
 
+    dispatch(commonActions.setCartSider({ isVisible: false }));
+
     const allTxnsSuccess = await signAndSendTransactionsInSeries({
-      txnData: txnsData.map((txnData) => ({
+      txnData: txnsData.map((txnData, idx, txnDataArr) => ({
         ...txnData,
+        onBeforeApprove: () => {
+          dispatch(
+            swapTxsLoadingModalActions.setState({
+              visible: true,
+              ordersInTx: txnData.nftMints.map((mint) => ordersByMint?.[mint]),
+              amountOfTxs: txnDataArr.length,
+              currentTxNumber: idx + 1,
+              textStatus: SwapTxsLoadingModalTextStatus.APPROVE,
+            }),
+          );
+        },
+        onAfterSend: () => {
+          dispatch(
+            swapTxsLoadingModalActions.setTextStatus(
+              SwapTxsLoadingModalTextStatus.WAITING,
+            ),
+          );
+        },
         onSuccess: () => {
           txnData.nftMints.map((nftMint) => {
             dispatch(coreActions.addFinishedOrderMint(nftMint));
@@ -69,8 +92,11 @@ export const useSwap: UseSwap = () => {
       wallet,
     });
 
-    allTxnsSuccess &&
-      dispatch(commonActions.setCartSider({ isVisible: false }));
+    if (!allTxnsSuccess) {
+      dispatch(commonActions.setCartSider({ isVisible: true }));
+    }
+
+    dispatch(swapTxsLoadingModalActions.setVisible(false));
   };
 
   return {

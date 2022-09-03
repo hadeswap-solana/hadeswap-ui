@@ -1,0 +1,50 @@
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.ordersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card {
+  background: var(--ant-gray);
+  display: flex;
+}
+
+.cardImage {
+  height: 64px;
+  display: block;
+  object-fit: cover;
+}
+
+.cardContent {
+  padding: 8px;
+}
+
+.cardText {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-bottom: 0 !important;
+
+  gap: 8px;
+  width: 100%;
+
+  strong {
+    font-weight: 700;
+    font-size: 1.2em;
+  }
+}
+
+.cardPrice {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+}

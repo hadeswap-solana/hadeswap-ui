@@ -104,7 +104,7 @@ interface SiderCartProps {
   onDeselect?: () => void;
 }
 
-const SiderCart: FC<SiderCartProps> = ({
+export const SiderCart: FC<SiderCartProps> = ({
   name,
   price,
   imageUrl,
@@ -122,12 +122,14 @@ const SiderCart: FC<SiderCartProps> = ({
         </Typography.Text>
       </div>
       <div className={styles.btnWrapper}>
-        <Button
-          type="default"
-          shape="default"
-          icon={<CloseOutlined />}
-          onClick={onDeselect}
-        />
+        {onDeselect && (
+          <Button
+            type="default"
+            shape="default"
+            icon={<CloseOutlined />}
+            onClick={onDeselect}
+          />
+        )}
       </div>
     </div>
   );
