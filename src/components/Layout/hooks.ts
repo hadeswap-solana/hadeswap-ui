@@ -23,7 +23,7 @@ type UseSwap = () => {
 };
 
 export const useSwap: UseSwap = () => {
-  const IX_PER_TXN = 1;
+  const IX_PER_TXN = 3;
 
   const connection = useConnection();
   const wallet = useWallet();
