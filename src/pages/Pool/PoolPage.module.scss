@@ -1,0 +1,26 @@
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+
+  h3, h4 {
+    margin-bottom: 0;
+  }
+
+  &ButtonWrapper {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+    align-self: center;
+  }
+}
+
+.nfts {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  gap: 10px;
+  font-size: 20px;
+}
+

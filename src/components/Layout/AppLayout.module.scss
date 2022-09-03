@@ -59,6 +59,10 @@
   left: 0;
 }
 
+.cartItems {
+  overflow-y: auto;
+}
+
 .toggleCartSiderBtn {
   position: absolute !important;
   top: unset;
