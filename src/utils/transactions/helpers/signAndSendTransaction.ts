@@ -1,4 +1,4 @@
-import { web3 } from '@project-serum/anchor';
+import { web3 } from 'hadeswap-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
 import { notify } from '../..';

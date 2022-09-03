@@ -1,4 +1,4 @@
-import { web3 } from '@project-serum/anchor';
+import { web3 } from 'hadeswap-sdk';
 import { Socket } from 'socket.io-client';
 import { createCustomAction } from 'typesafe-actions';
 

@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import { web3, BN } from '@project-serum/anchor';
+import { web3, BN } from 'hadeswap-sdk';
 import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { web3 } from '@project-serum/anchor';
+import { web3 } from 'hadeswap-sdk';
 import { all, call, takeLatest, put, select } from 'redux-saga/effects';
 
 import { selectConnection, selectWalletPublicKey } from './selectors';

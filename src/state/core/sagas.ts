@@ -1,6 +1,6 @@
 import { coreTypes, coreActions } from './actions/index';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
-import { web3 } from '@project-serum/anchor';
+import { web3 } from 'hadeswap-sdk';
 
 import { networkRequest } from '../../utils/state';
 import { MarketInfo, Nft, Pair } from './types';

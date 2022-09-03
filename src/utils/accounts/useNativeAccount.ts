@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { web3 } from '@project-serum/anchor';
+import { web3 } from 'hadeswap-sdk';
 
 import { useConnection } from '../../hooks';
 

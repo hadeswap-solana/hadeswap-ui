@@ -1,4 +1,4 @@
-import { BN } from '@project-serum/anchor';
+import { BN } from 'hadeswap-sdk';
 
 export const TEN = new BN(10);
 export const HALF_WAD = TEN.pow(new BN(18));

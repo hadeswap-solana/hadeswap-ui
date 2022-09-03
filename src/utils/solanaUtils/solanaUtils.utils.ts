@@ -1,4 +1,4 @@
-import { BN } from '@project-serum/anchor';
+import { BN } from 'hadeswap-sdk';
 
 // import { TokenInfo, } from '@frakt-protocol/frakt-sdk';
 
