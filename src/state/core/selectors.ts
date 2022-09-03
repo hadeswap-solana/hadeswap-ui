@@ -162,12 +162,11 @@ export const selectWalletPairs = createSelector(
   identity<Pair[]>,
 );
 
-export const selectWalletPair =
-  createSelector(
-    [selectWalletPairs, (_, pairPubkey: string) => pairPubkey],
-    (pairs, pairPubkey) =>
-      pairs.find((pair) => pairPubkey === pair.pairPubkey) as Pair,
-  ) || {};
+export const selectWalletPair = createSelector(
+  [selectWalletPairs, (_, pairPubkey: string) => pairPubkey],
+  (pairs, pairPubkey) =>
+    pairs?.find((pair) => pairPubkey === pair.pairPubkey) as Pair,
+);
 
 export const selectMarketWalletNfts = createSelector(
   (store: any) => (store?.core?.marketWalletNfts?.data as Nft[]) || [],

@@ -4,16 +4,18 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { selectWalletPair } from '../../state/core/selectors';
 import { SolPrice } from '../../components/SolPrice/SolPrice';
 
 import styles from './PoolPage.module.scss';
+import { selectWalletPair } from '../../state/core/selectors';
 
 const { Title } = Typography;
 
 export const PoolPage: FC = () => {
-  const { poolPubkey } = useParams();
-  const pool = useSelector(selectWalletPair(poolPubkey));
+  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  const pool = useSelector((state: never) =>
+    selectWalletPair(state, poolPubkey),
+  );
 
   const AssetsTitle = useMemo(
     () => (
