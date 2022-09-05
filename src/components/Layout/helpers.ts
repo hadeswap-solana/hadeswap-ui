@@ -150,6 +150,8 @@ export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
         onSuccess?.();
       } catch (error) {
         console.error(error);
+        error?.logs && console.error('Error logs: \n', error.logs?.join('\n'));
+
         onError?.();
         return false;
       }

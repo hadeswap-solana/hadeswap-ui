@@ -29,15 +29,22 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
 }) => {
   onBeforeApprove?.();
 
-  const {
-    context: { slot: minContextSlot },
-    value: { blockhash, lastValidBlockHeight },
-  } = await connection.getLatestBlockhashAndContext();
+  const { blockhash, lastValidBlockHeight } =
+    await connection.getLatestBlockhash();
 
-  const signature = await wallet.sendTransaction(transaction, connection, {
-    minContextSlot,
-    signers,
-  });
+  transaction.recentBlockhash = blockhash;
+  transaction.feePayer = wallet.publicKey;
+
+  if (signers.length) {
+    transaction.sign(...signers);
+  }
+
+  const signedTransaction = await wallet.signTransaction(transaction);
+
+  const signature = await connection.sendRawTransaction(
+    signedTransaction.serialize(),
+    { skipPreflight: false },
+  );
 
   notify({
     message: 'Transaction sent',
@@ -48,9 +55,9 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
 
   return await connection.confirmTransaction(
     {
+      signature,
       blockhash,
       lastValidBlockHeight,
-      signature,
     },
     commitment,
   );
