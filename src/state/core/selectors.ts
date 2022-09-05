@@ -11,7 +11,7 @@ import {
   Nft,
   MarketOrder,
 } from './types';
-import { Dictionary } from 'lodash';
+import { Dictionary, keyBy } from 'lodash';
 import { CartState } from './reducers/cartReducer';
 import { calcNextSpotPrice, convertCartPairToMarketPair } from './helpers';
 import { RequestStatus } from '../../utils/state';
@@ -28,7 +28,7 @@ export const selectCertainPairLoading = createSelector(
 
 export const selectAllMarkets = createSelector(
   (store: any) => (store?.core?.markets?.data as MarketInfo[]) || [],
-  identity,
+  identity<MarketInfo[]>,
 );
 
 export const selectAllMarketsLoading = createSelector(
@@ -172,6 +172,11 @@ export const selectWalletPairs = createSelector(
   identity<Pair[]>,
 );
 
+export const selectWalletPairsLoading = createSelector(
+  (store: any) => (store?.core?.walletPairs?.status as RequestStatus) || '',
+  (status: RequestStatus) => status === RequestStatus.PENDING,
+);
+
 export const selectWalletPair = createSelector(
   [selectWalletPairs, (_, pairPubkey: string) => pairPubkey],
   (pairs, pairPubkey) =>
@@ -252,5 +257,28 @@ export const selectCartItems = createSelector(
         .sort((a: CartOrder, b: CartOrder) => a.price - b.price) as CartOrder[],
       sell: allOrders.filter(({ type }) => type === OrderType.SELL),
     };
+  },
+);
+
+export const selectMyPoolsPageTableInfo = createSelector(
+  [selectAllMarkets, selectWalletPairs],
+  (markets, pairs) => {
+    const marketByPubkey = keyBy(markets, 'marketPubkey');
+
+    return pairs.map((pair) => ({
+      pairPubkey: pair?.pairPubkey,
+      collectionName:
+        marketByPubkey[pair.market]?.collectionName || 'Untitled Collection',
+      collectionImage: marketByPubkey[pair.market]?.collectionImage || '',
+      type: pair?.type,
+      fundsSolOrTokenBalance: formatBNToString(
+        new BN(pair?.fundsSolOrTokenBalance || '0'),
+      ),
+      nftsCount: pair?.nftsCount,
+      currentPrice: pair?.spotPrice,
+      bondingCurve: pair?.bondingCurve,
+      delta: formatBNToString(new BN(pair?.delta)),
+      pairState: pair.pairState,
+    }));
   },
 );
