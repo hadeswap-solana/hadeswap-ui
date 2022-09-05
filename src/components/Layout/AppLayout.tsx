@@ -55,13 +55,13 @@ export const AppLayout: FC<LayoutProps> = ({
               >
                 My Pools
               </NavLink>
-              <NavLink
+              {/* <NavLink
                 to={PATHS.MY_NFTS}
                 className={styles.navLink}
                 activeClassName={styles.navLinkActive}
               >
                 My NFTs
-              </NavLink>
+              </NavLink> */}
               <ConnectWalletButton className={styles.connectBtn} />
             </div>
           </nav>
