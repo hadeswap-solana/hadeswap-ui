@@ -16,6 +16,16 @@ import { CartState } from './reducers/cartReducer';
 import { calcNextSpotPrice, convertCartPairToMarketPair } from './helpers';
 import { RequestStatus } from '../../utils/state';
 
+export const selectCertainPair = createSelector(
+  (store: any) => (store?.core?.pair?.data as Pair) || null,
+  identity<Pair | null>,
+);
+
+export const selectCertainPairLoading = createSelector(
+  (store: any) => (store?.core?.pair?.status as RequestStatus) || '',
+  (status: RequestStatus) => status === RequestStatus.PENDING,
+);
+
 export const selectAllMarkets = createSelector(
   (store: any) => (store?.core?.markets?.data as MarketInfo[]) || [],
   identity,
