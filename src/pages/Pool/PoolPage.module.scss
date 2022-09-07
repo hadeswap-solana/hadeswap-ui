@@ -1,10 +1,10 @@
-
 .header {
   display: flex;
   flex-direction: row;
   align-content: center;
 
-  h3, h4 {
+  h3,
+  h4 {
     margin-bottom: 0;
   }
 
@@ -24,3 +24,62 @@
   font-size: 20px;
 }
 
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.generalInfo {
+  background: var(--ant-gray);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  padding: 16px;
+  gap: 16px;
+}
+
+.generalInfo {
+  margin-bottom: 32px;
+}
+
+.generalInfoBlock {
+  padding: 8px;
+  border: 1px solid #303030;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.generalInfoText {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.generalInfoEditBtnWrapper {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+}
+
+.nftsListContainer {
+  background: var(--ant-gray);
+  padding: 16px;
+}
+
+.generalInfoTitle,
+.nftsListTitle {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nftsList {
+  padding-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.nftCart {
+  border: 1px solid #303030;
+}
