@@ -12,6 +12,7 @@ type CreateDepositLiquidityToPairTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   pairPubkey: web3.PublicKey;
+  authorityAdapter: web3.PublicKey;
   nfts: Nft[];
 }) => Promise<
   {
@@ -23,7 +24,7 @@ type CreateDepositLiquidityToPairTxns = (params: {
 const IXNS_PER_CHUNK = 2; //? Maybe it will work with 3
 
 export const createDepositLiquidityToPairTxns: CreateDepositLiquidityToPairTxns =
-  async ({ connection, wallet, pairPubkey, nfts }) => {
+  async ({ connection, wallet, pairPubkey, authorityAdapter, nfts }) => {
     const ixsAndSigners = (
       await Promise.all(
         nfts.map((nft) =>

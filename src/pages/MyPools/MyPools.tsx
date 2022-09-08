@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { useDispatch, useSelector } from 'react-redux';
-import { Typography, Avatar, Col, Row, Table } from 'antd';
+import { Typography, Avatar, Col, Row, Table, Button } from 'antd';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { coreActions } from '../../state/core/actions';
@@ -15,6 +15,8 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { useHistory } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PriceWithIcon } from '../Collections/PriceWithIcon';
+
+import styles from './MyPools.module.scss';
 
 const { Title } = Typography;
 
@@ -122,6 +124,15 @@ export const MyPools: FC = () => {
   return (
     <AppLayout>
       <Title>My pools</Title>
+      <div className={styles.buttons}>
+        <Button
+          onClick={() => {
+            history.push('/create-pool');
+          }}
+        >
+          + Create pool
+        </Button>
+      </div>
       {!wallet.connected && (
         <Typography.Title level={3}>
           Connect you wallet to see your pools

@@ -17,7 +17,7 @@ export const PATHS = {
   COLLECTION_SELL: createCollectionLink(COLLECTION_TABS.SELL), //? Specific collection sell tab.
   COLLECTION_POOLS: createCollectionLink(COLLECTION_TABS.POOLS), //? Specific collection pools tab.
   POOL_PAGE: '/pools/:poolPubkey', //? Specific pool page.
-  CREATE_POOL: '/create-pool', //? Page to create pool.
+  CREATE_POOL: '/create-pool/:marketPubkeyParam?/:sideParam?', //? Page to create pool.
   MY_NFTS: '/my-nfts', //? Show all user nfts
   MY_POOLS: '/my-pools', //? Show all user pools
   PAGE_404: '/404',

@@ -9,6 +9,7 @@ import { MyNfts } from '../pages/MyNfts/MyNfts';
 import { MyPools } from '../pages/MyPools/MyPools';
 import { CollectionPoolsPage } from '../pages/Collection/CollectionPoolsPage';
 import { PoolPage } from '../pages/Pool/PoolPage';
+import { NewPool } from '../pages/NewPool/NewPool';
 
 interface Route {
   path: string;
@@ -56,6 +57,11 @@ export const routes: Route[] = [
     exact: true,
     path: PATHS.MY_POOLS,
     component: MyPools,
+  },
+  {
+    exact: true,
+    path: PATHS.CREATE_POOL,
+    component: NewPool,
   },
 
   {

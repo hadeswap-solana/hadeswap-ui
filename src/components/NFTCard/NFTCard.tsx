@@ -9,7 +9,7 @@ interface NFTCardProps {
   className?: string;
   selected?: boolean;
   imageUrl: string;
-  name: string;
+  name?: string;
   price?: string;
   onBtnClick?: () => void;
 }
@@ -32,9 +32,11 @@ export const NFTCard: FC<NFTCardProps> = ({
     >
       <img className={styles.cardImage} src={imageUrl} alt={name} />
       <div className={styles.cardContent}>
-        <Typography.Title level={5} className={styles.cardTitle}>
-          {name}
-        </Typography.Title>
+        {name && (
+          <Typography.Title level={5} className={styles.cardTitle}>
+            {name}
+          </Typography.Title>
+        )}
         {price && (
           <Typography.Text className={styles.cardPrice}>
             <img width={16} height={16} src={solanaLogo} /> {price}
