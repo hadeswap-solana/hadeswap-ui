@@ -34,6 +34,7 @@ export interface BasePair {
   fee: number;
   buyOrdersAmount: number;
   market: string;
+  authorityAdapterPubkey: string;
 }
 
 export interface Pair extends BasePair {
