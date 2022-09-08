@@ -129,7 +129,7 @@ export const NewPool: FC = () => {
   };
 
   const onFormChange = () => {
-    console.log(form.getFieldsValue(['market', 'side', 'spotPrice', 'curve']));
+    //console.log(form.getFieldsValue(['market', 'side', 'spotPrice', 'curve']));
   };
 
   const onCreatePoolClick = async () => {

@@ -36,7 +36,7 @@ export const createDepositLiquidityToPairTxns: CreateDepositLiquidityToPairTxns 
                 nft.nftValidationAdapter,
               ),
               pair: pairPubkey,
-              authorityAdapter: new web3.PublicKey(''), //TODO: What's that?
+              authorityAdapter,
               userPubkey: wallet.publicKey,
               nftMint: new web3.PublicKey(nft.mint),
             },
