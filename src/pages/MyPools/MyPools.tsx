@@ -92,6 +92,7 @@ const poolTableColumns: ColumnsType<
     showSorterTooltip: false,
     render: (text) => <Typography.Text>{text}</Typography.Text>,
   },
+  /*
   {
     key: 'pairState',
     title: 'Pool status',
@@ -100,6 +101,7 @@ const poolTableColumns: ColumnsType<
     showSorterTooltip: false,
     render: (text) => <Typography.Text>{text}</Typography.Text>,
   },
+  */
 ];
 
 export const MyPools: FC = () => {

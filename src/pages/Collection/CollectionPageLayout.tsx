@@ -2,19 +2,23 @@ import { Button, Tabs, Layout } from 'antd';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { COLLECTION_TABS, createCollectionLink } from '../../constants';
+import {
+  COLLECTION_TABS,
+  createCollectionLink,
+  createCreatePollLink,
+} from '../../constants';
 import { coreActions } from '../../state/core/actions';
 import {
   selectCertainMarket,
   selectCertainMarketLoading,
 } from '../../state/core/selectors';
 import { CollectionGeneralInfo } from './CollectionGeneralInfo';
-
-import styles from './Collection.module.scss';
 import { MakeOfferModal } from './MakeOfferModal';
 import { Spinner } from '../../components/Spinner/Spinner';
+
+import styles from './Collection.module.scss';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -39,8 +43,12 @@ export const CollectionPageLayout: FC = ({ children }) => {
     );
   };
 
-  const showModal = () => {
-    setIsModalVisible(true);
+  const onMakeOfferClick = () => {
+    history.push(createCreatePollLink(marketPublicKey, PairType.TokenForNFT));
+  };
+
+  const onListClick = () => {
+    history.push(createCreatePollLink(marketPublicKey, PairType.NftForToken));
   };
 
   const handleCancel = () => {
@@ -67,10 +75,10 @@ export const CollectionPageLayout: FC = ({ children }) => {
             offerTVL={market?.offerTVL}
           />
           <div className={styles.actionsContainer}>
-            <Button type="primary" size="large" onClick={showModal}>
+            <Button type="primary" size="large" onClick={onMakeOfferClick}>
               Make offer
             </Button>
-            <Button type="primary" size="large">
+            <Button type="primary" size="large" onClick={onListClick}>
               List
             </Button>
           </div>

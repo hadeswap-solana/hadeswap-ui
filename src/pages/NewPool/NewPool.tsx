@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -41,6 +41,7 @@ import { signAndSendTransaction } from '../../utils/transactions';
 import { signAndSendTransactionsInSeries } from '../../components/Layout/helpers';
 import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepositNftsToPairTxns';
 import { createDepositLiquidityToPairTxns } from '../../utils/transactions/createDepositLiquidityToPairTxns';
+import { createCreatePollLink } from '../../constants';
 
 import styles from './NewPool.module.scss';
 
@@ -53,18 +54,21 @@ export const NewPool: FC = () => {
   const history = useHistory();
   const connection = useConnection();
   const wallet = useWallet();
+  const location = useLocation();
   const [isCreatePoolButtonDisabled, setIsCreatePoolButtonDisabled] =
     useState<boolean>(false);
-  const { marketPubkeyParam, sideParam } = useParams<{
-    marketPubkeyParam: string;
-    sideParam: string;
+  const { publicKey: marketPubkeyParam, type: typeParam } = useParams<{
+    publicKey: string;
+    type: string;
   }>();
   const collectionsLoading = useSelector(selectAllMarketsLoading);
   const markets = useSelector(selectAllMarkets) as MarketInfo[];
-  const [step, setStep] = useState<number>(marketPubkeyParam ? 1 : 0);
+  const [step, setStep] = useState<number>(
+    marketPubkeyParam ? (typeParam ? 2 : 1) : 0,
+  );
   const [form] = Form.useForm();
   const market = form.getFieldValue('market');
-  const side = form.getFieldValue('side') ?? sideParam;
+  const type = form.getFieldValue('type') ?? typeParam;
   const spotPrice = Form.useWatch('spotPrice', form);
   const curve = Form.useWatch('curve', form);
   const delta = Form.useWatch('delta', form);
@@ -86,7 +90,7 @@ export const NewPool: FC = () => {
 
   const initialValues = {
     market: market ?? marketPubkeyParam,
-    side,
+    type,
     curve: BondingCurveType.Linear,
     fee: 0,
     spotPrice: 0,
@@ -108,12 +112,21 @@ export const NewPool: FC = () => {
     dispatch(coreActions.fetchAllMarkets());
   }, [dispatch]);
 
-  const onSelectChange = useCallback(
-    (/*value: string*/) => {
-      setStep(1);
-    },
-    [],
-  );
+  useEffect(() => {
+    if (market) {
+      const url = type
+        ? createCreatePollLink(market, type)
+        : createCreatePollLink(market, '');
+
+      if (url !== location.pathname) {
+        history.push(url);
+      }
+    }
+  }, [market, type]);
+
+  const onSelectChange = useCallback((value: string) => {
+    setStep(1);
+  }, []);
 
   const onRadioChange = useCallback(() => {
     setStep(2);
@@ -132,12 +145,12 @@ export const NewPool: FC = () => {
   };
 
   const onFormChange = () => {
-    //console.log(form.getFieldsValue(['market', 'side', 'spotPrice', 'curve']));
+    //console.log(form.getFieldsValue(['market', 'type', 'spotPrice', 'curve']));
   };
 
   const onCreatePoolClick = async () => {
     setIsCreatePoolButtonDisabled(true);
-    if (side === PairType.TokenForNFT) {
+    if (type === PairType.TokenForNFT) {
       const txn = await createTokenForNftPairTxn({
         connection,
         wallet,
@@ -161,7 +174,7 @@ export const NewPool: FC = () => {
         // eslint-disable-next-line no-console
         console.warn(error?.logs);
       }
-    } else if (side === PairType.NftForToken) {
+    } else if (type === PairType.NftForToken) {
       const pairTxn = await createPairTxn({
         connection,
         wallet,
@@ -196,7 +209,7 @@ export const NewPool: FC = () => {
       if (isSuccess) {
         history.push('/my-pools');
       }
-    } else if (side === PairType.LiquidityProvision) {
+    } else if (type === PairType.LiquidityProvision) {
       const pairTxn = await createPairTxn({
         connection,
         wallet,
@@ -288,8 +301,8 @@ export const NewPool: FC = () => {
           <div className={styles.stepsContent}>
             <div className={styles.stepContent}>
               <div className={styles.radioWrapper}>
-                <Form.Item name="side">
-                  <Radio.Group value={side} onChange={onRadioChange}>
+                <Form.Item name="type">
+                  <Radio.Group value={type} onChange={onRadioChange}>
                     <Radio.Button value={PairType.TokenForNFT}>
                       Buy NFTs with tokens
                     </Radio.Button>
@@ -305,7 +318,7 @@ export const NewPool: FC = () => {
             </div>
             <div className={styles.stepsButtons}>
               <Button onClick={onBackClick}>{`< Back`}</Button>
-              {side && <Button onClick={onNextClick}>{`Next >`}</Button>}
+              {type && <Button onClick={onNextClick}>{`Next >`}</Button>}
             </div>
           </div>
         )}
@@ -316,7 +329,7 @@ export const NewPool: FC = () => {
                 <Col span={11}>
                   <Card>
                     <Title level={3}>Pricing</Title>
-                    {side === PairType.LiquidityProvision && (
+                    {type === PairType.LiquidityProvision && (
                       <Form.Item
                         name="fee"
                         label="Fee Amount"
@@ -384,14 +397,14 @@ export const NewPool: FC = () => {
                     )}
                     {Boolean(delta) && (
                       <Paragraph>
-                        Each time your pool {side}s an NFT, your {side} price
+                        Each time your pool {type}s an NFT, your {type} price
                         will adjust up by {delta} {unit}.
                       </Paragraph>
                     )}
                   </Card>
                 </Col>
                 <Col span={11} offset={2}>
-                  {side === PairType.TokenForNFT && (
+                  {type === PairType.TokenForNFT && (
                     <Card>
                       <Title level={3}>Assets</Title>
                       <Form.Item label="Amount of NFTs" name="nftAmount">
@@ -403,23 +416,31 @@ export const NewPool: FC = () => {
                       </Form.Item>
                     </Card>
                   )}
-                  {side === PairType.NftForToken && (
+                  {type === PairType.NftForToken && (
                     <Card>
                       <Title level={3}>Assets</Title>
                       <div className={styles.nftsWrapper}>
                         {nftModal.selectedNfts?.map((nft) => (
-                          <NFTCard key={nft.mint} imageUrl={nft.imageUrl} />
+                          <NFTCard
+                            className={styles.nfts}
+                            key={nft.mint}
+                            imageUrl={nft.imageUrl}
+                          />
                         ))}
                       </div>
                       <Button onClick={onSelectNftsClick}>+ Select NFTs</Button>
                     </Card>
                   )}
-                  {side === PairType.LiquidityProvision && (
+                  {type === PairType.LiquidityProvision && (
                     <Card>
                       <Title level={3}>Assets</Title>
                       <div className={styles.nftsWrapper}>
                         {nftModal.selectedNfts?.map((nft) => (
-                          <NFTCard key={nft.mint} imageUrl={nft.imageUrl} />
+                          <NFTCard
+                            className={styles.nfts}
+                            key={nft.mint}
+                            imageUrl={nft.imageUrl}
+                          />
                         ))}
                       </div>
                       <Button onClick={onSelectNftsClick}>+ Select NFTs</Button>
@@ -436,7 +457,7 @@ export const NewPool: FC = () => {
                 onClick={onCreatePoolClick}
                 disabled={
                   isCreatePoolButtonDisabled ||
-                  (side !== PairType.TokenForNFT &&
+                  (type !== PairType.TokenForNFT &&
                     !nftModal.selectedNfts.length)
                 }
               >
