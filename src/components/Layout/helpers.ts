@@ -28,7 +28,7 @@ export interface IxnsData {
 interface TxnData {
   transaction: web3.Transaction;
   signers: web3.Signer[];
-  nftMints: string[];
+  nftMints?: string[];
 }
 
 type CreateIx = (params: CreateIxParams) => Promise<IxnsData>;
@@ -112,7 +112,9 @@ export const mergeIxsIntoTxn = (ixs: IxnsData[]): TxnData => {
   };
 };
 
-interface TxnDataWithHandlers extends TxnData {
+interface TxnDataWithHandlers {
+  transaction: web3.Transaction;
+  signers: web3.Signer[];
   onBeforeApprove?: () => void;
   onAfterSend?: () => void;
   onSuccess?: () => void;

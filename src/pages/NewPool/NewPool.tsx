@@ -68,11 +68,11 @@ export const NewPool: FC = () => {
   const spotPrice = Form.useWatch('spotPrice', form);
   const curve = Form.useWatch('curve', form);
   const delta = Form.useWatch('delta', form);
-  const depositAmount = Form.useWatch('depositAmount', form);
+  // const depositAmount = Form.useWatch('depositAmount', form);
   const nftAmount = Form.useWatch('nftAmount', form);
   const fee = Form.useWatch('fee', form);
-  const buyUpTo = Form.useWatch('buyUpTo', form);
-  const sellUpTo = Form.useWatch('sellUpTo', form);
+  // const buyUpTo = Form.useWatch('buyUpTo', form);
+  // const sellUpTo = Form.useWatch('sellUpTo', form);
   const chosenMarket = markets.find((item) => item.marketPubkey === market);
   const collectionName = chosenMarket?.collectionName ?? 'NFTs';
   const nftModal = useSelectNftsModal(
@@ -98,7 +98,7 @@ export const NewPool: FC = () => {
   };
 
   const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
-  const deposit = (spotPrice - spotPrice * fee * 2) * buyUpTo;
+  // const deposit = (spotPrice - spotPrice * fee * 2) * buyUpTo;
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
     curve === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
@@ -108,9 +108,12 @@ export const NewPool: FC = () => {
     dispatch(coreActions.fetchAllMarkets());
   }, [dispatch]);
 
-  const onSelectChange = useCallback((value: string) => {
-    setStep(1);
-  }, []);
+  const onSelectChange = useCallback(
+    (/*value: string*/) => {
+      setStep(1);
+    },
+    [],
+  );
 
   const onRadioChange = useCallback(() => {
     setStep(2);
@@ -151,11 +154,12 @@ export const NewPool: FC = () => {
           ...txn,
           connection,
           wallet,
-          commitment: 'finalized',
         });
         history.push('/my-pools');
       } catch (error) {
         console.error(error);
+        // eslint-disable-next-line no-console
+        console.warn(error?.logs);
       }
     } else if (side === PairType.NftForToken) {
       const pairTxn = await createPairTxn({
@@ -169,7 +173,7 @@ export const NewPool: FC = () => {
         fee: rawFee,
       });
 
-      const depositTxn = await createDepositNftsToPairTxns({
+      const depositTxns = await createDepositNftsToPairTxns({
         connection,
         wallet,
         pairPubkey: pairTxn.pairPubkey,
@@ -180,7 +184,10 @@ export const NewPool: FC = () => {
       const isSuccess = await signAndSendTransactionsInSeries({
         txnData: [
           { signers: pairTxn.signers, transaction: pairTxn.transaction },
-          { signers: depositTxn.signers, transaction: depositTxn.transaction },
+          ...depositTxns.map(({ transaction, signers }) => ({
+            transaction,
+            signers,
+          })),
         ],
         connection,
         wallet,
@@ -201,7 +208,7 @@ export const NewPool: FC = () => {
         fee: rawFee,
       });
 
-      const depositTxn = await createDepositLiquidityToPairTxns({
+      const depositTxns = await createDepositLiquidityToPairTxns({
         connection,
         wallet,
         pairPubkey: pairTxn.pairPubkey,
@@ -212,7 +219,10 @@ export const NewPool: FC = () => {
       const isSuccess = await signAndSendTransactionsInSeries({
         txnData: [
           { signers: pairTxn.signers, transaction: pairTxn.transaction },
-          { signers: depositTxn.signers, transaction: depositTxn.transaction },
+          ...depositTxns.map(({ transaction, signers }) => ({
+            transaction,
+            signers,
+          })),
         ],
         connection,
         wallet,
@@ -398,11 +408,7 @@ export const NewPool: FC = () => {
                       <Title level={3}>Assets</Title>
                       <div className={styles.nftsWrapper}>
                         {nftModal.selectedNfts?.map((nft) => (
-                          <NFTCard
-                            className={styles.nfts}
-                            key={nft.mint}
-                            imageUrl={nft.imageUrl}
-                          />
+                          <NFTCard key={nft.mint} imageUrl={nft.imageUrl} />
                         ))}
                       </div>
                       <Button onClick={onSelectNftsClick}>+ Select NFTs</Button>
@@ -413,11 +419,7 @@ export const NewPool: FC = () => {
                       <Title level={3}>Assets</Title>
                       <div className={styles.nftsWrapper}>
                         {nftModal.selectedNfts?.map((nft) => (
-                          <NFTCard
-                            className={styles.nfts}
-                            key={nft.mint}
-                            imageUrl={nft.imageUrl}
-                          />
+                          <NFTCard key={nft.mint} imageUrl={nft.imageUrl} />
                         ))}
                       </div>
                       <Button onClick={onSelectNftsClick}>+ Select NFTs</Button>
