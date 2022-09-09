@@ -1,0 +1,41 @@
+.stepsContent {
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stepContent {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.radioWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stepsButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttonNext {
+  margin-left: auto;
+}
+
+.input {
+  width: 100%;
+}
+
+.nftsWrapper {
+  display: flex;
+  flex-direction: row;
+  max-height: 312px;
+  overflow-y: auto;
+
+  img {
+    max-width: 80px;
+  }
+}

@@ -1,7 +1,8 @@
 import { FC, useEffect } from 'react';
 import { Button, Row, Col, Typography, Avatar } from 'antd';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 
@@ -18,13 +19,14 @@ import { BN } from 'hadeswap-sdk';
 import { formatBNToString } from '../../utils';
 import { MarketInfo, Pair } from '../../state/core/types';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { createEditPollLink } from '../../constants';
 
 const { Title, Text } = Typography;
 
 export const PoolPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
 
+  const history = useHistory();
   const dispatch = useDispatch();
   const pool = useSelector(selectCertainPair);
   const market = useSelector(selectCertainMarket);
@@ -50,7 +52,7 @@ export const PoolPage: FC = () => {
   const loading = poolLoading || marketLoading;
 
   const onEdit = () => {
-    alert('Go to edit page');
+    history.push(createEditPollLink(poolPubkey));
   };
 
   return (

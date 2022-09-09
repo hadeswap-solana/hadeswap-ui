@@ -14,6 +14,9 @@ export const createCreatePollLink = (
   type = ':type?',
 ) => `/create-pool/${publicKey}/${type}`;
 
+export const createEditPollLink = (poolPubKey = ':poolPubKey?') =>
+  `/pools/${poolPubKey}/edit`;
+
 export const PATHS = {
   ROOT: '/', //? Main page with common bullshit texts
   COLLECTIONS: '/collections', //? Collections table|list
@@ -22,6 +25,7 @@ export const PATHS = {
   COLLECTION_SELL: createCollectionLink(COLLECTION_TABS.SELL), //? Specific collection sell tab.
   COLLECTION_POOLS: createCollectionLink(COLLECTION_TABS.POOLS), //? Specific collection pools tab.
   POOL_PAGE: '/pools/:poolPubkey', //? Specific pool page.
+  POOL_EDIT: createEditPollLink(), //? Page to create pool.
   CREATE_POOL: createCreatePollLink(), //? Page to create pool.
   MY_NFTS: '/my-nfts', //? Show all user nfts
   MY_POOLS: '/my-pools', //? Show all user pools

@@ -10,6 +10,7 @@ import { MyPools } from '../pages/MyPools/MyPools';
 import { CollectionPoolsPage } from '../pages/Collection/CollectionPoolsPage';
 import { PoolPage } from '../pages/Pool/PoolPage';
 import { NewPool } from '../pages/NewPool/NewPool';
+import { EditPool } from '../pages/EditPool/EditPool';
 
 interface Route {
   path: string;
@@ -63,7 +64,11 @@ export const routes: Route[] = [
     path: PATHS.CREATE_POOL,
     component: NewPool,
   },
-
+  {
+    exact: true,
+    path: PATHS.POOL_EDIT,
+    component: EditPool,
+  },
   {
     exact: true,
     path: PATHS.PAGE_404,
