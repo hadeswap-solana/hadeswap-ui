@@ -26,10 +26,16 @@ export const TransactionsLoadingModal: FC = () => {
             ? TEXTS.approve
             : TEXTS.waiting}
         </Typography.Text>
-        <Typography.Title level={5}>Transaction instructions:</Typography.Title>
-        <div className={styles.ordersContainer}>
-          {state.cards.map((card) => card)}
-        </div>
+        {Boolean(state.cards.length) && (
+          <>
+            <Typography.Title level={5}>
+              Transaction instructions:
+            </Typography.Title>
+            <div className={styles.ordersContainer}>
+              {state.cards.map((card) => card)}
+            </div>
+          </>
+        )}
       </div>
     </Modal>
   );

@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -37,11 +37,14 @@ import {
 import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { createPairTxn } from '../../utils/transactions/createPairTxn';
 import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenForNftPairTxn';
-import { signAndSendTransaction } from '../../utils/transactions';
 import { signAndSendTransactionsInSeries } from '../../components/Layout/helpers';
 import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepositNftsToPairTxns';
 import { createDepositLiquidityToPairTxns } from '../../utils/transactions/createDepositLiquidityToPairTxns';
 import { createCreatePollLink } from '../../constants';
+import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
+import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
+import { notify } from '../../utils';
+import { NotifyType } from '../../utils/solanaUtils';
 
 import styles from './NewPool.module.scss';
 
@@ -151,7 +154,7 @@ export const NewPool: FC = () => {
   const onCreatePoolClick = async () => {
     setIsCreatePoolButtonDisabled(true);
     if (type === PairType.TokenForNFT) {
-      const txn = await createTokenForNftPairTxn({
+      const txnData = await createTokenForNftPairTxn({
         connection,
         wallet,
         marketPubkey: new web3.PublicKey(market),
@@ -162,84 +165,111 @@ export const NewPool: FC = () => {
         amountOfOrders: nftAmount,
       });
 
-      try {
-        await signAndSendTransaction({
-          ...txn,
-          connection,
-          wallet,
-        });
-        history.push('/my-pools');
-      } catch (error) {
-        console.error(error);
-        // eslint-disable-next-line no-console
-        console.warn(error?.logs);
-      }
-    } else if (type === PairType.NftForToken) {
-      const pairTxn = await createPairTxn({
-        connection,
-        wallet,
-        marketPubkey: new web3.PublicKey(market),
-        bondingCurveType: curve,
-        pairType: PairType.NftForToken,
-        delta: rawDelta,
-        spotPrice: rawSpotPrice,
-        fee: rawFee,
-      });
-
-      const depositTxns = await createDepositNftsToPairTxns({
-        connection,
-        wallet,
-        pairPubkey: pairTxn.pairPubkey,
-        authorityAdapter: pairTxn.authorityAdapterPubkey,
-        nfts: nftModal.selectedNfts,
-      });
-
       const isSuccess = await signAndSendTransactionsInSeries({
-        txnData: [
-          { signers: pairTxn.signers, transaction: pairTxn.transaction },
-          ...depositTxns.map(({ transaction, signers }) => ({
-            transaction,
-            signers,
-          })),
-        ],
         connection,
         wallet,
+        txnData: [
+          {
+            ...txnData,
+            onBeforeApprove: () => {
+              dispatch(
+                txsLoadingModalActions.setState({
+                  visible: true,
+                  cards: [],
+                  amountOfTxs: 1,
+                  currentTxNumber: 1,
+                  textStatus: TxsLoadingModalTextStatus.APPROVE,
+                }),
+              );
+            },
+            onAfterSend: () => {
+              dispatch(
+                txsLoadingModalActions.setTextStatus(
+                  TxsLoadingModalTextStatus.WAITING,
+                ),
+              );
+            },
+            onError: () => {
+              notify({
+                message: 'Transaction just failed for some reason',
+                type: NotifyType.ERROR,
+              });
+            },
+          },
+        ],
       });
+
+      dispatch(txsLoadingModalActions.setVisible(false));
 
       if (isSuccess) {
         history.push('/my-pools');
       }
-    } else if (type === PairType.LiquidityProvision) {
+    } else {
       const pairTxn = await createPairTxn({
         connection,
         wallet,
         marketPubkey: new web3.PublicKey(market),
         bondingCurveType: curve,
-        pairType: PairType.LiquidityProvision,
+        pairType:
+          type === PairType.NftForToken
+            ? PairType.NftForToken
+            : PairType.LiquidityProvision,
         delta: rawDelta,
         spotPrice: rawSpotPrice,
         fee: rawFee,
       });
 
-      const depositTxns = await createDepositLiquidityToPairTxns({
-        connection,
-        wallet,
-        pairPubkey: pairTxn.pairPubkey,
-        authorityAdapter: pairTxn.authorityAdapterPubkey,
-        nfts: nftModal.selectedNfts,
-      });
+      const depositTxns =
+        type === PairType.NftForToken
+          ? await createDepositNftsToPairTxns({
+              connection,
+              wallet,
+              pairPubkey: pairTxn.pairPubkey,
+              authorityAdapter: pairTxn.authorityAdapterPubkey,
+              nfts: nftModal.selectedNfts,
+            })
+          : await createDepositLiquidityToPairTxns({
+              connection,
+              wallet,
+              pairPubkey: pairTxn.pairPubkey,
+              authorityAdapter: pairTxn.authorityAdapterPubkey,
+              nfts: nftModal.selectedNfts,
+            });
 
       const isSuccess = await signAndSendTransactionsInSeries({
-        txnData: [
-          { signers: pairTxn.signers, transaction: pairTxn.transaction },
-          ...depositTxns.map(({ transaction, signers }) => ({
-            transaction,
-            signers,
-          })),
-        ],
         connection,
         wallet,
+        txnData: [pairTxn, ...depositTxns].map((txn, index) => ({
+          signers: txn.signers,
+          transaction: txn.transaction,
+          onBeforeApprove: () => {
+            dispatch(
+              txsLoadingModalActions.setState({
+                visible: true,
+                cards: [],
+                amountOfTxs: 1 + nftModal.selectedNfts.length,
+                currentTxNumber: 1 + index,
+                textStatus: TxsLoadingModalTextStatus.APPROVE,
+              }),
+            );
+          },
+          onAfterSend: () => {
+            dispatch(
+              txsLoadingModalActions.setTextStatus(
+                TxsLoadingModalTextStatus.WAITING,
+              ),
+            );
+          },
+          onError: () => {
+            notify({
+              message: 'Transaction just failed for some reason',
+              type: NotifyType.ERROR,
+            });
+          },
+        })),
       });
+
+      dispatch(txsLoadingModalActions.setVisible(false));
 
       if (isSuccess) {
         history.push('/my-pools');
