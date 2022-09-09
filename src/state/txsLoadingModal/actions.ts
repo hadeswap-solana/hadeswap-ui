@@ -1,31 +1,28 @@
 import { createCustomAction } from 'typesafe-actions';
-import {
-  SwapTxsLoadingModalState,
-  SwapTxsLoadingModalTextStatus,
-} from './reducers';
+import { TxsLoadingModalState, TxsLoadingModalTextStatus } from './reducers';
 
-export const swapTxsLoadingModalTypes = {
+export const txsLoadingModalTypes = {
   SET_STATE: 'swapTxsLoadingModal/SET_STATE',
   SET_VISIBLE: 'swapTxsLoadingModal/SET_VISIBLE',
   SET_TEXT_STATUS: 'swapTxsLoadingModal/SET_TEXT_STATUS',
 };
 
-export const swapTxsLoadingModalActions = {
+export const txsLoadingModalActions = {
   setState: createCustomAction(
-    swapTxsLoadingModalTypes.SET_STATE,
-    (nextState: SwapTxsLoadingModalState) => ({
+    txsLoadingModalTypes.SET_STATE,
+    (nextState: TxsLoadingModalState) => ({
       payload: nextState,
     }),
   ),
   setVisible: createCustomAction(
-    swapTxsLoadingModalTypes.SET_VISIBLE,
+    txsLoadingModalTypes.SET_VISIBLE,
     (visible: boolean) => ({
       payload: visible,
     }),
   ),
   setTextStatus: createCustomAction(
-    swapTxsLoadingModalTypes.SET_TEXT_STATUS,
-    (status: SwapTxsLoadingModalTextStatus) => ({
+    txsLoadingModalTypes.SET_TEXT_STATUS,
+    (status: TxsLoadingModalTextStatus) => ({
       payload: status,
     }),
   ),

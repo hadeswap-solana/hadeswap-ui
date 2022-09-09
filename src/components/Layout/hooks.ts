@@ -15,8 +15,9 @@ import {
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { commonActions } from '../../state/common/actions';
-import { swapTxsLoadingModalActions } from '../../state/swapTxsLoadingModal/actions';
-import { SwapTxsLoadingModalTextStatus } from '../../state/swapTxsLoadingModal/reducers';
+import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
+import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
+import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
 
 type UseSwap = () => {
   swap: () => Promise<void>;
@@ -60,19 +61,21 @@ export const useSwap: UseSwap = () => {
         ...txnData,
         onBeforeApprove: () => {
           dispatch(
-            swapTxsLoadingModalActions.setState({
+            txsLoadingModalActions.setState({
               visible: true,
-              ordersInTx: txnData.nftMints.map((mint) => ordersByMint?.[mint]),
+              cards: txnData.nftMints.map((mint) =>
+                createIxCardFuncs[IX_TYPE.COMPLETE_ORDER](ordersByMint?.[mint]),
+              ),
               amountOfTxs: txnDataArr.length,
               currentTxNumber: idx + 1,
-              textStatus: SwapTxsLoadingModalTextStatus.APPROVE,
+              textStatus: TxsLoadingModalTextStatus.APPROVE,
             }),
           );
         },
         onAfterSend: () => {
           dispatch(
-            swapTxsLoadingModalActions.setTextStatus(
-              SwapTxsLoadingModalTextStatus.WAITING,
+            txsLoadingModalActions.setTextStatus(
+              TxsLoadingModalTextStatus.WAITING,
             ),
           );
         },
@@ -96,7 +99,7 @@ export const useSwap: UseSwap = () => {
       dispatch(commonActions.setCartSider({ isVisible: true }));
     }
 
-    dispatch(swapTxsLoadingModalActions.setVisible(false));
+    dispatch(txsLoadingModalActions.setVisible(false));
   };
 
   return {
