@@ -126,15 +126,17 @@ export const MyPools: FC = () => {
   return (
     <AppLayout>
       <Title>My pools</Title>
-      <div className={styles.buttons}>
-        <Button
-          onClick={() => {
-            history.push('/create-pool');
-          }}
-        >
-          + Create pool
-        </Button>
-      </div>
+      {wallet.connected && (
+        <div className={styles.buttons}>
+          <Button
+            onClick={() => {
+              history.push('/create-pool');
+            }}
+          >
+            + Create pool
+          </Button>
+        </div>
+      )}
       {!wallet.connected && (
         <Typography.Title level={3}>
           Connect you wallet to see your pools
