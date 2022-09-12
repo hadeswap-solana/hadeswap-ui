@@ -11,8 +11,8 @@ const sendTxnPlaceHolder = async (): Promise<null> =>
 type CreateDepositNftsToPairTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
-  pairPubkey: web3.PublicKey;
-  authorityAdapter: web3.PublicKey;
+  pairPubkey: string;
+  authorityAdapter: string;
   nfts: Nft[];
 }) => Promise<
   {
@@ -38,8 +38,8 @@ export const createDepositNftsToPairTxns: CreateDepositNftsToPairTxns = async ({
           connection,
           accounts: {
             nftValidationAdapter: new web3.PublicKey(nft.nftValidationAdapter),
-            pair: pairPubkey,
-            authorityAdapter,
+            pair: new web3.PublicKey(pairPubkey),
+            authorityAdapter: new web3.PublicKey(authorityAdapter),
             userPubkey: wallet.publicKey,
             nftMint: new web3.PublicKey(nft.mint),
           },

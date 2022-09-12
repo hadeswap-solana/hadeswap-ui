@@ -14,7 +14,7 @@ const sendTxnPlaceHolder = async (): Promise<null> =>
 type CreatePairTxn = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
-  marketPubkey: web3.PublicKey;
+  marketPubkey: string;
   bondingCurveType: BondingCurveType;
   pairType: PairType;
   delta: number;
@@ -23,8 +23,8 @@ type CreatePairTxn = (params: {
 }) => Promise<{
   transaction: web3.Transaction;
   signers: web3.Signer[];
-  pairPubkey: web3.PublicKey;
-  authorityAdapterPubkey: web3.PublicKey;
+  pairPubkey: string;
+  authorityAdapterPubkey: string;
 }>;
 
 export const createPairTxn: CreatePairTxn = async ({
@@ -46,7 +46,7 @@ export const createPairTxn: CreatePairTxn = async ({
     connection,
     sendTxn: sendTxnPlaceHolder,
     accounts: {
-      hadoMarket: marketPubkey,
+      hadoMarket: new web3.PublicKey(marketPubkey),
       userPubkey: wallet.publicKey,
     },
     args: {
@@ -94,7 +94,7 @@ export const createPairTxn: CreatePairTxn = async ({
       ...authorityAdapterSigners,
       ...activateSigners,
     ],
-    pairPubkey,
-    authorityAdapterPubkey,
+    pairPubkey: pairPubkey.toBase58(),
+    authorityAdapterPubkey: authorityAdapterPubkey.toBase58(),
   };
 };

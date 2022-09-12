@@ -9,8 +9,8 @@ const sendTxnPlaceHolder = async (): Promise<null> =>
 type CreateWithdrawSolFromPairTxn = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
-  pairPubkey: web3.PublicKey;
-  authorityAdapter: web3.PublicKey;
+  pairPubkey: string;
+  authorityAdapter: string;
   amountOfOrders: number;
 }) => Promise<{
   transaction: web3.Transaction;
@@ -30,8 +30,8 @@ export const createWithdrawSolFromPairTxn: CreateWithdrawSolFromPairTxn =
       connection,
       sendTxn: sendTxnPlaceHolder,
       accounts: {
-        pair: pairPubkey,
-        authorityAdapter,
+        pair: new web3.PublicKey(pairPubkey),
+        authorityAdapter: new web3.PublicKey(authorityAdapter),
         userPubkey: wallet.publicKey,
       },
       args: {

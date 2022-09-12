@@ -18,7 +18,7 @@ const sendTxnPlaceHolder = async (): Promise<null> =>
 type CreateTokenForNftPairTxn = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
-  marketPubkey: web3.PublicKey;
+  marketPubkey: string;
   bondingCurveType: BondingCurveType;
   pairType: PairType;
   delta: number;
@@ -49,7 +49,7 @@ export const createTokenForNftPairTxn: CreateTokenForNftPairTxn = async ({
     connection,
     sendTxn: sendTxnPlaceHolder,
     accounts: {
-      hadoMarket: marketPubkey,
+      hadoMarket: new web3.PublicKey(marketPubkey),
       userPubkey: wallet.publicKey,
     },
     args: {

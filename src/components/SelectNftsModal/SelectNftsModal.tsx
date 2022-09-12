@@ -5,13 +5,14 @@ import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { coreActions } from '../../state/core/actions';
 import { selectMarketWalletNfts } from '../../state/core/selectors';
-import { Nft } from '../../state/core/types';
+import { Nft, PairSellOrder } from '../../state/core/types';
 import { NFTCard } from '../NFTCard/NFTCard';
 import styles from './SelectNftsModal.module.scss';
 
 type UseSelectNftsModal = (
   collectionName: string,
   marketPublicKey: string,
+  preSelectedNfts?: PairSellOrder[],
 ) => {
   visible: boolean;
   setVisible: (nextState: boolean) => void;
@@ -27,6 +28,7 @@ const { Title, Paragraph } = Typography;
 export const useSelectNftsModal: UseSelectNftsModal = (
   collectionName,
   marketPublicKey,
+  preSelectedNfts,
 ) => {
   const dispatch = useDispatch();
   const { connected } = useWallet();
@@ -36,10 +38,16 @@ export const useSelectNftsModal: UseSelectNftsModal = (
   const walletNfts = useSelector(selectMarketWalletNfts);
 
   useEffect(() => {
-    if (connected && marketPublicKey && !walletNfts?.length) {
+    if (connected && marketPublicKey) {
       dispatch(coreActions.fetchMarketWalletNfts(marketPublicKey));
     }
-  }, [dispatch, connected, marketPublicKey, walletNfts]);
+  }, [dispatch, connected, marketPublicKey]);
+
+  useEffect(() => {
+    if (preSelectedNfts) {
+      setSelectedNfts(preSelectedNfts);
+    }
+  }, [preSelectedNfts]);
 
   const isNftSelected = (nft: Nft) =>
     !!selectedNfts.find(({ mint }) => mint === nft.mint);

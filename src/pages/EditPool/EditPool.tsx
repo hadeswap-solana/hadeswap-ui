@@ -1,6 +1,7 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { differenceBy } from 'lodash';
 import {
   Button,
   Card,
@@ -9,13 +10,10 @@ import {
   InputNumber,
   Radio,
   Row,
-  Select,
-  Steps,
   Typography,
 } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { web3 } from 'hadeswap-sdk';
 import {
   BondingCurveType,
   PairType,
@@ -27,7 +25,6 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import { coreActions } from '../../state/core/actions';
 import {
   selectAllMarkets,
-  selectAllMarketsLoading,
   selectCertainMarketLoading,
   selectCertainPair,
   selectCertainPairLoading,
@@ -38,6 +35,18 @@ import {
   useSelectNftsModal,
 } from '../../components/SelectNftsModal/SelectNftsModal';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
+import { createWithdrawSolFromPairTxn } from '../../utils/transactions/createWithdrawSolFromPairTxn';
+import { signAndSendTransactionsInSeries } from '../../components/Layout/helpers';
+import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
+import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
+import { notify } from '../../utils';
+import { NotifyType } from '../../utils/solanaUtils';
+import { createModifyPairTxn } from '../../utils/transactions/createModifyPairTxn';
+import { createWithdrawNftsFromPairTxns } from '../../utils/transactions/createWithdrawNftsFromPairTxns';
+import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepositNftsToPairTxns';
+import { createDepositLiquidityToPairTxns } from '../../utils/transactions/createDepositLiquidityToPairTxns';
+import { createWithdrawLiquidityFromPairTxns } from '../../utils/transactions/createWithdrawLiquidityFromPairTxns';
+import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 
 import styles from './EditPool.module.scss';
 
@@ -49,8 +58,6 @@ export const EditPool: FC = () => {
   const connection = useConnection();
   const wallet = useWallet();
   const location = useLocation();
-  const [isEditButtonDisabled, setIsEditButtonDisabled] =
-    useState<boolean>(false);
   const { poolPubKey } = useParams<{ poolPubKey: string }>();
   const pool = useSelector(selectCertainPair);
   const markets = useSelector(selectAllMarkets) as MarketInfo[];
@@ -69,17 +76,22 @@ export const EditPool: FC = () => {
   const nftModal = useSelectNftsModal(
     collectionName,
     chosenMarket?.marketPubkey,
+    pool?.sellOrders,
   );
-  const poolNfts = pool
-    ? pool?.sellOrders.concat(nftModal.selectedNfts as Array<any>)
-    : nftModal.selectedNfts;
+
+  const walletNfts = pool?.sellOrders
+    ? [...pool?.sellOrders, ...nftModal.walletNfts]
+    : nftModal.walletNfts;
   const type = pool?.type;
 
   const initialValues = {
     curve: pool?.bondingCurve,
     fee: pool?.fee / 100,
     spotPrice: pool?.spotPrice / 1e9,
-    delta: pool?.delta / 100,
+    delta:
+      pool?.bondingCurve === BondingCurveType.Exponential
+        ? pool?.delta / 100
+        : pool?.delta / 1e9,
     nftAmount: pool?.buyOrdersAmount,
     depositAmount: 0,
   };
@@ -91,6 +103,19 @@ export const EditPool: FC = () => {
   const rawDelta =
     curve === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
   const rawFee = fee * 100;
+
+  const isPricingChanged =
+    pool?.spotPrice !== rawSpotPrice ||
+    pool?.delta !== rawDelta ||
+    (type === PairType.LiquidityProvision && pool?.fee !== rawFee);
+  const isNftAmountChanged = pool?.buyOrdersAmount !== nftAmount;
+
+  const nftsToDelete = differenceBy(
+    pool?.sellOrders,
+    nftModal.selectedNfts,
+    'mint',
+  );
+  const nftsToAdd = nftModal.selectedNfts.filter((nft) => !nft.nftPairBox);
 
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
@@ -105,10 +130,127 @@ export const EditPool: FC = () => {
     //console.log(form.getFieldsValue(['market', 'type', 'spotPrice', 'curve']));
   };
 
-  const onSavePoolClick = () => {
-    setIsEditButtonDisabled(true);
+  const onSavePoolClick = async () => {
+    const transactions = [];
 
-    setIsEditButtonDisabled(false);
+    if (isPricingChanged) {
+      transactions.push(
+        await createModifyPairTxn({
+          connection,
+          wallet,
+          pairPubkey: pool.pairPubkey,
+          authorityAdapter: pool.authorityAdapterPubkey,
+          delta: rawDelta,
+          spotPrice: rawSpotPrice,
+          fee: rawFee,
+        }),
+      );
+    }
+
+    if (type === PairType.TokenForNFT) {
+      if (isNftAmountChanged) {
+        if (pool?.buyOrdersAmount < nftAmount) {
+          transactions.push(
+            await createDepositSolToPairTxn({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              amountOfOrders: nftAmount - pool?.buyOrdersAmount,
+            }),
+          );
+        } else {
+          transactions.push(
+            await createWithdrawSolFromPairTxn({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              amountOfOrders: pool?.buyOrdersAmount - nftAmount,
+            }),
+          );
+        }
+      }
+    } else if (type === PairType.NftForToken) {
+      transactions.push(
+        ...(await createDepositNftsToPairTxns({
+          connection,
+          wallet,
+          pairPubkey: pool.pairPubkey,
+          authorityAdapter: pool.authorityAdapterPubkey,
+          nfts: nftsToAdd,
+        })),
+      );
+
+      transactions.push(
+        ...(await createWithdrawNftsFromPairTxns({
+          connection,
+          wallet,
+          pairPubkey: pool.pairPubkey,
+          authorityAdapter: pool.authorityAdapterPubkey,
+          nfts: nftsToDelete,
+        })),
+      );
+    } else if (type === PairType.LiquidityProvision) {
+      transactions.push(
+        ...(await createDepositLiquidityToPairTxns({
+          connection,
+          wallet,
+          pairPubkey: pool.pairPubkey,
+          authorityAdapter: pool.authorityAdapterPubkey,
+          nfts: nftsToAdd,
+        })),
+      );
+
+      transactions.push(
+        ...(await createWithdrawLiquidityFromPairTxns({
+          connection,
+          wallet,
+          pairPubkey: pool.pairPubkey,
+          authorityAdapter: pool.authorityAdapterPubkey,
+          nfts: nftsToDelete,
+        })),
+      );
+    }
+
+    const isSuccess = await signAndSendTransactionsInSeries({
+      connection,
+      wallet,
+      txnData: transactions.map((txn, index) => ({
+        signers: txn.signers,
+        transaction: txn.transaction,
+        onBeforeApprove: () => {
+          dispatch(
+            txsLoadingModalActions.setState({
+              visible: true,
+              cards: [],
+              amountOfTxs: transactions.length,
+              currentTxNumber: 1 + index,
+              textStatus: TxsLoadingModalTextStatus.APPROVE,
+            }),
+          );
+        },
+        onAfterSend: () => {
+          dispatch(
+            txsLoadingModalActions.setTextStatus(
+              TxsLoadingModalTextStatus.WAITING,
+            ),
+          );
+        },
+        onError: () => {
+          notify({
+            message: 'Transaction just failed for some reason',
+            type: NotifyType.ERROR,
+          });
+        },
+      })),
+    });
+
+    dispatch(txsLoadingModalActions.setVisible(false));
+
+    if (isSuccess) {
+      history.push(`/pools/${pool?.pairPubkey}`);
+    }
   };
 
   return (
@@ -168,7 +310,11 @@ export const EditPool: FC = () => {
                           icon: <InfoCircleOutlined />,
                         }}
                       >
-                        <Radio.Group className={styles.input} value={curve}>
+                        <Radio.Group
+                          disabled
+                          className={styles.input}
+                          value={curve}
+                        >
                           <Radio.Button value={BondingCurveType.Linear}>
                             Linear Curve
                           </Radio.Button>
@@ -211,7 +357,7 @@ export const EditPool: FC = () => {
                         <Form.Item label="Amount of NFTs" name="nftAmount">
                           <InputNumber
                             className={styles.input}
-                            min="0"
+                            min={0}
                             addonAfter="NFTs"
                           />
                         </Form.Item>
@@ -221,7 +367,7 @@ export const EditPool: FC = () => {
                       <Card>
                         <Title level={3}>Assets</Title>
                         <div className={styles.nftsWrapper}>
-                          {poolNfts.map((nft) => (
+                          {nftModal.selectedNfts.map((nft) => (
                             <NFTCard
                               // className={styles.nfts}
                               key={nft.mint}
@@ -238,7 +384,7 @@ export const EditPool: FC = () => {
                       <Card>
                         <Title level={3}>Assets</Title>
                         <div className={styles.nftsWrapper}>
-                          {poolNfts.map((nft) => (
+                          {nftModal.selectedNfts.map((nft) => (
                             <NFTCard
                               // className={styles.nfts}
                               key={nft.mint}
@@ -259,14 +405,14 @@ export const EditPool: FC = () => {
                   danger
                   type="primary"
                   onClick={onSavePoolClick}
-                  disabled={isEditButtonDisabled}
+                  disabled={!(isPricingChanged || isNftAmountChanged)}
                 >
                   Save changes
                 </Button>
               </div>
             </div>
           </Form>
-          <SelectNftsModal {...nftModal} />
+          <SelectNftsModal {...nftModal} walletNfts={walletNfts} />
         </>
       )}
     </AppLayout>

@@ -1,34 +1,30 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 
-const { modifyPair } = hadeswap.functions.marketFactory;
+const { depositSolToPair } = hadeswap.functions.marketFactory;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);
 
-type CreateModifyPairTxn = (params: {
+type CreateDepositSolFromPairTxn = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   pairPubkey: string;
   authorityAdapter: string;
-  delta: number;
-  spotPrice: number;
-  fee?: number;
+  amountOfOrders: number;
 }) => Promise<{
   transaction: web3.Transaction;
   signers: web3.Signer[];
 }>;
 
-export const createModifyPairTxn: CreateModifyPairTxn = async ({
+export const createDepositSolToPairTxn: CreateDepositSolFromPairTxn = async ({
   connection,
   wallet,
   pairPubkey,
   authorityAdapter,
-  delta,
-  spotPrice,
-  fee = 0,
+  amountOfOrders,
 }) => {
-  const { instructions, signers } = await modifyPair({
+  const { instructions, signers } = await depositSolToPair({
     programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
     connection,
     sendTxn: sendTxnPlaceHolder,
@@ -38,9 +34,7 @@ export const createModifyPairTxn: CreateModifyPairTxn = async ({
       userPubkey: wallet.publicKey,
     },
     args: {
-      delta,
-      spotPrice,
-      fee,
+      amountOfOrders,
     },
   });
 
