@@ -15,8 +15,10 @@ import {
 } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { hadeswap } from 'hadeswap-sdk';
 import {
   BondingCurveType,
+  OrderType,
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
@@ -44,6 +46,10 @@ import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
+import {
+  createIxCardFuncs,
+  IX_TYPE,
+} from '../../components/TransactionsLoadingModal';
 
 import styles from './NewPool.module.scss';
 
@@ -150,6 +156,7 @@ export const NewPool: FC = () => {
 
   const onCreatePoolClick = async () => {
     const transactions = [];
+    const cards = [createIxCardFuncs[IX_TYPE.CREATE_EMPTY_POOL]()];
 
     if (type === PairType.TokenForNFT) {
       transactions.push(
@@ -163,6 +170,18 @@ export const NewPool: FC = () => {
           spotPrice: rawSpotPrice,
           amountOfOrders: nftAmount,
         }),
+      );
+
+      const amounts = hadeswap.helpers.calculatePricesArray({
+        price: rawSpotPrice,
+        delta: rawDelta,
+        amount: nftAmount,
+        bondingCurveType: curve,
+        orderType: OrderType.Sell,
+      });
+
+      cards.push(
+        createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amounts.total),
       );
     } else {
       const pairTxn = await createPairTxn({
@@ -191,6 +210,12 @@ export const NewPool: FC = () => {
             nfts: nftModal.selectedNfts,
           })),
         );
+
+        const nftCards = nftModal.selectedNfts.map((nft) =>
+          createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft),
+        );
+
+        cards.push(nftCards);
       } else if (type === PairType.LiquidityProvision) {
         transactions.push(
           ...(await createDepositLiquidityToPairTxns({
@@ -201,6 +226,23 @@ export const NewPool: FC = () => {
             nfts: nftModal.selectedNfts,
           })),
         );
+
+        const sellAmounts = hadeswap.helpers.calculatePricesArray({
+          price: rawSpotPrice,
+          delta: rawDelta,
+          amount: nftModal.selectedNfts.length,
+          bondingCurveType: curve,
+          orderType: OrderType.Sell,
+        });
+
+        const nftCards = nftModal.selectedNfts.map((nft, index) =>
+          createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+            nft,
+            sellAmounts.array[index],
+          ),
+        );
+
+        cards.push(nftCards);
       }
     }
 
@@ -214,7 +256,7 @@ export const NewPool: FC = () => {
           dispatch(
             txsLoadingModalActions.setState({
               visible: true,
-              cards: [],
+              cards: cards,
               amountOfTxs: transactions.length,
               currentTxNumber: 1 + index,
               textStatus: TxsLoadingModalTextStatus.APPROVE,

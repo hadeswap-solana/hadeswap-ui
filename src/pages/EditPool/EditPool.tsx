@@ -16,6 +16,7 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import {
   BondingCurveType,
+  OrderType,
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
@@ -47,8 +48,13 @@ import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepo
 import { createDepositLiquidityToPairTxns } from '../../utils/transactions/createDepositLiquidityToPairTxns';
 import { createWithdrawLiquidityFromPairTxns } from '../../utils/transactions/createWithdrawLiquidityFromPairTxns';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
+import {
+  createIxCardFuncs,
+  IX_TYPE,
+} from '../../components/TransactionsLoadingModal';
 
 import styles from './EditPool.module.scss';
+import { hadeswap } from 'hadeswap-sdk';
 
 const { Title, Paragraph } = Typography;
 
@@ -130,8 +136,11 @@ export const EditPool: FC = () => {
     //console.log(form.getFieldsValue(['market', 'type', 'spotPrice', 'curve']));
   };
 
+  console.log(pool);
+
   const onSavePoolClick = async () => {
     const transactions = [];
+    const cards = [];
 
     if (isPricingChanged) {
       transactions.push(
@@ -145,6 +154,8 @@ export const EditPool: FC = () => {
           fee: rawFee,
         }),
       );
+
+      cards.push(createIxCardFuncs[IX_TYPE.EDIT_POOL]());
     }
 
     if (type === PairType.TokenForNFT) {
@@ -159,6 +170,19 @@ export const EditPool: FC = () => {
               amountOfOrders: nftAmount - pool?.buyOrdersAmount,
             }),
           );
+
+          const sellAmounts = hadeswap.helpers.calculatePricesArray({
+            price: rawSpotPrice,
+            delta: rawDelta,
+            amount: nftAmount,
+            bondingCurveType: curve,
+            orderType: OrderType.Sell,
+          });
+          const amount = sellAmounts.total - pool.fundsSolOrTokenBalance;
+
+          cards.push(
+            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amount),
+          );
         } else {
           transactions.push(
             await createWithdrawSolFromPairTxn({
@@ -168,6 +192,24 @@ export const EditPool: FC = () => {
               authorityAdapter: pool.authorityAdapterPubkey,
               amountOfOrders: pool?.buyOrdersAmount - nftAmount,
             }),
+          );
+
+          const buyAmounts = hadeswap.helpers.calculatePricesArray({
+            price: rawSpotPrice,
+            delta: rawDelta,
+            amount: nftAmount,
+            bondingCurveType: curve,
+            orderType: OrderType.Buy,
+          });
+          const amount = nftAmount
+            ? pool.fundsSolOrTokenBalance - buyAmounts.total
+            : pool.fundsSolOrTokenBalance;
+
+          cards.push(
+            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](
+              amount,
+              true,
+            ),
           );
         }
       }
@@ -191,6 +233,16 @@ export const EditPool: FC = () => {
           nfts: nftsToDelete,
         })),
       );
+
+      const nftAddCards = nftsToAdd.map((nft) =>
+        createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft),
+      );
+
+      const nftRemoveCards = nftsToDelete.map((nft) =>
+        createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft, true),
+      );
+
+      cards.push(nftAddCards, nftRemoveCards);
     } else if (type === PairType.LiquidityProvision) {
       transactions.push(
         ...(await createDepositLiquidityToPairTxns({
@@ -211,6 +263,32 @@ export const EditPool: FC = () => {
           nfts: nftsToDelete,
         })),
       );
+
+      const sellAmounts = hadeswap.helpers.calculatePricesArray({
+        price: rawSpotPrice,
+        delta: rawDelta,
+        amount: nftModal.selectedNfts.length,
+        bondingCurveType: curve,
+        orderType: OrderType.Sell,
+      });
+      sellAmounts.array.reverse();
+
+      const nftAddCards = nftsToAdd.map((nft, index) =>
+        createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+          nft,
+          sellAmounts.array[index],
+        ),
+      );
+
+      const nftRemoveCards = nftsToDelete.map((nft, index) =>
+        createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+          nft,
+          sellAmounts.array[index],
+          true,
+        ),
+      );
+
+      cards.push(nftAddCards, nftRemoveCards);
     }
 
     const isSuccess = await signAndSendTransactionsInSeries({
@@ -223,7 +301,7 @@ export const EditPool: FC = () => {
           dispatch(
             txsLoadingModalActions.setState({
               visible: true,
-              cards: [],
+              cards: cards,
               amountOfTxs: transactions.length,
               currentTxNumber: 1 + index,
               textStatus: TxsLoadingModalTextStatus.APPROVE,

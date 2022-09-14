@@ -88,7 +88,7 @@ export const createIxCardFuncs = {
   [IX_TYPE.EDIT_POOL]: makeEditPoolIxCard,
   [IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL]: makeAddOrRemoveSolFromPoolIxCard,
   [IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL]: makeAddOrRemoveNftFromPoolIxCard,
-  [IX_TYPE.ADD_OR_REOVE_LIQUIDITY_FROM_POOL]:
+  [IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL]:
     makeAddOrRemoveLiquidityFromPoolIxCard,
   [IX_TYPE.COMPLETE_ORDER]: makeBuyOrSellNftIxCard,
   DEFAULT: makeUnkonwIxCard,
