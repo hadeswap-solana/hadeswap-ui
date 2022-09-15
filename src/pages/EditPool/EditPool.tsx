@@ -115,6 +115,8 @@ export const EditPool: FC = () => {
     pool?.delta !== rawDelta ||
     (type === PairType.LiquidityProvision && pool?.fee !== rawFee);
   const isNftAmountChanged = pool?.buyOrdersAmount !== nftAmount;
+  const isSaveButtonDisabled =
+    !(isPricingChanged || isNftAmountChanged) || !spotPrice;
 
   const nftsToDelete = differenceBy(
     pool?.sellOrders,
@@ -368,7 +370,7 @@ export const EditPool: FC = () => {
                       )}
                       <Form.Item
                         name="spotPrice"
-                        label="Start price"
+                        label="Spot price"
                         tooltip={{
                           title: '',
                           icon: <InfoCircleOutlined />,
@@ -483,7 +485,7 @@ export const EditPool: FC = () => {
                   danger
                   type="primary"
                   onClick={onSavePoolClick}
-                  disabled={!(isPricingChanged || isNftAmountChanged)}
+                  disabled={isSaveButtonDisabled}
                 >
                   Save changes
                 </Button>

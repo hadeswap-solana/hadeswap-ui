@@ -93,6 +93,10 @@ export const NewPool: FC = () => {
   // buy createTokenForNftPairTxn
   // sell createPairTxn createDepositNftsToPairTxns
   // liquidity createPairTxn createDepositLiquidityToPairTxns
+  const isCreateButtonDisabled =
+    (type !== PairType.TokenForNFT && !nftModal.selectedNfts.length) ||
+    (type === PairType.TokenForNFT && !nftAmount) ||
+    !spotPrice;
 
   const initialValues = {
     market: market ?? marketPubkeyParam,
@@ -385,7 +389,7 @@ export const NewPool: FC = () => {
                     )}
                     <Form.Item
                       name="spotPrice"
-                      label="Start price"
+                      label="Spot price"
                       tooltip={{
                         title: '',
                         icon: <InfoCircleOutlined />,
@@ -493,9 +497,7 @@ export const NewPool: FC = () => {
                 danger
                 type="primary"
                 onClick={onCreatePoolClick}
-                disabled={
-                  type !== PairType.TokenForNFT && !nftModal.selectedNfts.length
-                }
+                disabled={isCreateButtonDisabled}
               >
                 Create pool
               </Button>
