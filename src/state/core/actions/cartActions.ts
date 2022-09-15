@@ -1,13 +1,22 @@
 import { createCustomAction } from 'typesafe-actions';
-import { CartOrder, OrderType, Pair } from '../types';
+import { CartOrder, OrderType, Pair, PairUpdate } from '../types';
 
 export const cartTypes = {
+  UPDATE_PAIRS: 'cart/UPDATE_PAIRS',
   ADD_ORDER_TO_CART: 'cart/ADD_ORDER',
   REMOVE_ORDER_FROM_CART: 'cart/REMOVE_ORDER',
   ADD_FINISHED_ORDER_MINT: 'cart/ADD_FINISHED_ORDER_MINT',
+  CLEAR_INVALID_ORDERS: 'cart/CLEAR_INVALID_ORDERS',
 };
 
 export const cartActions = {
+  updatePairs: createCustomAction(
+    cartTypes.UPDATE_PAIRS,
+    (pairsUpdates: PairUpdate[]) => ({
+      payload: pairsUpdates,
+    }),
+  ),
+
   addOrderToCart: createCustomAction(
     cartTypes.ADD_ORDER_TO_CART,
     (pair: Pair, order: CartOrder, orderType: OrderType) => ({
@@ -26,4 +35,5 @@ export const cartActions = {
       payload: { mint },
     }),
   ),
+  clearInvalidOrders: createCustomAction(cartTypes.CLEAR_INVALID_ORDERS),
 };

@@ -4,7 +4,10 @@ import { web3 } from 'hadeswap-sdk';
 
 import { networkRequest } from '../../utils/state';
 import { MarketInfo, Nft, Pair } from './types';
-import { selectWalletPublicKey } from '../common/selectors';
+import { selectSocket, selectWalletPublicKey } from '../common/selectors';
+import { Socket } from 'socket.io-client';
+import { eventChannel } from 'redux-saga';
+import { selectCartPairsPubkeys } from './selectors';
 
 const fetchAllMarketsSaga = function* () {
   yield put(coreActions.fetchAllMarketsPending());
@@ -122,6 +125,25 @@ const fetchPairSaga = function* (
   }
 };
 
+const updateCartSaga = function* () {
+  const socket = yield select(selectSocket);
+  const pairsPubkeys = yield select(selectCartPairsPubkeys);
+
+  if (pairsPubkeys && socket) {
+    socket.emit('pairs-subscribe', pairsPubkeys);
+  }
+};
+
+const cartPairsChannel = (socket: Socket) =>
+  eventChannel((emit) => {
+    socket.on('pairs', (response) => emit(response));
+    return () => socket.off('pairs');
+  });
+
+const subscribeCartPairsSaga = function* (pairs) {
+  yield put(coreActions.updatePairs(pairs));
+};
+
 const coreSagas = function* (): Generator {
   yield all([takeLatest(coreTypes.FETCH_ALL_MARKETS, fetchAllMarketsSaga)]);
   yield all([takeLatest(coreTypes.FETCH_MARKET, fetchMarketSaga)]);
@@ -138,5 +160,17 @@ const coreSagas = function* (): Generator {
     ),
   ]);
 };
+
+export const coreSocketSagas = (socket: Socket) =>
+  function* (): Generator {
+    const cartPairsStream: any = yield call(cartPairsChannel, socket);
+    yield all([takeLatest(cartPairsStream, subscribeCartPairsSaga)]);
+    yield all([
+      takeLatest(
+        [coreTypes.ADD_ORDER_TO_CART, coreTypes.REMOVE_ORDER_FROM_CART],
+        updateCartSaga,
+      ),
+    ]);
+  };
 
 export default coreSagas;

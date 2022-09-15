@@ -65,6 +65,9 @@
   flex-direction: column;
   gap: 8px;
 }
+.cartItemsInvalid {
+  opacity: 0.6;
+}
 
 .toggleCartSiderBtn {
   position: absolute !important;

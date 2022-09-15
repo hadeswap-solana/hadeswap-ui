@@ -1,34 +1,34 @@
-import { AsyncState } from './../../utils/state/types';
+// import { AsyncState } from './../../utils/state/types';
 import { commonActions } from './actions';
 import { combineReducers } from 'redux';
 import { createReducer } from 'typesafe-actions';
 
 import {
-  createHandlers,
+  // createHandlers,
   composeReducers,
-  createInitialAsyncState,
+  // createInitialAsyncState,
 } from '../../utils/state/reducers';
 import { commonTypes } from '../../state/common/actions';
 import {
   ConnectionState,
-  NotificationState,
+  // NotificationState,
   SocketState,
-  SolanaHealthState,
-  SolanaNetworkHealth,
+  // SolanaHealthState,
+  // SolanaNetworkHealth,
   ModalState,
   WalletState,
-  UserState,
+  // UserState,
   ConfettiState,
   CartSiderState,
 } from './types';
 
-export const initialSolanaHealthState: AsyncState<SolanaHealthState> =
-  createInitialAsyncState<SolanaHealthState>({
-    health: SolanaNetworkHealth.Good,
-    loss: 0,
-  });
-export const initialFetchSolanaTimestampState: AsyncState<number> =
-  createInitialAsyncState<number>(null);
+// export const initialSolanaHealthState: AsyncState<SolanaHealthState> =
+//   createInitialAsyncState<SolanaHealthState>({
+//     health: SolanaNetworkHealth.Good,
+//     loss: 0,
+//   });
+// export const initialFetchSolanaTimestampState: AsyncState<number> =
+//   createInitialAsyncState<number>(null);
 export const initialConnectionState: ConnectionState = { connection: null };
 export const initialSocketState: SocketState = { socket: null };
 export const initialWalletState: WalletState = {
@@ -36,26 +36,26 @@ export const initialWalletState: WalletState = {
     publicKey: null,
   },
 };
-export const initialUserState: AsyncState<UserState> =
-  createInitialAsyncState<UserState>(null);
+// export const initialUserState: AsyncState<UserState> =
+//   createInitialAsyncState<UserState>(null);
 
-export const initialNotificationState: NotificationState = {
-  isVisible: false,
-  config: null,
-};
+// export const initialNotificationState: NotificationState = {
+//   isVisible: false,
+//   config: null,
+// };
 export const initialModalState: ModalState = { isVisible: false };
 export const initialConfettiState: ModalState = { isVisible: false };
 
 export const initialCartSiderState: CartSiderState = { isVisible: false };
 
-const solanaHealthReducer = createReducer(
-  initialSolanaHealthState,
-  createHandlers<SolanaHealthState>(commonTypes.FETCH_SOLANA_HEALTH),
-);
-const fetchSolanaTimestampReducer = createReducer(
-  initialFetchSolanaTimestampState,
-  createHandlers<number>(commonTypes.FETCH_SOLANA_TIMESTAMP),
-);
+// const solanaHealthReducer = createReducer(
+//   initialSolanaHealthState,
+//   createHandlers<SolanaHealthState>(commonTypes.FETCH_SOLANA_HEALTH),
+// );
+// const fetchSolanaTimestampReducer = createReducer(
+//   initialFetchSolanaTimestampState,
+//   createHandlers<number>(commonTypes.FETCH_SOLANA_TIMESTAMP),
+// );
 const setConnectionReducer = createReducer<ConnectionState>(
   initialConnectionState,
   {
@@ -86,18 +86,18 @@ const setWalletReducer = createReducer<WalletState>(initialWalletState, {
     wallet: action.payload,
   }),
 });
-const setNotificationReducer = createReducer<NotificationState>(
-  initialNotificationState,
-  {
-    [commonTypes.SET_NOTIFICATION]: (
-      state,
-      action: ReturnType<typeof commonActions.setNotification>,
-    ) => ({
-      ...state,
-      ...action.payload,
-    }),
-  },
-);
+// const setNotificationReducer = createReducer<NotificationState>(
+//   initialNotificationState,
+//   {
+//     [commonTypes.SET_NOTIFICATION]: (
+//       state,
+//       action: ReturnType<typeof commonActions.setNotification>,
+//     ) => ({
+//       ...state,
+//       ...action.payload,
+//     }),
+//   },
+// );
 const setWalletModalReducer = createReducer<ModalState>(initialModalState, {
   [commonTypes.SET_WALLET_MODAL]: (
     state,
@@ -112,15 +112,15 @@ const toggleWalletModalReducer = createReducer<ModalState>(initialModalState, {
     isVisible: !state.isVisible,
   }),
 });
-const fetchUserReducer = createReducer(
-  initialUserState,
-  createHandlers<UserState>(commonTypes.FETCH_USER),
-);
-const toggleDiscordModalReducer = createReducer<ModalState>(initialModalState, {
-  [commonTypes.TOGGLE_DISCORD_MODAL]: (state) => ({
-    isVisible: !state.isVisible,
-  }),
-});
+// const fetchUserReducer = createReducer(
+//   initialUserState,
+//   createHandlers<UserState>(commonTypes.FETCH_USER),
+// );
+// const toggleDiscordModalReducer = createReducer<ModalState>(initialModalState, {
+//   [commonTypes.TOGGLE_DISCORD_MODAL]: (state) => ({
+//     isVisible: !state.isVisible,
+//   }),
+// });
 
 const setConfettiReducer = createReducer<ConfettiState>(initialConfettiState, {
   [commonTypes.SET_CONFETTI]: (state) => ({
@@ -150,12 +150,12 @@ export default combineReducers({
   connection: setConnectionReducer,
   socket: setSocketReducer,
   wallet: setWalletReducer,
-  solanaHealth: solanaHealthReducer,
-  user: fetchUserReducer,
-  fetchSolanaTimestamp: fetchSolanaTimestampReducer,
-  notification: setNotificationReducer,
+  // solanaHealth: solanaHealthReducer,
+  // user: fetchUserReducer,
+  // fetchSolanaTimestamp: fetchSolanaTimestampReducer,
+  // notification: setNotificationReducer,
   walletModal: composeReducers(setWalletModalReducer, toggleWalletModalReducer),
-  discordModal: toggleDiscordModalReducer,
+  // discordModal: toggleDiscordModalReducer,
   confetti: setConfettiReducer,
   cartSider: composeReducers(setCartSiderReducer, toggleCartSiderReducer),
 });

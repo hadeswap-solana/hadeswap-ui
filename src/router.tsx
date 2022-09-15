@@ -2,18 +2,12 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { COLLECTION_TABS, PATHS } from './constants';
 
 import { routes } from './constants/routes';
-import {
-  useConnectionInit,
-  useAppInit,
-  useWalletInit,
-  // useWebSocketSubscriptions,
-} from './hooks';
+import { useConnectionInit, useAppInit, useWalletInit } from './hooks';
 
 export const Router = (): JSX.Element => {
   useAppInit();
   useConnectionInit();
   useWalletInit();
-  // useWebSocketSubscriptions();
 
   return (
     <BrowserRouter>
