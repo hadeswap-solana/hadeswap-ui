@@ -336,26 +336,47 @@ export const EditPool: FC = () => {
   return (
     <AppLayout>
       <Title>Edit pool</Title>
-      {loading || !pool ? (
-        <Spinner />
-      ) : (
-        <>
-          <Form
-            layout="vertical"
-            form={form}
-            initialValues={initialValues}
-            onValuesChange={onFormChange}
-          >
-            <div className={styles.stepsContent}>
-              <div className={styles.stepContent}>
-                <Row>
-                  <Col span={11}>
-                    <Card>
-                      <Title level={3}>Pricing</Title>
-                      {type === PairType.LiquidityProvision && (
+      {!wallet.connected && (
+        <Typography.Title level={3}>
+          Connect your wallet to edit pool
+        </Typography.Title>
+      )}
+      {wallet.connected &&
+        (loading || !pool ? (
+          <Spinner />
+        ) : (
+          <>
+            <Form
+              layout="vertical"
+              form={form}
+              initialValues={initialValues}
+              onValuesChange={onFormChange}
+            >
+              <div className={styles.stepsContent}>
+                <div className={styles.stepContent}>
+                  <Row>
+                    <Col span={11}>
+                      <Card>
+                        <Title level={3}>Pricing</Title>
+                        {type === PairType.LiquidityProvision && (
+                          <Form.Item
+                            name="fee"
+                            label="Fee Amount"
+                            tooltip={{
+                              title: '',
+                              icon: <InfoCircleOutlined />,
+                            }}
+                          >
+                            <InputNumber
+                              className={styles.input}
+                              min="0"
+                              addonAfter="%"
+                            />
+                          </Form.Item>
+                        )}
                         <Form.Item
-                          name="fee"
-                          label="Fee Amount"
+                          name="spotPrice"
+                          label="Spot price"
                           tooltip={{
                             title: '',
                             icon: <InfoCircleOutlined />,
@@ -364,137 +385,123 @@ export const EditPool: FC = () => {
                           <InputNumber
                             className={styles.input}
                             min="0"
-                            addonAfter="%"
+                            addonAfter="SOL"
                           />
                         </Form.Item>
-                      )}
-                      <Form.Item
-                        name="spotPrice"
-                        label="Spot price"
-                        tooltip={{
-                          title: '',
-                          icon: <InfoCircleOutlined />,
-                        }}
-                      >
-                        <InputNumber
-                          className={styles.input}
-                          min="0"
-                          addonAfter="SOL"
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        name="curve"
-                        label="Bonding Curve"
-                        tooltip={{
-                          title: '',
-                          icon: <InfoCircleOutlined />,
-                        }}
-                      >
-                        <Radio.Group
-                          disabled
-                          className={styles.input}
-                          value={curve}
+                        <Form.Item
+                          name="curve"
+                          label="Bonding Curve"
+                          tooltip={{
+                            title: '',
+                            icon: <InfoCircleOutlined />,
+                          }}
                         >
-                          <Radio.Button value={BondingCurveType.Linear}>
-                            Linear Curve
-                          </Radio.Button>
-                          <Radio.Button value={BondingCurveType.Exponential}>
-                            Exponential Curve
-                          </Radio.Button>
-                        </Radio.Group>
-                      </Form.Item>
-                      <Form.Item
-                        name="delta"
-                        label="Delta"
-                        tooltip={{
-                          title: '',
-                          icon: <InfoCircleOutlined />,
-                        }}
-                      >
-                        <InputNumber
-                          className={styles.input}
-                          addonAfter={unit}
-                          min="0"
-                        />
-                      </Form.Item>
-                      {Boolean(spotPrice) && (
-                        <Paragraph>
-                          You have selected a starting price of {spotPrice} SOL.
-                        </Paragraph>
-                      )}
-                      {Boolean(delta) && (
-                        <Paragraph>
-                          Each time your pool {type}s an NFT, your {type} price
-                          will adjust up by {delta} {unit}.
-                        </Paragraph>
-                      )}
-                    </Card>
-                  </Col>
-                  <Col span={11} offset={2}>
-                    {type === PairType.TokenForNFT && (
-                      <Card>
-                        <Title level={3}>Assets</Title>
-                        <Form.Item label="Amount of NFTs" name="nftAmount">
+                          <Radio.Group
+                            disabled
+                            className={styles.input}
+                            value={curve}
+                          >
+                            <Radio.Button value={BondingCurveType.Linear}>
+                              Linear Curve
+                            </Radio.Button>
+                            <Radio.Button value={BondingCurveType.Exponential}>
+                              Exponential Curve
+                            </Radio.Button>
+                          </Radio.Group>
+                        </Form.Item>
+                        <Form.Item
+                          name="delta"
+                          label="Delta"
+                          tooltip={{
+                            title: '',
+                            icon: <InfoCircleOutlined />,
+                          }}
+                        >
                           <InputNumber
                             className={styles.input}
-                            min={0}
-                            addonAfter="NFTs"
+                            addonAfter={unit}
+                            min="0"
                           />
                         </Form.Item>
+                        {Boolean(spotPrice) && (
+                          <Paragraph>
+                            You have selected a starting price of {spotPrice}{' '}
+                            SOL.
+                          </Paragraph>
+                        )}
+                        {Boolean(delta) && (
+                          <Paragraph>
+                            Each time your pool {type}s an NFT, your {type}{' '}
+                            price will adjust up by {delta} {unit}.
+                          </Paragraph>
+                        )}
                       </Card>
-                    )}
-                    {type === PairType.NftForToken && (
-                      <Card>
-                        <Title level={3}>Assets</Title>
-                        <div className={styles.nftsWrapper}>
-                          {nftModal.selectedNfts.map((nft) => (
-                            <NFTCard
-                              // className={styles.nfts}
-                              key={nft.mint}
-                              imageUrl={nft.imageUrl}
+                    </Col>
+                    <Col span={11} offset={2}>
+                      {type === PairType.TokenForNFT && (
+                        <Card>
+                          <Title level={3}>Assets</Title>
+                          <Form.Item label="Amount of NFTs" name="nftAmount">
+                            <InputNumber
+                              className={styles.input}
+                              min={0}
+                              addonAfter="NFTs"
                             />
-                          ))}
-                        </div>
-                        <Button onClick={onSelectNftsClick}>
-                          + Select NFTs
-                        </Button>
-                      </Card>
-                    )}
-                    {type === PairType.LiquidityProvision && (
-                      <Card>
-                        <Title level={3}>Assets</Title>
-                        <div className={styles.nftsWrapper}>
-                          {nftModal.selectedNfts.map((nft) => (
-                            <NFTCard
-                              // className={styles.nfts}
-                              key={nft.mint}
-                              imageUrl={nft.imageUrl}
-                            />
-                          ))}
-                        </div>
-                        <Button onClick={onSelectNftsClick}>
-                          + Select NFTs
-                        </Button>
-                      </Card>
-                    )}
-                  </Col>
-                </Row>
+                          </Form.Item>
+                        </Card>
+                      )}
+                      {type === PairType.NftForToken && (
+                        <Card>
+                          <Title level={3}>Assets</Title>
+                          <div className={styles.nftsWrapper}>
+                            {nftModal.selectedNfts.map((nft) => (
+                              <NFTCard
+                                // className={styles.nfts}
+                                key={nft.mint}
+                                imageUrl={nft.imageUrl}
+                              />
+                            ))}
+                          </div>
+                          <Button onClick={onSelectNftsClick}>
+                            + Select NFTs
+                          </Button>
+                        </Card>
+                      )}
+                      {type === PairType.LiquidityProvision && (
+                        <Card>
+                          <Title level={3}>Assets</Title>
+                          <div className={styles.nftsWrapper}>
+                            {nftModal.selectedNfts.map((nft) => (
+                              <NFTCard
+                                // className={styles.nfts}
+                                key={nft.mint}
+                                imageUrl={nft.imageUrl}
+                              />
+                            ))}
+                          </div>
+                          <Button onClick={onSelectNftsClick}>
+                            + Select NFTs
+                          </Button>
+                        </Card>
+                      )}
+                    </Col>
+                  </Row>
+                </div>
+                <div className={styles.stepsButtons}>
+                  <Button
+                    danger
+                    type="primary"
+                    onClick={onSavePoolClick}
+                    disabled={isSaveButtonDisabled}
+                  >
+                    Save changes
+                  </Button>
+                </div>
               </div>
-              <div className={styles.stepsButtons}>
-                <Button
-                  danger
-                  type="primary"
-                  onClick={onSavePoolClick}
-                  disabled={isSaveButtonDisabled}
-                >
-                  Save changes
-                </Button>
-              </div>
-            </div>
-          </Form>
-          <SelectNftsModal {...nftModal} walletNfts={walletNfts} />
-        </>
-      )}
+            </Form>
+            <SelectNftsModal {...nftModal} walletNfts={walletNfts} />
+          </>
+        ))}
     </AppLayout>
   );
 };

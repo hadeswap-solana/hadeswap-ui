@@ -91,17 +91,21 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
       width={860}
     >
       {collectionName && <Title level={3}>{collectionName}</Title>}
-      <div className={styles.content}>
-        {walletNfts.map((nft) => (
-          <NFTCard
-            key={nft.mint}
-            imageUrl={nft.imageUrl}
-            name={nft.name}
-            onBtnClick={() => toggleNft(nft)}
-            selected={isNftSelected(nft)}
-          />
-        ))}
-      </div>
+      {walletNfts?.length ? (
+        <div className={styles.content}>
+          {walletNfts.map((nft) => (
+            <NFTCard
+              key={nft.mint}
+              imageUrl={nft.imageUrl}
+              name={nft.name}
+              onBtnClick={() => toggleNft(nft)}
+              selected={isNftSelected(nft)}
+            />
+          ))}
+        </div>
+      ) : (
+        <Title level={5}>No NFTs of this collections</Title>
+      )}
     </Modal>
   );
 };
