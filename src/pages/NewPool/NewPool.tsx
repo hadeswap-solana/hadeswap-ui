@@ -160,7 +160,7 @@ export const NewPool: FC = () => {
 
   const onCreatePoolClick = async () => {
     const transactions = [];
-    const cards = [createIxCardFuncs[IX_TYPE.CREATE_EMPTY_POOL]()];
+    const cards = [[createIxCardFuncs[IX_TYPE.CREATE_EMPTY_POOL]()]];
 
     if (type === PairType.TokenForNFT) {
       transactions.push(
@@ -184,7 +184,7 @@ export const NewPool: FC = () => {
         orderType: OrderType.Sell,
       });
 
-      cards.push(
+      cards[0].push(
         createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amounts.total),
       );
     } else {
@@ -219,7 +219,7 @@ export const NewPool: FC = () => {
           createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft),
         );
 
-        cards.push(nftCards);
+        cards.push([nftCards]);
       } else if (type === PairType.LiquidityProvision) {
         transactions.push(
           ...(await createDepositLiquidityToPairTxns({
@@ -246,7 +246,7 @@ export const NewPool: FC = () => {
           ),
         );
 
-        cards.push(nftCards);
+        cards.push([nftCards]);
       }
     }
 
@@ -260,7 +260,7 @@ export const NewPool: FC = () => {
           dispatch(
             txsLoadingModalActions.setState({
               visible: true,
-              cards: cards,
+              cards: cards[index],
               amountOfTxs: transactions.length,
               currentTxNumber: 1 + index,
               textStatus: TxsLoadingModalTextStatus.APPROVE,

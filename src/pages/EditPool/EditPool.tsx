@@ -157,7 +157,7 @@ export const EditPool: FC = () => {
         }),
       );
 
-      cards.push(createIxCardFuncs[IX_TYPE.EDIT_POOL]());
+      cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
     }
 
     if (type === PairType.TokenForNFT) {
@@ -182,9 +182,9 @@ export const EditPool: FC = () => {
           });
           const amount = sellAmounts.total - pool.fundsSolOrTokenBalance;
 
-          cards.push(
+          cards.push([
             createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amount),
-          );
+          ]);
         } else {
           transactions.push(
             await createWithdrawSolFromPairTxn({
@@ -207,12 +207,12 @@ export const EditPool: FC = () => {
             ? pool.fundsSolOrTokenBalance - buyAmounts.total
             : pool.fundsSolOrTokenBalance;
 
-          cards.push(
+          cards.push([
             createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](
               amount,
               true,
             ),
-          );
+          ]);
         }
       }
     } else if (type === PairType.NftForToken) {
@@ -244,7 +244,7 @@ export const EditPool: FC = () => {
         createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft, true),
       );
 
-      cards.push(nftAddCards, nftRemoveCards);
+      cards.push([nftAddCards], [nftRemoveCards]);
     } else if (type === PairType.LiquidityProvision) {
       transactions.push(
         ...(await createDepositLiquidityToPairTxns({
@@ -290,7 +290,7 @@ export const EditPool: FC = () => {
         ),
       );
 
-      cards.push(nftAddCards, nftRemoveCards);
+      cards.push([nftAddCards], [nftRemoveCards]);
     }
 
     const isSuccess = await signAndSendTransactionsInSeries({
@@ -303,7 +303,7 @@ export const EditPool: FC = () => {
           dispatch(
             txsLoadingModalActions.setState({
               visible: true,
-              cards: cards,
+              cards: cards[index],
               amountOfTxs: transactions.length,
               currentTxNumber: 1 + index,
               textStatus: TxsLoadingModalTextStatus.APPROVE,
