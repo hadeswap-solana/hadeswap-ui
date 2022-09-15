@@ -32,7 +32,7 @@ export const selectPoolsPageTableInfo = createSelector(
           new BN(pair?.fundsSolOrTokenBalance || '0'),
         ),
         nftsCount: pair?.nftsCount,
-        currentPrice: pair?.spotPrice,
+        currentPrice: pair?.currentSpotPrice,
         bondingCurve: pair?.bondingCurve,
         delta: formatBNToString(new BN(pair?.delta)),
       };
@@ -102,7 +102,7 @@ export const selectAllSellOrdersForMarket = createSelector(
     const pairs = marketPairs
       .filter(({ type }) => type !== 'nftForToken')
       .filter(({ buyOrdersAmount }) => buyOrdersAmount > 0)
-      .sort((a, b) => a.spotPrice - b.spotPrice);
+      .sort((a, b) => a.currentSpotPrice - b.currentSpotPrice);
 
     const bestPair = pairs.at(-1);
 
@@ -124,7 +124,7 @@ export const selectAllSellOrdersForMarket = createSelector(
             type: OrderType.SELL,
             targetPairPukey:
               bestPair?.pairPubkey || '11111111111111111111111111111111',
-            price: bestPair?.spotPrice || -1,
+            price: bestPair?.currentSpotPrice || -1,
             selected: false,
           };
         })
@@ -152,7 +152,7 @@ export const selectMyPoolsPageTableInfo = createSelector(
         new BN(pair?.fundsSolOrTokenBalance || '0'),
       ),
       nftsCount: pair?.nftsCount,
-      currentPrice: pair?.spotPrice,
+      currentPrice: pair?.currentSpotPrice,
       bondingCurve: pair?.bondingCurve,
       delta: formatBNToString(new BN(pair?.delta)),
       pairState: pair.pairState,

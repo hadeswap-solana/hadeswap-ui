@@ -132,6 +132,7 @@ export const NewPool: FC = () => {
         history.push(url);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [market, type]);
 
   const onSelectChange = useCallback((value: string) => {
@@ -182,6 +183,7 @@ export const NewPool: FC = () => {
         amount: nftAmount,
         bondingCurveType: curve,
         orderType: OrderType.Sell,
+        counter: 0,
       });
 
       cards[0].push(
@@ -237,6 +239,7 @@ export const NewPool: FC = () => {
           amount: nftModal.selectedNfts.length,
           bondingCurveType: curve,
           orderType: OrderType.Sell,
+          counter: 0,
         });
 
         const nftCards = nftModal.selectedNfts.map((nft, index) =>

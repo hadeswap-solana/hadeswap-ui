@@ -119,9 +119,12 @@ export const CollectionSell: FC = () => {
               key={order.mint}
               imageUrl={order.imageUrl}
               name={order.name}
-              price={formatBNToString(new BN(order.price))}
+              price={
+                order.price > 0 ? formatBNToString(new BN(order.price)) : ''
+              }
               onBtnClick={createOnBtnClick(order)}
               selected={order?.selected}
+              disabled={order.price <= 0}
             />
           ))}
         </div>

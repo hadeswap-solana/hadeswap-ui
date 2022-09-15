@@ -8,6 +8,7 @@ import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 interface NFTCardProps {
   className?: string;
   selected?: boolean;
+  disabled?: boolean;
   imageUrl: string;
   name?: string;
   price?: string;
@@ -17,6 +18,7 @@ interface NFTCardProps {
 export const NFTCard: FC<NFTCardProps> = ({
   className,
   selected = false,
+  disabled = false,
   imageUrl,
   name,
   price,
@@ -27,6 +29,7 @@ export const NFTCard: FC<NFTCardProps> = ({
       className={classNames(
         styles.card,
         { [styles.cardSelected]: selected },
+        { [styles.cardDisabled]: disabled },
         className,
       )}
     >

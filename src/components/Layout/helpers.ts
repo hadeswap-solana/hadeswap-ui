@@ -50,6 +50,7 @@ const createBuyNftFromPairIx: CreateIx = async ({
       pair: new web3.PublicKey(pair.pairPubkey),
       vaultNftTokenAccount: new web3.PublicKey(order.vaultTokenAccount),
       userPubkey: walletPubkey,
+      protocolFeeReceiver: new web3.PublicKey(process.env.PROTOCOL_FEE_PUBKEY),
     },
     args: {
       maxAmountToPay: order.price,
@@ -78,6 +79,7 @@ const createSellNftFromPairIx: CreateIx = async ({
       nftValidationAdapter: new web3.PublicKey(order.nftValidationAdapter),
       pair: new web3.PublicKey(pair.pairPubkey),
       userPubkey: walletPubkey,
+      protocolFeeReceiver: new web3.PublicKey(process.env.PROTOCOL_FEE_PUBKEY),
     },
     args: {
       minAmountToGet: order.price,

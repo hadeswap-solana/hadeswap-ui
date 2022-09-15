@@ -18,29 +18,20 @@ export const getSellOrderCartPairIndex = (
   sellOrdersCartMints: string[],
 ): number => sellOrdersCartMints.indexOf(orderMint);
 
-export const calcSellOrderPrice = (
-  sellOrderCartPairIndex: number,
-  sellOrdersCartMints: string[],
-  pair: Pair,
-): number => {
-  return sellOrderCartPairIndex !== -1
-    ? pair.spotPrice + pair.delta * (sellOrderCartPairIndex + 1)
-    : pair.spotPrice + pair.delta * (sellOrdersCartMints.length + 1);
-};
-
 export const calcNextSpotPrice = (
   pair: BasePair,
   orderType: OrderType,
 ): number => {
-  return hadeswap.helpers.next_spot_price({
+  return hadeswap.helpers.calculateNextSpotPrice({
     orderType:
       orderType === OrderType.BUY ? HadeOrderType.Buy : HadeOrderType.Sell,
-    spot_price: pair.spotPrice,
+    spotPrice: pair.baseSpotPrice,
     delta: pair.delta,
     bondingCurveType:
       pair.bondingCurve === 'linear'
         ? BondingCurveType.Linear
         : BondingCurveType.Exponential,
+    counter: pair.mathCounter,
   });
 };
 
@@ -73,15 +64,20 @@ export const changePairOnOrderAdd = (
   affectedPair: CartPair,
   appendableOrder: CartOrder,
 ): CartPair => {
-  const isBuyOrder = appendableOrder.type === OrderType.BUY;
+  const isTakerBuyOrder = appendableOrder.type === OrderType.BUY;
 
   return {
     ...affectedPair,
-    nftsCount: isBuyOrder ? affectedPair.nftsCount - 1 : affectedPair.nftsCount,
-    buyOrdersAmount: isBuyOrder
+    nftsCount: isTakerBuyOrder
+      ? affectedPair.nftsCount - 1
+      : affectedPair.nftsCount,
+    buyOrdersAmount: isTakerBuyOrder
       ? affectedPair.buyOrdersAmount
       : affectedPair.buyOrdersAmount - 1,
-    spotPrice: calcNextSpotPrice(affectedPair, appendableOrder.type),
+    currentSpotPrice: calcNextSpotPrice(affectedPair, appendableOrder.type),
+    mathCounter: isTakerBuyOrder
+      ? affectedPair.mathCounter + 1
+      : affectedPair.mathCounter - 1,
     sellOrders:
       affectedPair?.sellOrders?.filter(
         ({ mint }) => mint !== appendableOrder.mint,
@@ -94,22 +90,27 @@ export const changePairOnOrderRemove = (
   affectedPair: CartPair,
   removableOrder: CartOrder,
 ): CartPair => {
-  const isBuyOrder = removableOrder.type === OrderType.BUY;
+  const isTakerBuyOrder = removableOrder.type === OrderType.BUY;
 
   return {
     ...affectedPair,
-    spotPrice: calcNextSpotPrice(
+    currentSpotPrice: calcNextSpotPrice(
       affectedPair,
-      isBuyOrder ? OrderType.SELL : OrderType.BUY,
+      isTakerBuyOrder ? OrderType.SELL : OrderType.BUY,
     ),
-    nftsCount: isBuyOrder ? affectedPair.nftsCount + 1 : affectedPair.nftsCount,
-    buyOrdersAmount: isBuyOrder
+    mathCounter: isTakerBuyOrder
+      ? affectedPair.mathCounter - 1
+      : affectedPair.mathCounter + 1,
+    nftsCount: isTakerBuyOrder
+      ? affectedPair.nftsCount + 1
+      : affectedPair.nftsCount,
+    buyOrdersAmount: isTakerBuyOrder
       ? affectedPair.buyOrdersAmount
       : affectedPair.buyOrdersAmount + 1,
     takenMints: affectedPair.takenMints.filter(
       (mint) => mint !== removableOrder.mint,
     ),
-    sellOrders: isBuyOrder
+    sellOrders: isTakerBuyOrder
       ? [
           ...affectedPair.sellOrders,
           convertCartOrderToPairSellOrder(removableOrder),

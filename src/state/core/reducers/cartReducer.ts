@@ -80,21 +80,26 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
       //? Loop that creates new orders and pair
       const mutablePair = {
         ...pairWithValidOrders,
-        spotPrice: pairUpdate.spotPrice,
+        currentSpotPrice: pairUpdate.currentSpotPrice,
+        baseSpotPrice: pairUpdate.baseSpotPrice,
+        mathCounter: pairUpdate.mathCounter,
         buyOrdersAmount: pairUpdate.buyOrdersAmount - validSellOrders.length,
       };
       const changedOrders = [];
       for (let i = 0; i < validOrders.length; ++i) {
         const order = validOrders[i];
-        const isBuyOrder = order.type === OrderType.BUY;
+        const isTakerBuyOrder = order.type === OrderType.BUY;
         const nextSpotPrice = calcNextSpotPrice(mutablePair, order.type);
         const changedOrder = {
           ...order,
-          price: isBuyOrder ? nextSpotPrice : mutablePair.spotPrice,
+          price: isTakerBuyOrder ? nextSpotPrice : mutablePair.currentSpotPrice,
         };
         changedOrders.push(changedOrder);
 
-        mutablePair.spotPrice = nextSpotPrice;
+        mutablePair.mathCounter = isTakerBuyOrder
+          ? mutablePair.mathCounter + 1
+          : mutablePair.mathCounter - 1;
+        mutablePair.currentSpotPrice = nextSpotPrice;
       }
 
       nextState.pairs[pairUpdate.pairPubkey] = mutablePair;
@@ -126,7 +131,7 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     const appendableOrder: CartOrder = {
       type: orderType,
       targetPairPukey: affectedPair.pairPubkey,
-      price: isBuyOrder ? nextSpotPrice : affectedPair.spotPrice,
+      price: isBuyOrder ? nextSpotPrice : affectedPair.currentSpotPrice,
 
       mint: payloadOrder.mint,
       imageUrl: payloadOrder.imageUrl,

@@ -26,11 +26,14 @@ export interface BasePair {
   type: string;
   fundsSolOrTokenBalance: number | null;
   nftsCount: number;
+  // solOrTokenFeeAmount: number; //? Rewards
   bondingCurve: string;
   delta: number;
   assetReceiver: string;
   pairState: string;
-  spotPrice: number; //? For sell: Real price for sell order is sum of spotPrice+delta(spotPrice*delta) For buy: Real price
+  currentSpotPrice: number; //? For sell: Real price for makerSell order is sum of spotPrice+delta(spotPrice*delta) For makerBuy: Real price
+  baseSpotPrice: number;
+  mathCounter: number;
   fee: number;
   buyOrdersAmount: number;
   market: string;
