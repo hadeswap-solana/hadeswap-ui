@@ -20,10 +20,10 @@ export const PoolCard: FC<PoolCardProps> = ({
     delta,
     assetReceiver,
     pairState,
-    spotPrice,
+    currentSpotPrice,
     fee,
-    buyOrdersAmount,
-    market,
+    // buyOrdersAmount,
+    // market,
   },
 }) => {
   return (
@@ -34,7 +34,7 @@ export const PoolCard: FC<PoolCardProps> = ({
           <Descriptions.Item label=""> </Descriptions.Item>
           <Descriptions.Item label="Type">{type}</Descriptions.Item>
           <Descriptions.Item label="Spot price">
-            <SolPrice price={spotPrice} raw />
+            <SolPrice price={currentSpotPrice} raw />
           </Descriptions.Item>
           <Descriptions.Item label="Balance">
             {(fundsSolOrTokenBalance / 1e9).toFixed(3)}

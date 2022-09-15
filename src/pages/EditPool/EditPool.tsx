@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { differenceBy } from 'lodash';
 import {
   Button,
@@ -63,7 +63,6 @@ export const EditPool: FC = () => {
   const history = useHistory();
   const connection = useConnection();
   const wallet = useWallet();
-  const location = useLocation();
   const { poolPubKey } = useParams<{ poolPubKey: string }>();
   const pool = useSelector(selectCertainPair);
   const markets = useSelector(selectAllMarkets) as MarketInfo[];
@@ -93,7 +92,7 @@ export const EditPool: FC = () => {
   const initialValues = {
     curve: pool?.bondingCurve,
     fee: pool?.fee / 100,
-    spotPrice: pool?.spotPrice / 1e9,
+    spotPrice: pool?.currentSpotPrice / 1e9,
     delta:
       pool?.bondingCurve === BondingCurveType.Exponential
         ? pool?.delta / 100
@@ -111,7 +110,7 @@ export const EditPool: FC = () => {
   const rawFee = fee * 100;
 
   const isPricingChanged =
-    pool?.spotPrice !== rawSpotPrice ||
+    pool?.currentSpotPrice !== rawSpotPrice ||
     pool?.delta !== rawDelta ||
     (type === PairType.LiquidityProvision && pool?.fee !== rawFee);
   const isNftAmountChanged = pool?.buyOrdersAmount !== nftAmount;
@@ -128,6 +127,7 @@ export const EditPool: FC = () => {
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
     dispatch(coreActions.fetchPair(poolPubKey));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   const onSelectNftsClick = () => {
@@ -137,8 +137,6 @@ export const EditPool: FC = () => {
   const onFormChange = () => {
     //console.log(form.getFieldsValue(['market', 'type', 'spotPrice', 'curve']));
   };
-
-  console.log(pool);
 
   const onSavePoolClick = async () => {
     const transactions = [];
@@ -179,6 +177,7 @@ export const EditPool: FC = () => {
             amount: nftAmount,
             bondingCurveType: curve,
             orderType: OrderType.Sell,
+            counter: pool?.mathCounter,
           });
           const amount = sellAmounts.total - pool.fundsSolOrTokenBalance;
 
@@ -202,6 +201,7 @@ export const EditPool: FC = () => {
             amount: nftAmount,
             bondingCurveType: curve,
             orderType: OrderType.Buy,
+            counter: pool?.mathCounter,
           });
           const amount = nftAmount
             ? pool.fundsSolOrTokenBalance - buyAmounts.total
@@ -272,6 +272,7 @@ export const EditPool: FC = () => {
         amount: nftModal.selectedNfts.length,
         bondingCurveType: curve,
         orderType: OrderType.Sell,
+        counter: pool?.mathCounter,
       });
       sellAmounts.array.reverse();
 
