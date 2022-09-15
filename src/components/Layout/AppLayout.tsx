@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Layout } from 'antd';
+import { Layout, Typography } from 'antd';
 
 import { commonActions } from '../../state/common/actions';
 import { ConnectWalletButton } from '../ConnectWalletButton/ConnectWalletButton';
@@ -10,6 +10,11 @@ import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import { CartSider } from './CartSider';
 import { TransactionsLoadingModal } from '../TransactionsLoadingModal';
+import MediumIcon from '../../icons/MediumIcon';
+import DocsIcon from '../../icons/DocsIcon';
+import DiscordIcon from '../../icons/DiscordIcon';
+import TwitterIcon from '../../icons/TwitterIcon';
+import GitHubIcon from '../../icons/GitHubIcon';
 
 const { Header, Content, Footer } = Layout;
 
@@ -19,6 +24,17 @@ interface LayoutProps {
   className?: string;
   contentClassName?: string;
 }
+
+const DOCS_LIST = [
+  { to: 'https://medium.com/@frakt_HQ', icon: MediumIcon },
+  { to: 'https://docs.frakt.xyz/', icon: DocsIcon },
+];
+
+const SOCIALS_LIST = [
+  { to: 'https://tinyurl.com/zp3rx6z3', icon: DiscordIcon },
+  { to: 'https://twitter.com/FRAKT_HQ', icon: TwitterIcon },
+  { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
+];
 
 export const AppLayout: FC<LayoutProps> = ({
   children,
@@ -67,7 +83,32 @@ export const AppLayout: FC<LayoutProps> = ({
           </nav>
         </Header>
         <Content className={styles.content}>{children}</Content>
-        <Footer className={styles.footer}>Footer?</Footer>
+        <Footer className={styles.footer}>
+          <div className={styles.footerBlock}>
+            <Typography.Text>DOCUMENTATION</Typography.Text>
+            <ul className={styles.socialNavs}>
+              {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
+                <li className={styles.socialItem} key={idx}>
+                  <a href={to} target="_blank" rel="noreferrer">
+                    <Icon />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className={styles.footerBlock}>
+            <Typography.Text>CONTACT US</Typography.Text>
+            <ul className={styles.socialNavs}>
+              {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
+                <li className={styles.socialItem} key={idx}>
+                  <a href={to} target="_blank" rel="noreferrer">
+                    <Icon />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Footer>
       </Layout>
       <CartSider />
       <SelectWalletModal />

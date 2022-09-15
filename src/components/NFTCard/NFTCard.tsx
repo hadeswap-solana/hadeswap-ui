@@ -32,6 +32,7 @@ export const NFTCard: FC<NFTCardProps> = ({
         { [styles.cardDisabled]: disabled },
         className,
       )}
+      onClick={onBtnClick}
     >
       <img className={styles.cardImage} src={imageUrl} alt={name} />
       <div className={styles.cardContent}>
@@ -46,7 +47,7 @@ export const NFTCard: FC<NFTCardProps> = ({
           </Typography.Text>
         )}
         {onBtnClick && (
-          <Button type="primary" block onClick={onBtnClick}>
+          <Button type="primary" block>
             {!selected ? 'Select' : 'Deselect'}
           </Button>
         )}

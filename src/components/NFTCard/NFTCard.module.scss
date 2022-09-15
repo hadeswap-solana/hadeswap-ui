@@ -4,6 +4,7 @@
   transition: border-color var(--ease-base-out) var(--animation-duration-slow);
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .cardSelected {

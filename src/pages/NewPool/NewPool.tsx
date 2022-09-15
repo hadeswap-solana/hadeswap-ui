@@ -324,9 +324,16 @@ export const NewPool: FC = () => {
                       <Col span={12} offset={6}>
                         <Form.Item name="market">
                           <Select
+                            showSearch
                             value={market}
+                            optionFilterProp="children"
                             style={{ width: '100%' }}
                             onChange={onSelectChange}
+                            filterOption={(input, option) =>
+                              (option!.children as unknown as string)
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
                           >
                             {markets?.map((market, index) => (
                               <Option key={index} value={market.marketPubkey}>

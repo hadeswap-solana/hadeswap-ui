@@ -59,6 +59,13 @@
   left: 0;
 }
 
+.cartTitle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .cartItems {
   overflow-y: auto;
   display: flex;
@@ -72,12 +79,21 @@
 .toggleCartSiderBtn {
   position: absolute !important;
   top: unset;
-  bottom: 20%;
+  bottom: 50%;
   left: -40px;
 }
 
 .footer {
-  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  column-gap: 50px;
+}
+
+.footerBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .siderContent {
@@ -138,4 +154,24 @@
   justify-content: flex-end;
   align-items: center;
   padding-right: 12px;
+}
+
+.socialNavs {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.socialItem {
+  list-style-type: none;
+  width: 24px;
+  height: 24px;
+  margin-right: 5px;
+
+
+  &:hover {
+    opacity: 0.7;
+  }
 }

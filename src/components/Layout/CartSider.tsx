@@ -16,6 +16,9 @@ import { coreActions } from '../../state/core/actions';
 import { CartOrder } from '../../state/core/types';
 import { useSwap } from './hooks';
 import classNames from 'classnames';
+import { types } from 'sass';
+import Boolean = types.Boolean;
+import { SolPrice } from '../SolPrice/SolPrice';
 
 const { Sider } = Layout;
 
@@ -28,6 +31,10 @@ export const CartSider: FC = () => {
   const invalidItems = useSelector(selectAllInvalidCartOrders);
 
   const itemsAmount = cartItems.buy.length + cartItems.sell.length;
+  const isSwapButtonDisabled = !itemsAmount;
+
+  const totalBuy = cartItems.buy.reduce((acc, item) => acc + item.price, 0);
+  const totalSell = cartItems.sell.reduce((acc, item) => acc + item.price, 0);
 
   const createOnDeselectHandler = (order: CartOrder) => () => {
     dispatch(coreActions.removeOrderFromCart(order.mint));
@@ -57,9 +64,14 @@ export const CartSider: FC = () => {
       <div className={styles.siderContent}>
         {!!cartItems.buy.length && (
           <div className={styles.cardsSection}>
-            <Typography.Title level={4}>
-              Buy {cartItems.buy.length} NFTs
-            </Typography.Title>
+            <div className={styles.cartTitle}>
+              <Typography.Title level={4}>
+                Buy {cartItems.buy.length} NFTs
+              </Typography.Title>
+              <Typography.Text>
+                <SolPrice price={totalBuy} raw />
+              </Typography.Text>
+            </div>
             <div className={styles.cartItems}>
               {cartItems.buy.map((item) => (
                 <SiderCart
@@ -75,9 +87,14 @@ export const CartSider: FC = () => {
         )}
         {!!cartItems.sell.length && (
           <div className={styles.cardsSection}>
-            <Typography.Title level={4}>
-              Sell {cartItems.sell.length} NFTs
-            </Typography.Title>
+            <div className={styles.cartTitle}>
+              <Typography.Title level={4}>
+                Sell {cartItems.sell.length} NFTs
+              </Typography.Title>
+              <Typography.Text>
+                <SolPrice price={totalSell} raw />
+              </Typography.Text>
+            </div>
             <div className={styles.cartItems}>
               {cartItems.sell.map((item) => (
                 <SiderCart
@@ -132,7 +149,13 @@ export const CartSider: FC = () => {
         )}
 
         <div className={styles.submitWrapper}>
-          <Button type="primary" block size="large" onClick={swap}>
+          <Button
+            disabled={isSwapButtonDisabled}
+            type="primary"
+            block
+            size="large"
+            onClick={swap}
+          >
             Swap
           </Button>
         </div>
