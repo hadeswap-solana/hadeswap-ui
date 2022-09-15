@@ -1,5 +1,5 @@
 import { createReducer } from 'typesafe-actions';
-import { Dictionary } from 'lodash';
+import { Dictionary, clone } from 'lodash';
 import { coreActions, coreTypes } from '../actions';
 import { CartOrder, CartPair, OrderType } from '../types';
 import {
@@ -9,21 +9,106 @@ import {
   computeNewCartStateAfterBuyOrderRemove,
   computeNewCartStateAfterSellOrderRemove,
   findCartOrder,
+  findInvalidBuyOrders,
+  findInvalidSellOrders,
+  findSellOrders,
+  findValidOrders,
 } from '../helpers';
 
 export type CartState = {
   pairs: Dictionary<CartPair>;
   pendingOrders: Dictionary<CartOrder[]>;
+  invalidOrders: Dictionary<CartOrder[]>;
   finishedOrdersMints: string[];
 };
 
 const initialCartState: CartState = {
   pairs: {},
   pendingOrders: {},
+  invalidOrders: {},
   finishedOrdersMints: [],
 };
 
+const removeInvalidMintsFromCartPair = (
+  pair: CartPair,
+  invalidOrders: CartOrder[],
+) => {
+  const invalidMints = invalidOrders.map(({ mint }) => mint);
+  const takenMints =
+    pair?.takenMints.filter((mint) => !invalidMints.includes(mint)) || [];
+
+  return { ...pair, takenMints };
+};
+
 export const cartReducer = createReducer<CartState>(initialCartState, {
+  [coreTypes.UPDATE_PAIRS]: (
+    state,
+    { payload: pairsUpdates }: ReturnType<typeof coreActions.updatePairs>,
+  ) => {
+    const nextState = clone(state);
+
+    pairsUpdates.forEach((pairUpdate) => {
+      const affectedPair = state.pairs[pairUpdate.pairPubkey];
+
+      if (!affectedPair) {
+        return;
+      }
+
+      const oldOrders = nextState.pendingOrders[pairUpdate.pairPubkey] || [];
+
+      //? Find invalid orders
+      const invalidBuyOrders = findInvalidBuyOrders(pairUpdate, oldOrders);
+      const invalidSellOrders = findInvalidSellOrders(pairUpdate, oldOrders);
+      const allInvalidOrders = [...invalidBuyOrders, ...invalidSellOrders];
+
+      //? Set invalid orders in store
+      nextState.invalidOrders[pairUpdate.pairPubkey] = [
+        ...(nextState.invalidOrders[pairUpdate.pairPubkey] || []),
+        ...allInvalidOrders,
+      ];
+
+      //? Get valid orders
+      const validOrders = findValidOrders(oldOrders, allInvalidOrders);
+      const validSellOrders = findSellOrders(validOrders);
+
+      //? Remove invalid orders from taken mints
+      const pairWithValidOrders = removeInvalidMintsFromCartPair(
+        affectedPair,
+        allInvalidOrders,
+      );
+
+      //? Loop that creates new orders and pair
+      const mutablePair = {
+        ...pairWithValidOrders,
+        spotPrice: pairUpdate.spotPrice,
+        buyOrdersAmount: pairUpdate.buyOrdersAmount - validSellOrders.length,
+      };
+      const changedOrders = [];
+      for (let i = 0; i < validOrders.length; ++i) {
+        const order = validOrders[i];
+        const isBuyOrder = order.type === OrderType.BUY;
+        const nextSpotPrice = calcNextSpotPrice(mutablePair, order.type);
+        const changedOrder = {
+          ...order,
+          price: isBuyOrder ? nextSpotPrice : mutablePair.spotPrice,
+        };
+        changedOrders.push(changedOrder);
+
+        mutablePair.spotPrice = nextSpotPrice;
+      }
+
+      nextState.pairs[pairUpdate.pairPubkey] = mutablePair;
+      nextState.pendingOrders[pairUpdate.pairPubkey] = changedOrders;
+    });
+
+    return nextState;
+  },
+  [coreTypes.CLEAR_INVALID_ORDERS]: (state) => {
+    return {
+      ...state,
+      invalidOrders: {},
+    };
+  },
   [coreTypes.ADD_ORDER_TO_CART]: (
     state,
     { payload }: ReturnType<typeof coreActions.addOrderToCart>,

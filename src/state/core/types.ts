@@ -41,6 +41,10 @@ export interface Pair extends BasePair {
   sellOrders?: PairSellOrder[];
 }
 
+export interface PairUpdate extends BasePair {
+  sellOrdersMints?: string[];
+}
+
 export interface CartPair extends Pair {
   takenMints: string[];
 }

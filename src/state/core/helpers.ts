@@ -1,4 +1,4 @@
-import { Dictionary } from 'lodash';
+import { Dictionary, clone } from 'lodash';
 import { hadeswap } from 'hadeswap-sdk';
 import {
   BasePair,
@@ -7,6 +7,7 @@ import {
   OrderType,
   Pair,
   PairSellOrder,
+  PairUpdate,
 } from './types';
 import { CartState } from './reducers/cartReducer';
 
@@ -134,19 +135,19 @@ export const computeNewCartStateAfterBuyOrderRemove = (
     mostExpensiveOrder.price = removableOrder.price;
   }
 
-  return {
+  const nextState = {
     ...state,
     pairs: {
       ...state.pairs,
-      [affectedPair.pairPubkey]: affectedPair.takenMints.length
-        ? affectedPair
-        : null,
+      [affectedPair.pairPubkey]: clone(affectedPair),
     },
     pendingOrders: {
       ...state.pendingOrders,
       [affectedPair.pairPubkey]: remainingOrdersForPair,
     },
   };
+
+  return nextState;
 };
 
 export const computeNewCartStateAfterSellOrderRemove = (
@@ -222,9 +223,7 @@ export const computeNewCartStateAfterSellOrderRemove = (
     ...state,
     pairs: {
       ...state.pairs,
-      [affectedPair.pairPubkey]: affectedPair?.takenMints?.length
-        ? affectedPair
-        : null,
+      [affectedPair.pairPubkey]: affectedPair,
     },
     pendingOrders: {
       ...state.pendingOrders,
@@ -233,4 +232,39 @@ export const computeNewCartStateAfterSellOrderRemove = (
       ].filter(({ mint }) => mint !== removableOrder.mint),
     },
   };
+};
+
+export const findInvalidBuyOrders = (
+  pairUpdate: PairUpdate,
+  pairOrders: CartOrder[],
+): CartOrder[] => {
+  if (pairUpdate?.sellOrdersMints) {
+    return pairOrders.filter(
+      ({ mint, type }) =>
+        type === OrderType.BUY && !pairUpdate.sellOrdersMints?.includes(mint),
+    );
+  }
+
+  return [];
+};
+
+export const findInvalidSellOrders = (
+  pairUpdate: PairUpdate,
+  pairOrders: CartOrder[],
+): CartOrder[] => {
+  const sellOrders = pairOrders.filter(({ type }) => type === OrderType.SELL);
+  return sellOrders.slice(pairUpdate.buyOrdersAmount);
+};
+
+export const findValidOrders = (
+  allOrders: CartOrder[],
+  invalidOrders: CartOrder[],
+): CartOrder[] => {
+  const invalidMints = invalidOrders.map(({ mint }) => mint);
+
+  return allOrders.filter(({ mint }) => !invalidMints.includes(mint));
+};
+
+export const findSellOrders = (orders: CartOrder[]): CartOrder[] => {
+  return orders.filter(({ type }) => type === OrderType.SELL);
 };

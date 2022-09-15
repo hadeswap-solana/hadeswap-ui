@@ -1,100 +1,22 @@
 import BN from 'bn.js';
-import { identity } from 'ramda';
 import { createSelector } from 'reselect';
-import { formatBNToString } from '../../utils';
+import { formatBNToString } from '../../../utils';
+import { OrderType, MarketOrder } from '../types';
+import { keyBy } from 'lodash';
+import { calcNextSpotPrice } from '../helpers';
+import { selectCertainMarket } from './marketSelectors';
 import {
-  CartPair,
-  MarketInfo,
-  OrderType,
-  Pair,
-  CartOrder,
-  Nft,
-  MarketOrder,
-} from './types';
-import { Dictionary, keyBy } from 'lodash';
-import { CartState } from './reducers/cartReducer';
-import { calcNextSpotPrice, convertCartPairToMarketPair } from './helpers';
-import { RequestStatus } from '../../utils/state';
-
-export const selectCertainPair = createSelector(
-  (store: any) => (store?.core?.pair?.data as Pair) || null,
-  identity<Pair | null>,
-);
-
-export const selectCertainPairLoading = createSelector(
-  (store: any) => (store?.core?.pair?.status as RequestStatus) || '',
-  (status: RequestStatus) => status === RequestStatus.PENDING,
-);
-
-export const selectAllMarkets = createSelector(
-  (store: any) => (store?.core?.markets?.data as MarketInfo[]) || [],
-  identity<MarketInfo[]>,
-);
-
-export const selectAllMarketsLoading = createSelector(
-  (store: any) => (store?.core?.markets?.status as RequestStatus) || '',
-  (status: RequestStatus) => status === RequestStatus.PENDING,
-);
-
-export const selectCertainMarket = createSelector(
-  (store: any) => (store?.core?.market?.data as MarketInfo) || null,
-  identity<MarketInfo | null>,
-);
-
-export const selectCertainMarketLoading = createSelector(
-  (store: any) => (store?.core?.market?.status as RequestStatus) || '',
-  (status: RequestStatus) => status === RequestStatus.PENDING,
-);
-
-export const selectCartState = createSelector(
-  (store: any) => (store?.core?.cart as CartState) || {},
-  identity<CartState>,
-);
-
-export const selectCartPairs = createSelector(
-  selectCartState,
-  (cart: CartState) => (cart?.pairs as Dictionary<CartPair>) || {},
-);
-
-export const selectCartFinishedOrdersMints = createSelector(
-  selectCartState,
-  (cart: CartState) => (cart?.finishedOrdersMints as string[]) || [],
-);
-
-export const selectCartPendingOrders = createSelector(
-  selectCartState,
-  (cart: CartState) => {
-    const { pendingOrders, finishedOrdersMints } = cart;
-    const filteredPendingOrders = Object.fromEntries(
-      Object.entries(pendingOrders).map(([pairPubkey, orders]) => [
-        pairPubkey,
-        orders.filter(({ mint }) => !finishedOrdersMints.includes(mint)),
-      ]),
-    );
-
-    return (filteredPendingOrders as Dictionary<CartOrder[]>) || {};
-  },
-);
-
-const selectRawMarketPairs = createSelector(
-  (store: any) => (store?.core?.marketPairs?.data as Pair[]) || [],
-  identity<Pair[]>,
-);
-
-export const selectMarketPairs = createSelector(
-  [selectCartPairs, selectRawMarketPairs],
-  (cartPairs, rawMarketPairs): Pair[] => {
-    return rawMarketPairs.map((rawPair) => {
-      const cartPair = cartPairs[rawPair.pairPubkey];
-      return cartPair ? convertCartPairToMarketPair(cartPair) : rawPair;
-    });
-  },
-);
-
-export const selectMarketPairsLoading = createSelector(
-  (store: any) => (store?.core?.marketPairs?.status as RequestStatus) || '',
-  (status: RequestStatus) => status === RequestStatus.PENDING,
-);
+  selectMarketPairs,
+  selectRawMarketPairs,
+} from './marketPairsSelectors';
+import {
+  selectCartFinishedOrdersMints,
+  selectCartPairs,
+  selectCartPendingOrders,
+} from './cartSelectors';
+import { selectMarketWalletNfts } from './marketWalletNftsSelectors';
+import { selectAllMarkets } from './allMarketsSelectors';
+import { selectWalletPairs } from './walletPairsSelectors';
 
 export const selectPoolsPageTableInfo = createSelector(
   [selectCertainMarket, selectRawMarketPairs],
@@ -162,38 +84,6 @@ export const selectAllBuyOrdersForMarket = createSelector(
   },
 );
 
-export const selectAllWalletNfts = createSelector(
-  (store: any) => (store?.core?.walletNfts?.data as Nft[]) || [],
-  identity<Nft[]>,
-);
-
-export const selectWalletPairs = createSelector(
-  (store: any) => (store?.core?.walletPairs?.data as Pair[]) || [],
-  identity<Pair[]>,
-);
-
-export const selectWalletPairsLoading = createSelector(
-  (store: any) => (store?.core?.walletPairs?.status as RequestStatus) || '',
-  (status: RequestStatus) => status === RequestStatus.PENDING,
-);
-
-export const selectWalletPair = createSelector(
-  [selectWalletPairs, (_, pairPubkey: string) => pairPubkey],
-  (pairs, pairPubkey) =>
-    pairs?.find((pair) => pairPubkey === pair.pairPubkey) as Pair,
-);
-
-export const selectMarketWalletNfts = createSelector(
-  (store: any) => (store?.core?.marketWalletNfts?.data as Nft[]) || [],
-  identity<Nft[]>,
-);
-
-export const selectMarketWalletNftsLoading = createSelector(
-  (store: any) =>
-    (store?.core?.marketWalletNfts?.status as RequestStatus) || '',
-  (status: RequestStatus) => status === RequestStatus.PENDING,
-);
-
 export const selectAllSellOrdersForMarket = createSelector(
   [
     selectMarketPairs,
@@ -244,19 +134,6 @@ export const selectAllSellOrdersForMarket = createSelector(
       (a: MarketOrder, b: MarketOrder) =>
         b.price - a.price || a?.name?.localeCompare(b?.name),
     ) as MarketOrder[];
-  },
-);
-
-export const selectCartItems = createSelector(
-  selectCartPendingOrders,
-  (pendingOrders): { buy: CartOrder[]; sell: CartOrder[] } => {
-    const allOrders = Object.values(pendingOrders).flat();
-    return {
-      buy: allOrders
-        .filter(({ type }) => type === OrderType.BUY)
-        .sort((a: CartOrder, b: CartOrder) => a.price - b.price) as CartOrder[],
-      sell: allOrders.filter(({ type }) => type === OrderType.SELL),
-    };
   },
 );
 

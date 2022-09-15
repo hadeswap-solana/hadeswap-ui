@@ -1,8 +1,17 @@
-import { all, call } from 'redux-saga/effects';
+import { all, call, put } from 'redux-saga/effects';
+import { connectSocket } from '../utils/state';
+import { commonActions } from './common/actions';
 
 import commonSagas from './common/sagas';
-import coreSagas from './core/sagas';
+import coreSagas, { coreSocketSagas } from './core/sagas';
+import { sagaMiddleware } from './store';
+
+const appInitSaga = function* () {
+  const socket = yield call(connectSocket);
+  yield put(commonActions.setSocket(socket));
+  sagaMiddleware.run(coreSocketSagas(socket));
+};
 
 export default function* rootSaga(): Generator {
-  yield all([call(commonSagas), call(coreSagas)]);
+  yield all([call(appInitSaga), call(commonSagas), call(coreSagas)]);
 }
