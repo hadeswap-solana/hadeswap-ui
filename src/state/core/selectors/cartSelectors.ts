@@ -57,5 +57,8 @@ export const selectCartPairsPubkeys = createSelector(
 
 export const selectAllInvalidCartOrders = createSelector(
   selectCartState,
-  (cartState): CartOrder[] => Object.values(cartState.invalidOrders).flat(),
+  (cartState): CartOrder[] =>
+    Object.values(cartState.invalidOrders)
+      .flat()
+      .filter(({ mint }) => !cartState?.finishedOrdersMints?.includes(mint)),
 );
