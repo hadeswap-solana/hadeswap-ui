@@ -269,3 +269,20 @@ export const findValidOrders = (
 export const findSellOrders = (orders: CartOrder[]): CartOrder[] => {
   return orders.filter(({ type }) => type === OrderType.SELL);
 };
+
+//? Pars blockchain fee representation (integer persent) to normal percent
+export const parseFee = (fee: number): number => {
+  return fee ? fee / 100 : 0;
+};
+
+export const calcPriceWithFee = (
+  price: number,
+  fee = 0,
+  orderType: OrderType,
+): number => {
+  if (orderType === OrderType.BUY) {
+    return price + price * parseFee(fee) * 0.01;
+  }
+
+  return price - price * parseFee(fee) * 0.01;
+};

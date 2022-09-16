@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import { formatBNToString } from '../../../utils';
 import { OrderType, MarketOrder } from '../types';
 import { keyBy } from 'lodash';
-import { calcNextSpotPrice } from '../helpers';
+import { calcNextSpotPrice, calcPriceWithFee, parseFee } from '../helpers';
 import { selectCertainMarket } from './marketSelectors';
 import {
   selectMarketPairs,
@@ -28,6 +28,8 @@ export const selectPoolsPageTableInfo = createSelector(
         collectionName: marketInfo?.collectionName || 'Untitled Collection',
         collectionImage: marketInfo?.collectionImage || '',
         type: pair?.type,
+        spotPrice: formatBNToString(new BN(pair.currentSpotPrice || '0')),
+        fee: parseFee(pair.fee || 0),
         fundsSolOrTokenBalance: formatBNToString(
           new BN(pair?.fundsSolOrTokenBalance || '0'),
         ),
@@ -69,7 +71,11 @@ export const selectAllBuyOrdersForMarket = createSelector(
             ...sellOrder,
             type: OrderType.BUY,
             targetPairPukey: pair.pairPubkey,
-            price: calcNextSpotPrice(cartPair || pair, OrderType.BUY),
+            price: calcPriceWithFee(
+              calcNextSpotPrice(cartPair || pair, OrderType.BUY),
+              pair.fee,
+              OrderType.BUY,
+            ),
             selected: false,
           })) || [];
 
@@ -102,7 +108,11 @@ export const selectAllSellOrdersForMarket = createSelector(
     const pairs = marketPairs
       .filter(({ type }) => type !== 'nftForToken')
       .filter(({ buyOrdersAmount }) => buyOrdersAmount > 0)
-      .sort((a, b) => a.currentSpotPrice - b.currentSpotPrice);
+      .sort(
+        (a, b) =>
+          calcPriceWithFee(a.currentSpotPrice, a.fee, OrderType.SELL) -
+          calcPriceWithFee(b.currentSpotPrice, a.fee, OrderType.SELL),
+      );
 
     const bestPair = pairs.at(-1);
 
@@ -124,7 +134,12 @@ export const selectAllSellOrdersForMarket = createSelector(
             type: OrderType.SELL,
             targetPairPukey:
               bestPair?.pairPubkey || '11111111111111111111111111111111',
-            price: bestPair?.currentSpotPrice || -1,
+            price:
+              calcPriceWithFee(
+                bestPair?.currentSpotPrice,
+                bestPair.fee,
+                OrderType.SELL,
+              ) || -1,
             selected: false,
           };
         })
@@ -148,6 +163,8 @@ export const selectMyPoolsPageTableInfo = createSelector(
         marketByPubkey[pair.market]?.collectionName || 'Untitled Collection',
       collectionImage: marketByPubkey[pair.market]?.collectionImage || '',
       type: pair?.type,
+      spotPrice: formatBNToString(new BN(pair.currentSpotPrice || '0')),
+      fee: parseFee(pair.fee || 0),
       fundsSolOrTokenBalance: formatBNToString(
         new BN(pair?.fundsSolOrTokenBalance || '0'),
       ),

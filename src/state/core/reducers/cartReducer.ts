@@ -4,6 +4,7 @@ import { coreActions, coreTypes } from '../actions';
 import { CartOrder, CartPair, OrderType } from '../types';
 import {
   calcNextSpotPrice,
+  calcPriceWithFee,
   changePairOnOrderAdd,
   changePairOnOrderRemove,
   computeNewCartStateAfterBuyOrderRemove,
@@ -92,7 +93,13 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
         const nextSpotPrice = calcNextSpotPrice(mutablePair, order.type);
         const changedOrder = {
           ...order,
-          price: isTakerBuyOrder ? nextSpotPrice : mutablePair.currentSpotPrice,
+          price: isTakerBuyOrder
+            ? calcPriceWithFee(nextSpotPrice, mutablePair.fee, OrderType.BUY)
+            : calcPriceWithFee(
+                mutablePair.currentSpotPrice,
+                mutablePair.fee,
+                OrderType.SELL,
+              ),
         };
         changedOrders.push(changedOrder);
 
@@ -131,7 +138,13 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     const appendableOrder: CartOrder = {
       type: orderType,
       targetPairPukey: affectedPair.pairPubkey,
-      price: isBuyOrder ? nextSpotPrice : affectedPair.currentSpotPrice,
+      price: isBuyOrder
+        ? calcPriceWithFee(nextSpotPrice, affectedPair.fee, OrderType.BUY)
+        : calcPriceWithFee(
+            affectedPair.currentSpotPrice,
+            affectedPair.fee,
+            OrderType.SELL,
+          ),
 
       mint: payloadOrder.mint,
       imageUrl: payloadOrder.imageUrl,

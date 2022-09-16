@@ -42,6 +42,22 @@ const poolTableColumns: ColumnsType<
     render: (text) => <Typography.Text>{text}</Typography.Text>,
   },
   {
+    key: 'spotPrice',
+    title: 'Spot price',
+    dataIndex: 'spotPrice',
+    sorter: (a, b) => parseFloat(a?.spotPrice) - parseFloat(b?.spotPrice),
+    showSorterTooltip: false,
+    render: (text) => <PriceWithIcon price={text} />,
+  },
+  {
+    key: 'fee',
+    title: 'Fee',
+    dataIndex: 'fee',
+    sorter: (a, b) => a.fee - b.fee,
+    showSorterTooltip: false,
+    render: (text) => <Typography.Text>{text}%</Typography.Text>,
+  },
+  {
     key: 'fundsSolOrTokenBalance',
     title: 'SOL balance',
     dataIndex: 'fundsSolOrTokenBalance',
