@@ -16,8 +16,6 @@ import { coreActions } from '../../state/core/actions';
 import { CartOrder } from '../../state/core/types';
 import { useSwap } from './hooks';
 import classNames from 'classnames';
-import { types } from 'sass';
-import Boolean = types.Boolean;
 import { SolPrice } from '../SolPrice/SolPrice';
 
 const { Sider } = Layout;
