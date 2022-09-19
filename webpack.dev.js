@@ -71,6 +71,21 @@ module.exports = {
         ]
       },
       {
+        test: /\.less$/,
+        use: [{
+          loader: 'style-loader',
+        }, {
+          loader: 'css-loader',
+        }, {
+          loader: 'less-loader',
+            options: {
+              lessOptions: {
+                javascriptEnabled: true,
+              },
+            },
+        }],
+      },
+      {
         test: /\.(png|jpg|jpeg|gif|ico|webp)$/i,
         type: 'asset/resource'
       },

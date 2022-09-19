@@ -1,5 +1,6 @@
 .header {
   display: flex;
+  border-bottom: 1px solid var(--border-color-base);
 }
 
 .content {
@@ -12,15 +13,6 @@
   margin-right: 16px;
   display: flex;
   align-items: center;
-  font-size: 28px;
-  font-weight: 700;
-
-  &,
-  &:hover,
-  &:focus {
-    text-decoration: none;
-    color: inherit;
-  }
 }
 
 .nav {
@@ -37,10 +29,12 @@
   &:hover,
   &:active {
     background: var(--primary-color);
+    color: var(--heading-color);
   }
 }
 .navLinkActive {
   background: var(--primary-color);
+  color: var(--heading-color);
 }
 
 .navRight {
@@ -57,6 +51,7 @@
   position: sticky !important;
   top: 0;
   left: 0;
+  border-left: 1px solid var(--border-color-base);
 }
 
 .cartTitle {
@@ -80,7 +75,7 @@
   position: absolute !important;
   top: unset;
   bottom: 50%;
-  left: -40px;
+  left: -30px;
 }
 
 .footer {
@@ -118,7 +113,9 @@
 }
 
 .card {
-  background: var(--ant-gray);
+  overflow: hidden;
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color-base);
   display: flex;
   height: 64px;
 }

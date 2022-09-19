@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
 
 import App from './App';
-import 'antd/dist/antd.dark.css';
+import './scss/theme.less';
 import './scss/styles.scss';
 
 import * as serviceWorker from './serviceWorker';

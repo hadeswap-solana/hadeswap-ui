@@ -10,6 +10,7 @@ import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import { CartSider } from './CartSider';
 import { TransactionsLoadingModal } from '../TransactionsLoadingModal';
+import Logo from '../../icons/Logo';
 import MediumIcon from '../../icons/MediumIcon';
 import DocsIcon from '../../icons/DocsIcon';
 import DiscordIcon from '../../icons/DiscordIcon';
@@ -53,17 +54,18 @@ export const AppLayout: FC<LayoutProps> = ({
       <Layout>
         <Header className={styles.header}>
           <NavLink className={styles.logo} to={PATHS.ROOT}>
-            Hadeswap
+            <Logo />
           </NavLink>
           <nav className={styles.nav}>
-            <NavLink
-              to={PATHS.COLLECTIONS}
-              className={styles.navLink}
-              activeClassName={styles.navLinkActive}
-            >
-              Collections
-            </NavLink>
+            <div></div>
             <div className={styles.navRight}>
+              <NavLink
+                to={PATHS.COLLECTIONS}
+                className={styles.navLink}
+                activeClassName={styles.navLinkActive}
+              >
+                Collections
+              </NavLink>
               <NavLink
                 to={PATHS.MY_POOLS}
                 className={styles.navLink}

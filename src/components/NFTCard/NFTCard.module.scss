@@ -1,7 +1,9 @@
 .card {
+  overflow: hidden;
   background: var(--ant-gray);
   border: 1px solid transparent;
   transition: border-color var(--ease-base-out) var(--animation-duration-slow);
+  border-radius: var(--border-radius-base);
   display: flex;
   flex-direction: column;
   cursor: pointer;

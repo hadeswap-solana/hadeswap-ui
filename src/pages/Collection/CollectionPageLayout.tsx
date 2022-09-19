@@ -85,7 +85,6 @@ export const CollectionPageLayout: FC = ({ children }) => {
           <Tabs
             defaultActiveKey={activeTab}
             centered
-            type="card"
             onChange={onTabChangeHandler}
           >
             <TabPane tab="Buy" key={COLLECTION_TABS.BUY} />

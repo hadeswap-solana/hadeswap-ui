@@ -24,7 +24,7 @@ export const ConnectWalletButton = ({
   return !connected ? (
     <Button
       className={className}
-      type="primary"
+      type="ghost"
       onClick={() => {
         dispatch(commonActions.toggleWalletModal());
       }}
@@ -53,7 +53,7 @@ export const ConnectWalletButton = ({
         />
       }
     >
-      <Button className={className} type="primary">
+      <Button className={className} type="ghost">
         <Space>
           {shortenAddress(publicKey.toBase58())}
           <DownOutlined />

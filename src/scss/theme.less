@@ -1,0 +1,54 @@
+@import 'antd/dist/antd.dark.less';
+
+@primary-color: #9DCAFF;
+@primary-color-hover: #D1E4FF;
+@primary-color-active: #D1E4FF;
+@btn-primary-color: #1A1C1E;
+
+@border-radius-base: 20px;
+
+@layout-header-background: #242A30;
+@body-background: #1E1E1E;
+
+@menu-bg: @body-background;
+
+.ant-card {
+  background: @layout-header-background;
+}
+
+.ant-modal-content {
+  background: #242A30;
+}
+
+.ant-table {
+  background: #9DCAFF14;
+}
+
+.ant-table-thead > tr > th {
+  background: @layout-header-background;
+  border-bottom: 1px solid #3E4854;
+}
+
+.ant-table-thead th.ant-table-column-has-sorters:hover {
+  background: #9DCAFF14;
+}
+
+.ant-table-tbody > tr:last-child > td {
+  border-bottom: 0;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #3E4854;
+}
+
+.ant-table-tbody > tr.ant-table-row:hover > td {
+  background: #9DCAFF14;
+}
+
+.ant-table-tbody > tr.ant-table-row:last-child:hover > td:first-child {
+  border-radius: 0 0 0 @border-radius-base;
+}
+
+.ant-table-tbody > tr.ant-table-row:last-child:hover > td:last-child {
+  border-radius: 0 0 @border-radius-base 0;
+}

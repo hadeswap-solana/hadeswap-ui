@@ -31,6 +31,7 @@
 
 .generalInfo {
   background: var(--ant-gray);
+  border-radius: var(--border-radius-base);
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   padding: 16px;
@@ -43,7 +44,9 @@
 
 .generalInfoBlock {
   padding: 8px;
-  border: 1px solid #303030;
+  border-radius: var(--border-radius-base);
+  background: #242A30;
+  border: 1px solid #3E4854;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -63,6 +66,7 @@
 
 .nftsListContainer {
   background: var(--ant-gray);
+  border-radius: var(--border-radius-base);
   padding: 16px;
 }
 
