@@ -59,6 +59,8 @@ import { hadeswap } from 'hadeswap-sdk';
 
 const { Title, Paragraph } = Typography;
 
+const takenLpOrders: any = {};
+
 export const EditPool: FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -270,40 +272,50 @@ export const EditPool: FC = () => {
         })),
       );
 
-      const liquidityProvisionOrderOnEdgeToWithdraw =
-        pool.liquidityProvisionOrders.reduce(
-          (maxProvisionOrder, provisionOrder) =>
-            maxProvisionOrder.orderBCounter < provisionOrder.orderBCounter
-              ? provisionOrder
-              : maxProvisionOrder,
-        );
+      if (pool.liquidityProvisionOrders.length > 0) {
+        const liquidityProvisionOrderOnEdgeToWithdraw =
+          pool.liquidityProvisionOrders
+            .filter(
+              (provisionOrder) =>
+                !takenLpOrders[provisionOrder.liquidityProvisionOrder],
+            )
+            .reduce((maxProvisionOrder, provisionOrder) =>
+              maxProvisionOrder.orderBCounter < provisionOrder.orderBCounter
+                ? provisionOrder
+                : maxProvisionOrder,
+            );
 
-      console.log(liquidityProvisionOrderOnEdgeToWithdraw);
+        takenLpOrders[
+          liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder
+        ] = true;
 
-      if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
-        transactions.push(
-          ...(await createWithdrawLiquidityFromPairTxns({
-            connection,
-            wallet,
-            pairPubkey: pool.pairPubkey,
-            liquidityProvisionEdgeOrderToWithdraw:
-              liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-            authorityAdapter: pool.authorityAdapterPubkey,
-            nfts: nftsToDelete,
-          })),
-        );
-      } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
-        transactions.push(
-          ...(await createWithdrawLiquidityFromBuyOrdersPair({
-            connection,
-            wallet,
-            pairPubkey: pool.pairPubkey,
-            liquidityProvisionEdgeOrderToWithdraw:
-              liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-            authorityAdapter: pool.authorityAdapterPubkey,
-            buyOrdersAmountToDelete: buyOrdersAmount,
-          })),
-        );
+        console.log(liquidityProvisionOrderOnEdgeToWithdraw);
+
+        if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
+          transactions.push(
+            ...(await createWithdrawLiquidityFromPairTxns({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              liquidityProvisionEdgeOrderToWithdraw:
+                liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              nfts: nftsToDelete,
+            })),
+          );
+        } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
+          transactions.push(
+            ...(await createWithdrawLiquidityFromBuyOrdersPair({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              liquidityProvisionEdgeOrderToWithdraw:
+                liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              buyOrdersAmountToDelete: buyOrdersAmount,
+            })),
+          );
+        }
       }
 
       const sellAmounts = hadeswap.helpers.calculatePricesArray({
