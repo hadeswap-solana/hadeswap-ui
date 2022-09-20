@@ -48,9 +48,9 @@
 
 .cartSider {
   height: 100vh;
-  position: sticky !important;
+  position: fixed !important;
   top: 0;
-  left: 0;
+  right: 0;
   border-left: 1px solid var(--border-color-base);
 }
 
@@ -151,6 +151,20 @@
   justify-content: flex-end;
   align-items: center;
   padding-right: 12px;
+
+  button {
+    border: 2px solid var(--border-color-base);
+
+    svg {
+      fill: var(--border-color-base);
+    }
+
+    &:hover {
+      svg {
+        fill: #6d8aad;
+      }
+    }
+  }
 }
 
 .socialNavs {

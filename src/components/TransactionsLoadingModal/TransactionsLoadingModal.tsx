@@ -18,7 +18,7 @@ export const TransactionsLoadingModal: FC = () => {
     <Modal visible={state.visible} footer={null} centered closable={false}>
       <div className={styles.content}>
         <Spinner />
-        <Typography.Title level={3} style={{ marginTop: 32, marginBottom: 0 }}>
+        <Typography.Title level={3} style={{ marginTop: 8, marginBottom: 0 }}>
           Sending transaction ({state.currentTxNumber} / {state.amountOfTxs})
         </Typography.Title>
         <Typography.Text>

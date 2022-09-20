@@ -1,4 +1,5 @@
 .content {
+  text-align: center;
   display: flex;
   flex-direction: column;
 }
@@ -11,7 +12,10 @@
 
 .card {
   background: var(--ant-gray);
+  border: 1px solid #3E4854;
+  border-radius: 10px;
   display: flex;
+  overflow: hidden;
 }
 
 .cardImage {

@@ -12,12 +12,19 @@
 
 @menu-bg: @body-background;
 
+@dropdown-menu-bg: #282F37;
+
+
+#root {
+  overflow-x: hidden;
+}
+
 .ant-card {
   background: @layout-header-background;
 }
 
 .ant-modal-content {
-  background: #242A30;
+  background: @layout-header-background;
 }
 
 .ant-table {
@@ -51,4 +58,18 @@
 
 .ant-table-tbody > tr.ant-table-row:last-child:hover > td:last-child {
   border-radius: 0 0 @border-radius-base 0;
+}
+
+.ant-dropdown-menu {
+  border: 1px solid #3E4854;
+  border-radius: 10px;
+  padding: 0;
+
+  li:first-child {
+    border-radius: 10px 10px 0 0;
+  }
+
+  li:last-child {
+    border-radius: 0 0 10px 10px;
+  }
 }
