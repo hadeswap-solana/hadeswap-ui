@@ -3,7 +3,8 @@ import { hadeswap, web3 } from 'hadeswap-sdk';
 import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
 
-const { withdrawLiquidityFromPair } = hadeswap.functions.marketFactory;
+const { withdrawLiquidityFromBalancedPair } =
+  hadeswap.functions.marketFactory.pair.virtual.withdrawals;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);
@@ -28,10 +29,13 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
     const ixsAndSigners = (
       await Promise.all(
         nfts.map((nft) =>
-          withdrawLiquidityFromPair({
+          withdrawLiquidityFromBalancedPair({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             accounts: {
+              //TODO
+              liquidityProvisionOrderToReplace: new web3.PublicKey(''),
+              liquidityProvisionOrderToWithdraw: new web3.PublicKey(''),
               nftPairBox: new web3.PublicKey(nft.nftPairBox),
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),

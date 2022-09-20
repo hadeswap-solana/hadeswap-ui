@@ -3,7 +3,8 @@ import { hadeswap, web3 } from 'hadeswap-sdk';
 import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
 
-const { withdrawNftFromPair } = hadeswap.functions.marketFactory;
+const { withdrawNftFromPair } =
+  hadeswap.functions.marketFactory.pair.virtual.withdrawals;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);

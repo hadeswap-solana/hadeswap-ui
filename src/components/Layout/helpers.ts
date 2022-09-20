@@ -39,11 +39,28 @@ const createBuyNftFromPairIx: CreateIx = async ({
   pair,
   order,
 }) => {
+  let provisionOrder;
+  const isLiquidityProvision = pair.type === 'liquidityProvision';
+
+  if (isLiquidityProvision) {
+    provisionOrder = pair.liquidityProvisionOrders.find((provisionOrder) => {
+      const prevMathCounter = order.mathCounter + 1;
+
+      return (
+        provisionOrder.orderACounter === prevMathCounter ||
+        provisionOrder.orderBCounter === prevMathCounter
+      );
+    });
+  }
+
   const { instructions, signers } = await createBuyNftFromPairIxLib({
     programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
     connection,
     sendTxn: sendTxnPlaceHolder,
     accounts: {
+      ...(isLiquidityProvision && {
+        liquidityProvisionOrder: provisionOrder.liquidityProvisionOrder,
+      }),
       assetReceiver: new web3.PublicKey(pair.assetReceiver),
       nftMint: new web3.PublicKey(order.mint),
       nftPairBox: new web3.PublicKey(order.nftPairBox),
@@ -67,25 +84,70 @@ const createSellNftFromPairIx: CreateIx = async ({
   pair,
   order,
 }) => {
-  const { instructions, signers } = await (pair.type === 'liquidityProvision'
-    ? createSellNftToLiquidityPairIxLib
-    : createSellNftToTokenToNftPairIxLib)({
-    programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
-    connection,
-    sendTxn: sendTxnPlaceHolder,
-    accounts: {
-      assetReceiver: new web3.PublicKey(pair.assetReceiver),
-      nftMint: new web3.PublicKey(order.mint),
-      nftValidationAdapter: new web3.PublicKey(order.nftValidationAdapter),
-      pair: new web3.PublicKey(pair.pairPubkey),
-      userPubkey: walletPubkey,
-      protocolFeeReceiver: new web3.PublicKey(process.env.PROTOCOL_FEE_PUBKEY),
-    },
-    args: {
-      minAmountToGet: order.price,
-      skipFailed: false,
-    },
-  });
+  let ix;
+  const isLiquidityProvision = pair.type === 'liquidityProvision';
+
+  console.log('----');
+  console.log(pair);
+  console.log(order);
+
+  if (isLiquidityProvision) {
+    const provisionOrder = pair.liquidityProvisionOrders.find(
+      (provisionOrder) => {
+        const prevMathCounter = order.mathCounter - 1;
+
+        return (
+          provisionOrder.orderACounter === prevMathCounter ||
+          provisionOrder.orderBCounter === prevMathCounter
+        );
+      },
+    );
+
+    ix = await createSellNftToLiquidityPairIxLib({
+      programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
+      connection,
+      sendTxn: sendTxnPlaceHolder,
+      accounts: {
+        liquidityProvisionOrder: new web3.PublicKey(
+          provisionOrder.liquidityProvisionOrder,
+        ),
+        assetReceiver: new web3.PublicKey(pair.assetReceiver),
+        nftMint: new web3.PublicKey(order.mint),
+        nftValidationAdapter: new web3.PublicKey(order.nftValidationAdapter),
+        pair: new web3.PublicKey(pair.pairPubkey),
+        userPubkey: walletPubkey,
+        protocolFeeReceiver: new web3.PublicKey(
+          process.env.PROTOCOL_FEE_PUBKEY,
+        ),
+      },
+      args: {
+        minAmountToGet: order.price,
+        skipFailed: false,
+      },
+    });
+  } else {
+    ix = await createSellNftToTokenToNftPairIxLib({
+      programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
+      connection,
+      sendTxn: sendTxnPlaceHolder,
+      accounts: {
+        assetReceiver: new web3.PublicKey(pair.assetReceiver),
+        nftMint: new web3.PublicKey(order.mint),
+        nftValidationAdapter: new web3.PublicKey(order.nftValidationAdapter),
+        pair: new web3.PublicKey(pair.pairPubkey),
+        userPubkey: walletPubkey,
+        protocolFeeReceiver: new web3.PublicKey(
+          process.env.PROTOCOL_FEE_PUBKEY,
+        ),
+      },
+      args: {
+        minAmountToGet: order.price,
+        skipFailed: false,
+      },
+    });
+  }
+
+  const { instructions, signers } = ix;
 
   return { instructions, signers, nftMint: order.mint };
 };

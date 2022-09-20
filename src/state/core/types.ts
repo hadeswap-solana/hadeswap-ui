@@ -21,6 +21,25 @@ export interface PairSellOrder {
   traits: [string, string];
 }
 
+export enum LpOrderState {
+  virtual = 'virtual',
+  tokenized = 'tokenized',
+  withdrawnVirtual = 'withdrawnVirtual',
+  withdrawnTokenized = 'withdrawnTokenized',
+}
+
+export interface ProvisionOrders {
+  ftSwapPair: string;
+  lpOrderState: LpOrderState;
+  orderACounter: number;
+  orderBCounter: number;
+  accumulatedFee: number;
+  lpTokenMint: string;
+  liquidityFeeBump: number;
+  createdAt: number;
+  liquidityProvisionOrder: string;
+}
+
 export interface BasePair {
   pairPubkey: string;
   type: string;
@@ -42,6 +61,7 @@ export interface BasePair {
 
 export interface Pair extends BasePair {
   sellOrders?: PairSellOrder[];
+  liquidityProvisionOrders: ProvisionOrders[];
 }
 
 export interface PairUpdate extends BasePair {
@@ -73,6 +93,7 @@ export interface CartOrder extends Nft {
   type: OrderType;
   targetPairPukey: string;
   price: number;
+  mathCounter: number;
 }
 
 export interface MarketOrder extends CartOrder {

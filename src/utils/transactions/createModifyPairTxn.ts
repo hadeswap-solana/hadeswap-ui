@@ -1,7 +1,7 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 
-const { modifyPair } = hadeswap.functions.marketFactory;
+const { modifyPair } = hadeswap.functions.marketFactory.pair.virtual.mutations;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);

@@ -357,7 +357,7 @@ export const EditPool: FC = () => {
                 <div className={styles.stepContent}>
                   <Row>
                     <Col span={11}>
-                      <Card>
+                      <Card bordered={false}>
                         <Title level={3}>Pricing</Title>
                         {type === PairType.LiquidityProvision && (
                           <Form.Item
@@ -440,7 +440,7 @@ export const EditPool: FC = () => {
                     </Col>
                     <Col span={11} offset={2}>
                       {type === PairType.TokenForNFT && (
-                        <Card>
+                        <Card bordered={false}>
                           <Title level={3}>Assets</Title>
                           <Form.Item label="Amount of NFTs" name="nftAmount">
                             <InputNumber
@@ -452,7 +452,7 @@ export const EditPool: FC = () => {
                         </Card>
                       )}
                       {type === PairType.NftForToken && (
-                        <Card>
+                        <Card bordered={false}>
                           <Title level={3}>Assets</Title>
                           <div className={styles.nftsWrapper}>
                             {nftModal.selectedNfts.map((nft) => (
@@ -469,7 +469,7 @@ export const EditPool: FC = () => {
                         </Card>
                       )}
                       {type === PairType.LiquidityProvision && (
-                        <Card>
+                        <Card bordered={false}>
                           <Title level={3}>Assets</Title>
                           <div className={styles.nftsWrapper}>
                             {nftModal.selectedNfts.map((nft) => (

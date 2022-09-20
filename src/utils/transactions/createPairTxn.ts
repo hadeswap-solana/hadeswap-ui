@@ -6,7 +6,7 @@ import {
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
 const { initializePair, createClassicAuthorityAdapter, putPairOnMarket } =
-  hadeswap.functions.marketFactory;
+  hadeswap.functions.marketFactory.pair.virtual.mutations;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);

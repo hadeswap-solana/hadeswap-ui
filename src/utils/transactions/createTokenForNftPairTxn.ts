@@ -5,12 +5,11 @@ import {
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
-const {
-  initializePair,
-  createClassicAuthorityAdapter,
-  putPairOnMarket,
-  depositSolToPair,
-} = hadeswap.functions.marketFactory;
+const { initializePair, createClassicAuthorityAdapter, putPairOnMarket } =
+  hadeswap.functions.marketFactory.pair.virtual.mutations;
+
+const { depositSolToPair } =
+  hadeswap.functions.marketFactory.pair.virtual.deposits;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);

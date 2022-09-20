@@ -76,6 +76,7 @@ export const selectAllBuyOrdersForMarket = createSelector(
               pair.fee,
               OrderType.BUY,
             ),
+            mathCounter: pair.mathCounter,
             selected: false,
           })) || [];
 
@@ -140,6 +141,7 @@ export const selectAllSellOrdersForMarket = createSelector(
                 bestPair.fee,
                 OrderType.SELL,
               ) || -1,
+            mathCounter: bestPair.mathCounter,
             selected: false,
           };
         })
