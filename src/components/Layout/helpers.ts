@@ -44,14 +44,18 @@ const createBuyNftFromPairIx: CreateIx = async ({
 
   if (isLiquidityProvision) {
     provisionOrder = pair.liquidityProvisionOrders.find((provisionOrder) => {
-      const prevMathCounter = order.mathCounter + 1;
+      const sellMathCounter = order.mathCounter + 1;
 
       return (
-        provisionOrder.orderACounter === prevMathCounter ||
-        provisionOrder.orderBCounter === prevMathCounter
+        provisionOrder.orderACounter === sellMathCounter ||
+        provisionOrder.orderBCounter === sellMathCounter
       );
     });
   }
+  // console.log('pair: ', pair);
+  // console.log('order: ', order);
+
+  // console.log('selling to this order: ', provisionOrder)
 
   const { instructions, signers } = await createBuyNftFromPairIxLib({
     programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
@@ -87,14 +91,15 @@ const createSellNftFromPairIx: CreateIx = async ({
   let ix;
   const isLiquidityProvision = pair.type === 'liquidityProvision';
 
-  console.log('----');
-  console.log(pair);
-  console.log(order);
+  // console.log('----');
+  // console.log('pair: ', pair
+  // );
+  // console.log('order: ', order);
 
   if (isLiquidityProvision) {
     const provisionOrder = pair.liquidityProvisionOrders.find(
       (provisionOrder) => {
-        const prevMathCounter = order.mathCounter - 1;
+        const prevMathCounter = order.mathCounter;
 
         return (
           provisionOrder.orderACounter === prevMathCounter ||
@@ -102,6 +107,11 @@ const createSellNftFromPairIx: CreateIx = async ({
         );
       },
     );
+    //     console.log('----');
+    // console.log('pair: ', pair);
+    // console.log('order: ', order);
+
+    //   console.log('selling to this order: ', provisionOrder)
 
     ix = await createSellNftToLiquidityPairIxLib({
       programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
