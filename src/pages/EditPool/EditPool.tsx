@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { differenceBy } from 'lodash';
@@ -56,6 +56,7 @@ import {
 
 import styles from './EditPool.module.scss';
 import { hadeswap } from 'hadeswap-sdk';
+import { createWithdrawLiquidityFromSellOrdersPair } from '../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
 
 const { Title, Paragraph } = Typography;
 
@@ -66,6 +67,7 @@ export const EditPool: FC = () => {
   const history = useHistory();
   const connection = useConnection();
   const wallet = useWallet();
+  //const [takenLpOrders, setTakenLpOrders] = useState({});
   const { poolPubKey } = useParams<{ poolPubKey: string }>();
   const pool = useSelector(selectCertainPair);
   const markets = useSelector(selectAllMarkets) as MarketInfo[];
@@ -262,62 +264,6 @@ export const EditPool: FC = () => {
 
       cards.push([nftAddCards], [nftRemoveCards]);
     } else if (type === PairType.LiquidityProvision) {
-      transactions.push(
-        ...(await createDepositLiquidityToPairTxns({
-          connection,
-          wallet,
-          pairPubkey: pool.pairPubkey,
-          authorityAdapter: pool.authorityAdapterPubkey,
-          nfts: nftsToAdd,
-        })),
-      );
-
-      if (pool.liquidityProvisionOrders.length > 0) {
-        const liquidityProvisionOrderOnEdgeToWithdraw =
-          pool.liquidityProvisionOrders
-            .filter(
-              (provisionOrder) =>
-                !takenLpOrders[provisionOrder.liquidityProvisionOrder],
-            )
-            .reduce((maxProvisionOrder, provisionOrder) =>
-              maxProvisionOrder.orderBCounter < provisionOrder.orderBCounter
-                ? provisionOrder
-                : maxProvisionOrder,
-            );
-
-        takenLpOrders[
-          liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder
-        ] = true;
-
-        console.log(liquidityProvisionOrderOnEdgeToWithdraw);
-
-        if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
-          transactions.push(
-            ...(await createWithdrawLiquidityFromPairTxns({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              liquidityProvisionEdgeOrderToWithdraw:
-                liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              nfts: nftsToDelete,
-            })),
-          );
-        } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
-          transactions.push(
-            ...(await createWithdrawLiquidityFromBuyOrdersPair({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              liquidityProvisionEdgeOrderToWithdraw:
-                liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              buyOrdersAmountToDelete: buyOrdersAmount,
-            })),
-          );
-        }
-      }
-
       const sellAmounts = hadeswap.helpers.calculatePricesArray({
         price: rawSpotPrice,
         delta: rawDelta,
@@ -328,6 +274,16 @@ export const EditPool: FC = () => {
       });
       sellAmounts.array.reverse();
 
+      transactions.push(
+        ...(await createDepositLiquidityToPairTxns({
+          connection,
+          wallet,
+          pairPubkey: pool.pairPubkey,
+          authorityAdapter: pool.authorityAdapterPubkey,
+          nfts: nftsToAdd,
+        })),
+      );
+
       const nftAddCards = nftsToAdd.map((nft, index) =>
         createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
           nft,
@@ -335,15 +291,64 @@ export const EditPool: FC = () => {
         ),
       );
 
-      const nftRemoveCards = nftsToDelete.map((nft, index) =>
-        createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-          nft,
-          sellAmounts.array[index],
-          true,
-        ),
-      );
+      cards.push([nftAddCards]);
 
-      cards.push([nftAddCards], [nftRemoveCards]);
+      if (pool.liquidityProvisionOrders.length) {
+        if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
+          transactions.push(
+            ...(await createWithdrawLiquidityFromPairTxns({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              liquidityProvisionOrders: pool.liquidityProvisionOrders,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              nfts: nftsToDelete,
+            })),
+          );
+
+          const nftRemoveCards = nftsToDelete.map((nft, index) =>
+            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+              nft,
+              sellAmounts.array[index],
+              true,
+            ),
+          );
+
+          //cards.push([nftRemoveCards]);
+        } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
+          transactions.push(
+            ...(await createWithdrawLiquidityFromBuyOrdersPair({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              liquidityProvisionOrders: pool.liquidityProvisionOrders,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              buyOrdersAmountToDelete: buyOrdersAmount,
+            })),
+          );
+        } else if (pool?.nftsCount > 0 && pool?.buyOrdersAmount === 0) {
+          transactions.push(
+            ...(await createWithdrawLiquidityFromSellOrdersPair({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              liquidityProvisionOrders: pool.liquidityProvisionOrders,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              nfts: nftsToDelete,
+            })),
+          );
+
+          const nftRemoveCards = nftsToDelete.map((nft, index) =>
+            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+              nft,
+              sellAmounts.array[index],
+              true,
+            ),
+          );
+
+          //cards.push([nftRemoveCards]);
+        }
+      }
     }
 
     const isSuccess = await signAndSendTransactionsInSeries({
@@ -356,7 +361,7 @@ export const EditPool: FC = () => {
           dispatch(
             txsLoadingModalActions.setState({
               visible: true,
-              cards: cards[index],
+              cards: [], // cards[index],
               amountOfTxs: transactions.length,
               currentTxNumber: 1 + index,
               textStatus: TxsLoadingModalTextStatus.APPROVE,

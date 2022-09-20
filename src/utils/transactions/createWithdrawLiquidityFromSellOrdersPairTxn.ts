@@ -3,13 +3,13 @@ import { hadeswap, web3 } from 'hadeswap-sdk';
 import { Nft, ProvisionOrders } from '../../state/core/types';
 import { chunk } from 'lodash';
 
-const { withdrawLiquidityFromBalancedPair } =
+const { withdrawLiquidityFromSellOrdersPair } =
   hadeswap.functions.marketFactory.pair.virtual.withdrawals;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);
 
-type CreateWithdrawLiquidityFromPairTxns = (params: {
+type CreateWithdrawLiquidityFromSellOrdersPair = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   pairPubkey: string;
@@ -23,9 +23,9 @@ type CreateWithdrawLiquidityFromPairTxns = (params: {
   }[]
 >;
 
-const IXNS_PER_CHUNK = 1; //? Maybe it will work with 3
+const IXNS_PER_CHUNK = 2; //? Maybe it will work with 3
 
-export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPairTxns =
+export const createWithdrawLiquidityFromSellOrdersPair: CreateWithdrawLiquidityFromSellOrdersPair =
   async ({
     connection,
     wallet,
@@ -38,7 +38,7 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
 
     const ixsAndSigners = (
       await Promise.all(
-        nfts.map((nft) => {
+        chunk(nfts, 2).map((nftsPair) => {
           const liquidityProvisionOrderOnEdgeToWithdraw =
             liquidityProvisionOrders
               .filter(
@@ -55,7 +55,7 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
             liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder
           ] = true;
 
-          return withdrawLiquidityFromBalancedPair({
+          return withdrawLiquidityFromSellOrdersPair({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             accounts: {
@@ -65,11 +65,13 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
               liquidityProvisionOrderToWithdraw: new web3.PublicKey(
                 liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
               ),
-              nftPairBox: new web3.PublicKey(nft.nftPairBox),
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),
               userPubkey: wallet.publicKey,
-              nftMint: new web3.PublicKey(nft.mint),
+              nftMintFirst: new web3.PublicKey(nftsPair[0].mint),
+              nftPairBoxFirst: new web3.PublicKey(nftsPair[0].nftPairBox),
+              nftMintSecond: new web3.PublicKey(nftsPair[1].mint),
+              nftPairBoxSecond: new web3.PublicKey(nftsPair[1].nftPairBox),
             },
             sendTxn: sendTxnPlaceHolder,
           });
