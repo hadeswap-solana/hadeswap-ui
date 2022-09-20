@@ -29,7 +29,7 @@ export const selectPoolsPageTableInfo = createSelector(
         collectionImage: marketInfo?.collectionImage || '',
         type: pair?.type,
         spotPrice: formatBNToString(new BN(pair.currentSpotPrice || '0')),
-        fee: parseFee(pair.fee || 0),
+        fee: parseFee(pair?.fee || 0),
         fundsSolOrTokenBalance: formatBNToString(
           new BN(pair?.fundsSolOrTokenBalance || '0'),
         ),
@@ -138,10 +138,10 @@ export const selectAllSellOrdersForMarket = createSelector(
             price:
               calcPriceWithFee(
                 bestPair?.currentSpotPrice,
-                bestPair.fee,
+                bestPair?.fee ?? 0,
                 OrderType.SELL,
               ) || -1,
-            mathCounter: bestPair.mathCounter,
+            mathCounter: bestPair?.mathCounter,
             selected: false,
           };
         })
