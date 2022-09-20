@@ -516,7 +516,6 @@ export const NewPool: FC = () => {
                 <div className={styles.stepsButtons}>
                   <Button onClick={onBackClick}>{`< Back`}</Button>
                   <Button
-                    danger
                     type="primary"
                     onClick={onCreatePoolClick}
                     disabled={isCreateButtonDisabled}

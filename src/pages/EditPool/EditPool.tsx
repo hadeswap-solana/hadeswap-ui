@@ -490,7 +490,6 @@ export const EditPool: FC = () => {
                 </div>
                 <div className={styles.stepsButtons}>
                   <Button
-                    danger
                     type="primary"
                     onClick={onSavePoolClick}
                     disabled={isSaveButtonDisabled}
