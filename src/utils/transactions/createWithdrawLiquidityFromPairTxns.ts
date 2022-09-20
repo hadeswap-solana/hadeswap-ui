@@ -13,6 +13,7 @@ type CreateWithdrawLiquidityFromPairTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   pairPubkey: string;
+  liquidityProvisionOrderEdgeOrderToWithdraw: string;
   authorityAdapter: string;
   nfts: Nft[];
 }) => Promise<
@@ -25,7 +26,14 @@ type CreateWithdrawLiquidityFromPairTxns = (params: {
 const IXNS_PER_CHUNK = 2; //? Maybe it will work with 3
 
 export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPairTxns =
-  async ({ connection, wallet, pairPubkey, authorityAdapter, nfts }) => {
+  async ({
+    connection,
+    wallet,
+    pairPubkey,
+    liquidityProvisionOrderEdgeOrderToWithdraw,
+    authorityAdapter,
+    nfts,
+  }) => {
     const ixsAndSigners = (
       await Promise.all(
         nfts.map((nft) =>
@@ -34,8 +42,12 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
             connection,
             accounts: {
               //TODO
-              liquidityProvisionOrderToReplace: new web3.PublicKey(''),
-              liquidityProvisionOrderToWithdraw: new web3.PublicKey(''),
+              liquidityProvisionOrderToReplace: new web3.PublicKey(
+                liquidityProvisionOrderEdgeOrderToWithdraw,
+              ), // same if virtual
+              liquidityProvisionOrderToWithdraw: new web3.PublicKey(
+                liquidityProvisionOrderEdgeOrderToWithdraw,
+              ),
               nftPairBox: new web3.PublicKey(nft.nftPairBox),
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),

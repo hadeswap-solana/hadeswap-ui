@@ -44,7 +44,7 @@ export interface BasePair {
   pairPubkey: string;
   type: string;
   fundsSolOrTokenBalance: number | null;
-  nftsCount: number;
+  nftsCount: number; // Sell orders
   // solOrTokenFeeAmount: number; //? Rewards
   bondingCurve: string;
   delta: number;
@@ -54,7 +54,7 @@ export interface BasePair {
   baseSpotPrice: number;
   mathCounter: number;
   fee: number;
-  buyOrdersAmount: number;
+  buyOrdersAmount: number; // Buy orders
   market: string;
   authorityAdapterPubkey: string;
 }

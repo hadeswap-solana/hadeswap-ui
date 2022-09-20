@@ -256,11 +256,20 @@ export const EditPool: FC = () => {
         })),
       );
 
+      const liquidityProvisionOrderOnEdgeToWithdraw =
+        pool.liquidityProvisionOrders.reduce(
+          (maxProvisionOrder, provisionOrder) =>
+            maxProvisionOrder.orderBCounter < provisionOrder.orderBCounter
+              ? provisionOrder
+              : maxProvisionOrder,
+        );
       transactions.push(
         ...(await createWithdrawLiquidityFromPairTxns({
           connection,
           wallet,
           pairPubkey: pool.pairPubkey,
+          liquidityProvisionOrderEdgeOrderToWithdraw:
+            liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
           authorityAdapter: pool.authorityAdapterPubkey,
           nfts: nftsToDelete,
         })),

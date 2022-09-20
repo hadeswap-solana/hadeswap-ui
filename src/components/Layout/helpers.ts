@@ -99,11 +99,9 @@ const createSellNftFromPairIx: CreateIx = async ({
   if (isLiquidityProvision) {
     const provisionOrder = pair.liquidityProvisionOrders.find(
       (provisionOrder) => {
-        const prevMathCounter = order.mathCounter;
-
         return (
-          provisionOrder.orderACounter === prevMathCounter ||
-          provisionOrder.orderBCounter === prevMathCounter
+          provisionOrder.orderACounter === order.mathCounter ||
+          provisionOrder.orderBCounter === order.mathCounter
         );
       },
     );
