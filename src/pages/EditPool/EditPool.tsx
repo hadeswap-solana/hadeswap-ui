@@ -48,6 +48,7 @@ import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepo
 import { createDepositLiquidityToPairTxns } from '../../utils/transactions/createDepositLiquidityToPairTxns';
 import { createWithdrawLiquidityFromPairTxns } from '../../utils/transactions/createWithdrawLiquidityFromPairTxns';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
+import { createWithdrawLiquidityFromBuyOrdersPair } from '../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
 import {
   createIxCardFuncs,
   IX_TYPE,
@@ -73,6 +74,7 @@ export const EditPool: FC = () => {
   const curve = Form.useWatch('curve', form);
   const delta = Form.useWatch('delta', form);
   const nftAmount = Form.useWatch('nftAmount', form);
+  const buyOrdersAmount = Form.useWatch('buyOrdersAmount', form);
   const fee = Form.useWatch('fee', form);
   const chosenMarket = markets.find(
     (item) => item.marketPubkey === pool?.market,
@@ -98,8 +100,12 @@ export const EditPool: FC = () => {
         ? pool?.delta / 100
         : pool?.delta / 1e9,
     nftAmount: pool?.buyOrdersAmount,
+    buyOrdersAmount: pool?.buyOrdersAmount,
     depositAmount: 0,
   };
+
+  console.log('-----');
+  console.log(pool);
 
   const loading = poolLoading || marketLoading;
   const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
@@ -116,6 +122,7 @@ export const EditPool: FC = () => {
   const isNftAmountChanged = pool?.buyOrdersAmount !== nftAmount;
   const isSaveButtonDisabled =
     !(isPricingChanged || isNftAmountChanged) || !spotPrice;
+  const isSelectedButtonDisabled = buyOrdersAmount < pool?.buyOrdersAmount;
 
   const nftsToDelete = differenceBy(
     pool?.sellOrders,
@@ -129,6 +136,13 @@ export const EditPool: FC = () => {
     dispatch(coreActions.fetchPair(poolPubKey));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      buyOrdersAmount: initialValues.buyOrdersAmount + nftsToAdd.length,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nftModal.selectedNfts.length]);
 
   const onSelectNftsClick = () => {
     nftModal.setVisible(true);
@@ -263,17 +277,34 @@ export const EditPool: FC = () => {
               ? provisionOrder
               : maxProvisionOrder,
         );
-      transactions.push(
-        ...(await createWithdrawLiquidityFromPairTxns({
-          connection,
-          wallet,
-          pairPubkey: pool.pairPubkey,
-          liquidityProvisionOrderEdgeOrderToWithdraw:
-            liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-          authorityAdapter: pool.authorityAdapterPubkey,
-          nfts: nftsToDelete,
-        })),
-      );
+
+      console.log(liquidityProvisionOrderOnEdgeToWithdraw);
+
+      if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
+        transactions.push(
+          ...(await createWithdrawLiquidityFromPairTxns({
+            connection,
+            wallet,
+            pairPubkey: pool.pairPubkey,
+            liquidityProvisionEdgeOrderToWithdraw:
+              liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
+            authorityAdapter: pool.authorityAdapterPubkey,
+            nfts: nftsToDelete,
+          })),
+        );
+      } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
+        transactions.push(
+          ...(await createWithdrawLiquidityFromBuyOrdersPair({
+            connection,
+            wallet,
+            pairPubkey: pool.pairPubkey,
+            liquidityProvisionEdgeOrderToWithdraw:
+              liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
+            authorityAdapter: pool.authorityAdapterPubkey,
+            buyOrdersAmountToDelete: buyOrdersAmount,
+          })),
+        );
+      }
 
       const sellAmounts = hadeswap.helpers.calculatePricesArray({
         price: rawSpotPrice,
@@ -480,6 +511,23 @@ export const EditPool: FC = () => {
                       {type === PairType.LiquidityProvision && (
                         <Card bordered={false}>
                           <Title level={3}>Assets</Title>
+                          <Form.Item
+                            label="Buy orders amount"
+                            name="buyOrdersAmount"
+                          >
+                            <InputNumber
+                              disabled={Boolean(nftModal.selectedNfts.length)}
+                              className={styles.input}
+                              max={
+                                isSelectedButtonDisabled
+                                  ? pool?.buyOrdersAmount
+                                  : buyOrdersAmount
+                              }
+                              min={0}
+                              step={2}
+                              addonAfter="NFTs"
+                            />
+                          </Form.Item>
                           <div className={styles.nftsWrapper}>
                             {nftModal.selectedNfts.map((nft) => (
                               <NFTCard
@@ -489,7 +537,10 @@ export const EditPool: FC = () => {
                               />
                             ))}
                           </div>
-                          <Button onClick={onSelectNftsClick}>
+                          <Button
+                            disabled={isSelectedButtonDisabled}
+                            onClick={onSelectNftsClick}
+                          >
                             + Select NFTs
                           </Button>
                         </Card>

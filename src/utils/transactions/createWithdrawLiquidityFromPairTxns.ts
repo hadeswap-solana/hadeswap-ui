@@ -13,7 +13,7 @@ type CreateWithdrawLiquidityFromPairTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   pairPubkey: string;
-  liquidityProvisionOrderEdgeOrderToWithdraw: string;
+  liquidityProvisionEdgeOrderToWithdraw: string;
   authorityAdapter: string;
   nfts: Nft[];
 }) => Promise<
@@ -30,7 +30,7 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
     connection,
     wallet,
     pairPubkey,
-    liquidityProvisionOrderEdgeOrderToWithdraw,
+    liquidityProvisionEdgeOrderToWithdraw,
     authorityAdapter,
     nfts,
   }) => {
@@ -41,12 +41,11 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             accounts: {
-              //TODO
               liquidityProvisionOrderToReplace: new web3.PublicKey(
-                liquidityProvisionOrderEdgeOrderToWithdraw,
+                liquidityProvisionEdgeOrderToWithdraw,
               ), // same if virtual
               liquidityProvisionOrderToWithdraw: new web3.PublicKey(
-                liquidityProvisionOrderEdgeOrderToWithdraw,
+                liquidityProvisionEdgeOrderToWithdraw,
               ),
               nftPairBox: new web3.PublicKey(nft.nftPairBox),
               pair: new web3.PublicKey(pairPubkey),
