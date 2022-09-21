@@ -234,25 +234,21 @@ export const EditPool: FC = () => {
         }
       }
     } else if (type === PairType.NftForToken) {
-      transactions.push(
-        ...(await createDepositNftsToPairTxns({
-          connection,
-          wallet,
-          pairPubkey: pool.pairPubkey,
-          authorityAdapter: pool.authorityAdapterPubkey,
-          nfts: nftsToAdd,
-        })),
-      );
+      const addTxns = await createDepositNftsToPairTxns({
+        connection,
+        wallet,
+        pairPubkey: pool.pairPubkey,
+        authorityAdapter: pool.authorityAdapterPubkey,
+        nfts: nftsToAdd,
+      });
 
-      transactions.push(
-        ...(await createWithdrawNftsFromPairTxns({
-          connection,
-          wallet,
-          pairPubkey: pool.pairPubkey,
-          authorityAdapter: pool.authorityAdapterPubkey,
-          nfts: nftsToDelete,
-        })),
-      );
+      const deleteTxns = await createWithdrawNftsFromPairTxns({
+        connection,
+        wallet,
+        pairPubkey: pool.pairPubkey,
+        authorityAdapter: pool.authorityAdapterPubkey,
+        nfts: nftsToDelete,
+      });
 
       const nftAddCards = nftsToAdd.map((nft) =>
         createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft),
@@ -262,7 +258,17 @@ export const EditPool: FC = () => {
         createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft, true),
       );
 
-      cards.push([nftAddCards], [nftRemoveCards]);
+      transactions.push(...addTxns);
+      transactions.push(...deleteTxns);
+      cards.push(
+        ...chunk(nftAddCards, Math.round(nftAddCards.length / addTxns.length)),
+      );
+      cards.push(
+        ...chunk(
+          nftRemoveCards,
+          Math.round(nftRemoveCards.length / deleteTxns.length),
+        ),
+      );
     } else if (type === PairType.LiquidityProvision) {
       const sellAmounts = hadeswap.helpers.calculatePricesArray({
         price: rawSpotPrice,
@@ -328,7 +334,8 @@ export const EditPool: FC = () => {
               pairPubkey: pool.pairPubkey,
               liquidityProvisionOrders: pool.liquidityProvisionOrders,
               authorityAdapter: pool.authorityAdapterPubkey,
-              buyOrdersAmountToDelete: buyOrdersAmount,
+              buyOrdersAmountToDelete:
+                pool.buyOrdersAmount - buyOrdersAmount || pool.buyOrdersAmount,
             })),
           );
 

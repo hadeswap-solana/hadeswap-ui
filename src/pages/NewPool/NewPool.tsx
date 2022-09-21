@@ -52,6 +52,7 @@ import {
 } from '../../components/TransactionsLoadingModal';
 
 import styles from './NewPool.module.scss';
+import { chunk } from 'lodash';
 
 const { Step } = Steps;
 const { Title, Paragraph } = Typography;
@@ -207,31 +208,30 @@ export const NewPool: FC = () => {
       transactions.push(pairTxn);
 
       if (type === PairType.NftForToken) {
-        transactions.push(
-          ...(await createDepositNftsToPairTxns({
-            connection,
-            wallet,
-            pairPubkey: pairTxn.pairPubkey,
-            authorityAdapter: pairTxn.authorityAdapterPubkey,
-            nfts: nftModal.selectedNfts,
-          })),
-        );
+        const txns = await createDepositNftsToPairTxns({
+          connection,
+          wallet,
+          pairPubkey: pairTxn.pairPubkey,
+          authorityAdapter: pairTxn.authorityAdapterPubkey,
+          nfts: nftModal.selectedNfts,
+        });
 
         const nftCards = nftModal.selectedNfts.map((nft) =>
           createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft),
         );
 
-        cards.push([nftCards]);
-      } else if (type === PairType.LiquidityProvision) {
-        transactions.push(
-          ...(await createDepositLiquidityToPairTxns({
-            connection,
-            wallet,
-            pairPubkey: pairTxn.pairPubkey,
-            authorityAdapter: pairTxn.authorityAdapterPubkey,
-            nfts: nftModal.selectedNfts,
-          })),
+        transactions.push(...txns);
+        cards.push(
+          ...chunk(nftCards, Math.round(nftCards.length / txns.length)),
         );
+      } else if (type === PairType.LiquidityProvision) {
+        const txns = await createDepositLiquidityToPairTxns({
+          connection,
+          wallet,
+          pairPubkey: pairTxn.pairPubkey,
+          authorityAdapter: pairTxn.authorityAdapterPubkey,
+          nfts: nftModal.selectedNfts,
+        });
 
         const sellAmounts = hadeswap.helpers.calculatePricesArray({
           price: rawSpotPrice,
@@ -249,7 +249,10 @@ export const NewPool: FC = () => {
           ),
         );
 
-        cards.push([nftCards]);
+        transactions.push(...txns);
+        cards.push(
+          ...chunk(nftCards, Math.round(nftCards.length / txns.length)),
+        );
       }
     }
 
