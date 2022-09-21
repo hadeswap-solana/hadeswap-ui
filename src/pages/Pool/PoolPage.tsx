@@ -16,7 +16,7 @@ import {
 import { coreActions } from '../../state/core/actions';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { BN } from 'hadeswap-sdk';
-import { formatBNToString } from '../../utils';
+import { formatBNToString, PoolType } from '../../utils';
 import { MarketInfo, Pair } from '../../state/core/types';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { createEditPollLink } from '../../constants';
@@ -143,7 +143,7 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
       </div>
       <div className={styles.generalInfoBlock}>
         <Title level={5}>Pool type</Title>
-        <Text className={styles.generalInfoText}>{pool?.type}</Text>
+        <Text className={styles.generalInfoText}>{PoolType[pool?.type]}</Text>
       </div>
       <div className={styles.generalInfoBlock}>
         <Title level={5}>SOL balance</Title>

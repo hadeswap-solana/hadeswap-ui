@@ -4,6 +4,12 @@ import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
+export enum PoolType {
+  tokenForNft = 'Token for NFT',
+  nftForToken = 'Nft for Token',
+  liquidityProvision = 'Liquidity provision',
+}
+
 export const notify: Notify = ({
   message = '',
   description = null,

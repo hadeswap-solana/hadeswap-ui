@@ -15,6 +15,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { useHistory } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PriceWithIcon } from '../Collections/PriceWithIcon';
+import { PoolType } from '../../utils';
 
 import styles from './MyPools.module.scss';
 
@@ -46,7 +47,7 @@ const poolTableColumns: ColumnsType<
     dataIndex: 'type',
     sorter: (a, b) => a?.type.localeCompare(b?.type),
     showSorterTooltip: false,
-    render: (text) => <Typography.Text>{text}</Typography.Text>,
+    render: (text) => <Typography.Text>{PoolType[text]}</Typography.Text>,
   },
   {
     key: 'spotPrice',

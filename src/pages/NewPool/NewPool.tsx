@@ -44,7 +44,7 @@ import { createDepositLiquidityToPairTxns } from '../../utils/transactions/creat
 import { createCreatePollLink } from '../../constants';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
-import { notify } from '../../utils';
+import { notify, PoolType } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import {
   createIxCardFuncs,
@@ -455,12 +455,13 @@ export const NewPool: FC = () => {
                             SOL.
                           </Paragraph>
                         )}
-                        {Boolean(delta) && (
+
+                        {/*Boolean(delta) && (
                           <Paragraph>
-                            Each time your pool {type}s an NFT, your {type}{' '}
+                            Each time your pool {PoolType[type]} an NFT, your {PoolType[type]}{' '}
                             price will adjust up by {delta} {unit}.
                           </Paragraph>
-                        )}
+                        )*/}
                       </Card>
                     </Col>
                     <Col span={11} offset={2}>
