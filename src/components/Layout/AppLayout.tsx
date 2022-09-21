@@ -87,7 +87,7 @@ export const AppLayout: FC<LayoutProps> = ({
         <Content className={styles.content}>{children}</Content>
         <Footer className={styles.footer}>
           <div className={styles.footerBlock}>
-            <Typography.Text>DOCUMENTATION</Typography.Text>
+            <Typography.Text>Documentation</Typography.Text>
             <ul className={styles.socialNavs}>
               {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
                 <li className={styles.socialItem} key={idx}>
@@ -99,7 +99,7 @@ export const AppLayout: FC<LayoutProps> = ({
             </ul>
           </div>
           <div className={styles.footerBlock}>
-            <Typography.Text>CONTACT US</Typography.Text>
+            <Typography.Text>Contact us</Typography.Text>
             <ul className={styles.socialNavs}>
               {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
                 <li className={styles.socialItem} key={idx}>
