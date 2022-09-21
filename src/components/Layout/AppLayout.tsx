@@ -16,6 +16,7 @@ import DocsIcon from '../../icons/DocsIcon';
 import DiscordIcon from '../../icons/DiscordIcon';
 import TwitterIcon from '../../icons/TwitterIcon';
 import GitHubIcon from '../../icons/GitHubIcon';
+import classNames from 'classnames';
 
 const { Header, Content, Footer } = Layout;
 
@@ -24,6 +25,7 @@ interface LayoutProps {
   children: JSX.Element[] | JSX.Element;
   className?: string;
   contentClassName?: string;
+  hideFooter?: boolean;
 }
 
 const DOCS_LIST = [
@@ -40,7 +42,8 @@ const SOCIALS_LIST = [
 export const AppLayout: FC<LayoutProps> = ({
   children,
   className = '',
-  // contentClassName = '',
+  hideFooter = false,
+  contentClassName = '',
 }) => {
   const dispatch = useDispatch();
 
@@ -84,33 +87,37 @@ export const AppLayout: FC<LayoutProps> = ({
             </div>
           </nav>
         </Header>
-        <Content className={styles.content}>{children}</Content>
-        <Footer className={styles.footer}>
-          <div className={styles.footerBlock}>
-            <Typography.Text>Documentation</Typography.Text>
-            <ul className={styles.socialNavs}>
-              {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
-                <li className={styles.socialItem} key={idx}>
-                  <a href={to} target="_blank" rel="noreferrer">
-                    <Icon />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className={styles.footerBlock}>
-            <Typography.Text>Contact us</Typography.Text>
-            <ul className={styles.socialNavs}>
-              {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
-                <li className={styles.socialItem} key={idx}>
-                  <a href={to} target="_blank" rel="noreferrer">
-                    <Icon />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Footer>
+        <Content className={classNames(styles.content, contentClassName)}>
+          {children}
+        </Content>
+        {!hideFooter && (
+          <Footer className={styles.footer}>
+            <div className={styles.footerBlock}>
+              <Typography.Text>Documentation</Typography.Text>
+              <ul className={styles.socialNavs}>
+                {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
+                  <li className={styles.socialItem} key={idx}>
+                    <a href={to} target="_blank" rel="noreferrer">
+                      <Icon />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className={styles.footerBlock}>
+              <Typography.Text>Contact us</Typography.Text>
+              <ul className={styles.socialNavs}>
+                {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
+                  <li className={styles.socialItem} key={idx}>
+                    <a href={to} target="_blank" rel="noreferrer">
+                      <Icon />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Footer>
+        )}
       </Layout>
       <CartSider />
       <SelectWalletModal />

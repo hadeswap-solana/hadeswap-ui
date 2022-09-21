@@ -1,3 +1,76 @@
+.content {
+  height: calc(100vh - 63px);
+}
+
 .root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  max-width: 930px;
+  margin: 0 auto;
+}
+
+.logo {
+  width: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.title {
+  font-size: 72px !important;
+  font-weight: 400 !important;
   text-align: center;
+  position: relative;
+
+  &::after {
+    content: '0 fees';
+    position: absolute;
+    right: 70px;
+    bottom: -30px;
+    background: #eed600;
+    color: var(--black-color);
+    transform: rotate(-15deg);
+    padding: 16px 24px;
+    font-weight: 700;
+    font-size: 32px;
+  }
+}
+
+.solanaWord {
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, #dc1fff, #00ffa3);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn {
+  font-size: 40px;
+  height: unset;
+  background: #94c5fd;
+  padding: 2px 15px;
+  color: var(--black-color);
+  border: unset;
+  border-radius: 20px;
+  border-color: #94c5fd;
+  border: 1px solid #94c5fd;
+  box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.043);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background var(--ease-base-out) var(--animation-duration-base),
+    border-color var(--ease-base-out) var(--animation-duration-base);
+
+  svg {
+    fill: black;
+  }
+
+  &:hover {
+    background: #d1e4ff;
+    border-color: #d1e4ff;
+  }
 }
