@@ -95,6 +95,7 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
         <div className={styles.content}>
           {walletNfts.map((nft) => (
             <NFTCard
+              disabled={nft.disabled}
               key={nft.mint}
               imageUrl={nft.imageUrl}
               name={nft.name}

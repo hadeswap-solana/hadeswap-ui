@@ -13,6 +13,7 @@ export type MarketInfo = {
 };
 
 export interface PairSellOrder {
+  disabled?: boolean;
   mint: string;
   imageUrl: string;
   nftPairBox: string;
@@ -87,6 +88,7 @@ export interface Nft {
   nftPairBox?: string; //? Exists for Buy orders
   vaultTokenAccount?: string; //? Exists for Buy orders
   nftValidationAdapter?: string; //? Exists for Sell orders
+  disabled?: boolean;
 }
 
 export interface CartOrder extends Nft {

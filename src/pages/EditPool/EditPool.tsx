@@ -60,14 +60,11 @@ import { createWithdrawLiquidityFromSellOrdersPair } from '../../utils/transacti
 
 const { Title, Paragraph } = Typography;
 
-const takenLpOrders: any = {};
-
 export const EditPool: FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const connection = useConnection();
   const wallet = useWallet();
-  //const [takenLpOrders, setTakenLpOrders] = useState({});
   const { poolPubKey } = useParams<{ poolPubKey: string }>();
   const pool = useSelector(selectCertainPair);
   const markets = useSelector(selectAllMarkets) as MarketInfo[];
@@ -90,10 +87,10 @@ export const EditPool: FC = () => {
     pool?.sellOrders,
   );
 
-  const walletNfts = pool?.sellOrders
-    ? [...pool?.sellOrders, ...nftModal.walletNfts]
-    : nftModal.walletNfts;
   const type = pool?.type;
+  const isLiquidityProvisionPool = type === PairType.LiquidityProvision;
+  const isNftForTokenPool = type === PairType.NftForToken;
+  const isTokenForNFTPool = type === PairType.TokenForNFT;
 
   const initialValues = {
     curve: pool?.bondingCurve,
@@ -113,26 +110,10 @@ export const EditPool: FC = () => {
 
   const loading = poolLoading || marketLoading;
   const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
-  // const deposit = (spotPrice - spotPrice * fee * 2) * buyUpTo;
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
     curve === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
   const rawFee = fee * 100;
-
-  const isPricingChanged =
-    pool?.currentSpotPrice !== rawSpotPrice ||
-    pool?.delta !== rawDelta ||
-    (type === PairType.LiquidityProvision && pool?.fee !== rawFee);
-  const isNftAmountChanged =
-    pool?.sellOrders.length !== nftModal.selectedNfts.length;
-  const isBuyOrdersChanged = pool?.buyOrdersAmount !== buyOrdersAmount;
-  const isSaveButtonDisabled =
-    !(
-      (type === PairType.LiquidityProvision
-        ? isBuyOrdersChanged
-        : isNftAmountChanged) || isPricingChanged
-    ) || !spotPrice;
-  const isSelectedButtonDisabled = buyOrdersAmount < pool?.buyOrdersAmount;
 
   const nftsToDelete = differenceBy(
     pool?.sellOrders,
@@ -140,6 +121,45 @@ export const EditPool: FC = () => {
     'mint',
   );
   const nftsToAdd = nftModal.selectedNfts.filter((nft) => !nft.nftPairBox);
+
+  let walletNfts = pool?.sellOrders
+    ? [...pool?.sellOrders, ...nftModal.walletNfts]
+    : nftModal.walletNfts;
+
+  if (isLiquidityProvisionPool) {
+    walletNfts = walletNfts.map((nft) => {
+      const order = pool?.sellOrders.find((order) => order.mint === nft.mint);
+      nft.disabled = false;
+
+      if (nftsToAdd.length) {
+        nft.disabled = Boolean(order);
+      }
+
+      if (nftsToDelete.length) {
+        nft.disabled = !order;
+      }
+
+      return nft;
+    });
+  }
+
+  const isPricingChanged =
+    pool?.currentSpotPrice !== rawSpotPrice ||
+    pool?.delta !== rawDelta ||
+    (isLiquidityProvisionPool && pool?.fee !== rawFee);
+
+  const isTokenForNftChanged =
+    pool?.buyOrdersAmount !== (nftAmount ?? pool?.buyOrdersAmount);
+  const isNftForTokenChanged = nftsToDelete.length || nftsToAdd.length;
+  const isLiquidityProvisionChanged = pool?.buyOrdersAmount !== buyOrdersAmount;
+
+  const isChanged = isLiquidityProvisionPool
+    ? isLiquidityProvisionChanged
+    : isTokenForNftChanged;
+
+  const isSaveButtonDisabled =
+    !(isPricingChanged || isNftForTokenChanged || isChanged) || !spotPrice;
+  const isSelectedButtonDisabled = buyOrdersAmount < pool?.buyOrdersAmount;
 
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
@@ -185,8 +205,8 @@ export const EditPool: FC = () => {
       cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
     }
 
-    if (type === PairType.TokenForNFT) {
-      if (isNftAmountChanged) {
+    if (isTokenForNFTPool) {
+      if (isTokenForNftChanged) {
         if (pool?.buyOrdersAmount < nftAmount) {
           transactions.push(
             await createDepositSolToPairTxn({
@@ -242,7 +262,7 @@ export const EditPool: FC = () => {
           ]);
         }
       }
-    } else if (type === PairType.NftForToken) {
+    } else if (isNftForTokenPool) {
       const addTxns = await createDepositNftsToPairTxns({
         connection,
         wallet,
@@ -278,7 +298,7 @@ export const EditPool: FC = () => {
           Math.round(nftRemoveCards.length / deleteTxns.length),
         ),
       );
-    } else if (type === PairType.LiquidityProvision) {
+    } else if (isLiquidityProvisionPool) {
       const sellAmounts = hadeswap.helpers.calculatePricesArray({
         price: rawSpotPrice,
         delta: rawDelta,
@@ -336,7 +356,7 @@ export const EditPool: FC = () => {
             ),
           );
         } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
-          if (isBuyOrdersChanged) {
+          if (isLiquidityProvisionChanged) {
             const ordersToDelete =
               pool.buyOrdersAmount - buyOrdersAmount || pool.buyOrdersAmount;
 
@@ -451,7 +471,7 @@ export const EditPool: FC = () => {
                     <Col span={11}>
                       <Card bordered={false}>
                         <Title level={3}>Pricing</Title>
-                        {type === PairType.LiquidityProvision && (
+                        {isLiquidityProvisionPool && (
                           <Form.Item
                             name="fee"
                             label="Fee Amount"
@@ -531,7 +551,7 @@ export const EditPool: FC = () => {
                       </Card>
                     </Col>
                     <Col span={11} offset={2}>
-                      {type === PairType.TokenForNFT && (
+                      {isTokenForNFTPool && (
                         <Card bordered={false}>
                           <Title level={3}>Assets</Title>
                           <Form.Item label="Amount of NFTs" name="nftAmount">
@@ -543,7 +563,7 @@ export const EditPool: FC = () => {
                           </Form.Item>
                         </Card>
                       )}
-                      {type === PairType.NftForToken && (
+                      {isNftForTokenPool && (
                         <Card bordered={false}>
                           <Title level={3}>Assets</Title>
                           <div className={styles.nftsWrapper}>
@@ -560,7 +580,7 @@ export const EditPool: FC = () => {
                           </Button>
                         </Card>
                       )}
-                      {type === PairType.LiquidityProvision && (
+                      {isLiquidityProvisionPool && (
                         <Card bordered={false}>
                           <Title level={3}>Assets</Title>
                           <Form.Item
