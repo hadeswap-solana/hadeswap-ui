@@ -14,6 +14,9 @@
 
 @dropdown-menu-bg: #282F37;
 
+@ant-success-color: #30DE37;
+@ant-error-color: #DE3730;
+@ant-info-color: #309FDE;
 
 #root {
   overflow-x: hidden;
@@ -81,4 +84,32 @@
 
 .ant-input-number-handler-wrap {
   border-radius: 0;
+}
+
+.ant-notification-notice {
+  background: @layout-header-background;
+}
+
+.ant-notification-notice-success {
+  border: 1px solid @ant-success-color;
+}
+
+.ant-notification-notice-icon-success {
+  color: @ant-success-color !important;
+}
+
+.ant-notification-notice-error {
+  border: 1px solid @ant-error-color;
+}
+
+.ant-notification-notice-icon-error {
+  color: @ant-error-color !important;
+}
+
+.ant-notification-notice-info {
+  border: 1px solid @ant-info-color;
+}
+
+.ant-notification-notice-icon-info {
+  color: @ant-info-color !important;
 }
