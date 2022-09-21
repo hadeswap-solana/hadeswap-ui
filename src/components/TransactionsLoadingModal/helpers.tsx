@@ -77,6 +77,14 @@ const makeAddOrRemoveLiquidityFromPoolIxCard = (
   );
 };
 
+const removeBuyOrdersFromPoolIxCard = (amount: number): ReactNode => {
+  return (
+    <IxCard>
+      <IxCardText>Remove {amount} buy orders</IxCardText>
+    </IxCard>
+  );
+};
+
 const makeUnkonwIxCard = (): ReactNode => (
   <IxCard>
     <IxCardText>Unknown instruction</IxCardText>
@@ -88,6 +96,7 @@ export const createIxCardFuncs = {
   [IX_TYPE.EDIT_POOL]: makeEditPoolIxCard,
   [IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL]: makeAddOrRemoveSolFromPoolIxCard,
   [IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL]: makeAddOrRemoveNftFromPoolIxCard,
+  [IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL]: removeBuyOrdersFromPoolIxCard,
   [IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL]:
     makeAddOrRemoveLiquidityFromPoolIxCard,
   [IX_TYPE.COMPLETE_ORDER]: makeBuyOrSellNftIxCard,

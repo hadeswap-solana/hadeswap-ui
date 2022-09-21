@@ -7,5 +7,7 @@ export enum IX_TYPE {
 
   ADD_OR_REMOVE_LIQUIDITY_FROM_POOL, //? For liquidityProvision only
 
+  REMOVE_BUY_ORDERS_FROM_POOL,
+
   COMPLETE_ORDER,
 }

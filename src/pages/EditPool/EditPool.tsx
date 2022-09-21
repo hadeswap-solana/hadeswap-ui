@@ -104,7 +104,7 @@ export const EditPool: FC = () => {
         ? pool?.delta / 100
         : pool?.delta / 1e9,
     nftAmount: pool?.buyOrdersAmount,
-    buyOrdersAmount: pool?.buyOrdersAmount ?? 0,
+    buyOrdersAmount: pool?.buyOrdersAmount,
     depositAmount: 0,
   };
 
@@ -123,9 +123,15 @@ export const EditPool: FC = () => {
     pool?.currentSpotPrice !== rawSpotPrice ||
     pool?.delta !== rawDelta ||
     (type === PairType.LiquidityProvision && pool?.fee !== rawFee);
-  const isNftAmountChanged = pool?.buyOrdersAmount !== nftAmount;
+  const isNftAmountChanged =
+    pool?.sellOrders.length !== nftModal.selectedNfts.length;
+  const isBuyOrdersChanged = pool?.buyOrdersAmount !== buyOrdersAmount;
   const isSaveButtonDisabled =
-    !(isPricingChanged || isNftAmountChanged) || !spotPrice;
+    !(
+      (type === PairType.LiquidityProvision
+        ? isBuyOrdersChanged
+        : isNftAmountChanged) || isPricingChanged
+    ) || !spotPrice;
   const isSelectedButtonDisabled = buyOrdersAmount < pool?.buyOrdersAmount;
 
   const nftsToDelete = differenceBy(
@@ -138,15 +144,18 @@ export const EditPool: FC = () => {
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
     dispatch(coreActions.fetchPair(poolPubKey));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   useEffect(() => {
     form.setFieldsValue({
       buyOrdersAmount: initialValues.buyOrdersAmount + nftsToAdd.length,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nftModal.selectedNfts.length]);
+
+  useEffect(() => {
+    //TODO: Why we need this?
+    form.setFieldsValue({ buyOrdersAmount: pool?.buyOrdersAmount });
+  }, [pool?.buyOrdersAmount]);
 
   const onSelectNftsClick = () => {
     nftModal.setVisible(true);
@@ -327,19 +336,27 @@ export const EditPool: FC = () => {
             ),
           );
         } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
-          transactions.push(
-            ...(await createWithdrawLiquidityFromBuyOrdersPair({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              liquidityProvisionOrders: pool.liquidityProvisionOrders,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              buyOrdersAmountToDelete:
-                pool.buyOrdersAmount - buyOrdersAmount || pool.buyOrdersAmount,
-            })),
-          );
+          if (isBuyOrdersChanged) {
+            const ordersToDelete =
+              pool.buyOrdersAmount - buyOrdersAmount || pool.buyOrdersAmount;
 
-          cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
+            transactions.push(
+              ...(await createWithdrawLiquidityFromBuyOrdersPair({
+                connection,
+                wallet,
+                pairPubkey: pool.pairPubkey,
+                liquidityProvisionOrders: pool.liquidityProvisionOrders,
+                authorityAdapter: pool.authorityAdapterPubkey,
+                buyOrdersAmountToDelete: ordersToDelete,
+              })),
+            );
+
+            cards.push([
+              createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](
+                ordersToDelete,
+              ),
+            ]);
+          }
         } else if (pool?.nftsCount > 0 && pool?.buyOrdersAmount === 0) {
           const txns = await createWithdrawLiquidityFromSellOrdersPair({
             connection,
