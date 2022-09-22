@@ -216,17 +216,18 @@ export const EditPool: FC = () => {
           );
 
           const sellAmounts = hadeswap.helpers.calculatePricesArray({
-            price: rawSpotPrice,
+            starting_spot_price: rawSpotPrice,
             delta: rawDelta,
-            amount: nftAmount,
+            amount: nftAmount - pool?.buyOrdersAmount,
             bondingCurveType: curve,
             orderType: OrderType.Sell,
-            counter: pool?.mathCounter,
+            counter: pool?.buyOrdersAmount * -1 + 1,
           });
-          const amount = sellAmounts.total - pool.fundsSolOrTokenBalance;
 
           cards.push([
-            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amount),
+            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](
+              sellAmounts.total,
+            ),
           ]);
         } else {
           transactions.push(
@@ -240,20 +241,17 @@ export const EditPool: FC = () => {
           );
 
           const buyAmounts = hadeswap.helpers.calculatePricesArray({
-            price: rawSpotPrice,
+            starting_spot_price: rawSpotPrice,
             delta: rawDelta,
-            amount: nftAmount,
+            amount: pool?.buyOrdersAmount - nftAmount,
             bondingCurveType: curve,
             orderType: OrderType.Buy,
-            counter: pool?.mathCounter,
+            counter: pool?.buyOrdersAmount * -1,
           });
-          const amount = nftAmount
-            ? pool.fundsSolOrTokenBalance - buyAmounts.total
-            : pool.fundsSolOrTokenBalance;
 
           cards.push([
             createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](
-              amount,
+              buyAmounts.total,
               true,
             ),
           ]);
@@ -296,22 +294,21 @@ export const EditPool: FC = () => {
         ),
       );
     } else if (isLiquidityProvisionPool) {
-      const sellAmounts = hadeswap.helpers.calculatePricesArray({
-        price: rawSpotPrice,
-        delta: rawDelta,
-        amount: nftModal.selectedNfts.length,
-        bondingCurveType: curve,
-        orderType: OrderType.Sell,
-        counter: pool?.mathCounter,
-      });
-      //sellAmounts.array.reverse();
-
       const txns = await createDepositLiquidityToPairTxns({
         connection,
         wallet,
         pairPubkey: pool.pairPubkey,
         authorityAdapter: pool.authorityAdapterPubkey,
         nfts: nftsToAdd,
+      });
+
+      const sellAmounts = hadeswap.helpers.calculatePricesArray({
+        starting_spot_price: rawSpotPrice,
+        delta: rawDelta,
+        amount: nftsToAdd.length,
+        bondingCurveType: curve,
+        orderType: OrderType.Sell,
+        counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1,
       });
 
       const nftAddCards = nftsToAdd.map((nft, index) =>
@@ -327,6 +324,15 @@ export const EditPool: FC = () => {
       );
 
       if (pool.liquidityProvisionOrders.length) {
+        const buyAmounts = hadeswap.helpers.calculatePricesArray({
+          starting_spot_price: rawSpotPrice,
+          delta: rawDelta,
+          amount: nftsToDelete.length,
+          bondingCurveType: curve,
+          orderType: OrderType.Buy,
+          counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1 - 1,
+        });
+
         if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
           const txns = await createWithdrawLiquidityFromPairTxns({
             connection,
@@ -340,7 +346,7 @@ export const EditPool: FC = () => {
           const nftRemoveCards = nftsToDelete.map((nft, index) =>
             createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
               nft,
-              sellAmounts.array[index],
+              buyAmounts.array[index],
               true,
             ),
           );
@@ -387,7 +393,7 @@ export const EditPool: FC = () => {
           const nftRemoveCards = nftsToDelete.map((nft, index) =>
             createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
               nft,
-              sellAmounts.array[index],
+              buyAmounts.array[index],
               true,
             ),
           );

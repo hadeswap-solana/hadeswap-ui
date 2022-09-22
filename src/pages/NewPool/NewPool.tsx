@@ -179,12 +179,12 @@ export const NewPool: FC = () => {
       );
 
       const amounts = hadeswap.helpers.calculatePricesArray({
-        price: rawSpotPrice,
+        starting_spot_price: rawSpotPrice,
         delta: rawDelta,
         amount: nftAmount,
         bondingCurveType: curve,
         orderType: OrderType.Sell,
-        counter: 0,
+        counter: 1,
       });
 
       cards[0].push(
@@ -234,12 +234,12 @@ export const NewPool: FC = () => {
         });
 
         const sellAmounts = hadeswap.helpers.calculatePricesArray({
-          price: rawSpotPrice,
+          starting_spot_price: rawSpotPrice,
           delta: rawDelta,
           amount: nftModal.selectedNfts.length,
           bondingCurveType: curve,
           orderType: OrderType.Sell,
-          counter: 0,
+          counter: 1,
         });
 
         const nftCards = nftModal.selectedNfts.map((nft, index) =>
