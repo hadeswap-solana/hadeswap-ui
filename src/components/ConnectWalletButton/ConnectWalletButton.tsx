@@ -29,7 +29,7 @@ export const ConnectWalletButton = ({
         dispatch(commonActions.toggleWalletModal());
       }}
     >
-      Connect wallet
+      connect wallet
     </Button>
   ) : (
     <Dropdown
@@ -37,14 +37,14 @@ export const ConnectWalletButton = ({
         <Menu
           items={[
             {
-              label: 'Change wallet',
+              label: 'change wallet',
               key: '1',
               icon: <WalletOutlined />,
               onClick: () =>
                 dispatch(commonActions.setWalletModal({ isVisible: true })),
             },
             {
-              label: 'Disconnect',
+              label: 'disconnect',
               key: '2',
               icon: <DisconnectOutlined />,
               onClick: disconnect,

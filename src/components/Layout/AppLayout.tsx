@@ -73,14 +73,14 @@ export const AppLayout: FC<LayoutProps> = ({
                 className={styles.navLink}
                 activeClassName={styles.navLinkActive}
               >
-                Collections
+                collections
               </NavLink>
               <NavLink
                 to={PATHS.MY_POOLS}
                 className={styles.navLink}
                 activeClassName={styles.navLinkActive}
               >
-                My Pools
+                my Pools
               </NavLink>
               {/* <NavLink
                 to={PATHS.MY_NFTS}
@@ -99,7 +99,7 @@ export const AppLayout: FC<LayoutProps> = ({
         {!hideFooter && (
           <Footer className={styles.footer}>
             <div className={styles.footerBlock}>
-              <Typography.Text>Documentation</Typography.Text>
+              <Typography.Text>documentation</Typography.Text>
               <ul className={styles.socialNavs}>
                 {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
                   <li className={styles.socialItem} key={idx}>
@@ -111,7 +111,7 @@ export const AppLayout: FC<LayoutProps> = ({
               </ul>
             </div>
             <div className={styles.footerBlock}>
-              <Typography.Text>Contact us</Typography.Text>
+              <Typography.Text>contact us</Typography.Text>
               <ul className={styles.socialNavs}>
                 {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
                   <li className={styles.socialItem} key={idx}>
