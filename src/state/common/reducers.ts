@@ -131,7 +131,7 @@ const setConfettiReducer = createReducer<ConfettiState>(initialConfettiState, {
 const setCartSiderReducer = createReducer<CartSiderState>(
   initialCartSiderState,
   {
-    [commonTypes.SET_WALLET]: (
+    [commonTypes.SET_CART_SIDER]: (
       state,
       action: ReturnType<typeof commonActions.setCartSider>,
     ) => ({
