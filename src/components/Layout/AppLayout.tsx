@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Layout, Typography } from 'antd';
 
 import { commonActions } from '../../state/common/actions';
@@ -17,6 +17,7 @@ import DiscordIcon from '../../icons/DiscordIcon';
 import TwitterIcon from '../../icons/TwitterIcon';
 import GitHubIcon from '../../icons/GitHubIcon';
 import classNames from 'classnames';
+import { selectCartSiderVisible } from '../../state/common/selectors';
 
 const { Header, Content, Footer } = Layout;
 
@@ -46,6 +47,7 @@ export const AppLayout: FC<LayoutProps> = ({
   contentClassName = '',
 }) => {
   const dispatch = useDispatch();
+  const cartSiderOpened = useSelector(selectCartSiderVisible);
 
   useEffect(() => {
     dispatch(commonActions.setWalletModal({ isVisible: false }));
@@ -54,7 +56,11 @@ export const AppLayout: FC<LayoutProps> = ({
 
   return (
     <Layout className={className}>
-      <Layout>
+      <div
+        className={classNames(styles.main, {
+          [styles.mainAndSiderOpened]: cartSiderOpened,
+        })}
+      >
         <Header className={styles.header}>
           <NavLink className={styles.logo} to={PATHS.ROOT}>
             <Logo />
@@ -118,7 +124,7 @@ export const AppLayout: FC<LayoutProps> = ({
             </div>
           </Footer>
         )}
-      </Layout>
+      </div>
       <CartSider />
       <SelectWalletModal />
       <TransactionsLoadingModal />

@@ -1,3 +1,10 @@
+.main {
+  transition: margin-right 0.5s;
+}
+.mainAndSiderOpened {
+  margin-right: 320px;
+}
+
 .header {
   display: flex;
   border-bottom: 1px solid var(--border-color-base);
@@ -48,12 +55,17 @@
 }
 
 .cartSider {
+  width: 0;
+  height: 100%;
+  position: fixed;
   z-index: 1;
-  height: 100vh;
-  position: fixed !important;
   top: 0;
   right: 0;
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
   border-left: 1px solid var(--border-color-base);
+}
+.cartSiderOpened {
+  width: 320px;
 }
 
 .cartTitle {
@@ -94,6 +106,8 @@
 }
 
 .siderContent {
+  width: 320px;
+  overflow-x: hidden;
   overflow-y: auto;
   padding: 16px;
   display: flex;

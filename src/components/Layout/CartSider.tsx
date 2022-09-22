@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { CloseOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { Badge, Button, Layout, Typography } from 'antd';
+import { Badge, Button, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCartSiderVisible } from '../../state/common/selectors';
 import { commonActions } from '../../state/common/actions';
@@ -17,8 +17,6 @@ import { CartOrder } from '../../state/core/types';
 import { useSwap } from './hooks';
 import classNames from 'classnames';
 import { SolPrice } from '../SolPrice/SolPrice';
-
-const { Sider } = Layout;
 
 export const CartSider: FC = () => {
   const dispatch = useDispatch();
@@ -39,13 +37,10 @@ export const CartSider: FC = () => {
   };
 
   return (
-    <Sider
-      trigger={null}
-      collapsible
-      collapsed={!visible}
-      className={styles.cartSider}
-      collapsedWidth={0}
-      width={320}
+    <div
+      className={classNames(styles.cartSider, {
+        [styles.cartSiderOpened]: visible,
+      })}
     >
       <Badge
         count={itemsAmount}
@@ -72,7 +67,7 @@ export const CartSider: FC = () => {
             </div>
             <div className={styles.cartItems}>
               {cartItems.buy.map((item) => (
-                <SiderCart
+                <SiderCard
                   key={item.mint}
                   name={item.name}
                   imageUrl={item.imageUrl}
@@ -95,7 +90,7 @@ export const CartSider: FC = () => {
             </div>
             <div className={styles.cartItems}>
               {cartItems.sell.map((item) => (
-                <SiderCart
+                <SiderCard
                   key={item.mint}
                   name={item.name}
                   imageUrl={item.imageUrl}
@@ -135,7 +130,7 @@ export const CartSider: FC = () => {
               className={classNames(styles.cartItems, styles.cartItemsInvalid)}
             >
               {invalidItems.map((item) => (
-                <SiderCart
+                <SiderCard
                   key={item.mint}
                   name={item.name}
                   imageUrl={item.imageUrl}
@@ -158,18 +153,18 @@ export const CartSider: FC = () => {
           </Button>
         </div>
       </div>
-    </Sider>
+    </div>
   );
 };
 
-interface SiderCartProps {
+interface SiderCardProps {
   imageUrl: string;
   name: string;
   price: string;
   onDeselect?: () => void;
 }
 
-export const SiderCart: FC<SiderCartProps> = ({
+export const SiderCard: FC<SiderCardProps> = ({
   name,
   price,
   imageUrl,
