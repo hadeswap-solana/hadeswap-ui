@@ -2,12 +2,11 @@ import { Button, Tabs, Layout } from 'antd';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import {
   COLLECTION_TABS,
   createCollectionLink,
-  createCreatePollLink,
+  createCreatePoolPickSideLink,
 } from '../../constants';
 import { coreActions } from '../../state/core/actions';
 import {
@@ -43,12 +42,8 @@ export const CollectionPageLayout: FC = ({ children }) => {
     );
   };
 
-  const onMakeOfferClick = () => {
-    history.push(createCreatePollLink(marketPublicKey, PairType.TokenForNFT));
-  };
-
-  const onListClick = () => {
-    history.push(createCreatePollLink(marketPublicKey, PairType.NftForToken));
+  const onCreatePoolClick = () => {
+    history.push(createCreatePoolPickSideLink(marketPublicKey));
   };
 
   const handleCancel = () => {
@@ -75,11 +70,8 @@ export const CollectionPageLayout: FC = ({ children }) => {
             offerTVL={market?.offerTVL}
           />
           <div className={styles.actionsContainer}>
-            <Button type="primary" size="large" onClick={onMakeOfferClick}>
-              make offer
-            </Button>
-            <Button type="primary" size="large" onClick={onListClick}>
-              list
+            <Button type="primary" size="large" onClick={onCreatePoolClick}>
+              + create pool
             </Button>
           </div>
           <Tabs

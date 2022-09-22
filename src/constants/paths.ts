@@ -12,9 +12,13 @@ export const createCollectionLink = (
 export const createCreatePollLink = (
   publicKey = ':publicKey?',
   type = ':type?',
-) => `/create-pool/${publicKey}/${type}`;
+): string => `/create-pool/${publicKey}/${type}`;
 
-export const createEditPollLink = (poolPubKey = ':poolPubKey?') =>
+export const createCreatePoolPickSideLink = (
+  publicKey = ':publicKey?',
+): string => `/create-pool/${publicKey}`;
+
+export const createEditPollLink = (poolPubKey = ':poolPubKey?'): string =>
   `/pools/${poolPubKey}/edit`;
 
 export const PATHS = {
