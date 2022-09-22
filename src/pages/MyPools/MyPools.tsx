@@ -26,7 +26,7 @@ const poolTableColumns: ColumnsType<
 > = [
   {
     key: 'collection',
-    title: 'Collection',
+    title: 'collection',
     dataIndex: 'collectionName',
     sorter: (a, b) => a?.collectionName.localeCompare(b?.collectionName),
     showSorterTooltip: false,
@@ -43,7 +43,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'type',
-    title: 'Pool type',
+    title: 'pool type',
     dataIndex: 'type',
     sorter: (a, b) => a?.type.localeCompare(b?.type),
     showSorterTooltip: false,
@@ -51,7 +51,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'spotPrice',
-    title: 'Spot price',
+    title: 'spot price',
     dataIndex: 'spotPrice',
     sorter: (a, b) => parseFloat(a?.spotPrice) - parseFloat(b?.spotPrice),
     showSorterTooltip: false,
@@ -59,7 +59,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'fee',
-    title: 'Fee',
+    title: 'fee',
     dataIndex: 'fee',
     sorter: (a, b) => a.fee - b.fee,
     showSorterTooltip: false,
@@ -67,7 +67,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'fundsSolOrTokenBalance',
-    title: 'SOL balance',
+    title: 'sol balance',
     dataIndex: 'fundsSolOrTokenBalance',
     sorter: (a, b) =>
       parseFloat(a?.fundsSolOrTokenBalance) -
@@ -82,7 +82,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'nftsCount',
-    title: 'NFTs amount',
+    title: 'nfts amount',
     dataIndex: 'nftsCount',
     sorter: ({ nftsCount: nftsAmountA = 0 }, { nftsCount: nftsAmountB = 0 }) =>
       nftsAmountA - nftsAmountB,
@@ -95,7 +95,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'bondingCurve',
-    title: 'Bonding curve',
+    title: 'bonding curve',
     dataIndex: 'bondingCurve',
     sorter: (a, b) => a?.bondingCurve.localeCompare(b?.bondingCurve),
     showSorterTooltip: false,
@@ -103,7 +103,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'delta',
-    title: <TitleWithInfo title="Delta" infoText="Delta param explanation" />,
+    title: <TitleWithInfo title="Delta" infoText="delta param explanation" />,
     dataIndex: 'delta',
     sorter: (a, b) => parseFloat(a?.delta) - parseFloat(b?.delta),
     showSorterTooltip: false,
@@ -142,7 +142,7 @@ export const MyPools: FC = () => {
 
   return (
     <AppLayout>
-      <Title>My pools</Title>
+      <Title>my pools</Title>
       {wallet.connected && (
         <div className={styles.buttons}>
           <Button
@@ -150,18 +150,18 @@ export const MyPools: FC = () => {
               history.push('/create-pool');
             }}
           >
-            + Create pool
+            + create pool
           </Button>
         </div>
       )}
       {!wallet.connected && (
         <Typography.Title level={3}>
-          Connect you wallet to see your pools
+          connect you wallet to see your pools
         </Typography.Title>
       )}
       {wallet.connected && loading && <Spinner />}
       {!loading && wallet.connected && !poolsTableInfo.length && (
-        <Typography.Title level={3}>No pools found</Typography.Title>
+        <Typography.Title level={3}>no pools found</Typography.Title>
       )}
 
       {!loading && wallet.connected && !!poolsTableInfo.length && (

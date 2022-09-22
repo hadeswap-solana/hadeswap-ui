@@ -80,15 +80,8 @@ export const AppLayout: FC<LayoutProps> = ({
                 className={styles.navLink}
                 activeClassName={styles.navLinkActive}
               >
-                my Pools
+                my pools
               </NavLink>
-              {/* <NavLink
-                to={PATHS.MY_NFTS}
-                className={styles.navLink}
-                activeClassName={styles.navLinkActive}
-              >
-                My NFTs
-              </NavLink> */}
               <ConnectWalletButton className={styles.connectBtn} />
             </div>
           </nav>

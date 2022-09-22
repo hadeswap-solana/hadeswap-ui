@@ -105,7 +105,7 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
           ))}
         </div>
       ) : (
-        <Title level={5}>No NFTs of this collections</Title>
+        <Title level={5}>no nfts of this collections</Title>
       )}
     </Modal>
   );

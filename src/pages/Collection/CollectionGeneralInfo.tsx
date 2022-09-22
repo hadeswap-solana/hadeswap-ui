@@ -14,7 +14,7 @@ interface CollectionGeneralInfoProps {
 }
 
 export const CollectionGeneralInfo: FC<CollectionGeneralInfoProps> = ({
-  collectionName = 'Untitled collection',
+  collectionName = 'untitled collection',
   collectionImage = '',
   floorPrice = '0',
   bestoffer = '0',
@@ -36,16 +36,16 @@ export const CollectionGeneralInfo: FC<CollectionGeneralInfoProps> = ({
       </Row>
       <div className={styles.infoBlock}>
         <div className={styles.info}>
-          <Text strong>Floor</Text>
-          <Text>{floorPrice} SOL</Text>
+          <Text strong>floor</Text>
+          <Text>{floorPrice} sol</Text>
         </div>
         <div className={styles.info}>
-          <Text strong>Best offer</Text>
-          <Text>{bestoffer} SOL</Text>
+          <Text strong>best offer</Text>
+          <Text>{bestoffer} sol</Text>
         </div>
         <div className={styles.info}>
-          <Text strong>Offer TVL</Text>
-          <Text>{offerTVL} SOL</Text>
+          <Text strong>offer tvl</Text>
+          <Text>{offerTVL} sol</Text>
         </div>
         {/* <div className={styles.info}>
           <Text strong>Volume</Text>

@@ -85,7 +85,7 @@ export const NewPool: FC = () => {
   // const buyUpTo = Form.useWatch('buyUpTo', form);
   // const sellUpTo = Form.useWatch('sellUpTo', form);
   const chosenMarket = markets.find((item) => item.marketPubkey === market);
-  const collectionName = chosenMarket?.collectionName ?? 'NFTs';
+  const collectionName = chosenMarket?.collectionName ?? 'nfts';
   const nftModal = useSelectNftsModal(
     collectionName,
     chosenMarket?.marketPubkey,
@@ -112,7 +112,7 @@ export const NewPool: FC = () => {
     depositAmount: 0,
   };
 
-  const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
+  const unit = curve === BondingCurveType.Exponential ? '%' : 'sol';
   // const deposit = (spotPrice - spotPrice * fee * 2) * buyUpTo;
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
@@ -298,18 +298,18 @@ export const NewPool: FC = () => {
 
   return (
     <AppLayout>
-      <Title>Create pool</Title>
+      <Title>create pool</Title>
       {!wallet.connected && (
         <Typography.Title level={3}>
-          Connect your wallet for pool creation
+          connect your wallet for pool creation
         </Typography.Title>
       )}
       {wallet.connected && (
         <>
           <Steps current={step}>
-            <Step title="Pick collection" />
-            <Step title="Pick your side" />
-            <Step title="Configuring trading" />
+            <Step title="pick collection" />
+            <Step title="pick your side" />
+            <Step title="configuring trading" />
           </Steps>
           <Form
             layout="vertical"
@@ -366,13 +366,13 @@ export const NewPool: FC = () => {
                     <Form.Item name="type">
                       <Radio.Group value={type} onChange={onRadioChange}>
                         <Radio.Button value={PairType.TokenForNFT}>
-                          Buy NFTs with tokens
+                          buy nfts with tokens
                         </Radio.Button>
                         <Radio.Button value={PairType.NftForToken}>
-                          Sell NFTs for tokens
+                          sell nfts for tokens
                         </Radio.Button>
                         <Radio.Button value={PairType.LiquidityProvision}>
-                          Do both and earn trading fees
+                          do both and earn trading fees
                         </Radio.Button>
                       </Radio.Group>
                     </Form.Item>
@@ -390,7 +390,7 @@ export const NewPool: FC = () => {
                   <Row>
                     <Col span={11}>
                       <Card bordered={false}>
-                        <Title level={3}>Pricing</Title>
+                        <Title level={3}>pricing</Title>
                         {type === PairType.LiquidityProvision && (
                           <Form.Item
                             name="fee"
@@ -418,12 +418,12 @@ export const NewPool: FC = () => {
                           <InputNumber
                             className={styles.input}
                             min="0"
-                            addonAfter="SOL"
+                            addonAfter="sol"
                           />
                         </Form.Item>
                         <Form.Item
                           name="curve"
-                          label="Bonding Curve"
+                          label="bonding curve"
                           tooltip={{
                             title: '',
                             icon: <InfoCircleOutlined />,
@@ -431,16 +431,16 @@ export const NewPool: FC = () => {
                         >
                           <Radio.Group className={styles.input} value={curve}>
                             <Radio.Button value={BondingCurveType.Linear}>
-                              Linear Curve
+                              linear curve
                             </Radio.Button>
                             <Radio.Button value={BondingCurveType.Exponential}>
-                              Exponential Curve
+                              exponential curve
                             </Radio.Button>
                           </Radio.Group>
                         </Form.Item>
                         <Form.Item
                           name="delta"
-                          label="Delta"
+                          label="delta"
                           tooltip={{
                             title: '',
                             icon: <InfoCircleOutlined />,
@@ -454,8 +454,8 @@ export const NewPool: FC = () => {
                         </Form.Item>
                         {Boolean(spotPrice) && (
                           <Paragraph>
-                            You have selected a starting price of {spotPrice}{' '}
-                            SOL.
+                            you have selected a starting price of {spotPrice}{' '}
+                            sol.
                           </Paragraph>
                         )}
 
@@ -470,19 +470,19 @@ export const NewPool: FC = () => {
                     <Col span={11} offset={2}>
                       {type === PairType.TokenForNFT && (
                         <Card bordered={false}>
-                          <Title level={3}>Assets</Title>
-                          <Form.Item label="Amount of NFTs" name="nftAmount">
+                          <Title level={3}>assets</Title>
+                          <Form.Item label="Amount of nfts" name="nftAmount">
                             <InputNumber
                               className={styles.input}
                               min="0"
-                              addonAfter="NFTs"
+                              addonAfter="nfts"
                             />
                           </Form.Item>
                         </Card>
                       )}
                       {type === PairType.NftForToken && (
                         <Card bordered={false}>
-                          <Title level={3}>Assets</Title>
+                          <Title level={3}>assets</Title>
                           <div className={styles.nftsWrapper}>
                             {nftModal.selectedNfts?.map((nft) => (
                               <NFTCard
@@ -493,13 +493,13 @@ export const NewPool: FC = () => {
                             ))}
                           </div>
                           <Button onClick={onSelectNftsClick}>
-                            + Select NFTs
+                            + select nfts
                           </Button>
                         </Card>
                       )}
                       {type === PairType.LiquidityProvision && (
                         <Card bordered={false}>
-                          <Title level={3}>Assets</Title>
+                          <Title level={3}>assets</Title>
                           <div className={styles.nftsWrapper}>
                             {nftModal.selectedNfts?.map((nft) => (
                               <NFTCard
@@ -510,7 +510,7 @@ export const NewPool: FC = () => {
                             ))}
                           </div>
                           <Button onClick={onSelectNftsClick}>
-                            + Select NFTs
+                            + select nfts
                           </Button>
                         </Card>
                       )}
@@ -518,13 +518,13 @@ export const NewPool: FC = () => {
                   </Row>
                 </div>
                 <div className={styles.stepsButtons}>
-                  <Button onClick={onBackClick}>{`< Back`}</Button>
+                  <Button onClick={onBackClick}>{`< back`}</Button>
                   <Button
                     type="primary"
                     onClick={onCreatePoolClick}
                     disabled={isCreateButtonDisabled}
                   >
-                    Create pool
+                    create pool
                   </Button>
                 </div>
               </div>

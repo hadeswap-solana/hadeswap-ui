@@ -64,7 +64,7 @@ export const CartSider: FC = () => {
           <div className={styles.cardsSection}>
             <div className={styles.cartTitle}>
               <Typography.Title level={4}>
-                Buy {cartItems.buy.length} NFTs
+                buy {cartItems.buy.length} nfts
               </Typography.Title>
               <Typography.Text>
                 <SolPrice price={totalBuy} raw />
@@ -87,7 +87,7 @@ export const CartSider: FC = () => {
           <div className={styles.cardsSection}>
             <div className={styles.cartTitle}>
               <Typography.Title level={4}>
-                Sell {cartItems.sell.length} NFTs
+                sell {cartItems.sell.length} nfts
               </Typography.Title>
               <Typography.Text>
                 <SolPrice price={totalSell} raw />

@@ -18,7 +18,7 @@ const poolTableColumns: ColumnsType<
 > = [
   {
     key: 'collection',
-    title: 'Collection',
+    title: 'collection',
     dataIndex: 'collectionName',
     sorter: (a, b) => a?.collectionName.localeCompare(b?.collectionName),
     showSorterTooltip: false,
@@ -35,7 +35,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'type',
-    title: 'Pool type',
+    title: 'pool type',
     dataIndex: 'type',
     sorter: (a, b) => a?.type.localeCompare(b?.type),
     showSorterTooltip: false,
@@ -43,7 +43,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'spotPrice',
-    title: 'Spot price',
+    title: 'spot price',
     dataIndex: 'spotPrice',
     sorter: (a, b) => parseFloat(a?.spotPrice) - parseFloat(b?.spotPrice),
     showSorterTooltip: false,
@@ -51,7 +51,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'fee',
-    title: 'Fee',
+    title: 'fee',
     dataIndex: 'fee',
     sorter: (a, b) => a.fee - b.fee,
     showSorterTooltip: false,
@@ -59,7 +59,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'fundsSolOrTokenBalance',
-    title: 'SOL balance',
+    title: 'sol balance',
     dataIndex: 'fundsSolOrTokenBalance',
     sorter: (a, b) =>
       parseFloat(a?.fundsSolOrTokenBalance) -
@@ -74,7 +74,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'nftsCount',
-    title: 'NFTs amount',
+    title: 'nfts amount',
     dataIndex: 'nftsCount',
     sorter: ({ nftsCount: nftsAmountA = 0 }, { nftsCount: nftsAmountB = 0 }) =>
       nftsAmountA - nftsAmountB,
@@ -87,7 +87,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'bondingCurve',
-    title: 'Bonding curve',
+    title: 'bonding curve',
     dataIndex: 'bondingCurve',
     sorter: (a, b) => a?.bondingCurve.localeCompare(b?.bondingCurve),
     showSorterTooltip: false,
@@ -103,7 +103,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'ownerPublicKey',
-    title: 'Owner',
+    title: 'owner',
     dataIndex: 'ownerPublicKey',
     sorter: (a, b) => a?.ownerPublicKey.localeCompare(b?.ownerPublicKey),
     showSorterTooltip: false,

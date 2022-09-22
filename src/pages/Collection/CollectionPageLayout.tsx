@@ -76,10 +76,10 @@ export const CollectionPageLayout: FC = ({ children }) => {
           />
           <div className={styles.actionsContainer}>
             <Button type="primary" size="large" onClick={onMakeOfferClick}>
-              Make offer
+              make offer
             </Button>
             <Button type="primary" size="large" onClick={onListClick}>
-              List
+              list
             </Button>
           </div>
           <Tabs
@@ -87,10 +87,10 @@ export const CollectionPageLayout: FC = ({ children }) => {
             centered
             onChange={onTabChangeHandler}
           >
-            <TabPane tab="Buy" key={COLLECTION_TABS.BUY} />
-            <TabPane tab="Sell" key={COLLECTION_TABS.SELL} />
-            <TabPane tab="Activity" key="3" disabled />
-            <TabPane tab="Pools" key={COLLECTION_TABS.POOLS} />
+            <TabPane tab="buy" key={COLLECTION_TABS.BUY} />
+            <TabPane tab="sell" key={COLLECTION_TABS.SELL} />
+            <TabPane tab="activity" key="3" disabled />
+            <TabPane tab="pools" key={COLLECTION_TABS.POOLS} />
           </Tabs>
           <Content>{children}</Content>
         </>

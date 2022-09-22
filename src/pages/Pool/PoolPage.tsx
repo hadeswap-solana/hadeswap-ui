@@ -58,14 +58,14 @@ export const PoolPage: FC = () => {
   return (
     <AppLayout>
       <Title level={2} style={{ marginBottom: 0 }}>
-        Pool {poolPubkey}
+        pool {poolPubkey}
       </Title>
       {loading || !pool ? (
         <Spinner />
       ) : (
         <div className={styles.content}>
           <Title level={5} style={{ marginBottom: 16 }}>
-            Owner {pool?.assetReceiver}
+            owner {pool?.assetReceiver}
           </Title>
           <PoolGeneralInfo
             pool={pool}
@@ -91,7 +91,7 @@ const NftList: FC<NftListProps> = ({ pool }) => {
         className={styles.nftsListTitle}
         style={{ marginBottom: 0 }}
       >
-        NFTs
+        nfts
       </Title>
       <div className={styles.nftsList}>
         {pool?.sellOrders?.map((order) => (
@@ -125,15 +125,15 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
         className={styles.generalInfoTitle}
         style={{ marginBottom: 0 }}
       >
-        General Info
+        general Info
         {onEdit && (
           <Button type="primary" onClick={onEdit}>
-            Edit
+            edit
           </Button>
         )}
       </Title>
       <div className={styles.generalInfoBlock}>
-        <Title level={5}>Collection</Title>
+        <Title level={5}>collection</Title>
         <Row align="middle" gutter={[8, 0]}>
           <Col>
             <Avatar src={market?.collectionImage} />
@@ -142,28 +142,28 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
         </Row>
       </div>
       <div className={styles.generalInfoBlock}>
-        <Title level={5}>Pool type</Title>
+        <Title level={5}>pool type</Title>
         <Text className={styles.generalInfoText}>{PoolType[pool?.type]}</Text>
       </div>
       <div className={styles.generalInfoBlock}>
-        <Title level={5}>SOL balance</Title>
+        <Title level={5}>sol balance</Title>
         <Text className={styles.generalInfoText}>
-          {formatBNToString(new BN(pool?.fundsSolOrTokenBalance || '0'))} SOL
+          {formatBNToString(new BN(pool?.fundsSolOrTokenBalance || '0'))} sol
         </Text>
       </div>
       <div className={styles.generalInfoBlock}>
-        <Title level={5}>NFTS amount</Title>
+        <Title level={5}>nfts amount</Title>
         <Text className={styles.generalInfoText}>{pool?.nftsCount || '0'}</Text>
       </div>
       <div className={styles.generalInfoBlock}>
-        <Title level={5}>Delta</Title>
+        <Title level={5}>delta</Title>
         <Text className={styles.generalInfoText}>
           {formatBNToString(new BN(pool?.delta || '0'))}
-          {pool?.bondingCurve === 'linear' ? ' SOL' : '%'}
+          {pool?.bondingCurve === 'linear' ? ' sol' : '%'}
         </Text>
       </div>
       <div className={styles.generalInfoBlock}>
-        <Title level={5}>Status</Title>
+        <Title level={5}>status</Title>
         <Text className={styles.generalInfoText}>{pool?.pairState}</Text>
       </div>
     </div>

@@ -105,12 +105,12 @@ export const CollectionSell: FC = () => {
     <CollectionPageLayout>
       {!connected && (
         <Typography.Title level={3}>
-          Connect you wallet to see your nfts
+          connect you wallet to see your nfts
         </Typography.Title>
       )}
       {connected && loading && <Spinner />}
       {!loading && connected && !orders.length && (
-        <Typography.Title level={3}>No suitable nfts found</Typography.Title>
+        <Typography.Title level={3}>no suitable nfts found</Typography.Title>
       )}
       {!loading && connected && !!orders.length && (
         <div className={styles.cards}>

@@ -41,8 +41,8 @@ export const MakeOfferModal: FC<IMakeOfferModal> = ({
           src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg"
         />
         <Descriptions title="Collection" column={1}>
-          <Descriptions.Item label="Lowest floor">0.424 SOL</Descriptions.Item>
-          <Descriptions.Item label="Highest offer">0.407 ETH</Descriptions.Item>
+          <Descriptions.Item label="Lowest floor">0.424 sol</Descriptions.Item>
+          <Descriptions.Item label="Highest offer">0.407 sol</Descriptions.Item>
         </Descriptions>
       </div>
       <Form

@@ -80,7 +80,7 @@ export const EditPool: FC = () => {
   const chosenMarket = markets.find(
     (item) => item.marketPubkey === pool?.market,
   );
-  const collectionName = chosenMarket?.collectionName ?? 'NFTs';
+  const collectionName = chosenMarket?.collectionName ?? 'nfts';
   const nftModal = useSelectNftsModal(
     collectionName,
     chosenMarket?.marketPubkey,
@@ -104,9 +104,6 @@ export const EditPool: FC = () => {
     buyOrdersAmount: pool?.buyOrdersAmount,
     depositAmount: 0,
   };
-
-  console.log('-----');
-  console.log(pool);
 
   const loading = poolLoading || marketLoading;
   const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
@@ -470,7 +467,7 @@ export const EditPool: FC = () => {
                   <Row>
                     <Col span={11}>
                       <Card bordered={false}>
-                        <Title level={3}>Pricing</Title>
+                        <Title level={3}>pricing</Title>
                         {isLiquidityProvisionPool && (
                           <Form.Item
                             name="fee"
@@ -498,7 +495,7 @@ export const EditPool: FC = () => {
                           <InputNumber
                             className={styles.input}
                             min="0"
-                            addonAfter="SOL"
+                            addonAfter="sol"
                           />
                         </Form.Item>
                         <Form.Item
@@ -515,10 +512,10 @@ export const EditPool: FC = () => {
                             value={curve}
                           >
                             <Radio.Button value={BondingCurveType.Linear}>
-                              Linear Curve
+                              linear curve
                             </Radio.Button>
                             <Radio.Button value={BondingCurveType.Exponential}>
-                              Exponential Curve
+                              exponential curve
                             </Radio.Button>
                           </Radio.Group>
                         </Form.Item>
@@ -538,13 +535,13 @@ export const EditPool: FC = () => {
                         </Form.Item>
                         {Boolean(spotPrice) && (
                           <Paragraph>
-                            You have selected a starting price of {spotPrice}{' '}
-                            SOL.
+                            you have selected a starting price of {spotPrice}{' '}
+                            sol.
                           </Paragraph>
                         )}
                         {Boolean(delta) && (
                           <Paragraph>
-                            Each time your pool {type}s an NFT, your {type}{' '}
+                            each time your pool {type}s an NFT, your {type}{' '}
                             price will adjust up by {delta} {unit}.
                           </Paragraph>
                         )}
@@ -553,19 +550,19 @@ export const EditPool: FC = () => {
                     <Col span={11} offset={2}>
                       {isTokenForNFTPool && (
                         <Card bordered={false}>
-                          <Title level={3}>Assets</Title>
-                          <Form.Item label="Amount of NFTs" name="nftAmount">
+                          <Title level={3}>assets</Title>
+                          <Form.Item label="amount of nfts" name="nftAmount">
                             <InputNumber
                               className={styles.input}
                               min={0}
-                              addonAfter="NFTs"
+                              addonAfter="nfts"
                             />
                           </Form.Item>
                         </Card>
                       )}
                       {isNftForTokenPool && (
                         <Card bordered={false}>
-                          <Title level={3}>Assets</Title>
+                          <Title level={3}>assets</Title>
                           <div className={styles.nftsWrapper}>
                             {nftModal.selectedNfts.map((nft) => (
                               <NFTCard
@@ -576,15 +573,15 @@ export const EditPool: FC = () => {
                             ))}
                           </div>
                           <Button onClick={onSelectNftsClick}>
-                            + Select NFTs
+                            + select nfts
                           </Button>
                         </Card>
                       )}
                       {isLiquidityProvisionPool && (
                         <Card bordered={false}>
-                          <Title level={3}>Assets</Title>
+                          <Title level={3}>assets</Title>
                           <Form.Item
-                            label="Buy orders amount"
+                            label="buy orders amount"
                             name="buyOrdersAmount"
                           >
                             <InputNumber
@@ -597,7 +594,7 @@ export const EditPool: FC = () => {
                               }
                               min={0}
                               step={2}
-                              addonAfter="NFTs"
+                              addonAfter="nfts"
                             />
                           </Form.Item>
                           <div className={styles.nftsWrapper}>
@@ -613,7 +610,7 @@ export const EditPool: FC = () => {
                             disabled={isSelectedButtonDisabled}
                             onClick={onSelectNftsClick}
                           >
-                            + Select NFTs
+                            + select nfts
                           </Button>
                         </Card>
                       )}
@@ -626,7 +623,7 @@ export const EditPool: FC = () => {
                     onClick={onSavePoolClick}
                     disabled={isSaveButtonDisabled}
                   >
-                    Save changes
+                    save changes
                   </Button>
                 </div>
               </div>

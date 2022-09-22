@@ -20,7 +20,7 @@ const { Title, Text } = Typography;
 const columns: ColumnsType<MarketInfo> = [
   {
     key: 'collectionName',
-    title: 'Name',
+    title: 'name',
     dataIndex: 'collectionName',
     sorter: (a, b) => a?.collectionName.localeCompare(b?.collectionName),
     showSorterTooltip: false,
@@ -30,14 +30,14 @@ const columns: ColumnsType<MarketInfo> = [
           <Col>
             <Avatar src={record?.collectionImage} />
           </Col>
-          <Col>{text || 'Untitled Collection'}</Col>
+          <Col>{text || 'untitled collection'}</Col>
         </Row>
       );
     },
   },
   {
     key: 'listingsAmount',
-    title: 'Listings',
+    title: 'listings',
     dataIndex: 'listingsAmount',
     sorter: (a, b) => a?.listingsAmount - b?.listingsAmount,
     showSorterTooltip: false,
@@ -47,8 +47,8 @@ const columns: ColumnsType<MarketInfo> = [
     key: 'floorPrice',
     title: (
       <TitleWithInfo
-        title="Floor Price"
-        infoText="The price of the cheapset NFT lested."
+        title="floor Price"
+        infoText="the price of the cheapset NFT lested."
       />
     ),
     dataIndex: 'floorPrice',
@@ -60,8 +60,8 @@ const columns: ColumnsType<MarketInfo> = [
     key: 'bestoffer',
     title: (
       <TitleWithInfo
-        title="Best Offer"
-        infoText="The value of the highest collection offer."
+        title="best Offer"
+        infoText="the value of the highest collection offer."
       />
     ),
     dataIndex: 'bestoffer',
@@ -73,8 +73,8 @@ const columns: ColumnsType<MarketInfo> = [
     key: 'offerTVL',
     title: (
       <TitleWithInfo
-        title="Offer TVL"
-        infoText="The total amount of SOL locked in collection offers."
+        title="offer TVL"
+        infoText="the total amount of sol locked in collection offers."
       />
     ),
     dataIndex: 'offerTVL',
@@ -101,7 +101,7 @@ export const Collections: FC = () => {
     <AppLayout>
       <Row justify="center">
         <Col>
-          <Title>Collections</Title>
+          <Title>collections</Title>
         </Col>
       </Row>
       {collectionsLoading ? (
@@ -112,8 +112,8 @@ export const Collections: FC = () => {
           <Row justify="center">
             <Col>
               <Title level={4}>
-                Don&apos;t see a collection? Directly
-                <Link to="/my-nfts"> list your NFTs</Link>, or create a new pool
+                don&apos;t see a collection? Directly
+                <Link to="/my-nfts"> list your nfts</Link>, or create a new pool
                 to buy and sell in bulk.
               </Title>
             </Col>

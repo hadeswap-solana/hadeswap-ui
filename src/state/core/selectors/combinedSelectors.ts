@@ -25,7 +25,7 @@ export const selectPoolsPageTableInfo = createSelector(
       return {
         pairPubkey: pair?.pairPubkey,
         ownerPublicKey: pair?.assetReceiver,
-        collectionName: marketInfo?.collectionName || 'Untitled Collection',
+        collectionName: marketInfo?.collectionName || 'untitled collection',
         collectionImage: marketInfo?.collectionImage || '',
         type: pair?.type,
         spotPrice: formatBNToString(new BN(pair.currentSpotPrice || '0')),
@@ -162,7 +162,7 @@ export const selectMyPoolsPageTableInfo = createSelector(
     return pairs.map((pair) => ({
       pairPubkey: pair?.pairPubkey,
       collectionName:
-        marketByPubkey[pair.market]?.collectionName || 'Untitled Collection',
+        marketByPubkey[pair.market]?.collectionName || 'untitled collection',
       collectionImage: marketByPubkey[pair.market]?.collectionImage || '',
       type: pair?.type,
       spotPrice: formatBNToString(new BN(pair.currentSpotPrice || '0')),
