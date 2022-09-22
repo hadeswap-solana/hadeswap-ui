@@ -154,7 +154,7 @@ export const CartSider: FC = () => {
             size="large"
             onClick={swap}
           >
-            Swap
+            swap
           </Button>
         </div>
       </div>

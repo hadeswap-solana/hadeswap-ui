@@ -9,7 +9,7 @@ const makeBuyOrSellNftIxCard = (order: CartOrder): ReactNode => {
     <IxCard>
       <IxCardImage src={imageUrl} alt={name} />
       <IxCardText>
-        {type === OrderType.BUY ? 'Buy ' : 'Sell '}
+        {type === OrderType.BUY ? 'buy ' : 'sell '}
         <strong>{name}</strong>
         {' for '}
         <SolAmount solAmount={price} />
@@ -20,13 +20,13 @@ const makeBuyOrSellNftIxCard = (order: CartOrder): ReactNode => {
 
 const makeCreateEmptyPoolIxCard = (): ReactNode => (
   <IxCard>
-    <IxCardText>Create new pool</IxCardText>
+    <IxCardText>create new pool</IxCardText>
   </IxCard>
 );
 
 const makeEditPoolIxCard = (): ReactNode => (
   <IxCard>
-    <IxCardText>Edit pool</IxCardText>
+    <IxCardText>edit pool</IxCardText>
   </IxCard>
 );
 
@@ -36,7 +36,7 @@ const makeAddOrRemoveSolFromPoolIxCard = (
 ): ReactNode => (
   <IxCard>
     <IxCardText>
-      {isRemove ? 'Remove ' : 'Add '} <SolAmount solAmount={solAmount} />{' '}
+      {isRemove ? 'remove ' : 'add '} <SolAmount solAmount={solAmount} />{' '}
       {isRemove ? 'from ' : 'into '}
       pool
     </IxCardText>
@@ -52,7 +52,7 @@ const makeAddOrRemoveNftFromPoolIxCard = (
     <IxCard>
       <IxCardImage src={imageUrl} alt={name} />
       <IxCardText>
-        {isRemove ? 'Remove ' : 'Add '}
+        {isRemove ? 'remove ' : 'add '}
         <strong>{name}</strong> {isRemove ? 'from ' : 'into '} pool
       </IxCardText>
     </IxCard>
@@ -69,7 +69,7 @@ const makeAddOrRemoveLiquidityFromPoolIxCard = (
     <IxCard>
       <IxCardImage src={imageUrl} alt={name} />
       <IxCardText>
-        {isRemove ? 'Remove ' : 'Add '}
+        {isRemove ? 'remove ' : 'add '}
         <strong>{name}</strong> and <SolAmount solAmount={solAmount} />{' '}
         {isRemove ? 'from ' : 'into '} pool
       </IxCardText>
@@ -80,14 +80,14 @@ const makeAddOrRemoveLiquidityFromPoolIxCard = (
 const removeBuyOrdersFromPoolIxCard = (amount: number): ReactNode => {
   return (
     <IxCard>
-      <IxCardText>Remove {amount} buy orders</IxCardText>
+      <IxCardText>remove {amount} buy orders</IxCardText>
     </IxCard>
   );
 };
 
 const makeUnkonwIxCard = (): ReactNode => (
   <IxCard>
-    <IxCardText>Unknown instruction</IxCardText>
+    <IxCardText>unknown instruction</IxCardText>
   </IxCard>
 );
 

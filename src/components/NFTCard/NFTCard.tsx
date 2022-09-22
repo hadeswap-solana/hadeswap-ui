@@ -49,7 +49,7 @@ export const NFTCard: FC<NFTCardProps> = ({
           )}
           {onBtnClick && (
             <Button type="primary" block>
-              {!selected ? 'Select' : 'Deselect'}
+              {!selected ? 'select' : 'deselect'}
             </Button>
           )}
         </div>
