@@ -11,11 +11,11 @@ import { PATHS } from '../../constants';
 import { CartSider } from './CartSider';
 import { TransactionsLoadingModal } from '../TransactionsLoadingModal';
 import Logo from '../../icons/Logo';
-import MediumIcon from '../../icons/MediumIcon';
-import DocsIcon from '../../icons/DocsIcon';
+// import MediumIcon from '../../icons/MediumIcon';
+// import DocsIcon from '../../icons/DocsIcon';
 import DiscordIcon from '../../icons/DiscordIcon';
 import TwitterIcon from '../../icons/TwitterIcon';
-import GitHubIcon from '../../icons/GitHubIcon';
+// import GitHubIcon from '../../icons/GitHubIcon';
 import classNames from 'classnames';
 import { selectCartSiderVisible } from '../../state/common/selectors';
 
@@ -29,15 +29,15 @@ interface LayoutProps {
   hideFooter?: boolean;
 }
 
-const DOCS_LIST = [
-  { to: 'https://medium.com/@frakt_HQ', icon: MediumIcon },
-  { to: 'https://docs.frakt.xyz/', icon: DocsIcon },
-];
+// const DOCS_LIST = [
+//   { to: 'https://medium.com/@frakt_HQ', icon: MediumIcon },
+//   { to: 'https://docs.frakt.xyz/', icon: DocsIcon },
+// ];
 
 const SOCIALS_LIST = [
-  { to: 'https://tinyurl.com/zp3rx6z3', icon: DiscordIcon },
-  { to: 'https://twitter.com/FRAKT_HQ', icon: TwitterIcon },
-  { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
+  { to: 'https://discord.gg/ABCCommunity', icon: DiscordIcon },
+  { to: 'https://twitter.com/hadeswap', icon: TwitterIcon },
+  // { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
 ];
 
 export const AppLayout: FC<LayoutProps> = ({
@@ -91,7 +91,7 @@ export const AppLayout: FC<LayoutProps> = ({
         </Content>
         {!hideFooter && (
           <Footer className={styles.footer}>
-            <div className={styles.footerBlock}>
+            {/* <div className={styles.footerBlock}>
               <Typography.Text>documentation</Typography.Text>
               <ul className={styles.socialNavs}>
                 {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
@@ -102,7 +102,7 @@ export const AppLayout: FC<LayoutProps> = ({
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
             <div className={styles.footerBlock}>
               <Typography.Text>contact us</Typography.Text>
               <ul className={styles.socialNavs}>
