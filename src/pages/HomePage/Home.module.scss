@@ -23,19 +23,15 @@
   font-weight: 400 !important;
   text-align: center;
   position: relative;
+}
 
-  &::after {
-    content: '0 fees';
-    position: absolute;
-    right: 70px;
-    bottom: -30px;
-    background: #eed600;
-    color: var(--black-color);
-    transform: rotate(-15deg);
-    padding: 16px 24px;
-    font-weight: 700;
-    font-size: 32px;
-  }
+.zeroFees {
+  background: #eed600;
+  padding: 8px 24px;
+  font-weight: 400;
+  font-size: 16px;
+
+  color: var(--black-color);
 }
 
 .solanaWord {
@@ -64,6 +60,7 @@
   cursor: pointer;
   transition: background var(--ease-base-out) var(--animation-duration-base),
     border-color var(--ease-base-out) var(--animation-duration-base);
+  margin-bottom: 18px;
 
   svg {
     fill: black;
