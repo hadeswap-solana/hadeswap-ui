@@ -22,7 +22,7 @@ const columns: ColumnsType<MarketInfo> = [
     key: 'collectionName',
     title: 'name',
     dataIndex: 'collectionName',
-    sorter: (a, b) => a?.collectionName.localeCompare(b?.collectionName),
+    sorter: (a, b) => a?.collectionName?.localeCompare(b?.collectionName),
     showSorterTooltip: false,
     render: (text, record) => {
       return (
