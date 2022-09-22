@@ -62,3 +62,13 @@ export const selectAllInvalidCartOrders = createSelector(
       .flat()
       .filter(({ mint }) => !cartState?.finishedOrdersMints?.includes(mint)),
 );
+
+export const selectCartPendingOrdersAmount = createSelector(
+  selectCartPendingOrders,
+  (pendingOrders) => Object.values(pendingOrders).flat().length || 0,
+);
+
+export const selectIsCartEmpty = createSelector(
+  selectCartPendingOrdersAmount,
+  (pendingOrdersAmount) => pendingOrdersAmount === 0,
+);

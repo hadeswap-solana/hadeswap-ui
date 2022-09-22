@@ -7,7 +7,11 @@ import { MarketInfo, Nft, Pair } from './types';
 import { selectSocket, selectWalletPublicKey } from '../common/selectors';
 import { Socket } from 'socket.io-client';
 import { eventChannel } from 'redux-saga';
-import { selectCartPairsPubkeys } from './selectors';
+import {
+  selectCartPairsPubkeys,
+  selectCartPendingOrdersAmount,
+} from './selectors';
+import { commonActions } from '../common/actions';
 
 const fetchAllMarketsSaga = function* () {
   yield put(coreActions.fetchAllMarketsPending());
@@ -125,7 +129,28 @@ const fetchPairSaga = function* (
   }
 };
 
-const updateCartSaga = function* () {
+const updateCartSaga = function* (
+  action:
+    | ReturnType<typeof coreActions.addOrderToCart>
+    | ReturnType<typeof coreActions.removeOrderFromCart>,
+) {
+  const pendingOrdersAmount = yield select(selectCartPendingOrdersAmount);
+
+  //? Auto show cart if first order added
+  if (
+    pendingOrdersAmount === 1 &&
+    action.type === coreTypes.ADD_ORDER_TO_CART
+  ) {
+    yield put(commonActions.setCartSider({ isVisible: true }));
+  }
+  //? Auto hide cart if last order removed
+  if (
+    pendingOrdersAmount === 0 &&
+    action.type === coreTypes.REMOVE_ORDER_FROM_CART
+  ) {
+    yield put(commonActions.setCartSider({ isVisible: false }));
+  }
+
   const socket = yield select(selectSocket);
   const pairsPubkeys = yield select(selectCartPairsPubkeys);
 

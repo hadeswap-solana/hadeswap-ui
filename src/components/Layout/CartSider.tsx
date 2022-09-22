@@ -8,6 +8,7 @@ import styles from './AppLayout.module.scss';
 import {
   selectAllInvalidCartOrders,
   selectCartItems,
+  selectIsCartEmpty,
 } from '../../state/core/selectors';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 import { formatBNToString } from '../../utils';
@@ -21,6 +22,8 @@ import { SolPrice } from '../SolPrice/SolPrice';
 export const CartSider: FC = () => {
   const dispatch = useDispatch();
   const visible = useSelector(selectCartSiderVisible);
+  const isCartEmpty = useSelector(selectIsCartEmpty);
+
   const { swap } = useSwap();
 
   const cartItems = useSelector(selectCartItems);
@@ -44,7 +47,9 @@ export const CartSider: FC = () => {
     >
       <Badge
         count={itemsAmount}
-        className={styles.toggleCartSiderBtn}
+        className={classNames(styles.toggleCartSiderBtn, {
+          [styles.toggleCartSiderBtnHidden]: isCartEmpty,
+        })}
         offset={[-40, 0]}
       >
         <Button
