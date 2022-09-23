@@ -43,10 +43,13 @@
     "webpack-cli": "^4.10.0"
   },
   "scripts": {
-    "start": "cross-env webpack serve --config webpack.dev.js",
-    "bundle": "cross-env webpack build --config webpack.prod.js",
-    "type-scss": "cross-env typed-scss-modules src --exportType default --nameFormat none",
+    "start": "webpack serve --config webpack.dev.js --env SOLANA_NETWORK=devnet",
+    "mainnet": "webpack serve --config webpack.dev.js --env SOLANA_NETWORK=mainnet",
+    "bundle": "webpack build --config webpack.prod.js --env SOLANA_NETWORK=mainnet",
+    "bundle-devnet": "webpack build --config webpack.prod.js --env SOLANA_NETWORK=devnet",
+    "type-scss": "typed-scss-modules src --exportType default --nameFormat none",
     "build": "npm run type-scss && npm run bundle",
+    "build-devnet": "npm run type-scss && npm run bundle-devnet",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier-eslint --write $PWD/'**/*.{ts,tsx}'",
     "lint-staged": "lint-staged",
