@@ -44,7 +44,7 @@ export const CollectionGeneralInfo: FC<CollectionGeneralInfoProps> = ({
           <Text>{bestoffer} sol</Text>
         </div>
         <div className={styles.info}>
-          <Text strong>offer tvl</Text>
+          <Text strong>offer TVL</Text>
           <Text>{offerTVL} sol</Text>
         </div>
         {/* <div className={styles.info}>

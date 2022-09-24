@@ -64,7 +64,8 @@ export const CartSider: FC = () => {
           <div className={styles.cardsSection}>
             <div className={styles.cartTitle}>
               <Typography.Title level={4}>
-                buy {cartItems.buy.length} nfts
+                buy {cartItems.buy.length}{' '}
+                {cartItems.buy.length > 1 ? 'NFTs' : 'NFT'}
               </Typography.Title>
               <Typography.Text>
                 <SolPrice price={totalBuy} raw />

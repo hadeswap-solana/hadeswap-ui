@@ -59,7 +59,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'fundsSolOrTokenBalance',
-    title: 'sol balance',
+    title: 'SOL balance',
     dataIndex: 'fundsSolOrTokenBalance',
     sorter: (a, b) =>
       parseFloat(a?.fundsSolOrTokenBalance) -
@@ -74,7 +74,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'nftsCount',
-    title: 'nfts amount',
+    title: 'amount of NFTs',
     dataIndex: 'nftsCount',
     sorter: ({ nftsCount: nftsAmountA = 0 }, { nftsCount: nftsAmountB = 0 }) =>
       nftsAmountA - nftsAmountB,
@@ -95,7 +95,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'delta',
-    title: <TitleWithInfo title="Delta" infoText="Delta param explanation" />,
+    title: <TitleWithInfo title="delta" infoText="Delta param explanation" />,
     dataIndex: 'delta',
     sorter: (a, b) => parseFloat(a?.delta) - parseFloat(b?.delta),
     showSorterTooltip: false,

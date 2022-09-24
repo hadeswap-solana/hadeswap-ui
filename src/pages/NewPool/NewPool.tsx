@@ -112,7 +112,7 @@ export const NewPool: FC = () => {
     depositAmount: 0,
   };
 
-  const unit = curve === BondingCurveType.Exponential ? '%' : 'sol';
+  const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
   // const deposit = (spotPrice - spotPrice * fee * 2) * buyUpTo;
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
@@ -307,9 +307,9 @@ export const NewPool: FC = () => {
       {wallet.connected && (
         <>
           <Steps current={step}>
-            <Step title="pick collection" />
-            <Step title="pick your side" />
-            <Step title="configuring trading" />
+            <Step title="select collection" />
+            <Step title="select pool type" />
+            <Step title="pool settings" />
           </Steps>
           <Form
             layout="vertical"
@@ -329,6 +329,7 @@ export const NewPool: FC = () => {
                           <Select
                             showSearch
                             value={market}
+                            placeholder="select collection"
                             optionFilterProp="children"
                             style={{ width: '100%' }}
                             onChange={onSelectChange}
@@ -354,7 +355,7 @@ export const NewPool: FC = () => {
                     <Button
                       className={styles.buttonNext}
                       onClick={onNextClick}
-                    >{`Next >`}</Button>
+                    >{`next >`}</Button>
                   )}
                 </div>
               </div>
@@ -366,10 +367,10 @@ export const NewPool: FC = () => {
                     <Form.Item name="type">
                       <Radio.Group value={type} onChange={onRadioChange}>
                         <Radio.Button value={PairType.TokenForNFT}>
-                          buy nfts with tokens
+                          buy NFTs with tokens
                         </Radio.Button>
                         <Radio.Button value={PairType.NftForToken}>
-                          sell nfts for tokens
+                          sell NFTs with tokens
                         </Radio.Button>
                         <Radio.Button value={PairType.LiquidityProvision}>
                           do both and earn trading fees
@@ -379,8 +380,8 @@ export const NewPool: FC = () => {
                   </div>
                 </div>
                 <div className={styles.stepsButtons}>
-                  <Button onClick={onBackClick}>{`< Back`}</Button>
-                  {type && <Button onClick={onNextClick}>{`Next >`}</Button>}
+                  <Button onClick={onBackClick}>{`< back`}</Button>
+                  {type && <Button onClick={onNextClick}>{`next >`}</Button>}
                 </div>
               </div>
             )}
@@ -394,7 +395,7 @@ export const NewPool: FC = () => {
                         {type === PairType.LiquidityProvision && (
                           <Form.Item
                             name="fee"
-                            label="Fee Amount"
+                            label="fee"
                             tooltip={{
                               title: '',
                               icon: <InfoCircleOutlined />,
@@ -402,14 +403,15 @@ export const NewPool: FC = () => {
                           >
                             <InputNumber
                               className={styles.input}
-                              min="0"
+                              min={0}
+                              max={99.5}
                               addonAfter="%"
                             />
                           </Form.Item>
                         )}
                         <Form.Item
                           name="spotPrice"
-                          label="Spot price"
+                          label="spot price"
                           tooltip={{
                             title: '',
                             icon: <InfoCircleOutlined />,
@@ -418,7 +420,7 @@ export const NewPool: FC = () => {
                           <InputNumber
                             className={styles.input}
                             min="0"
-                            addonAfter="sol"
+                            addonAfter="SOL"
                           />
                         </Form.Item>
                         <Form.Item
@@ -455,7 +457,7 @@ export const NewPool: FC = () => {
                         {Boolean(spotPrice) && (
                           <Paragraph>
                             you have selected a starting price of {spotPrice}{' '}
-                            sol.
+                            SOL.
                           </Paragraph>
                         )}
 
@@ -471,11 +473,11 @@ export const NewPool: FC = () => {
                       {type === PairType.TokenForNFT && (
                         <Card bordered={false}>
                           <Title level={3}>assets</Title>
-                          <Form.Item label="Amount of nfts" name="nftAmount">
+                          <Form.Item label="amount of NFTs" name="nftAmount">
                             <InputNumber
                               className={styles.input}
                               min="0"
-                              addonAfter="nfts"
+                              addonAfter="NFTs"
                             />
                           </Form.Item>
                         </Card>
@@ -493,7 +495,7 @@ export const NewPool: FC = () => {
                             ))}
                           </div>
                           <Button onClick={onSelectNftsClick}>
-                            + select nfts
+                            + select NFTs
                           </Button>
                         </Card>
                       )}
@@ -510,7 +512,7 @@ export const NewPool: FC = () => {
                             ))}
                           </div>
                           <Button onClick={onSelectNftsClick}>
-                            + select nfts
+                            + select NFTs
                           </Button>
                         </Card>
                       )}

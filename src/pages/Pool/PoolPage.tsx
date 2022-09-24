@@ -146,13 +146,13 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
         <Text className={styles.generalInfoText}>{PoolType[pool?.type]}</Text>
       </div>
       <div className={styles.generalInfoBlock}>
-        <Title level={5}>sol balance</Title>
+        <Title level={5}>SOL balance</Title>
         <Text className={styles.generalInfoText}>
           {formatBNToString(new BN(pool?.fundsSolOrTokenBalance || '0'))} sol
         </Text>
       </div>
       <div className={styles.generalInfoBlock}>
-        <Title level={5}>nfts amount</Title>
+        <Title level={5}>amount of NFTs</Title>
         <Text className={styles.generalInfoText}>{pool?.nftsCount || '0'}</Text>
       </div>
       <div className={styles.generalInfoBlock}>

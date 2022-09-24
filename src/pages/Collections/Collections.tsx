@@ -1,4 +1,4 @@
-import { Typography, Row, Col, Table, Avatar } from 'antd';
+import { Typography, Row, Col, Table, Avatar, Button } from 'antd';
 import { FC, useEffect } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Link, useHistory } from 'react-router-dom';
@@ -47,7 +47,7 @@ const columns: ColumnsType<MarketInfo> = [
     key: 'floorPrice',
     title: (
       <TitleWithInfo
-        title="floor Price"
+        title="floor price"
         infoText="the price of the cheapset NFT lested."
       />
     ),
@@ -60,7 +60,7 @@ const columns: ColumnsType<MarketInfo> = [
     key: 'bestoffer',
     title: (
       <TitleWithInfo
-        title="best Offer"
+        title="best offer"
         infoText="the value of the highest collection offer."
       />
     ),
@@ -80,6 +80,7 @@ const columns: ColumnsType<MarketInfo> = [
     dataIndex: 'offerTVL',
     sorter: (a, b) => parseFloat(a?.offerTVL) - parseFloat(b?.offerTVL),
     showSorterTooltip: false,
+    defaultSortOrder: 'descend',
     render: (text) => <PriceWithIcon price={text} />,
   },
 ];
@@ -111,11 +112,16 @@ export const Collections: FC = () => {
           {' '}
           <Row justify="center">
             <Col>
-              <Title level={4}>
-                don&apos;t see a collection? Directly
-                <Link to="/my-nfts"> list your nfts</Link>, or create a new pool
-                to buy and sell in bulk.
-              </Title>
+              <Button
+                style={{ marginBottom: '20px' }}
+                type="primary"
+                size="large"
+                onClick={() => {
+                  history.push('/create-pool');
+                }}
+              >
+                + create pool
+              </Button>
             </Col>
           </Row>
           <Row>
