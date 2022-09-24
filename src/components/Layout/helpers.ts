@@ -33,6 +33,8 @@ interface TxnData {
 
 type CreateIx = (params: CreateIxParams) => Promise<IxnsData>;
 
+const PRECISION_CORRECTION = 10;
+
 const createBuyNftFromPairIx: CreateIx = async ({
   connection,
   walletPubkey,
@@ -70,7 +72,7 @@ const createBuyNftFromPairIx: CreateIx = async ({
       protocolFeeReceiver: new web3.PublicKey(process.env.PROTOCOL_FEE_PUBKEY),
     },
     args: {
-      maxAmountToPay: order.price,
+      maxAmountToPay: order.price + PRECISION_CORRECTION,
       skipFailed: false,
     },
   });
@@ -115,7 +117,7 @@ const createSellNftFromPairIx: CreateIx = async ({
         ),
       },
       args: {
-        minAmountToGet: order.price,
+        minAmountToGet: order.price - PRECISION_CORRECTION,
         skipFailed: false,
       },
     });
@@ -135,7 +137,7 @@ const createSellNftFromPairIx: CreateIx = async ({
         ),
       },
       args: {
-        minAmountToGet: order.price,
+        minAmountToGet: order.price - PRECISION_CORRECTION,
         skipFailed: false,
       },
     });

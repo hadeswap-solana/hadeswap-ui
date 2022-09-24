@@ -187,6 +187,14 @@ export const EditPool: FC = () => {
     const cards = [];
 
     if (isPricingChanged) {
+      const startingSpotPrice = hadeswap.helpers.calculateNextSpotPrice({
+        orderType: OrderType.Buy,
+        delta: rawDelta,
+        bondingCurveType: pool?.bondingCurve as BondingCurveType,
+        spotPrice: rawSpotPrice,
+        counter: -pool?.mathCounter - 1,
+      });
+
       transactions.push(
         await createModifyPairTxn({
           connection,
@@ -194,7 +202,7 @@ export const EditPool: FC = () => {
           pairPubkey: pool.pairPubkey,
           authorityAdapter: pool.authorityAdapterPubkey,
           delta: rawDelta,
-          spotPrice: rawSpotPrice,
+          spotPrice: startingSpotPrice,
           fee: rawFee,
         }),
       );
@@ -477,7 +485,7 @@ export const EditPool: FC = () => {
                         {isLiquidityProvisionPool && (
                           <Form.Item
                             name="fee"
-                            label="Fee Amount"
+                            label="fee"
                             tooltip={{
                               title: '',
                               icon: <InfoCircleOutlined />,
@@ -492,7 +500,7 @@ export const EditPool: FC = () => {
                         )}
                         <Form.Item
                           name="spotPrice"
-                          label="Spot price"
+                          label="spot price"
                           tooltip={{
                             title: '',
                             icon: <InfoCircleOutlined />,
@@ -501,12 +509,12 @@ export const EditPool: FC = () => {
                           <InputNumber
                             className={styles.input}
                             min="0"
-                            addonAfter="sol"
+                            addonAfter="SOL"
                           />
                         </Form.Item>
                         <Form.Item
                           name="curve"
-                          label="Bonding Curve"
+                          label="bonding Curve"
                           tooltip={{
                             title: '',
                             icon: <InfoCircleOutlined />,
@@ -527,7 +535,7 @@ export const EditPool: FC = () => {
                         </Form.Item>
                         <Form.Item
                           name="delta"
-                          label="Delta"
+                          label="delta"
                           tooltip={{
                             title: '',
                             icon: <InfoCircleOutlined />,
@@ -542,7 +550,7 @@ export const EditPool: FC = () => {
                         {Boolean(spotPrice) && (
                           <Paragraph>
                             you have selected a starting price of {spotPrice}{' '}
-                            sol.
+                            SOL.
                           </Paragraph>
                         )}
                         {Boolean(delta) && (
@@ -557,11 +565,11 @@ export const EditPool: FC = () => {
                       {isTokenForNFTPool && (
                         <Card bordered={false}>
                           <Title level={3}>assets</Title>
-                          <Form.Item label="amount of nfts" name="nftAmount">
+                          <Form.Item label="amount of NFTs" name="nftAmount">
                             <InputNumber
                               className={styles.input}
                               min={0}
-                              addonAfter="nfts"
+                              addonAfter="NFTs"
                             />
                           </Form.Item>
                         </Card>
@@ -579,7 +587,7 @@ export const EditPool: FC = () => {
                             ))}
                           </div>
                           <Button onClick={onSelectNftsClick}>
-                            + select nfts
+                            + select NFTs
                           </Button>
                         </Card>
                       )}
@@ -600,7 +608,7 @@ export const EditPool: FC = () => {
                               }
                               min={0}
                               step={2}
-                              addonAfter="nfts"
+                              addonAfter="NFTs"
                             />
                           </Form.Item>
                           <div className={styles.nftsWrapper}>
@@ -616,7 +624,7 @@ export const EditPool: FC = () => {
                             disabled={isSelectedButtonDisabled}
                             onClick={onSelectNftsClick}
                           >
-                            + select nfts
+                            + select NFTs
                           </Button>
                         </Card>
                       )}
