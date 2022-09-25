@@ -67,7 +67,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'fundsSolOrTokenBalance',
-    title: 'sol balance',
+    title: 'SOL balance',
     dataIndex: 'fundsSolOrTokenBalance',
     sorter: (a, b) =>
       parseFloat(a?.fundsSolOrTokenBalance) -
@@ -82,7 +82,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'nftsCount',
-    title: 'nfts amount',
+    title: 'amount of NFTs',
     dataIndex: 'nftsCount',
     sorter: ({ nftsCount: nftsAmountA = 0 }, { nftsCount: nftsAmountB = 0 }) =>
       nftsAmountA - nftsAmountB,
@@ -103,22 +103,22 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'delta',
-    title: <TitleWithInfo title="Delta" infoText="delta param explanation" />,
+    title: <TitleWithInfo title="delta" infoText="delta param explanation" />,
     dataIndex: 'delta',
     sorter: (a, b) => parseFloat(a?.delta) - parseFloat(b?.delta),
     showSorterTooltip: false,
     render: (text) => <Typography.Text>{text}</Typography.Text>,
   },
   /*
-  {
-    key: 'pairState',
-    title: 'Pool status',
-    dataIndex: 'pairState',
-    sorter: (a, b) => a?.pairState.localeCompare(b?.pairState),
-    showSorterTooltip: false,
-    render: (text) => <Typography.Text>{text}</Typography.Text>,
-  },
-  */
+    {
+      key: 'pairState',
+      title: 'Pool status',
+      dataIndex: 'pairState',
+      sorter: (a, b) => a?.pairState.localeCompare(b?.pairState),
+      showSorterTooltip: false,
+      render: (text) => <Typography.Text>{text}</Typography.Text>,
+    },
+    */
 ];
 
 export const MyPools: FC = () => {
