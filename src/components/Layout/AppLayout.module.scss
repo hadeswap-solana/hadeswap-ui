@@ -95,17 +95,21 @@
   visibility: hidden;
 }
 
-.footer {
+.footerSocial {
   display: flex;
   flex-direction: row;
   justify-content: center;
   column-gap: 50px;
 }
 
-.footerBlock {
+.footerSocialBlock {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.footerDisclaimer {
+  text-align: center;
 }
 
 .siderContent {
