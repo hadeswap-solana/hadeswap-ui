@@ -95,7 +95,7 @@ const poolTableColumns: ColumnsType<
   },
   {
     key: 'delta',
-    title: <TitleWithInfo title="delta" infoText="Delta param explanation" />,
+    title: <TitleWithInfo title="delta" infoText="delta param explanation" />,
     dataIndex: 'delta',
     sorter: (a, b) => parseFloat(a?.delta) - parseFloat(b?.delta),
     showSorterTooltip: false,
