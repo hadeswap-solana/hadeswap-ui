@@ -28,7 +28,7 @@ interface LayoutProps {
   contentClassName?: string;
   hideFooter?: boolean;
 }
-
+console.log('n');
 const DOCS_LIST = [{ to: 'https://docs.hadeswap.com/', icon: DocsIcon }];
 
 const SOCIALS_LIST = [
