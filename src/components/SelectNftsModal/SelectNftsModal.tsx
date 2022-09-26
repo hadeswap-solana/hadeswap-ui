@@ -8,6 +8,7 @@ import { selectMarketWalletNfts } from '../../state/core/selectors';
 import { Nft, PairSellOrder } from '../../state/core/types';
 import { NFTCard } from '../NFTCard/NFTCard';
 import styles from './SelectNftsModal.module.scss';
+import InfinityScroll, { useFakeInfinityScroll } from '../InfinityScroll';
 
 type UseSelectNftsModal = (
   collectionName: string,
@@ -23,7 +24,7 @@ type UseSelectNftsModal = (
   isNftSelected: (nft: Nft) => boolean;
 };
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 export const useSelectNftsModal: UseSelectNftsModal = (
   collectionName,
@@ -80,6 +81,8 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
   toggleNft,
   isNftSelected,
 }) => {
+  const { itemsToShow, next } = useFakeInfinityScroll(21);
+
   return (
     <Modal
       visible={visible}
@@ -92,7 +95,11 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
     >
       {collectionName && <Title level={3}>{collectionName}</Title>}
       {walletNfts?.length ? (
-        <div className={styles.content}>
+        <InfinityScroll
+          next={next}
+          wrapperClassName={styles.content}
+          itemsToShow={itemsToShow}
+        >
           {walletNfts.map((nft) => (
             <NFTCard
               disabled={nft.disabled}
@@ -103,7 +110,7 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
               selected={isNftSelected(nft)}
             />
           ))}
-        </div>
+        </InfinityScroll>
       ) : (
         <Title level={5}>no nfts of this collections</Title>
       )}
