@@ -46,6 +46,7 @@ import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { notify, PoolType } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
+import { getArrayByNumber } from '../../utils/transactions';
 import {
   createIxCardFuncs,
   IX_TYPE,
@@ -53,6 +54,7 @@ import {
 
 import styles from './NewPool.module.scss';
 import { chunk } from 'lodash';
+import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 
 const { Step } = Steps;
 const { Title, Paragraph } = Typography;
@@ -165,18 +167,34 @@ export const NewPool: FC = () => {
     const cards = [[createIxCardFuncs[IX_TYPE.CREATE_EMPTY_POOL]()]];
 
     if (type === PairType.TokenForNFT) {
-      transactions.push(
-        await createTokenForNftPairTxn({
-          connection,
-          wallet,
-          marketPubkey: market,
-          bondingCurveType: curve,
-          pairType: PairType.TokenForNFT,
-          delta: rawDelta,
-          spotPrice: rawSpotPrice,
-          amountOfOrders: nftAmount,
-        }),
-      );
+      const nftAmounts = getArrayByNumber(nftAmount, 20);
+      const firstAmount = nftAmounts.shift();
+
+      const createTransaction = await createTokenForNftPairTxn({
+        connection,
+        wallet,
+        marketPubkey: market,
+        bondingCurveType: curve,
+        pairType: PairType.TokenForNFT,
+        delta: rawDelta,
+        spotPrice: rawSpotPrice,
+        amountOfOrders: firstAmount,
+      });
+
+      transactions.push(createTransaction);
+
+      for (const amount of nftAmounts) {
+        transactions.push(
+          await createDepositSolToPairTxn({
+            connection,
+            wallet,
+            pairPubkey: createTransaction.pairPubkey.toBase58(),
+            authorityAdapter:
+              createTransaction.authorityAdapterPubkey.toBase58(),
+            amountOfOrders: amount,
+          }),
+        );
+      }
 
       const amounts = hadeswap.helpers.calculatePricesArray({
         starting_spot_price: rawSpotPrice,
@@ -190,6 +208,11 @@ export const NewPool: FC = () => {
       cards[0].push(
         createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amounts.total),
       );
+
+      //TODO: FIX
+      for (let i = 0; i < transactions.length - 1; i++) {
+        cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
+      }
     } else {
       const pairTxn = await createPairTxn({
         connection,

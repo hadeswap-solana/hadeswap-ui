@@ -324,8 +324,8 @@ export const createPoolTableRow: CreatePoolTableRow = (pair, marketInfo) => {
     fundsSolOrTokenBalance: formatBNToString(
       new BN(pair?.fundsSolOrTokenBalance || '0'),
     ),
-    buyOrdersAmount: pair?.nftsCount,
-    sellOrdersAmount: pair.buyOrdersAmount,
+    buyOrdersAmount: pair?.buyOrdersAmount,
+    sellOrdersAmount: pair.nftsCount,
     currentPrice: pair?.currentSpotPrice,
     delta: parseDelta(pair?.delta, pair?.bondingCurve),
   };
