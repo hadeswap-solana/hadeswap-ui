@@ -23,6 +23,7 @@ import { createEditPollLink } from '../../constants';
 import InfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/InfinityScroll';
+import { parseDelta } from '../../state/core/helpers';
 
 const { Title, Text } = Typography;
 
@@ -167,8 +168,7 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
       <div className={styles.generalInfoBlock}>
         <Title level={5}>delta</Title>
         <Text className={styles.generalInfoText}>
-          {formatBNToString(new BN(pool?.delta || '0'))}
-          {pool?.bondingCurve === 'linear' ? ' sol' : '%'}
+          {parseDelta(pool?.delta, pool?.bondingCurve)}
         </Text>
       </div>
       <div className={styles.generalInfoBlock}>
