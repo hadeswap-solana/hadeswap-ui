@@ -32,7 +32,7 @@ interface LayoutProps {
 const DOCS_LIST = [{ to: 'https://docs.hadeswap.com/', icon: DocsIcon }];
 
 const SOCIALS_LIST = [
-  { to: 'https://discord.gg/ABCCommunity', icon: DiscordIcon },
+  { to: 'https://discord.gg/hadeswap', icon: DiscordIcon },
   { to: 'https://twitter.com/hadeswap', icon: TwitterIcon },
   // { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
 ];
