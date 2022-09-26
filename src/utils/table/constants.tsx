@@ -78,7 +78,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
     showSorterTooltip: false,
     render: (text = 0, record) => (
       <Typography.Text>
-        {record.type === 'tokenForNft' ? '--' : text}
+        {record.type === 'nftForToken' ? '--' : text}
       </Typography.Text>
     ),
   },
@@ -93,7 +93,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
     showSorterTooltip: false,
     render: (text = 0, record) => (
       <Typography.Text>
-        {record.type === 'nftForToken' ? '--' : text}
+        {record.type === 'tokenForNft' ? '--' : text}
       </Typography.Text>
     ),
   },
