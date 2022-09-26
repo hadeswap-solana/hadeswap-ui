@@ -158,6 +158,8 @@ export const EditPool: FC = () => {
     !(isPricingChanged || isNftForTokenChanged || isChanged) || !spotPrice;
   const isSelectedButtonDisabled = buyOrdersAmount < pool?.buyOrdersAmount;
 
+  const isDisableFields = isTokenForNFTPool && pool?.buyOrdersAmount > 20;
+
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
     dispatch(coreActions.fetchPair(poolPubKey));
@@ -481,6 +483,11 @@ export const EditPool: FC = () => {
                   <Row>
                     <Col span={11}>
                       <Card bordered={false}>
+                        {isDisableFields && (
+                          <Paragraph>
+                            you can edit pool with less that 20 amount of NFTs.
+                          </Paragraph>
+                        )}
                         <Title level={3}>pricing</Title>
                         {isLiquidityProvisionPool && (
                           <Form.Item
@@ -507,6 +514,7 @@ export const EditPool: FC = () => {
                           }}
                         >
                           <InputNumber
+                            disabled={isDisableFields}
                             className={styles.input}
                             min="0"
                             addonAfter="SOL"
@@ -544,6 +552,7 @@ export const EditPool: FC = () => {
                           <InputNumber
                             className={styles.input}
                             addonAfter={unit}
+                            disabled={isDisableFields}
                             min="0"
                           />
                         </Form.Item>
