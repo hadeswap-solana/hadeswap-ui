@@ -510,7 +510,9 @@ export const EditPool: FC = () => {
                       <Card bordered={false}>
                         {isDisableFields && (
                           <Paragraph>
-                            you can edit pool with less that 20 amount of NFTs.
+                            {
+                              'you can edit "spot price" and "delta" only if you have less than 20 buy orders.'
+                            }
                           </Paragraph>
                         )}
                         <Title level={3}>pricing</Title>
