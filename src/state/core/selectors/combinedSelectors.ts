@@ -1,9 +1,11 @@
-import BN from 'bn.js';
 import { createSelector } from 'reselect';
-import { formatBNToString } from '../../../utils';
 import { OrderType, MarketOrder } from '../types';
 import { keyBy } from 'lodash';
-import { calcNextSpotPrice, calcPriceWithFee, parseFee } from '../helpers';
+import {
+  calcNextSpotPrice,
+  calcPriceWithFee,
+  createPoolTableRow,
+} from '../helpers';
 import { selectCertainMarket } from './marketSelectors';
 import {
   selectMarketPairs,
@@ -18,26 +20,11 @@ import { selectMarketWalletNfts } from './marketWalletNftsSelectors';
 import { selectAllMarkets } from './allMarketsSelectors';
 import { selectWalletPairs } from './walletPairsSelectors';
 
-export const selectPoolsPageTableInfo = createSelector(
+export const selectPoolsTableInfo = createSelector(
   [selectCertainMarket, selectRawMarketPairs],
   (marketInfo, pairs) =>
     pairs.map((pair) => {
-      return {
-        pairPubkey: pair?.pairPubkey,
-        ownerPublicKey: pair?.assetReceiver,
-        collectionName: marketInfo?.collectionName || 'untitled collection',
-        collectionImage: marketInfo?.collectionImage || '',
-        type: pair?.type,
-        spotPrice: formatBNToString(new BN(pair.currentSpotPrice || '0')),
-        fee: parseFee(pair?.fee || 0),
-        fundsSolOrTokenBalance: formatBNToString(
-          new BN(pair?.fundsSolOrTokenBalance || '0'),
-        ),
-        nftsCount: pair?.nftsCount,
-        currentPrice: pair?.currentSpotPrice,
-        bondingCurve: pair?.bondingCurve,
-        delta: formatBNToString(new BN(pair?.delta)),
-      };
+      return createPoolTableRow(pair, marketInfo);
     }),
 );
 
@@ -159,22 +146,8 @@ export const selectMyPoolsPageTableInfo = createSelector(
   (markets, pairs) => {
     const marketByPubkey = keyBy(markets, 'marketPubkey');
 
-    return pairs.map((pair) => ({
-      pairPubkey: pair?.pairPubkey,
-      collectionName:
-        marketByPubkey[pair.market]?.collectionName || 'untitled collection',
-      collectionImage: marketByPubkey[pair.market]?.collectionImage || '',
-      type: pair?.type,
-      spotPrice: formatBNToString(new BN(pair.currentSpotPrice || '0')),
-      fee: parseFee(pair.fee || 0),
-      fundsSolOrTokenBalance: formatBNToString(
-        new BN(pair?.fundsSolOrTokenBalance || '0'),
-      ),
-      nftsCount: pair?.nftsCount,
-      currentPrice: pair?.currentSpotPrice,
-      bondingCurve: pair?.bondingCurve,
-      delta: formatBNToString(new BN(pair?.delta)),
-      pairState: pair.pairState,
-    }));
+    return pairs.map((pair) => {
+      return createPoolTableRow(pair, marketByPubkey[pair.market]);
+    });
   },
 );

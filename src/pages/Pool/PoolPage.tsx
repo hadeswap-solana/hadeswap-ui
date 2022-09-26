@@ -20,6 +20,10 @@ import { formatBNToString, PoolType } from '../../utils';
 import { MarketInfo, Pair } from '../../state/core/types';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { createEditPollLink } from '../../constants';
+import InfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../components/InfinityScroll';
+import { parseDelta } from '../../state/core/helpers';
 
 const { Title, Text } = Typography;
 
@@ -84,6 +88,8 @@ interface NftListProps {
 }
 
 const NftList: FC<NftListProps> = ({ pool }) => {
+  const { itemsToShow, next } = useFakeInfinityScroll(21);
+
   return (
     <div className={styles.nftsListContainer}>
       <Title
@@ -93,7 +99,11 @@ const NftList: FC<NftListProps> = ({ pool }) => {
       >
         nfts
       </Title>
-      <div className={styles.nftsList}>
+      <InfinityScroll
+        next={next}
+        wrapperClassName={styles.nftsList}
+        itemsToShow={itemsToShow}
+      >
         {pool?.sellOrders?.map((order) => (
           <NFTCard
             className={styles.nftCart}
@@ -102,7 +112,7 @@ const NftList: FC<NftListProps> = ({ pool }) => {
             name={order.name}
           />
         ))}
-      </div>
+      </InfinityScroll>
     </div>
   );
 };
@@ -158,8 +168,7 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
       <div className={styles.generalInfoBlock}>
         <Title level={5}>delta</Title>
         <Text className={styles.generalInfoText}>
-          {formatBNToString(new BN(pool?.delta || '0'))}
-          {pool?.bondingCurve === 'linear' ? ' sol' : '%'}
+          {parseDelta(pool?.delta, pool?.bondingCurve)}
         </Text>
       </div>
       <div className={styles.generalInfoBlock}>
