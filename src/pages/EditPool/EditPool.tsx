@@ -42,6 +42,7 @@ import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
+import { getArrayByNumber } from '../../utils/transactions';
 import { createModifyPairTxn } from '../../utils/transactions/createModifyPairTxn';
 import { createWithdrawNftsFromPairTxns } from '../../utils/transactions/createWithdrawNftsFromPairTxns';
 import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepositNftsToPairTxns';
@@ -215,15 +216,22 @@ export const EditPool: FC = () => {
     if (isTokenForNFTPool) {
       if (isTokenForNftChanged) {
         if (pool?.buyOrdersAmount < nftAmount) {
-          transactions.push(
-            await createDepositSolToPairTxn({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              amountOfOrders: nftAmount - pool?.buyOrdersAmount,
-            }),
+          const amountOfOrders = getArrayByNumber(
+            nftAmount - pool?.buyOrdersAmount,
+            20,
           );
+
+          for (const amount of amountOfOrders) {
+            transactions.push(
+              await createDepositSolToPairTxn({
+                connection,
+                wallet,
+                pairPubkey: pool.pairPubkey,
+                authorityAdapter: pool.authorityAdapterPubkey,
+                amountOfOrders: amount,
+              }),
+            );
+          }
 
           const sellAmounts = hadeswap.helpers.calculatePricesArray({
             starting_spot_price: rawSpotPrice,
@@ -239,16 +247,28 @@ export const EditPool: FC = () => {
               sellAmounts.total,
             ),
           ]);
+
+          //TODO: FIX
+          for (let i = 0; i < transactions.length - 1; i++) {
+            cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
+          }
         } else {
-          transactions.push(
-            await createWithdrawSolFromPairTxn({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              amountOfOrders: pool?.buyOrdersAmount - nftAmount,
-            }),
+          const amountOfOrders = getArrayByNumber(
+            pool?.buyOrdersAmount - nftAmount,
+            20,
           );
+
+          for (const amount of amountOfOrders) {
+            transactions.push(
+              await createWithdrawSolFromPairTxn({
+                connection,
+                wallet,
+                pairPubkey: pool.pairPubkey,
+                authorityAdapter: pool.authorityAdapterPubkey,
+                amountOfOrders: amount,
+              }),
+            );
+          }
 
           const buyAmounts = hadeswap.helpers.calculatePricesArray({
             starting_spot_price: rawSpotPrice,
@@ -265,6 +285,11 @@ export const EditPool: FC = () => {
               true,
             ),
           ]);
+
+          //TODO: FIX
+          for (let i = 0; i < transactions.length - 1; i++) {
+            cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
+          }
         }
       }
     } else if (isNftForTokenPool) {
