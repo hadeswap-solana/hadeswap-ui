@@ -4,11 +4,14 @@ import { Modal, Typography } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { coreActions } from '../../state/core/actions';
-import { selectMarketWalletNfts } from '../../state/core/selectors';
+import {
+  selectMarketWalletNfts,
+  selectMarketWalletNftsLoading,
+} from '../../state/core/selectors';
 import { Nft, PairSellOrder } from '../../state/core/types';
 import { NFTCard } from '../NFTCard/NFTCard';
 import styles from './SelectNftsModal.module.scss';
-import InfinityScroll, { useFakeInfinityScroll } from '../InfinityScroll';
+import { Spinner } from '../Spinner/Spinner';
 
 type UseSelectNftsModal = (
   collectionName: string,
@@ -22,6 +25,7 @@ type UseSelectNftsModal = (
   walletNfts: Nft[];
   toggleNft: (nft: Nft) => void;
   isNftSelected: (nft: Nft) => boolean;
+  loading: boolean;
 };
 
 const { Title } = Typography;
@@ -37,6 +41,7 @@ export const useSelectNftsModal: UseSelectNftsModal = (
   const [visible, setVisible] = useState(false);
   const [selectedNfts, setSelectedNfts] = useState<Nft[]>([]);
   const walletNfts = useSelector(selectMarketWalletNfts);
+  const loading = useSelector(selectMarketWalletNftsLoading);
 
   useEffect(() => {
     if (connected && marketPublicKey) {
@@ -70,6 +75,7 @@ export const useSelectNftsModal: UseSelectNftsModal = (
     walletNfts,
     toggleNft,
     isNftSelected,
+    loading,
   };
 };
 
@@ -80,9 +86,8 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
   walletNfts,
   toggleNft,
   isNftSelected,
+  loading,
 }) => {
-  const { itemsToShow, next } = useFakeInfinityScroll(21);
-
   return (
     <Modal
       visible={visible}
@@ -92,15 +97,13 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
       closeIcon={<CloseOutlined />}
       onCancel={() => setVisible(false)}
       width={860}
+      destroyOnClose
     >
       {collectionName && <Title level={3}>{collectionName}</Title>}
-      {walletNfts?.length ? (
-        <InfinityScroll
-          next={next}
-          wrapperClassName={styles.content}
-          itemsToShow={itemsToShow}
-        >
-          {walletNfts.map((nft) => (
+      {loading && <Spinner />}
+      {walletNfts?.length && !loading && (
+        <div className={styles.content}>
+          {walletNfts?.map((nft) => (
             <NFTCard
               disabled={nft.disabled}
               key={nft.mint}
@@ -110,8 +113,9 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
               selected={isNftSelected(nft)}
             />
           ))}
-        </InfinityScroll>
-      ) : (
+        </div>
+      )}
+      {!walletNfts?.length && !loading && (
         <Title level={5}>no nfts of this collections</Title>
       )}
     </Modal>
