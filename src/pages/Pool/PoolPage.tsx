@@ -20,6 +20,9 @@ import { formatBNToString, PoolType } from '../../utils';
 import { MarketInfo, Pair } from '../../state/core/types';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { createEditPollLink } from '../../constants';
+import InfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../components/InfinityScroll';
 
 const { Title, Text } = Typography;
 
@@ -84,6 +87,8 @@ interface NftListProps {
 }
 
 const NftList: FC<NftListProps> = ({ pool }) => {
+  const { itemsToShow, next } = useFakeInfinityScroll(21);
+
   return (
     <div className={styles.nftsListContainer}>
       <Title
@@ -93,7 +98,11 @@ const NftList: FC<NftListProps> = ({ pool }) => {
       >
         nfts
       </Title>
-      <div className={styles.nftsList}>
+      <InfinityScroll
+        next={next}
+        wrapperClassName={styles.nftsList}
+        itemsToShow={itemsToShow}
+      >
         {pool?.sellOrders?.map((order) => (
           <NFTCard
             className={styles.nftCart}
@@ -102,7 +111,7 @@ const NftList: FC<NftListProps> = ({ pool }) => {
             name={order.name}
           />
         ))}
-      </div>
+      </InfinityScroll>
     </div>
   );
 };
