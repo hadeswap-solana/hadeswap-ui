@@ -1,7 +1,7 @@
-import { Typography, Row, Col, Table, Avatar, Button } from 'antd';
-import { FC, useEffect } from 'react';
+import { Typography, Row, Col, Table, Avatar, Button, Input } from 'antd';
+import { FC, useEffect, useState } from 'react';
 import type { ColumnsType } from 'antd/es/table';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { PriceWithIcon } from './PriceWithIcon';
 import { TitleWithInfo } from './TitleWithInfo';
@@ -14,6 +14,9 @@ import {
 } from '../../state/core/selectors';
 import { MarketInfo } from '../../state/core/types';
 import { Spinner } from '../../components/Spinner/Spinner';
+import { SearchOutlined } from '@ant-design/icons';
+import styles from './Collections.module.scss';
+import { useDebounce } from '../../hooks';
 
 const { Title, Text } = Typography;
 
@@ -87,6 +90,11 @@ const columns: ColumnsType<MarketInfo> = [
 
 export const Collections: FC = () => {
   const history = useHistory();
+  const [searchStr, setSearchStr] = useState('');
+
+  const setSearch = useDebounce((search: string) => {
+    setSearchStr(search.toUpperCase());
+  }, 300);
 
   const dispatch = useDispatch();
 
@@ -109,7 +117,6 @@ export const Collections: FC = () => {
         <Spinner />
       ) : (
         <>
-          {' '}
           <Row justify="center">
             <Col>
               <Button
@@ -126,23 +133,37 @@ export const Collections: FC = () => {
           </Row>
           <Row>
             <Col span={24}>
-              <Table
-                columns={columns}
-                dataSource={markets}
-                pagination={false}
-                style={{ cursor: 'pointer' }}
-                rowKey={(record) => record.marketPubkey}
-                onRow={({ marketPubkey }) => {
-                  return {
-                    onClick: () => {
-                      history.push(
-                        createCollectionLink(COLLECTION_TABS.BUY, marketPubkey),
-                      );
-                      window.scrollTo(0, 0);
-                    },
-                  };
-                }}
-              />
+              <div className={styles.tableWrapper}>
+                <Input
+                  size="large"
+                  placeholder="Search by collection name"
+                  prefix={<SearchOutlined />}
+                  className={styles.searchInput}
+                  onChange={(event) => setSearch(event.target.value || '')}
+                />
+                <Table
+                  className={styles.table}
+                  columns={columns}
+                  dataSource={markets.filter(({ collectionName }) =>
+                    collectionName?.toUpperCase()?.includes(searchStr),
+                  )}
+                  pagination={false}
+                  rowKey={(record) => record.marketPubkey}
+                  onRow={({ marketPubkey }) => {
+                    return {
+                      onClick: () => {
+                        history.push(
+                          createCollectionLink(
+                            COLLECTION_TABS.BUY,
+                            marketPubkey,
+                          ),
+                        );
+                        window.scrollTo(0, 0);
+                      },
+                    };
+                  }}
+                />
+              </div>
             </Col>
           </Row>
         </>

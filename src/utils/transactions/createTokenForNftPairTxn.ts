@@ -27,6 +27,7 @@ type CreateTokenForNftPairTxn = (params: {
   transaction: web3.Transaction;
   signers: web3.Signer[];
   pairPubkey: web3.PublicKey;
+  authorityAdapterPubkey: web3.PublicKey;
 }>;
 
 export const createTokenForNftPairTxn: CreateTokenForNftPairTxn = async ({
@@ -118,5 +119,6 @@ export const createTokenForNftPairTxn: CreateTokenForNftPairTxn = async ({
       ...activateSigners,
     ],
     pairPubkey,
+    authorityAdapterPubkey,
   };
 };

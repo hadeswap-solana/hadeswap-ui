@@ -18,6 +18,9 @@ import { formatBNToString } from '../../utils';
 import { MarketOrder, OrderType } from '../../state/core/types';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Typography } from 'antd';
+import InfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../components/InfinityScroll';
 
 export const CollectionBuy: FC = () => {
   const orders = useSelector(selectAllBuyOrdersForMarket);
@@ -40,12 +43,18 @@ export const CollectionBuy: FC = () => {
     [dispatch, pairs],
   );
 
+  const { itemsToShow, next } = useFakeInfinityScroll(21);
+
   return (
     <CollectionPageLayout>
       {loading ? (
         <Spinner />
       ) : (
-        <div className={styles.cards}>
+        <InfinityScroll
+          next={next}
+          wrapperClassName={styles.cards}
+          itemsToShow={itemsToShow}
+        >
           {orders.map((order) => {
             return (
               <NFTCard
@@ -58,7 +67,7 @@ export const CollectionBuy: FC = () => {
               />
             );
           })}
-        </div>
+        </InfinityScroll>
       )}
     </CollectionPageLayout>
   );
@@ -101,6 +110,8 @@ export const CollectionSell: FC = () => {
     [dispatch, pairs],
   );
 
+  const { itemsToShow, next } = useFakeInfinityScroll(21);
+
   return (
     <CollectionPageLayout>
       {!connected && (
@@ -113,7 +124,11 @@ export const CollectionSell: FC = () => {
         <Typography.Title level={3}>no suitable nfts found</Typography.Title>
       )}
       {!loading && connected && !!orders.length && (
-        <div className={styles.cards}>
+        <InfinityScroll
+          next={next}
+          wrapperClassName={styles.cards}
+          itemsToShow={itemsToShow}
+        >
           {orders.map((order) => (
             <NFTCard
               key={order.mint}
@@ -127,7 +142,7 @@ export const CollectionSell: FC = () => {
               disabled={order.price <= 0}
             />
           ))}
-        </div>
+        </InfinityScroll>
       )}
     </CollectionPageLayout>
   );

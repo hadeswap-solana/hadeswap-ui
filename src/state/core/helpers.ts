@@ -1,15 +1,17 @@
 import { Dictionary, clone } from 'lodash';
-import { hadeswap } from 'hadeswap-sdk';
+import { BN, hadeswap } from 'hadeswap-sdk';
 import {
   BasePair,
   CartOrder,
   CartPair,
+  MarketInfo,
   OrderType,
   Pair,
   PairSellOrder,
   PairUpdate,
 } from './types';
 import { CartState } from './reducers/cartReducer';
+import { formatBNToString } from '../../utils';
 
 const { OrderType: HadeOrderType, BondingCurveType } = hadeswap.types;
 
@@ -285,4 +287,46 @@ export const calcPriceWithFee = (
   }
 
   return price - price * parseFee(fee) * 0.01;
+};
+
+export const parseDelta = (rawDelta: number, curveType: string): string => {
+  return curveType === 'exponential'
+    ? `${(rawDelta / 100).toFixed(2)}%`
+    : `${formatBNToString(new BN(rawDelta))} SOL`;
+};
+
+type CreatePoolTableRow = (
+  pair: Pair,
+  marketInfo: MarketInfo,
+) => {
+  pairPubkey: string;
+  ownerPublicKey: string;
+  collectionName: string;
+  collectionImage: string;
+  type: string;
+  spotPrice: string;
+  fee: number;
+  fundsSolOrTokenBalance: string;
+  buyOrdersAmount: number;
+  sellOrdersAmount: number;
+  currentPrice: number;
+  delta: string;
+};
+export const createPoolTableRow: CreatePoolTableRow = (pair, marketInfo) => {
+  return {
+    pairPubkey: pair?.pairPubkey || '',
+    ownerPublicKey: pair?.assetReceiver || '',
+    collectionName: marketInfo?.collectionName || 'untitled collection',
+    collectionImage: marketInfo?.collectionImage || '',
+    type: pair?.type || '',
+    spotPrice: formatBNToString(new BN(pair.currentSpotPrice || '0')),
+    fee: parseFee(pair?.fee || 0),
+    fundsSolOrTokenBalance: formatBNToString(
+      new BN(pair?.fundsSolOrTokenBalance || '0'),
+    ),
+    buyOrdersAmount: pair?.nftsCount,
+    sellOrdersAmount: pair.buyOrdersAmount,
+    currentPrice: pair?.currentSpotPrice,
+    delta: parseDelta(pair?.delta, pair?.bondingCurve),
+  };
 };
