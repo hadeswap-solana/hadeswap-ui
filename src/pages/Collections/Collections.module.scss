@@ -1,0 +1,36 @@
+.tableWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.table {
+  width: 100%;
+  cursor: pointer;
+}
+
+.searchInput {
+  max-width: 520px;
+  margin-bottom: 24px;
+
+  color: #8e9197;
+  border: 1px solid #3e4854;
+  border-radius: 10px;
+  font-weight: 400;
+  background: #282f37 !important;
+
+  svg {
+    fill: #8e9197;
+  }
+
+  :global {
+    .ant-input {
+      border-radius: 0;
+    }
+  }
+
+  &:focus,
+  &:focus-visible {
+    color: var(--white-color);
+  }
+}
