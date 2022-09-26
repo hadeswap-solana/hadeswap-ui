@@ -159,7 +159,9 @@ export const EditPool: FC = () => {
     !(isPricingChanged || isNftForTokenChanged || isChanged) || !spotPrice;
   const isSelectedButtonDisabled = buyOrdersAmount < pool?.buyOrdersAmount;
 
-  const isDisableFields = isTokenForNFTPool && pool?.buyOrdersAmount > 20;
+  const isDisableFields =
+    (isTokenForNFTPool || isLiquidityProvisionPool) &&
+    pool?.buyOrdersAmount > 20;
 
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
