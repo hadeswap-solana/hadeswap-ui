@@ -116,7 +116,7 @@ export const CollectionSell: FC = () => {
     <CollectionPageLayout>
       {!connected && (
         <Typography.Title level={3}>
-          connect you wallet to see your nfts
+          connect your wallet to see your nfts
         </Typography.Title>
       )}
       {connected && loading && <Spinner />}
