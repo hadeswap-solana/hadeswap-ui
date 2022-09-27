@@ -61,7 +61,7 @@ export const PoolPage: FC = () => {
 
   return (
     <AppLayout>
-      <Title level={2} style={{ marginBottom: 0 }}>
+      <Title level={2} className={styles.pageTitle}>
         pool {poolPubkey}
       </Title>
       {loading || !pool ? (

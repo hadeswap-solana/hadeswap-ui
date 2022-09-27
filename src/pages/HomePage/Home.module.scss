@@ -1,5 +1,9 @@
 .content {
   height: calc(100vh - 63px);
+
+  @media screen and (max-width: 767px) {
+    height: calc(100vh - 153px);
+  }
 }
 
 .root {
@@ -23,6 +27,10 @@
   font-weight: 400 !important;
   text-align: center;
   position: relative;
+
+  @media screen and (max-width: 767px) {
+    font-size: 32px !important;
+  }
 }
 
 .zeroFees {
@@ -69,5 +77,9 @@
   &:hover {
     background: #d1e4ff;
     border-color: #d1e4ff;
+  }
+
+  @media screen and (max-width: 767px) {
+    font-size: 24px;
   }
 }
