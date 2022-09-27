@@ -1,3 +1,9 @@
+.pricingBlock {
+  @media screen and (max-width: 767px) {
+    margin-bottom: 24px;
+  }
+}
+
 .stepsContent {
   height: 100%;
   padding: 20px;
