@@ -412,7 +412,7 @@ export const NewPool: FC = () => {
               <div className={styles.stepsContent}>
                 <div className={styles.stepContent}>
                   <Row>
-                    <Col span={11}>
+                    <Col span={24} md={11} className={styles.pricingBlock}>
                       <Card bordered={false}>
                         <Title level={3}>pricing</Title>
                         {type === PairType.LiquidityProvision && (
@@ -492,7 +492,7 @@ export const NewPool: FC = () => {
                         )*/}
                       </Card>
                     </Col>
-                    <Col span={11} offset={2}>
+                    <Col span={24} md={{ offset: 2, span: 11 }}>
                       {type === PairType.TokenForNFT && (
                         <Card bordered={false}>
                           <Title level={3}>assets</Title>

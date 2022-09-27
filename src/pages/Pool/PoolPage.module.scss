@@ -1,18 +1,8 @@
-.header {
-  display: flex;
-  flex-direction: row;
-  align-content: center;
+.pageTitle {
+  margin-bottom: 0 !important;
 
-  h3,
-  h4 {
-    margin-bottom: 0;
-  }
-
-  &ButtonWrapper {
-    display: flex;
-    gap: 10px;
-    margin-left: auto;
-    align-self: center;
+  @media screen and (max-width: 767px) {
+    font-size: 24px !important;
   }
 }
 
@@ -36,17 +26,19 @@
   grid-template-columns: repeat(6, 1fr);
   padding: 16px;
   gap: 16px;
-}
-
-.generalInfo {
   margin-bottom: 32px;
+
+  @media screen and (max-width: 767px) {
+    gap: 8px;
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .generalInfoBlock {
   padding: 8px;
   border-radius: var(--border-radius-base);
-  background: #242A30;
-  border: 1px solid #3E4854;
+  background: #242a30;
+  border: 1px solid #3e4854;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -82,6 +74,10 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
 }
 
 .nftCart {
