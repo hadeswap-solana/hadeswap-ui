@@ -5,7 +5,6 @@ import styles from './Collection.module.scss';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectAllBuyOrdersForMarket,
   selectAllSellOrdersForMarket,
   selectMarketPairs,
   selectMarketPairsLoading,
@@ -22,58 +21,7 @@ import InfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/InfinityScroll';
 
-export const CollectionBuy: FC = () => {
-  const orders = useSelector(selectAllBuyOrdersForMarket);
-  const loading = useSelector(selectMarketPairsLoading);
-  const pairs = useSelector(selectMarketPairs);
-  const dispatch = useDispatch();
-
-  const createOnBtnClick = useCallback(
-    (order: MarketOrder) => () => {
-      order?.selected
-        ? dispatch(coreActions.removeOrderFromCart(order.mint))
-        : dispatch(
-            coreActions.addOrderToCart(
-              pairs.find((pair) => pair.pairPubkey === order.targetPairPukey),
-              order,
-              OrderType.BUY,
-            ),
-          );
-    },
-    [dispatch, pairs],
-  );
-
-  const { itemsToShow, next } = useFakeInfinityScroll(21);
-
-  return (
-    <CollectionPageLayout>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <InfinityScroll
-          next={next}
-          wrapperClassName={styles.cards}
-          itemsToShow={itemsToShow}
-        >
-          {orders.map((order) => {
-            return (
-              <NFTCard
-                key={order.mint}
-                imageUrl={order.imageUrl}
-                name={order.name}
-                price={formatBNToString(new BN(order.price))}
-                onBtnClick={createOnBtnClick(order)}
-                selected={order?.selected}
-              />
-            );
-          })}
-        </InfinityScroll>
-      )}
-    </CollectionPageLayout>
-  );
-};
-
-export const CollectionSell: FC = () => {
+export const CollectionSellPage: FC = () => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
   const { connected } = useWallet();
