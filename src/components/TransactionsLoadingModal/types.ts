@@ -9,5 +9,7 @@ export enum IX_TYPE {
 
   REMOVE_BUY_ORDERS_FROM_POOL,
 
+  WITHDRAW_FEES,
+
   COMPLETE_ORDER,
 }
