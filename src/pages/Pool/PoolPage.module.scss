@@ -45,8 +45,8 @@
 .generalInfoBlock {
   padding: 8px;
   border-radius: var(--border-radius-base);
-  background: #242A30;
-  border: 1px solid #3E4854;
+  background: #242a30;
+  border: 1px solid #3e4854;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -82,6 +82,10 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
 }
 
 .nftCart {
