@@ -53,7 +53,7 @@ export const MyPools: FC = () => {
       )}
       {!wallet.connected && (
         <Typography.Title level={3}>
-          connect you wallet to see your pools
+          connect your wallet to see your pools
         </Typography.Title>
       )}
       {wallet.connected && loading && <Spinner />}
