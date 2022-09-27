@@ -1,18 +1,8 @@
-.header {
-  display: flex;
-  flex-direction: row;
-  align-content: center;
+.pageTitle {
+  margin-bottom: 0 !important;
 
-  h3,
-  h4 {
-    margin-bottom: 0;
-  }
-
-  &ButtonWrapper {
-    display: flex;
-    gap: 10px;
-    margin-left: auto;
-    align-self: center;
+  @media screen and (max-width: 767px) {
+    font-size: 24px !important;
   }
 }
 
@@ -36,10 +26,12 @@
   grid-template-columns: repeat(6, 1fr);
   padding: 16px;
   gap: 16px;
-}
-
-.generalInfo {
   margin-bottom: 32px;
+
+  @media screen and (max-width: 767px) {
+    gap: 8px;
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .generalInfoBlock {
