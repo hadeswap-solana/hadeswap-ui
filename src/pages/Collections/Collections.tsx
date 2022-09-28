@@ -51,7 +51,7 @@ const columns: ColumnsType<MarketInfo> = [
     title: (
       <TitleWithInfo
         title="floor price"
-        infoText="the price of the cheapset NFT lested."
+        infoText="price of the cheapest NFT listed best offer"
       />
     ),
     dataIndex: 'floorPrice',
@@ -64,7 +64,7 @@ const columns: ColumnsType<MarketInfo> = [
     title: (
       <TitleWithInfo
         title="best offer"
-        infoText="the value of the highest collection offer."
+        infoText="value of the highest collection offer offer TVL"
       />
     ),
     dataIndex: 'bestoffer',
@@ -77,7 +77,7 @@ const columns: ColumnsType<MarketInfo> = [
     title: (
       <TitleWithInfo
         title="offer TVL"
-        infoText="the total amount of sol locked in collection offers."
+        infoText="total amount of SOL locked in collection offers delta"
       />
     ),
     dataIndex: 'offerTVL',
