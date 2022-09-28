@@ -1,7 +1,6 @@
 import { FC, useEffect, Fragment } from 'react';
 import { CollectionPageLayout } from './CollectionPageLayout';
 import styles from './Collection.module.scss';
-import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { NavLink, useParams } from 'react-router-dom';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { shortenAddress } from '../../utils/solanaUtils';
@@ -110,16 +109,18 @@ const ActivityCard: FC<ActivityCardProps> = ({ data }) => {
 
   return (
     <div className={styles.activityCard}>
+      <img
+        src={data.nftImageUrl}
+        alt={data.nftName}
+        className={styles.activityNftImage}
+      />
       <a
         href={`https://solscan.io/token/${data.nftMint}`}
         target="_blank"
         rel="noopener noreferrer"
+        className={classNames(styles.activityNftName, styles.activityLink)}
       >
-        <NFTCard
-          imageUrl={data.nftImageUrl}
-          name={data.nftName}
-          className={styles.activityNft}
-        />
+        {data.nftName}
       </a>
       <p className={styles.activityTaker}>
         {isBuy ? 'was bought by ' : 'was sold by '}
