@@ -35,3 +35,102 @@
   column-gap: 20px;
   margin-bottom: 20px;
 }
+
+.activityCards {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+
+  @media screen and (max-width: 1024px) {
+    gap: 12px;
+  }
+}
+
+.activityCard {
+  display: flex;
+  align-items: center;
+  background: #272f37;
+  border-radius: 20px;
+  padding: 12px;
+  font-size: 24px;
+
+  @media screen and (max-width: 1024px) {
+    padding: 8px 8px;
+    font-size: 16px;
+    flex-direction: column;
+  }
+}
+
+.activityLink {
+  color: #9dcaff;
+  text-decoration: underline;
+
+  &:hover,
+  &:active {
+    color: #d1e4ff;
+    text-decoration: underline;
+  }
+}
+
+.activityTaker {
+  margin-bottom: 0;
+  margin-right: 8px;
+
+  @media screen and (max-width: 1024px) {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+}
+
+.activityNft {
+  width: 120px;
+  cursor: unset;
+  margin: 0 8px;
+
+  @media screen and (max-width: 1024px) {
+    margin-bottom: 8px;
+  }
+}
+
+.activityPrice {
+  display: flex;
+  margin-bottom: 0;
+
+  @media screen and (max-width: 1024px) {
+    margin-bottom: 8px;
+  }
+}
+
+.solPrice {
+  margin-bottom: 0;
+  margin: 0 12px;
+}
+
+.solLogo {
+  width: 32px;
+  height: 32px;
+  margin-left: 0;
+
+  @media screen and (max-width: 1024px) {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.activityPool {
+  margin-bottom: 0;
+  margin-right: 8px;
+
+  @media screen and (max-width: 1024px) {
+    margin-bottom: 8px;
+    margin-right: 0;
+  }
+}
+
+.activityDate {
+  display: inline-block;
+  margin-bottom: 0;
+}
