@@ -81,7 +81,7 @@ export const CollectionPageLayout: FC = ({ children }) => {
           >
             <TabPane tab="buy" key={COLLECTION_TABS.BUY} />
             <TabPane tab="sell" key={COLLECTION_TABS.SELL} />
-            <TabPane tab="activity" key="3" disabled />
+            <TabPane tab="activity" key={COLLECTION_TABS.ACTIVITY} />
             <TabPane tab="pools" key={COLLECTION_TABS.POOLS} />
           </Tabs>
           <Content>{children}</Content>

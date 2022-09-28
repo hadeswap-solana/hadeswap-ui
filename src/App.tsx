@@ -1,5 +1,6 @@
 //? Commit to start vercel
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   LedgerWalletAdapter,
   PhantomWalletAdapter,
@@ -22,6 +23,8 @@ import store from './state/store';
 import { ENDPOINT } from './config';
 import Confetti from './components/Confetti';
 
+const queryClient = new QueryClient();
+
 const wallets = [
   new PhantomWalletAdapter(),
   new SolflareWalletAdapter(),
@@ -36,14 +39,16 @@ const wallets = [
 
 const App: FC = () => {
   return (
-    <ReduxProvider store={store}>
-      <ConnectionProvider endpoint={ENDPOINT}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <Router />
-          <Confetti />
-        </WalletProvider>
-      </ConnectionProvider>
-    </ReduxProvider>
+    <QueryClientProvider client={queryClient}>
+      <ReduxProvider store={store}>
+        <ConnectionProvider endpoint={ENDPOINT}>
+          <WalletProvider wallets={wallets} autoConnect>
+            <Router />
+            <Confetti />
+          </WalletProvider>
+        </ConnectionProvider>
+      </ReduxProvider>
+    </QueryClientProvider>
   );
 };
 

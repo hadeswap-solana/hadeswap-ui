@@ -91,6 +91,14 @@ const makeUnkonwIxCard = (): ReactNode => (
   </IxCard>
 );
 
+const makeWithdrawFeesIxCard = (solAmount?: number): ReactNode => (
+  <IxCard>
+    <IxCardText>
+      withdraw fees {solAmount && <SolAmount solAmount={solAmount} />}
+    </IxCardText>
+  </IxCard>
+);
+
 export const createIxCardFuncs = {
   [IX_TYPE.CREATE_EMPTY_POOL]: makeCreateEmptyPoolIxCard,
   [IX_TYPE.EDIT_POOL]: makeEditPoolIxCard,
@@ -100,5 +108,6 @@ export const createIxCardFuncs = {
   [IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL]:
     makeAddOrRemoveLiquidityFromPoolIxCard,
   [IX_TYPE.COMPLETE_ORDER]: makeBuyOrSellNftIxCard,
+  [IX_TYPE.WITHDRAW_FEES]: makeWithdrawFeesIxCard,
   DEFAULT: makeUnkonwIxCard,
 };
