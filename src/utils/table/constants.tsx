@@ -99,7 +99,12 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
   },
   {
     key: 'delta',
-    title: <TitleWithInfo title="delta" infoText="delta param explanation" />,
+    title: (
+      <TitleWithInfo
+        title="delta"
+        infoText="impact (in SOL) for linear curve / impact (in %) for bonding curve"
+      />
+    ),
     dataIndex: 'delta',
     showSorterTooltip: false,
     render: (text) => <Typography.Text>{text}</Typography.Text>,
