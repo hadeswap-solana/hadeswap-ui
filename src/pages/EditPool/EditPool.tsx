@@ -58,6 +58,7 @@ import {
 import styles from './EditPool.module.scss';
 import { hadeswap } from 'hadeswap-sdk';
 import { createWithdrawLiquidityFromSellOrdersPair } from '../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
+import { createWithdrawLiquidityFeesTxns } from '../../utils/transactions/createWithdrawLiquidityFeesTxns';
 
 const { Title, Paragraph } = Typography;
 
@@ -104,6 +105,10 @@ export const EditPool: FC = () => {
     nftAmount: pool?.buyOrdersAmount,
     buyOrdersAmount: pool?.buyOrdersAmount,
     depositAmount: 0,
+    accumulatedFees: pool?.liquidityProvisionOrders.reduce(
+      (acc, order) => acc + order.accumulatedFee,
+      0,
+    ),
   };
 
   const loading = poolLoading || marketLoading;
@@ -486,6 +491,64 @@ export const EditPool: FC = () => {
     }
   };
 
+  const onWithdrawClick = async () => {
+    const transactions = [];
+    const cards = [];
+
+    const txns = await createWithdrawLiquidityFeesTxns({
+      connection,
+      wallet,
+      pairPubkey: pool.pairPubkey,
+      authorityAdapter: pool.authorityAdapterPubkey,
+      liquidityProvisionOrders: pool.liquidityProvisionOrders,
+    });
+
+    transactions.push(...txns);
+    //TODO: FIX
+    for (let i = 0; i < transactions.length; i++) {
+      cards.push([createIxCardFuncs[IX_TYPE.WITHDRAW_FEES]()]);
+    }
+
+    const isSuccess = await signAndSendTransactionsInSeries({
+      connection,
+      wallet,
+      txnData: transactions.map((txn, index) => ({
+        signers: txn.signers,
+        transaction: txn.transaction,
+        onBeforeApprove: () => {
+          dispatch(
+            txsLoadingModalActions.setState({
+              visible: true,
+              cards: cards[index],
+              amountOfTxs: transactions.length,
+              currentTxNumber: 1 + index,
+              textStatus: TxsLoadingModalTextStatus.APPROVE,
+            }),
+          );
+        },
+        onAfterSend: () => {
+          dispatch(
+            txsLoadingModalActions.setTextStatus(
+              TxsLoadingModalTextStatus.WAITING,
+            ),
+          );
+        },
+        onError: () => {
+          notify({
+            message: 'Transaction just failed for some reason',
+            type: NotifyType.ERROR,
+          });
+        },
+      })),
+    });
+
+    dispatch(txsLoadingModalActions.setVisible(false));
+
+    if (isSuccess) {
+      history.push(`/pools/${pool?.pairPubkey}`);
+    }
+  };
+
   return (
     <AppLayout>
       <Title>Edit pool</Title>
@@ -630,41 +693,65 @@ export const EditPool: FC = () => {
                         </Card>
                       )}
                       {isLiquidityProvisionPool && (
-                        <Card bordered={false}>
-                          <Title level={3}>assets</Title>
-                          <Form.Item
-                            label="buy orders amount"
-                            name="buyOrdersAmount"
-                          >
-                            <InputNumber
-                              disabled={Boolean(nftModal.selectedNfts.length)}
-                              className={styles.input}
-                              max={
-                                isSelectedButtonDisabled
-                                  ? pool?.buyOrdersAmount
-                                  : buyOrdersAmount
-                              }
-                              min={0}
-                              step={2}
-                              addonAfter="NFTs"
-                            />
-                          </Form.Item>
-                          <div className={styles.nftsWrapper}>
-                            {nftModal.selectedNfts.map((nft) => (
-                              <NFTCard
-                                // className={styles.nfts}
-                                key={nft.mint}
-                                imageUrl={nft.imageUrl}
+                        <>
+                          <Card bordered={false}>
+                            <Title level={3}>assets</Title>
+                            <Form.Item
+                              label="buy orders amount"
+                              name="buyOrdersAmount"
+                            >
+                              <InputNumber
+                                disabled={Boolean(nftModal.selectedNfts.length)}
+                                className={styles.input}
+                                max={
+                                  isSelectedButtonDisabled
+                                    ? pool?.buyOrdersAmount
+                                    : buyOrdersAmount
+                                }
+                                min={0}
+                                step={2}
+                                addonAfter="NFTs"
                               />
-                            ))}
-                          </div>
-                          <Button
-                            disabled={isSelectedButtonDisabled}
-                            onClick={onSelectNftsClick}
-                          >
-                            + select NFTs
-                          </Button>
-                        </Card>
+                            </Form.Item>
+                            <div className={styles.nftsWrapper}>
+                              {nftModal.selectedNfts.map((nft) => (
+                                <NFTCard
+                                  // className={styles.nfts}
+                                  key={nft.mint}
+                                  imageUrl={nft.imageUrl}
+                                />
+                              ))}
+                            </div>
+                            <Button
+                              disabled={isSelectedButtonDisabled}
+                              onClick={onSelectNftsClick}
+                            >
+                              + select NFTs
+                            </Button>
+                          </Card>
+                          {Boolean(initialValues.accumulatedFees) && (
+                            <Card
+                              bordered={false}
+                              style={{ marginTop: '20px' }}
+                            >
+                              <Title level={3}>fees</Title>
+                              <InputNumber
+                                className={styles.input}
+                                disabled
+                                value={initialValues.accumulatedFees / 1e9}
+                                addonAfter="SOL"
+                              />
+                              <Button
+                                className={styles.button}
+                                type="primary"
+                                disabled={isSelectedButtonDisabled}
+                                onClick={onWithdrawClick}
+                              >
+                                withdraw
+                              </Button>
+                            </Card>
+                          )}
+                        </>
                       )}
                     </Col>
                   </Row>
