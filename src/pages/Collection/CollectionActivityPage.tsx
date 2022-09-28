@@ -89,8 +89,8 @@ export const CollectionActivityPage: FC = () => {
       <div className={styles.activityCards}>
         {data?.pages?.map((page, idx) => (
           <Fragment key={idx}>
-            {page.data.map((activity) => (
-              <ActivityCard data={activity} key={activity.signature} />
+            {page.data.map((activity, idx) => (
+              <ActivityCard data={activity} key={idx} />
             ))}
           </Fragment>
         ))}
