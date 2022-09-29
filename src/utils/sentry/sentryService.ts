@@ -3,13 +3,15 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 
 export const initSentry = (): void => {
   Sentry.init({
-    dsn: 'https://9cd7c9f95ba944a39d84ee8098afff9d@o1288412.ingest.sentry.io/6782896',
-    // ignoreErrors: [
-    //   'Registration failed - push service error',
-    //   'We are unable to register the default service worker',
-    //   'The notification permission was not granted and blocked instead',
-    //   'The string did not match the expected pattern',
-    // ],
+    dsn: 'https://1828f52fa41e4cd8b03eef035be5f220@o1431968.ingest.sentry.io/4503897232900096',
+    ignoreErrors: [
+      'Registration failed - push service error',
+      'We are unable to register the default service worker',
+      'The notification permission was not granted and blocked instead',
+      'The string did not match the expected pattern',
+      'WalletSignTransactionError: User rejected the request.',
+    ],
+    defaultIntegrations: false,
     tracesSampleRate: 1.0,
   });
 };
@@ -17,7 +19,7 @@ export const initSentry = (): void => {
 export const captureSentryError = ({
   error,
   wallet,
-  transactionName = '',
+  transactionName = 'Transaction error',
   params,
 }: {
   error: any;
@@ -29,7 +31,7 @@ export const captureSentryError = ({
 
   if (process.env.SOLANA_NETWORK !== 'devnet') {
     if (user) {
-      Sentry.setUser({ user });
+      Sentry.setUser({ id: user });
     } else {
       Sentry.setUser(null);
     }
