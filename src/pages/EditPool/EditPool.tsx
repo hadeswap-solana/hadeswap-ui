@@ -729,28 +729,23 @@ export const EditPool: FC = () => {
                               + select NFTs
                             </Button>
                           </Card>
-                          {Boolean(initialValues.accumulatedFees) && (
-                            <Card
-                              bordered={false}
-                              style={{ marginTop: '20px' }}
+                          <Card bordered={false} style={{ marginTop: '20px' }}>
+                            <Title level={3}>fees</Title>
+                            <InputNumber
+                              className={styles.input}
+                              disabled
+                              value={initialValues.accumulatedFees / 1e9}
+                              addonAfter="SOL"
+                            />
+                            <Button
+                              className={styles.button}
+                              type="primary"
+                              disabled={!initialValues.accumulatedFees}
+                              onClick={onWithdrawClick}
                             >
-                              <Title level={3}>fees</Title>
-                              <InputNumber
-                                className={styles.input}
-                                disabled
-                                value={initialValues.accumulatedFees / 1e9}
-                                addonAfter="SOL"
-                              />
-                              <Button
-                                className={styles.button}
-                                type="primary"
-                                disabled={isSelectedButtonDisabled}
-                                onClick={onWithdrawClick}
-                              >
-                                withdraw
-                              </Button>
-                            </Card>
-                          )}
+                              withdraw
+                            </Button>
+                          </Card>
                         </>
                       )}
                     </Col>
