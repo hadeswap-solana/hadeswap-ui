@@ -22,8 +22,10 @@ import { Router } from './router';
 import store from './state/store';
 import { ENDPOINT } from './config';
 import Confetti from './components/Confetti';
+import { initSentry } from './utils/sentry';
 
 const queryClient = new QueryClient();
+initSentry();
 
 const wallets = [
   new PhantomWalletAdapter(),
