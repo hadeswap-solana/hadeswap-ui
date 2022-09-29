@@ -319,6 +319,10 @@ export const NewPool: FC = () => {
     }
   };
 
+  // console.log(
+  //   markets?.find(({ marketPubkey: pubkey }) => pubkey === marketPubkey),
+  // );
+
   return (
     <AppLayout>
       <Title>create pool</Title>
@@ -434,7 +438,11 @@ export const NewPool: FC = () => {
                         )}
                         <Form.Item
                           name="spotPrice"
-                          label="spot price"
+                          label={`spot price ${
+                            chosenMarket
+                              ? `(current best offer: ${chosenMarket?.bestoffer} SOL, current floor price: ${chosenMarket?.floorPrice} SOL)`
+                              : ''
+                          }`}
                           tooltip={{
                             title: '',
                             icon: <InfoCircleOutlined />,
