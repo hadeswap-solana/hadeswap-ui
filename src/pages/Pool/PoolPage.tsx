@@ -3,6 +3,7 @@ import { Button, Row, Col, Typography, Avatar } from 'antd';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 
@@ -128,8 +129,18 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
   market,
   onEdit = () => {},
 }) => {
+  const isLiquidityProvisionPool = pool?.type === PairType.LiquidityProvision;
+  const accumulatedFees = pool?.liquidityProvisionOrders.reduce(
+    (acc, order) => acc + order.accumulatedFee,
+    0,
+  );
+
   return (
-    <div className={styles.generalInfo}>
+    <div
+      className={`${styles.generalInfo} ${
+        isLiquidityProvisionPool ? styles.generalInfoFull : ''
+      }`}
+    >
       <Title
         level={4}
         className={styles.generalInfoTitle}
@@ -158,7 +169,7 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
       <div className={styles.generalInfoBlock}>
         <Title level={5}>SOL balance</Title>
         <Text className={styles.generalInfoText}>
-          {formatBNToString(new BN(pool?.fundsSolOrTokenBalance || '0'))} sol
+          {formatBNToString(new BN(pool?.fundsSolOrTokenBalance || '0'))} SOL
         </Text>
       </div>
       <div className={styles.generalInfoBlock}>
@@ -175,6 +186,14 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
         <Title level={5}>status</Title>
         <Text className={styles.generalInfoText}>{pool?.pairState}</Text>
       </div>
+      {isLiquidityProvisionPool && (
+        <div className={styles.generalInfoBlock}>
+          <Title level={5}>accumulated fees</Title>
+          <Text className={styles.generalInfoText}>
+            {formatBNToString(new BN(accumulatedFees || '0'))} SOL
+          </Text>
+        </div>
+      )}
     </div>
   );
 };

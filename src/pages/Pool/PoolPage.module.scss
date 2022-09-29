@@ -34,6 +34,10 @@
   }
 }
 
+.generalInfoFull {
+  grid-template-columns: repeat(7, 1fr);
+}
+
 .generalInfoBlock {
   padding: 8px;
   border-radius: var(--border-radius-base);
