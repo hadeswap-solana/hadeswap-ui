@@ -1,5 +1,5 @@
 import { Modal, Typography } from 'antd';
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { Spinner } from '../Spinner/Spinner';
 import styles from './TransactionsLoadingModal.module.scss';
@@ -32,7 +32,9 @@ export const TransactionsLoadingModal: FC = () => {
               Transaction instructions:
             </Typography.Title>
             <div className={styles.ordersContainer}>
-              {state.cards.map((card) => card)}
+              {state.cards.map((card, idx) => (
+                <Fragment key={idx}>{card}</Fragment>
+              ))}
             </div>
           </>
         )}

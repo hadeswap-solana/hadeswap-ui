@@ -1,6 +1,7 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 import { CartOrder, CartPair, OrderType } from '../../state/core/types';
+import { captureSentryError } from '../../utils/sentry';
 import { signAndSendTransaction } from '../../utils/transactions';
 
 const {
@@ -211,8 +212,10 @@ export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
 
         onSuccess?.();
       } catch (error) {
-        console.error(error);
-        error?.logs && console.error('Error logs: \n', error.logs?.join('\n'));
+        captureSentryError({
+          error,
+          wallet,
+        });
 
         onError?.();
         return false;
