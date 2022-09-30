@@ -1,25 +1,27 @@
 .content {
-  height: calc(100vh - 63px);
-
-  @media screen and (max-width: 767px) {
-    height: calc(100vh - 153px);
-  }
+  padding: 0;
 }
 
 .root {
+  padding: 24px 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  height: 100%;
   max-width: 930px;
-  margin: 0 auto;
+  margin: auto auto;
+
+  min-height: calc(100vh - 63px) !important;
+  @media screen and (max-width: 767px) {
+    height: calc(100vh - 153px);
+  }
 }
 
 .logo {
   width: 100%;
   user-select: none;
   -webkit-user-drag: none;
+  margin-bottom: 20px;
 }
 
 .title {
@@ -27,6 +29,7 @@
   font-weight: 400 !important;
   text-align: center;
   position: relative;
+  margin-bottom: 24px !important;
 
   @media screen and (max-width: 767px) {
     font-size: 32px !important;
@@ -82,4 +85,56 @@
   @media screen and (max-width: 767px) {
     font-size: 24px;
   }
+}
+
+.stats {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+
+  @media screen and (max-width: 767px) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+.statsBlock {
+  background: #2a3139;
+  border: 1px solid #3e4854;
+  border-radius: 20px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  p {
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 767px) {
+    width: calc(50% - 8px);
+  }
+}
+
+.statsLabel {
+  font-weight: 700;
+  font-size: 14px;
+  color: #8e9197;
+  text-align: center;
+}
+
+.statsNumber {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.solLogo {
+  width: 12px;
+  height: 12px;
 }
