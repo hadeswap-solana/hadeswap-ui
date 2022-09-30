@@ -163,6 +163,11 @@ export const EditPool: FC = () => {
   const isSaveButtonDisabled =
     !(isPricingChanged || isNftForTokenChanged || isChanged) || !spotPrice;
   const isSelectedButtonDisabled = buyOrdersAmount < pool?.buyOrdersAmount;
+  const isWithdrawButtonDisabled = isTokenForNFTPool
+    ? !pool?.buyOrdersAmount
+    : isNftForTokenPool
+    ? !pool?.sellOrders.length
+    : !(pool?.nftsCount || pool?.buyOrdersAmount);
 
   const isDisableFields =
     (isTokenForNFTPool || isLiquidityProvisionPool) &&
@@ -549,6 +554,192 @@ export const EditPool: FC = () => {
     }
   };
 
+  console.log('-----');
+  console.log(pool);
+
+  const onWithdrawAllClick = async () => {
+    const transactions = [];
+    const cards = [];
+
+    if (isTokenForNFTPool) {
+      const amountOfOrders = getArrayByNumber(pool?.buyOrdersAmount, 20);
+
+      for (const amount of amountOfOrders) {
+        transactions.push(
+          await createWithdrawSolFromPairTxn({
+            connection,
+            wallet,
+            pairPubkey: pool.pairPubkey,
+            authorityAdapter: pool.authorityAdapterPubkey,
+            amountOfOrders: amount,
+          }),
+        );
+      }
+
+      const buyAmounts = hadeswap.helpers.calculatePricesArray({
+        starting_spot_price: rawSpotPrice,
+        delta: rawDelta,
+        amount: pool?.buyOrdersAmount,
+        bondingCurveType: curve,
+        orderType: OrderType.Buy,
+        counter: pool?.buyOrdersAmount * -1,
+      });
+
+      cards.push([
+        createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](
+          buyAmounts.total,
+          true,
+        ),
+      ]);
+
+      //TODO: FIX
+      for (let i = 0; i < transactions.length - 1; i++) {
+        cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
+      }
+    } else if (isNftForTokenPool) {
+      const deleteTxns = await createWithdrawNftsFromPairTxns({
+        connection,
+        wallet,
+        pairPubkey: pool.pairPubkey,
+        authorityAdapter: pool.authorityAdapterPubkey,
+        nfts: pool?.sellOrders,
+      });
+
+      const nftRemoveCards = pool?.sellOrders.map((nft) =>
+        createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft, true),
+      );
+
+      transactions.push(...deleteTxns);
+      cards.push(
+        ...chunk(
+          nftRemoveCards,
+          Math.round(nftRemoveCards.length / deleteTxns.length),
+        ),
+      );
+    } else if (isLiquidityProvisionPool) {
+      if (pool.liquidityProvisionOrders.length) {
+        const buyAmounts = hadeswap.helpers.calculatePricesArray({
+          starting_spot_price: rawSpotPrice,
+          delta: rawDelta,
+          amount: pool.sellOrders.length,
+          bondingCurveType: curve,
+          orderType: OrderType.Buy,
+          counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1 - 1,
+        });
+
+        if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
+          const txns = await createWithdrawLiquidityFromPairTxns({
+            connection,
+            wallet,
+            pairPubkey: pool.pairPubkey,
+            liquidityProvisionOrders: pool.liquidityProvisionOrders,
+            authorityAdapter: pool.authorityAdapterPubkey,
+            nfts: pool.sellOrders,
+          });
+
+          const nftRemoveCards = pool.sellOrders.map((nft, index) =>
+            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+              nft,
+              buyAmounts.array[index],
+              true,
+            ),
+          );
+
+          transactions.push(...txns);
+          cards.push(
+            ...chunk(
+              nftRemoveCards,
+              Math.round(nftRemoveCards.length / txns.length),
+            ),
+          );
+        } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
+          const ordersToDelete = pool.buyOrdersAmount;
+
+          transactions.push(
+            ...(await createWithdrawLiquidityFromBuyOrdersPair({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              liquidityProvisionOrders: pool.liquidityProvisionOrders,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              buyOrdersAmountToDelete: ordersToDelete,
+            })),
+          );
+
+          cards.push([
+            createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](
+              ordersToDelete,
+            ),
+          ]);
+        } else if (pool?.nftsCount > 0 && pool?.buyOrdersAmount === 0) {
+          const txns = await createWithdrawLiquidityFromSellOrdersPair({
+            connection,
+            wallet,
+            pairPubkey: pool.pairPubkey,
+            liquidityProvisionOrders: pool.liquidityProvisionOrders,
+            authorityAdapter: pool.authorityAdapterPubkey,
+            nfts: pool.sellOrders,
+          });
+
+          const nftRemoveCards = pool.sellOrders.map((nft, index) =>
+            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+              nft,
+              buyAmounts.array[index],
+              true,
+            ),
+          );
+
+          transactions.push(...txns);
+          cards.push(
+            ...chunk(
+              nftRemoveCards,
+              Math.round(nftRemoveCards.length / txns.length),
+            ),
+          );
+        }
+      }
+    }
+
+    const isSuccess = await signAndSendTransactionsInSeries({
+      connection,
+      wallet,
+      txnData: transactions.map((txn, index) => ({
+        signers: txn.signers,
+        transaction: txn.transaction,
+        onBeforeApprove: () => {
+          dispatch(
+            txsLoadingModalActions.setState({
+              visible: true,
+              cards: cards[index],
+              amountOfTxs: transactions.length,
+              currentTxNumber: 1 + index,
+              textStatus: TxsLoadingModalTextStatus.APPROVE,
+            }),
+          );
+        },
+        onAfterSend: () => {
+          dispatch(
+            txsLoadingModalActions.setTextStatus(
+              TxsLoadingModalTextStatus.WAITING,
+            ),
+          );
+        },
+        onError: () => {
+          notify({
+            message: 'Transaction just failed for some reason',
+            type: NotifyType.ERROR,
+          });
+        },
+      })),
+    });
+
+    dispatch(txsLoadingModalActions.setVisible(false));
+
+    if (isSuccess) {
+      history.push(`/pools/${pool?.pairPubkey}`);
+    }
+  };
+
   return (
     <AppLayout>
       <Title>Edit pool</Title>
@@ -777,6 +968,14 @@ export const EditPool: FC = () => {
                     disabled={isSaveButtonDisabled}
                   >
                     save changes
+                  </Button>
+                  <Button
+                    danger
+                    type="primary"
+                    onClick={onWithdrawAllClick}
+                    disabled={isWithdrawButtonDisabled}
+                  >
+                    withdraw all liquidity
                   </Button>
                 </div>
               </div>
