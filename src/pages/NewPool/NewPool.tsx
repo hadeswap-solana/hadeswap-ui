@@ -450,7 +450,23 @@ export const NewPool: FC = () => {
                         >
                           <InputNumber
                             className={styles.input}
-                            min="0"
+                            // defaultValue={type === PairType.NftForToken || type === PairType.LiquidityProvision ? (chosenMarket?.bestoffer === '0.000' ? 0 : chosenMarket?.bestoffer) : 0}
+                            min={
+                              type === PairType.NftForToken ||
+                              type === PairType.LiquidityProvision
+                                ? chosenMarket?.bestoffer === '0.000'
+                                  ? 0
+                                  : chosenMarket?.bestoffer
+                                : 0
+                            }
+                            max={
+                              type === PairType.TokenForNFT ||
+                              type === PairType.LiquidityProvision
+                                ? chosenMarket?.floorPrice === '0.000'
+                                  ? 100000000
+                                  : chosenMarket?.floorPrice
+                                : 100000000
+                            }
                             addonAfter="SOL"
                           />
                         </Form.Item>
