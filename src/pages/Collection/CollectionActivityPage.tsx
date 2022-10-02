@@ -88,9 +88,13 @@ export const CollectionActivityPage: FC = () => {
       <div className={styles.activityCards}>
         {data?.pages?.map((page, idx) => (
           <Fragment key={idx}>
-            {page.data.map((activity, idx) => (
-              <ActivityCard data={activity} key={idx} />
-            ))}
+            {page.data
+              .filter(
+                (activity) => activity.solAmount > 0 && activity.solAmount != 0,
+              )
+              .map((activity, idx) => (
+                <ActivityCard data={activity} key={idx} />
+              ))}
           </Fragment>
         ))}
         {!!isFetchingNextPage && <Spinner />}
