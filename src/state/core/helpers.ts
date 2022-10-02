@@ -310,6 +310,7 @@ type CreatePoolTableRow = (
   buyOrdersAmount: number;
   sellOrdersAmount: number;
   currentPrice: number;
+  totalAccumulatedFees: number;
   delta: string;
 };
 export const createPoolTableRow: CreatePoolTableRow = (pair, marketInfo) => {
@@ -328,5 +329,6 @@ export const createPoolTableRow: CreatePoolTableRow = (pair, marketInfo) => {
     sellOrdersAmount: pair.nftsCount,
     currentPrice: pair?.currentSpotPrice,
     delta: parseDelta(pair?.delta, pair?.bondingCurve),
+    totalAccumulatedFees: pair.totalAccumulatedFees,
   };
 };

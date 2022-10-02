@@ -61,6 +61,7 @@ export interface BasePair {
 }
 
 export interface Pair extends BasePair {
+  totalAccumulatedFees: number;
   sellOrders?: PairSellOrder[];
   liquidityProvisionOrders: ProvisionOrders[];
 }
