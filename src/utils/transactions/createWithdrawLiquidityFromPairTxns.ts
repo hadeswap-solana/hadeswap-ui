@@ -16,12 +16,13 @@ type CreateWithdrawLiquidityFromPairTxns = (params: {
   liquidityProvisionOrders: ProvisionOrders[];
   authorityAdapter: string;
   nfts: Nft[];
-}) => Promise<
-  {
+}) => Promise<{
+  chunks: {
     transaction: web3.Transaction;
     signers: web3.Signer[];
-  }[]
->;
+  }[];
+  takenLpOrders: string[];
+}>;
 
 const IXNS_PER_CHUNK = 1; //? Maybe it will work with 3
 
@@ -79,13 +80,18 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
 
     const ixsAndSignersChunks = chunk(ixsAndSigners, IXNS_PER_CHUNK);
 
-    return ixsAndSignersChunks.map((chunk) => {
-      const transaction = new web3.Transaction();
-      transaction.add(...chunk.map(({ instructions }) => instructions).flat());
+    return {
+      chunks: ixsAndSignersChunks.map((chunk) => {
+        const transaction = new web3.Transaction();
+        transaction.add(
+          ...chunk.map(({ instructions }) => instructions).flat(),
+        );
 
-      return {
-        transaction,
-        signers: chunk.map(({ signers }) => signers).flat(),
-      };
-    });
+        return {
+          transaction,
+          signers: chunk.map(({ signers }) => signers).flat(),
+        };
+      }),
+      takenLpOrders: Object.keys(takenLpOrders),
+    };
   };

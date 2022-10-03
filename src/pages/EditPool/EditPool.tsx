@@ -381,7 +381,7 @@ export const EditPool: FC = () => {
         });
 
         if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
-          const txns = await createWithdrawLiquidityFromPairTxns({
+          const { chunks: txns } = await createWithdrawLiquidityFromPairTxns({
             connection,
             wallet,
             pairPubkey: pool.pairPubkey,
@@ -628,16 +628,22 @@ export const EditPool: FC = () => {
         });
 
         if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
-          const txns = await createWithdrawLiquidityFromPairTxns({
-            connection,
-            wallet,
-            pairPubkey: pool.pairPubkey,
-            liquidityProvisionOrders: pool.liquidityProvisionOrders,
-            authorityAdapter: pool.authorityAdapterPubkey,
-            nfts: pool.sellOrders,
-          });
+          const balancedOrdersToWithdraw =
+            pool.sellOrders.length < pool.buyOrdersAmount
+              ? pool.sellOrders
+              : pool.sellOrders.slice(0, pool.buyOrdersAmount);
 
-          const nftRemoveCards = pool.sellOrders.map((nft, index) =>
+          const { chunks: txns, takenLpOrders } =
+            await createWithdrawLiquidityFromPairTxns({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              liquidityProvisionOrders: pool.liquidityProvisionOrders,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              nfts: balancedOrdersToWithdraw,
+            });
+
+          const nftRemoveCards = balancedOrdersToWithdraw.map((nft, index) =>
             createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
               nft,
               buyAmounts.array[index],
@@ -652,6 +658,63 @@ export const EditPool: FC = () => {
               Math.round(nftRemoveCards.length / txns.length),
             ),
           );
+
+          if (pool.buyOrdersAmount > pool.nftsCount) {
+            const amount = pool.buyOrdersAmount - pool.nftsCount;
+
+            transactions.push(
+              ...(await createWithdrawLiquidityFromBuyOrdersPair({
+                connection,
+                wallet,
+                pairPubkey: pool.pairPubkey,
+                liquidityProvisionOrders: pool.liquidityProvisionOrders.filter(
+                  (order) =>
+                    !takenLpOrders.includes(order.liquidityProvisionOrder),
+                ),
+                authorityAdapter: pool.authorityAdapterPubkey,
+                buyOrdersAmountToDelete: amount,
+              })),
+            );
+
+            cards.push([
+              createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](amount),
+            ]);
+          } else if (pool.buyOrdersAmount < pool.nftsCount) {
+            const orders = pool.sellOrders.filter(
+              (order) =>
+                !balancedOrdersToWithdraw.find(
+                  (balancedOrder) => order.mint === balancedOrder.mint,
+                ),
+            );
+
+            const txns = await createWithdrawLiquidityFromSellOrdersPair({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              liquidityProvisionOrders: pool.liquidityProvisionOrders.filter(
+                (order) =>
+                  !takenLpOrders.includes(order.liquidityProvisionOrder),
+              ),
+              authorityAdapter: pool.authorityAdapterPubkey,
+              nfts: orders,
+            });
+
+            const nftRemoveCards = orders.map((nft, index) =>
+              createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+                nft,
+                buyAmounts.array[index],
+                true,
+              ),
+            );
+
+            transactions.push(...txns);
+            cards.push(
+              ...chunk(
+                nftRemoveCards,
+                Math.round(nftRemoveCards.length / txns.length),
+              ),
+            );
+          }
         } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
           const ordersToDelete = pool.buyOrdersAmount;
 
@@ -961,7 +1024,7 @@ export const EditPool: FC = () => {
                     </Col>
                   </Row>
                 </div>
-                <div className={styles.stepsButtons}>
+                <div className={styles.editButtons}>
                   <Button
                     type="primary"
                     onClick={onSavePoolClick}
