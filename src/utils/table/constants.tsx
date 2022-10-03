@@ -1,9 +1,11 @@
 import { Avatar, Col, Row, Typography } from 'antd';
+import { BN } from 'hadeswap-sdk';
 import type { ColumnsType } from 'antd/es/table';
 import { PriceWithIcon } from '../../pages/Collections/PriceWithIcon';
 import { TitleWithInfo } from '../../pages/Collections/TitleWithInfo';
 import { createPoolTableRow } from '../../state/core/helpers';
 import { shortenAddress } from '../solanaUtils';
+import { formatBNToString } from '../index';
 
 export const POOL_TABLE_COLUMNS: ColumnsType<
   ReturnType<typeof createPoolTableRow>
@@ -94,6 +96,25 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
     render: (text = 0, record) => (
       <Typography.Text>
         {record.type === 'tokenForNft' ? '--' : text}
+      </Typography.Text>
+    ),
+  },
+  {
+    key: 'totalAccumulatedFees',
+    title: 'accumulated fees',
+    dataIndex: 'totalAccumulatedFees',
+    sorter: (
+      { totalAccumulatedFees: totalAccumulatedFeesA = 0 },
+      { totalAccumulatedFees: totalAccumulatedFeesB = 0 },
+    ) => totalAccumulatedFeesA - totalAccumulatedFeesB,
+    showSorterTooltip: false,
+    render: (text = 0, record) => (
+      <Typography.Text>
+        {record.type === 'liquidityProvision' ? (
+          <PriceWithIcon price={formatBNToString(new BN(text || '0'))} />
+        ) : (
+          '--'
+        )}
       </Typography.Text>
     ),
   },

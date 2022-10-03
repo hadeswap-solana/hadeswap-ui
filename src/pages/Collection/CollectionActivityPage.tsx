@@ -8,7 +8,7 @@ import { SolPrice } from '../../components/SolPrice/SolPrice';
 import moment from 'moment';
 import classNames from 'classnames';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useInView } from 'react-intersection-observer';
+import { useIntersection } from '../../hooks';
 
 interface ActivityData {
   nftImageUrl: string;
@@ -70,7 +70,7 @@ const useActivityData = (marketPublicKey: string) => {
 };
 
 export const CollectionActivityPage: FC = () => {
-  const { ref, inView } = useInView();
+  const { ref, inView, resetRef } = useIntersection();
 
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
@@ -78,19 +78,23 @@ export const CollectionActivityPage: FC = () => {
     useActivityData(marketPublicKey);
 
   useEffect(() => {
-    if (inView) {
+    if (inView && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage]);
+  }, [inView, fetchNextPage, resetRef, isFetchingNextPage]);
 
   return (
     <CollectionPageLayout>
       <div className={styles.activityCards}>
         {data?.pages?.map((page, idx) => (
           <Fragment key={idx}>
-            {page.data.map((activity, idx) => (
-              <ActivityCard data={activity} key={idx} />
-            ))}
+            {page.data
+              .filter(
+                (activity) => activity.solAmount > 0 && activity.solAmount != 0,
+              )
+              .map((activity, idx) => (
+                <ActivityCard data={activity} key={idx} />
+              ))}
           </Fragment>
         ))}
         {!!isFetchingNextPage && <Spinner />}
