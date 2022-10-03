@@ -4,9 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
-
 import { AppLayout } from '../../components/Layout/AppLayout';
-
 import styles from './PoolPage.module.scss';
 import {
   selectCertainMarket,
@@ -21,10 +19,8 @@ import { formatBNToString, PoolType } from '../../utils';
 import { MarketInfo, Pair } from '../../state/core/types';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { createEditPollLink } from '../../constants';
-import InfinityScroll, {
-  useFakeInfinityScroll,
-} from '../../components/InfinityScroll';
 import { parseDelta } from '../../state/core/helpers';
+import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
 
 const { Title, Text } = Typography;
 
@@ -89,8 +85,6 @@ interface NftListProps {
 }
 
 const NftList: FC<NftListProps> = ({ pool }) => {
-  const { itemsToShow, next } = useFakeInfinityScroll(21);
-
   return (
     <div className={styles.nftsListContainer}>
       <Title
@@ -100,11 +94,7 @@ const NftList: FC<NftListProps> = ({ pool }) => {
       >
         nfts
       </Title>
-      <InfinityScroll
-        next={next}
-        wrapperClassName={styles.nftsList}
-        itemsToShow={itemsToShow}
-      >
+      <FakeInfinityScroll itemsPerScroll={21} className={styles.nftsList}>
         {pool?.sellOrders?.map((order) => (
           <NFTCard
             className={styles.nftCart}
@@ -113,7 +103,7 @@ const NftList: FC<NftListProps> = ({ pool }) => {
             name={order.name}
           />
         ))}
-      </InfinityScroll>
+      </FakeInfinityScroll>
     </div>
   );
 };
