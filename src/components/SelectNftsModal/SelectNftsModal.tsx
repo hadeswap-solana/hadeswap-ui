@@ -12,6 +12,7 @@ import { Nft, PairSellOrder } from '../../state/core/types';
 import { NFTCard } from '../NFTCard/NFTCard';
 import styles from './SelectNftsModal.module.scss';
 import { Spinner } from '../Spinner/Spinner';
+import { FakeInfinityScroll } from '../FakeInfiinityScroll';
 
 type UseSelectNftsModal = (
   collectionName: string,
@@ -101,8 +102,8 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
     >
       {collectionName && <Title level={3}>{collectionName}</Title>}
       {loading && <Spinner />}
-      {walletNfts?.length && !loading && (
-        <div className={styles.content}>
+      {!!walletNfts?.length && !loading && (
+        <FakeInfinityScroll itemsPerScroll={12} className={styles.content}>
           {walletNfts?.map((nft) => (
             <NFTCard
               disabled={nft.disabled}
@@ -113,7 +114,7 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
               selected={isNftSelected(nft)}
             />
           ))}
-        </div>
+        </FakeInfinityScroll>
       )}
       {!walletNfts?.length && !loading && (
         <Title level={5}>no nfts of this collections</Title>

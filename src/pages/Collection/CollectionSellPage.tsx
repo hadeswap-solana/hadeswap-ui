@@ -17,9 +17,7 @@ import { formatBNToString } from '../../utils';
 import { MarketOrder, OrderType } from '../../state/core/types';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Typography } from 'antd';
-import InfinityScroll, {
-  useFakeInfinityScroll,
-} from '../../components/InfinityScroll';
+import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
 
 export const CollectionSellPage: FC = () => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
@@ -58,8 +56,6 @@ export const CollectionSellPage: FC = () => {
     [dispatch, pairs],
   );
 
-  const { itemsToShow, next } = useFakeInfinityScroll(21);
-
   return (
     <CollectionPageLayout>
       {!connected && (
@@ -72,11 +68,7 @@ export const CollectionSellPage: FC = () => {
         <Typography.Title level={3}>no suitable nfts found</Typography.Title>
       )}
       {!loading && connected && !!orders.length && (
-        <InfinityScroll
-          next={next}
-          wrapperClassName={styles.cards}
-          itemsToShow={itemsToShow}
-        >
+        <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
           {orders.map((order) => (
             <NFTCard
               key={order.mint}
@@ -90,7 +82,7 @@ export const CollectionSellPage: FC = () => {
               disabled={order.price <= 0}
             />
           ))}
-        </InfinityScroll>
+        </FakeInfinityScroll>
       )}
     </CollectionPageLayout>
   );
