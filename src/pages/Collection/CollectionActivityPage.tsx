@@ -1,4 +1,4 @@
-import { FC, useEffect, Fragment, useState } from 'react';
+import { memo, FC, useEffect, Fragment, useState } from 'react';
 import { CollectionPageLayout } from './CollectionPageLayout';
 import styles from './Collection.module.scss';
 import { NavLink, useParams } from 'react-router-dom';
@@ -80,8 +80,8 @@ const useActivityData = (marketPublicKey: string) => {
   };
 };
 
-export const CollectionActivityPage: FC = () => {
-  const { ref, inView, forceStop } = useIntersection();
+const CollectionActivityPageBase: FC = () => {
+  const { ref, inView } = useIntersection();
 
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
@@ -93,12 +93,6 @@ export const CollectionActivityPage: FC = () => {
       fetchNextPage();
     }
   }, [inView, fetchNextPage, isFetchingNextPage, isListEnded]);
-
-  useEffect(() => {
-    if (isListEnded) {
-      forceStop();
-    }
-  }, [isListEnded, forceStop]);
 
   return (
     <CollectionPageLayout>
@@ -121,6 +115,8 @@ export const CollectionActivityPage: FC = () => {
     </CollectionPageLayout>
   );
 };
+
+export const CollectionActivityPage = memo(CollectionActivityPageBase);
 
 interface ActivityCardProps {
   data: ActivityData;
