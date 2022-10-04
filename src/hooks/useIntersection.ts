@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 
 type UseIntersection = (props?: { isSingle?: boolean }) => {
   ref: (node?: Element) => void;
   inView: boolean;
   resetRef: () => void;
+  forceStop: () => void;
 };
 
 export const useIntersection: UseIntersection = (props) => {
@@ -12,28 +13,36 @@ export const useIntersection: UseIntersection = (props) => {
   const [ref, setRef] = useState<Element | null>(null);
   const [inView, setInView] = useState(false);
 
+  const observer = useRef<IntersectionObserver | null>(null);
+
   const resetRef = useCallback(() => {
     setInView(false);
   }, []);
 
+  const forceStop = useCallback(() => {
+    ref && observer?.current?.unobserve(ref);
+    setRef(null);
+    setInView(false);
+  }, [ref]);
+
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
+    observer.current = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         setInView(entry.isIntersecting);
         resetRef();
 
         if (isSingle) {
-          observer.unobserve(ref);
+          observer?.current?.unobserve(ref);
           setRef(null);
           return;
         }
       }
     });
 
-    ref && observer.observe(ref);
+    ref && observer?.current?.observe(ref);
 
     return () => {
-      ref && observer.unobserve(ref);
+      ref && observer?.current?.unobserve(ref);
     };
   }, [ref, inView, resetRef, isSingle]);
 
@@ -41,5 +50,6 @@ export const useIntersection: UseIntersection = (props) => {
     ref: setRef,
     inView,
     resetRef,
+    forceStop,
   };
 };
