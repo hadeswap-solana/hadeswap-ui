@@ -99,7 +99,7 @@ export const selectAllSellOrdersForMarket = createSelector(
       .sort(
         (a, b) =>
           calcPriceWithFee(a.currentSpotPrice, a.fee, OrderType.SELL) -
-          calcPriceWithFee(b.currentSpotPrice, a.fee, OrderType.SELL),
+          calcPriceWithFee(b.currentSpotPrice, b.fee, OrderType.SELL),
       );
 
     const bestPair = pairs.at(-1);
