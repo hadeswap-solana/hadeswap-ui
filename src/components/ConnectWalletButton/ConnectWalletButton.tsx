@@ -6,24 +6,24 @@ import {
 } from '@ant-design/icons';
 import { Button, Dropdown, Menu, Space } from 'antd';
 import { useDispatch } from 'react-redux';
-
 import { commonActions } from '../../state/common/actions';
 import { shortenAddress } from '../../utils/solanaUtils';
+import { FC } from 'react';
+import styles from './ConnectWalletButton.module.scss';
+import classNames from 'classnames';
 
 export interface ConnectButtonProps {
   className?: string;
 }
 
-export const ConnectWalletButton = ({
-  className,
-}: ConnectButtonProps): JSX.Element => {
+export const ConnectWalletButton: FC<ConnectButtonProps> = ({ className }) => {
   const dispatch = useDispatch();
 
   const { connected, publicKey, disconnect } = useWallet();
 
   return !connected ? (
     <Button
-      className={className}
+      className={classNames(styles.root, className)}
       type="ghost"
       onClick={() => {
         dispatch(commonActions.toggleWalletModal());
@@ -53,7 +53,7 @@ export const ConnectWalletButton = ({
         />
       }
     >
-      <Button className={className} type="ghost">
+      <Button className={classNames(styles.root, className)} type="ghost">
         <Space>
           {shortenAddress(publicKey.toBase58())}
           <DownOutlined />
