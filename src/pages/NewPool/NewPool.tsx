@@ -44,7 +44,7 @@ import { createDepositLiquidityToPairTxns } from '../../utils/transactions/creat
 import { createCreatePollLink } from '../../constants';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
-import { notify, PoolType } from '../../utils';
+import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { getArrayByNumber } from '../../utils/transactions';
 import {
@@ -138,7 +138,7 @@ export const NewPool: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [market, type]);
 
-  const onSelectChange = useCallback((value: string) => {
+  const onSelectChange = useCallback(() => {
     setStep(1);
   }, []);
 

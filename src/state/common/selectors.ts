@@ -62,3 +62,8 @@ export const selectCartSiderVisible = createSelector(
   [pathOr(false, ['common', 'cartSider', 'isVisible'])],
   identity,
 );
+
+export const selectMobileMode = createSelector(
+  [pathOr(false, ['common', 'mobileMode', 'isMobile'])],
+  identity,
+);

@@ -1,0 +1,14 @@
+.modalWrapper {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - var(--header-height-mobile));
+  padding: 16px;
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: var(--border-color-base);
+  border-radius: 20px 20px 0 0;
+  background-color: var(--primary-background-color);
+  z-index: 11;
+}

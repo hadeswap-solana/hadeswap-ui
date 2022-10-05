@@ -15,7 +15,6 @@ export const MakeOfferModal: FC<IMakeOfferModal> = ({
   const [form] = Form.useForm();
 
   const onSubmit = () => {
-    console.log('click!');
     form.submit();
   };
 

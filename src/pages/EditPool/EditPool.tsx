@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { chunk, differenceBy } from 'lodash';
@@ -553,9 +553,6 @@ export const EditPool: FC = () => {
       history.push(`/pools/${pool?.pairPubkey}`);
     }
   };
-
-  console.log('-----');
-  console.log(pool);
 
   const onWithdrawAllClick = async () => {
     const transactions = [];
