@@ -173,6 +173,10 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
         </Text>
       </div>
       <div className={styles.generalInfoBlock}>
+        <Title level={5}>fee</Title>
+        <Text className={styles.generalInfoText}>{pool?.fee / 100}%</Text>
+      </div>
+      <div className={styles.generalInfoBlock}>
         <Title level={5}>status</Title>
         <Text className={styles.generalInfoText}>{pool?.pairState}</Text>
       </div>

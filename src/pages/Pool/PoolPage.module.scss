@@ -23,7 +23,7 @@
   background: var(--ant-gray);
   border-radius: var(--border-radius-base);
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   padding: 16px;
   gap: 16px;
   margin-bottom: 32px;
@@ -35,7 +35,7 @@
 }
 
 .generalInfoFull {
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(8, 1fr);
 }
 
 .generalInfoBlock {
