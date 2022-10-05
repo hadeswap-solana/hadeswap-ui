@@ -1,45 +1,39 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 type UseIntersection = (props?: { isSingle?: boolean }) => {
   ref: (node?: Element) => void;
   inView: boolean;
-  resetRef: () => void;
 };
 
 export const useIntersection: UseIntersection = (props) => {
   const isSingle = !!props?.isSingle;
 
+  const [entry, setEntry] = useState<IntersectionObserverEntry>();
   const [ref, setRef] = useState<Element | null>(null);
-  const [inView, setInView] = useState(false);
 
-  const resetRef = useCallback(() => {
-    setInView(false);
-  }, []);
+  const frozen = useMemo(
+    () => entry?.isIntersecting && isSingle,
+    [isSingle, entry],
+  );
+
+  const updateEntry = ([entry]: IntersectionObserverEntry[]): void => {
+    setEntry(entry);
+  };
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setInView(entry.isIntersecting);
-        resetRef();
+    const hasIOSupport = !!window.IntersectionObserver;
 
-        if (isSingle) {
-          observer.unobserve(ref);
-          setRef(null);
-          return;
-        }
-      }
-    });
+    if (!hasIOSupport || frozen || !ref) return;
 
-    ref && observer.observe(ref);
+    const observer = new IntersectionObserver(updateEntry);
 
-    return () => {
-      ref && observer.unobserve(ref);
-    };
-  }, [ref, inView, resetRef, isSingle]);
+    observer.observe(ref);
+
+    return () => observer.disconnect();
+  }, [ref, isSingle, frozen]);
 
   return {
     ref: setRef,
-    inView,
-    resetRef,
+    inView: !!entry?.isIntersecting,
   };
 };

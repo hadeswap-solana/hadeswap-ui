@@ -54,6 +54,7 @@
   background: #272f37;
   border-radius: 20px;
   font-size: 16px;
+  min-height: 64px;
 
   @media screen and (max-width: 1024px) {
     flex-direction: column;

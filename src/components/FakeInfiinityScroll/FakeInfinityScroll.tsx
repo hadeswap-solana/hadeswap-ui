@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { useIntersection } from '../../hooks';
+import { useDebounce, useIntersection } from '../../hooks';
 
 interface FakeInfinityScrollProps {
   className?: string;
@@ -28,11 +28,13 @@ export const FakeInfinityScroll: FC<FakeInfinityScrollProps> = ({
     setItemsToShow((prev) => prev + itemsPerScroll);
   }, [itemsPerScroll]);
 
+  const nextDebounced = useDebounce(next, 500);
+
   useEffect(() => {
     if (inView && children.length > itemsToShow) {
-      next();
+      nextDebounced();
     }
-  }, [inView, next, children.length, itemsToShow]);
+  }, [inView, nextDebounced, children.length, itemsToShow]);
 
   return (
     <div className={className}>
