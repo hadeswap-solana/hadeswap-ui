@@ -39,7 +39,7 @@ export const FakeInfinityScroll: FC<FakeInfinityScrollProps> = ({
   return (
     <div className={className}>
       {children?.slice(0, itemsToShow).map((child) => child)}
-      <div ref={ref} />
+      <div ref={ref} style={{ height: 1 }} />
     </div>
   );
 };
