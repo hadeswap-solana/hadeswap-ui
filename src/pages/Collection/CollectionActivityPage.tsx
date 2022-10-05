@@ -1,4 +1,4 @@
-import { FC, useEffect, Fragment } from 'react';
+import { memo, FC, useEffect, Fragment, useState } from 'react';
 import { CollectionPageLayout } from './CollectionPageLayout';
 import styles from './Collection.module.scss';
 import { NavLink, useParams } from 'react-router-dom';
@@ -25,10 +25,12 @@ interface ActivityData {
 }
 
 const useActivityData = (marketPublicKey: string) => {
-  const LIMIT = 10;
+  const LIMIT = 30;
+
+  const [isListEnded, setIsListEnded] = useState<boolean>(false);
 
   const fetchData = async ({
-    pageParam = 0,
+    pageParam,
     marketPublicKey,
   }: {
     pageParam: number;
@@ -44,6 +46,10 @@ const useActivityData = (marketPublicKey: string) => {
       )
     ).json();
 
+    if (!data?.length) {
+      setIsListEnded(true);
+    }
+
     return {
       pageParam,
       data,
@@ -52,11 +58,15 @@ const useActivityData = (marketPublicKey: string) => {
 
   const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
     ['marketActivity', marketPublicKey],
-    ({ pageParam }) => fetchData({ marketPublicKey, pageParam }),
+    ({ pageParam = 0 }) => fetchData({ marketPublicKey, pageParam }),
     {
       enabled: !!marketPublicKey,
-      getPreviousPageParam: (firstPage) => firstPage.pageParam - 1 ?? undefined,
-      getNextPageParam: (lastPage) => lastPage.pageParam + 1 ?? undefined,
+      getPreviousPageParam: (firstPage) => {
+        return firstPage.pageParam - 1 ?? undefined;
+      },
+      getNextPageParam: (lastPage) => {
+        return lastPage.data?.length ? lastPage.pageParam + 1 : undefined;
+      },
       cacheTime: 100_000,
       networkMode: 'offlineFirst',
     },
@@ -66,22 +76,23 @@ const useActivityData = (marketPublicKey: string) => {
     data,
     fetchNextPage,
     isFetchingNextPage,
+    isListEnded,
   };
 };
 
-export const CollectionActivityPage: FC = () => {
-  const { ref, inView, resetRef } = useIntersection();
+const CollectionActivityPageBase: FC = () => {
+  const { ref, inView } = useIntersection();
 
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-  const { data, fetchNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, isFetchingNextPage, isListEnded } =
     useActivityData(marketPublicKey);
 
   useEffect(() => {
-    if (inView && !isFetchingNextPage) {
+    if (inView && !isFetchingNextPage && !isListEnded) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage, resetRef, isFetchingNextPage]);
+  }, [inView, fetchNextPage, isFetchingNextPage, isListEnded]);
 
   return (
     <CollectionPageLayout>
@@ -90,7 +101,8 @@ export const CollectionActivityPage: FC = () => {
           <Fragment key={idx}>
             {page.data
               .filter(
-                (activity) => activity.solAmount > 0 && activity.solAmount != 0,
+                (activity) =>
+                  activity.solAmount > 0 && activity.solAmount !== 0,
               )
               .map((activity, idx) => (
                 <ActivityCard data={activity} key={idx} />
@@ -103,6 +115,8 @@ export const CollectionActivityPage: FC = () => {
     </CollectionPageLayout>
   );
 };
+
+export const CollectionActivityPage = memo(CollectionActivityPageBase);
 
 interface ActivityCardProps {
   data: ActivityData;

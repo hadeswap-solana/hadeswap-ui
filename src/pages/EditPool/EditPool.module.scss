@@ -25,6 +25,11 @@
   justify-content: space-between;
 }
 
+.editButtons {
+  display: flex;
+  column-gap: 20px;
+}
+
 .buttonNext {
   margin-left: auto;
 }
