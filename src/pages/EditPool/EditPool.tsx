@@ -866,22 +866,22 @@ export const EditPool: FC = () => {
                           <InputNumber
                             disabled={isDisableFields}
                             className={styles.input}
-                            min={
-                              type === PairType.NftForToken ||
-                              type === PairType.LiquidityProvision
-                                ? chosenMarket?.bestoffer === '0.000'
-                                  ? 0
-                                  : chosenMarket?.bestoffer
-                                : 0
-                            }
-                            max={
-                              type === PairType.TokenForNFT ||
-                              type === PairType.LiquidityProvision
-                                ? chosenMarket?.floorPrice === '0.000'
-                                  ? 100000000
-                                  : chosenMarket?.floorPrice
-                                : 100000000
-                            }
+                            // min={
+                            //   type === PairType.NftForToken ||
+                            //   type === PairType.LiquidityProvision
+                            //     ? chosenMarket?.bestoffer === '0.000'
+                            //       ? 0
+                            //       : chosenMarket?.bestoffer
+                            //     : 0
+                            // }
+                            // max={
+                            //   type === PairType.TokenForNFT ||
+                            //   type === PairType.LiquidityProvision
+                            //     ? chosenMarket?.floorPrice === '0.000'
+                            //       ? 100000000
+                            //       : chosenMarket?.floorPrice
+                            //     : 100000000
+                            // }
                             addonAfter="SOL"
                           />
                         </Form.Item>
