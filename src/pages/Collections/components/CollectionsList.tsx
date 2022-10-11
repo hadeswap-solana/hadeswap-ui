@@ -6,7 +6,7 @@ import { MarketInfo } from "../../../state/core/types";
 
 interface CollectionsListProps {
   data: MarketInfo[];
-  onRowClick: (arg: string) => void;
+  onRowClick: (marketPubkey: string) => void;
 }
 
 export const CollectionsList: FC<CollectionsListProps> = memo(({ data, onRowClick }) => (

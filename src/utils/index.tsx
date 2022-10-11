@@ -3,9 +3,6 @@ import { web3, BN } from 'hadeswap-sdk';
 import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
-import store from "../state/store";
-import { commonActions } from "../state/common/actions";
-import { DESKTOP_SIZE } from "../constants/common";
 
 export enum PoolType {
   tokenForNft = 'token for nft',
@@ -212,20 +209,24 @@ export const getDiscordAvatarUrl = (discordId = '', hash = ''): string | null =>
 
 export const compareNumbers = (
   numberA: number,
-  numberB: number
-): number => numberA - numberB;
+  numberB: number,
+  desc = true,
+): number => {
+  if (desc) return numberA - numberB;
+  return numberB - numberA;
+};
 
 export const compareStrings = (
   stringA: string,
   stringB: string
 ): number => stringA.localeCompare(stringB);
 
-export const sortingAny = (valueA: any, valueB: any) => {
+export const sortingValue = (valueA: any, valueB: any): number => {
   if (parseFloat(valueA)) {
     return compareNumbers(parseFloat(valueA), parseFloat(valueB));
   }
   return compareStrings(valueA, valueB);
-}
+};
 
 export const formatBNToString = (
   number: BN,
@@ -243,11 +244,3 @@ export const formatBNToString = (
     return null;
   }
 };
-
-export const checkMobileMode = () => {
-  if (window.screen.width < DESKTOP_SIZE) {
-    store.dispatch(commonActions.toggleMobileMode(true));
-  } else {
-    store.dispatch(commonActions.toggleMobileMode(false));
-  }
-}

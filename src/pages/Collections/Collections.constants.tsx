@@ -3,7 +3,7 @@ import { ColumnsType } from "antd/es/table";
 import { MarketInfo } from "../../state/core/types";
 import { TitleWithInfo } from "./components/TitleWithInfo";
 import { PriceWithIcon } from "./components/PriceWithIcon";
-import { sortingAny } from "../../utils";
+import { sortingValue } from "../../utils";
 
 const { Text } = Typography;
 
@@ -18,7 +18,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
     key: 'collectionName',
     title: 'name',
     dataIndex: 'collectionName',
-    sorter: (a, b) => sortingAny(a?.collectionName, b?.collectionName),
+    sorter: (a, b) => sortingValue(a?.collectionName, b?.collectionName),
     showSorterTooltip: false,
     render: (text: string, record: MarketInfo): JSX.Element => (
       <Row align="middle" gutter={[8, 0]}>
@@ -33,7 +33,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
     key: 'listingsAmount',
     title: 'listings',
     dataIndex: 'listingsAmount',
-    sorter: (a, b) => sortingAny(a?.listingsAmount, b?.listingsAmount),
+    sorter: (a, b) => sortingValue(a?.listingsAmount, b?.listingsAmount),
     showSorterTooltip: false,
     render: (text) => <Text>{text}</Text>,
   },
@@ -46,7 +46,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
       />
     ),
     dataIndex: 'floorPrice',
-    sorter: (a, b) => sortingAny(a?.floorPrice, b?.floorPrice),
+    sorter: (a, b) => sortingValue(a?.floorPrice, b?.floorPrice),
     showSorterTooltip: false,
     render: (text) => <PriceWithIcon price={text} />,
   },
@@ -59,7 +59,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
       />
     ),
     dataIndex: 'bestoffer',
-    sorter: (a, b) => sortingAny(a?.bestoffer, b?.bestoffer),
+    sorter: (a, b) => sortingValue(a?.bestoffer, b?.bestoffer),
     showSorterTooltip: false,
     render: (text) => <PriceWithIcon price={text} />,
   },
@@ -72,7 +72,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
       />
     ),
     dataIndex: 'offerTVL',
-    sorter: (a, b) => sortingAny(a?.offerTVL, b?.offerTVL),
+    sorter: (a, b) => sortingValue(a?.offerTVL, b?.offerTVL),
     showSorterTooltip: false,
     defaultSortOrder: 'descend',
     render: (text) => <PriceWithIcon price={text} />,

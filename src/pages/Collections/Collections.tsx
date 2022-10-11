@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useCallback } from 'react';
+import React, { FC, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Typography, Row, Col, Button, Input } from 'antd';
@@ -14,13 +14,13 @@ import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../state/core/selectors';
-import { selectMobileMode } from "../../state/common/selectors";
+import { selectIsMobile } from "../../state/common/selectors";
 import { MarketInfo } from '../../state/core/types';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { SearchOutlined } from '@ant-design/icons';
 import { useDebounce } from '../../hooks';
 import { COLLECTION_TABS, createCollectionLink } from "../../constants";
-import { sortingAny } from "../../utils";
+import { sortingValue } from "../../utils";
 import styles from './Collections.module.scss';
 
 const { Title } = Typography;
@@ -33,7 +33,7 @@ export const Collections: FC = () => {
   const [collections, setCollections] = useState<MarketInfo[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-  const isMobile = useSelector(selectMobileMode) as boolean;
+  const isMobile = useSelector(selectIsMobile) as boolean;
   const markets = useSelector(selectAllMarkets) as MarketInfo[];
   const collectionsLoading = useSelector(selectAllMarketsLoading) as boolean;
 
@@ -51,11 +51,19 @@ export const Collections: FC = () => {
     window.scrollTo(0, 0);
   }, [history]);
 
+  const handleSort = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    if (sortValue !== e.currentTarget.dataset.value) {
+      setSortValue(e.currentTarget.dataset.value);
+    } else {
+      setSortValue(null);
+    }
+  }, [sortValue]);
+
   const filterCollections = (): MarketInfo[] => {
     return markets.filter(({ collectionName }) =>
       collectionName?.toUpperCase()?.includes(searchStr),
     )
-  }
+  };
 
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
@@ -68,7 +76,10 @@ export const Collections: FC = () => {
   useEffect(() => {
     if (sortValue) {
       const [name, order] = sortValue.split('_');
-      const sorted = collections.sort((a, b) => sortingAny(a[name], b[name]));
+      const sorted = collections.sort(
+        (a, b) => sortingValue(a[name], b[name])
+      );
+
       if (order === SORT_ORDER.DESC) {
         setCollections(sorted.reverse());
       } else {
@@ -81,13 +92,12 @@ export const Collections: FC = () => {
 
   return (
     <AppLayout>
-      {isMobile &&
-        <SortingModal
-          isModalVisible={isModalVisible}
+      {isMobile && isModalVisible &&
+        (<SortingModal
           setIsModalVisible={setIsModalVisible}
+          handleSort={handleSort}
           sortValue={sortValue}
-          setSortValue={setSortValue}
-        />}
+        />)}
       <Row justify="center">
         <Col>
           <Title>collections</Title>

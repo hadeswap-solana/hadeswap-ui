@@ -149,7 +149,8 @@ const toggleCartSiderReducer = createReducer<CartSiderState>(initialCartSiderSta
 });
 
 const toggleMobileModeReducer = createReducer<MobileMode>(initialMobileMode, {
-  [commonTypes.TOGGLE_MOBILE_MODE]: (__, action) => ({
+  [commonTypes.TOGGLE_MOBILE_MODE]: (state, action) => ({
+    ...state,
     isMobile: action.payload,
   }),
 });
