@@ -1,7 +1,7 @@
 import React, { FC, Fragment, memo } from "react";
 import classNames from "classnames";
 import { COLUMNS, SORT_ORDER } from "../../Collections.constants";
-import Modal from "../../../../components/Mobile/Modal/Modal";
+import Modal from "../../../../components/Modal/Mobile/Modal";
 import { ShevronIcon, Arrow } from "../../../../components/svg";
 import styles from './CollectionsList.module.scss';
 
