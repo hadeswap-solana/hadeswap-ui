@@ -17,7 +17,7 @@ module.exports = (env) => {
   return {
     mode: 'development',
     entry: {
-      index: './src/index.tsx',
+      index: './src/index.ts',
     },
     devServer: {
       static: './public',

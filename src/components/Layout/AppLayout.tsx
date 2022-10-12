@@ -55,7 +55,10 @@ export const AppLayout: FC<LayoutProps> = ({
       dispatch(commonActions.toggleMobileMode(false));
     }
   };
-  setMobileMode();
+
+  useEffect(() => {
+    setMobileMode();
+  }, [])
 
   useEffect(() => {
     const resizeThrottled = throttle(setMobileMode, 300);

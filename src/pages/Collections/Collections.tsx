@@ -20,7 +20,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { SearchOutlined } from '@ant-design/icons';
 import { useDebounce } from '../../hooks';
 import { COLLECTION_TABS, createCollectionLink } from "../../constants";
-import { sortingValue } from "../../utils";
+import { specifyAndSort } from "../../utils";
 import styles from './Collections.module.scss';
 
 const { Title } = Typography;
@@ -77,7 +77,7 @@ export const Collections: FC = () => {
     if (sortValue) {
       const [name, order] = sortValue.split('_');
       const sorted = collections.sort(
-        (a, b) => sortingValue(a[name], b[name])
+        (a, b) => specifyAndSort(a[name], b[name])
       );
 
       if (order === SORT_ORDER.DESC) {

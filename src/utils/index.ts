@@ -221,11 +221,11 @@ export const compareStrings = (
   stringB: string
 ): number => stringA.localeCompare(stringB);
 
-export const sortingValue = (valueA: any, valueB: any): number => {
-  if (parseFloat(valueA)) {
-    return compareNumbers(parseFloat(valueA), parseFloat(valueB));
+export const specifyAndSort = <T>(valueA: string | number, valueB: string | number): number => {
+  if (Number(valueA)) {
+    return compareNumbers(parseFloat(String(<number>valueA)), parseFloat(String(<number>valueB)));
   }
-  return compareStrings(valueA, valueB);
+  return compareStrings(<string>valueA, <string>valueB);
 };
 
 export const formatBNToString = (
