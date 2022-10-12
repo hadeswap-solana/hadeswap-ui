@@ -2,7 +2,8 @@ import React, { FC, Fragment, memo } from "react";
 import classNames from "classnames";
 import { COLUMNS, SORT_ORDER } from "../../Collections.constants";
 import Modal from "../../../../components/Modal/Mobile/Modal";
-import { ShevronIcon, Arrow } from "../../../../components/svg";
+import ArrowIcon from "../../../../icons/ArrowIcon";
+import ChevronIcon from "../../../../icons/ChevronIcon";
 import styles from './CollectionsList.module.scss';
 
 interface SortingButtonProps {
@@ -23,7 +24,7 @@ const SortingButton: FC<SortingButtonProps> = ({ className, onClick, dataValue }
     onClick={onClick}
     data-value={dataValue}
   >
-    {Arrow}
+    <ArrowIcon className={styles.arrowIcon} />
   </div>
 );
 
@@ -36,7 +37,7 @@ const SortingModal: FC<SortingModalProps> = ({
     <div className={styles.sortingHeader}>
       <h3>Sorting</h3>
       <div onClick={() => setIsModalVisible(false)}>
-        {ShevronIcon}
+        <ChevronIcon />
       </div>
     </div>
     <div className={styles.sortingBody}>

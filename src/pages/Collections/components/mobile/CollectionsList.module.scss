@@ -107,22 +107,22 @@
   border: var(--border-base);
   border-radius: 0 20px 20px 0;
 
-  svg {
-    width: 15px;
-    height: 15px;
-    transform: rotate(90deg);
-
-    path {
-      fill: var(--primary-white-color);
-    }
-  }
-
   &.active {
     border-color: var(--primary-color);
 
-    svg path {
+    .arrowIcon path {
       fill: var(--primary-color);
     }
+  }
+}
+
+.arrowIcon {
+  width: 15px;
+  height: 15px;
+  transform: rotate(90deg);
+
+  path {
+    fill: var(--primary-white-color);
   }
 }
 
