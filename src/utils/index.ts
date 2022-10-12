@@ -222,7 +222,7 @@ export const compareStrings = (
 ): number => stringA.localeCompare(stringB);
 
 export const specifyAndSort = <T>(valueA: string | number, valueB: string | number): number => {
-  if (Number(valueA)) {
+  if (!isNaN(Number(valueA))) {
     return compareNumbers(parseFloat(String(<number>valueA)), parseFloat(String(<number>valueB)));
   }
   return compareStrings(<string>valueA, <string>valueB);
