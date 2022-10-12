@@ -20,7 +20,7 @@ module.exports = (env) => {
     },
     mode: 'production',
     entry: {
-      index: './src/index.ts',
+      index: './src/index.tsx',
     },
     performance: {
       hints: false,
