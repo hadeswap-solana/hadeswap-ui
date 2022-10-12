@@ -208,13 +208,24 @@ export const getDiscordAvatarUrl = (discordId = '', hash = ''): string | null =>
     : null;
 
 export const compareNumbers = (
-  numberA = 0,
-  numberB = 0,
+  numberA: number,
+  numberB: number,
   desc = true,
 ): number => {
-  if (desc) {
-    if (numberA > numberB) return -1;
-  } else if (numberB > numberA) return -1;
+  if (desc) return numberA - numberB;
+  return numberB - numberA;
+};
+
+export const compareStrings = (
+  stringA: string,
+  stringB: string
+): number => stringA.localeCompare(stringB);
+
+export const specifyAndSort = <T>(valueA: string | number, valueB: string | number): number => {
+  if (!isNaN(Number(valueA))) {
+    return compareNumbers(parseFloat(String(<number>valueA)), parseFloat(String(<number>valueB)));
+  }
+  return compareStrings(<string>valueA, <string>valueB);
 };
 
 export const formatBNToString = (

@@ -1,7 +1,6 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 import { chunk } from 'lodash';
-import { ProvisionOrders } from '../../state/core/types';
 
 const { withdrawLiquidityOrderVirtualFees } =
   hadeswap.functions.marketFactory.pair.virtual.withdrawals;

@@ -1,8 +1,8 @@
 import { Avatar, Col, Row, Typography } from 'antd';
 import { BN } from 'hadeswap-sdk';
 import type { ColumnsType } from 'antd/es/table';
-import { PriceWithIcon } from '../../pages/Collections/PriceWithIcon';
-import { TitleWithInfo } from '../../pages/Collections/TitleWithInfo';
+import { PriceWithIcon } from '../../pages/Collections/components/PriceWithIcon';
+import { TitleWithInfo } from '../../pages/Collections/components/TitleWithInfo';
 import { createPoolTableRow } from '../../state/core/helpers';
 import { shortenAddress } from '../solanaUtils';
 import { formatBNToString } from '../index';

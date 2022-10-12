@@ -18,6 +18,8 @@ import TwitterIcon from '../../icons/TwitterIcon';
 // import GitHubIcon from '../../icons/GitHubIcon';
 import classNames from 'classnames';
 import { selectCartSiderVisible } from '../../state/common/selectors';
+import { throttle } from 'lodash';
+import { DESKTOP_SIZE } from "../../constants/common";
 
 const { Header, Content, Footer } = Layout;
 
@@ -45,6 +47,24 @@ export const AppLayout: FC<LayoutProps> = ({
 }) => {
   const dispatch = useDispatch();
   const cartSiderOpened = useSelector(selectCartSiderVisible);
+
+  const setMobileMode = () => {
+    if (window.screen.width < DESKTOP_SIZE) {
+      dispatch(commonActions.toggleMobileMode(true));
+    } else {
+      dispatch(commonActions.toggleMobileMode(false));
+    }
+  };
+
+  useEffect(() => {
+    setMobileMode();
+  }, [])
+
+  useEffect(() => {
+    const resizeThrottled = throttle(setMobileMode, 300);
+    window.addEventListener('resize', resizeThrottled);
+    return () => window.removeEventListener('resize', resizeThrottled);
+  }, []);
 
   useEffect(() => {
     dispatch(commonActions.setWalletModal({ isVisible: false }));
