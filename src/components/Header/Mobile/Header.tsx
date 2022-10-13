@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
+import { PATHS } from "../../../constants";
 import Logo from '../../../icons/Logo';
 import { BurgerIcon } from "../../../icons/BurgerIcon";
 import { CloseCrossIcon } from "../../../icons/CloseCrossIcon";
@@ -11,7 +13,9 @@ const HeaderMobile = (): JSX.Element => {
 
   return (
     <header className={styles.header}>
-      <Logo className={styles.logo} />
+      <NavLink className={styles.logoLink} to={PATHS.ROOT}>
+        <Logo className={styles.logoIcon} />
+      </NavLink>
       <div className={styles.buttonsWrapper}>
         <ConnectWalletButton />
         <div
