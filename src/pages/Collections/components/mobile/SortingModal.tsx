@@ -13,7 +13,7 @@ interface SortingButtonProps {
 }
 
 interface SortingModalProps {
-  setIsModalVisible: (arg: boolean) => void;
+  setIsModalVisible: (arg: (value) => boolean) => void;
   handleSort: (e: React.MouseEvent<HTMLElement>) => void;
   sortValue: string;
 }
@@ -33,10 +33,10 @@ const SortingModal: FC<SortingModalProps> = ({
   handleSort,
   sortValue
 }) => (
-  <Modal className={styles.modalInner}>
+  <Modal className={styles.modalInner} closeModal={setIsModalVisible} >
     <div className={styles.sortingHeader}>
       <h3>Sorting</h3>
-      <div onClick={() => setIsModalVisible(false)}>
+      <div onClick={() => setIsModalVisible((value: boolean) => !value)}>
         <ChevronIcon />
       </div>
     </div>
