@@ -1,7 +1,7 @@
 import React, { FC, Fragment, memo } from 'react';
 import classNames from 'classnames';
 import { COLUMNS, SORT_ORDER } from '../../Collections.constants';
-import Modal from '../../../../components/Modal/Mobile/Modal';
+import Modal from '../../../../components/Modal/mobile/Modal';
 import ArrowIcon from '../../../../icons/ArrowIcon';
 import ChevronIcon from '../../../../icons/ChevronIcon';
 import styles from './CollectionsList.module.scss';
@@ -37,7 +37,7 @@ const SortingModal: FC<SortingModalProps> = ({
   handleSort,
   sortValue,
 }) => (
-  <Modal className={styles.modalInner} closeModal={setIsModalVisible} >
+  <Modal className={styles.modalInner} closeModal={setIsModalVisible}>
     <div className={styles.sortingHeader}>
       <h3>Sorting</h3>
       <div onClick={() => setIsModalVisible((value: boolean) => !value)}>
@@ -45,7 +45,7 @@ const SortingModal: FC<SortingModalProps> = ({
       </div>
     </div>
     <div className={styles.sortingBody}>
-      {COLUMNS.map((item) => (
+      {COLUMNS.map(item => (
         <Fragment key={item.key}>
           <div className={styles.sortTitle}>{item.title}</div>
           <div className={styles.sortButtonsWrapper}>
