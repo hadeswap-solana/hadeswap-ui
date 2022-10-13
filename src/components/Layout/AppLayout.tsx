@@ -1,27 +1,24 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Layout, Typography } from 'antd';
+import classNames from 'classnames';
+import { throttle } from 'lodash';
 
 import { commonActions } from '../../state/common/actions';
-import { ConnectWalletButton } from '../ConnectWalletButton/ConnectWalletButton';
+import { selectCartSiderVisible } from '../../state/common/selectors';
 import { SelectWalletModal } from '../SelectWalletModal/SelectWalletModal';
-import { NavLink } from 'react-router-dom';
-import { PATHS } from '../../constants';
+import Header from '../Header';
 import { CartSider } from './CartSider';
 import { TransactionsLoadingModal } from '../TransactionsLoadingModal';
-import Logo from '../../icons/Logo';
 // import MediumIcon from '../../icons/MediumIcon';
 import DocsIcon from '../../icons/DocsIcon';
 import DiscordIcon from '../../icons/DiscordIcon';
 import TwitterIcon from '../../icons/TwitterIcon';
 // import GitHubIcon from '../../icons/GitHubIcon';
-import classNames from 'classnames';
-import { selectCartSiderVisible } from '../../state/common/selectors';
-import { throttle } from 'lodash';
-import { DESKTOP_SIZE } from '../../constants/common';
+import { DESKTOP_SIZE } from "../../constants/common";
 import styles from './AppLayout.module.scss';
 
-const { Header, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 
 interface LayoutProps {
   customHeader?: JSX.Element;
@@ -80,31 +77,7 @@ export const AppLayout: FC<LayoutProps> = ({
           [styles.mainAndSiderOpened]: cartSiderOpened,
         })}
       >
-        <Header className={styles.header}>
-          <NavLink className={styles.logo} to={PATHS.ROOT}>
-            <Logo />
-          </NavLink>
-          <nav className={styles.nav}>
-            <div></div>
-            <div className={styles.navRight}>
-              <NavLink
-                to={PATHS.COLLECTIONS}
-                className={styles.navLink}
-                activeClassName={styles.navLinkActive}
-              >
-                collections
-              </NavLink>
-              <NavLink
-                to={PATHS.MY_POOLS}
-                className={styles.navLink}
-                activeClassName={styles.navLinkActive}
-              >
-                my pools
-              </NavLink>
-              <ConnectWalletButton className={styles.connectBtn} />
-            </div>
-          </nav>
-        </Header>
+        <Header />
         <Content className={classNames(styles.content, contentClassName)}>
           {children}
         </Content>

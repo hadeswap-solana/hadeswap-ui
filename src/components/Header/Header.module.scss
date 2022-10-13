@@ -1,0 +1,41 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color-base);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+}
+
+.buttonsWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.nav {
+  display: flex;
+}
+
+.navLink {
+  padding: 0 12px;
+  transition: background var(--ease-base-out) var(--animation-duration-slow),
+  color var(--ease-base-out) var(--animation-duration-slow);
+  font-size: 14px;
+
+  &:hover {
+    background: var(--primary-color);
+    color: var(--heading-color);
+  }
+}
+
+.navLinkActive {
+  background: var(--primary-color);
+  color: var(--heading-color);
+}
+
+.connectBtn {
+  margin-left: 16px;
+}
