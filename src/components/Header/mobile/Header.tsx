@@ -4,7 +4,7 @@ import { PATHS } from "../../../constants";
 import Logo from '../../../icons/Logo';
 import { BurgerIcon } from "../../../icons/BurgerIcon";
 import { CloseCrossIcon } from "../../../icons/CloseCrossIcon";
-import Menu from "./Menu";
+import Menu from './Menu';
 import { ConnectWalletButton } from "../../ConnectWalletButton/ConnectWalletButton";
 import styles from './Header.module.scss';
 

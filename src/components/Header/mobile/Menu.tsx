@@ -1,6 +1,6 @@
-import Modal from "../../Modal/Mobile/Modal";
+import Modal from "../../Modal/mobile/Modal";
 import MenuList from "../MenuList";
-import styles from "./Header.module.scss";
+import styles from './Header.module.scss';
 
 const Menu = () => (
   <Modal className={styles.modalMenu}>
