@@ -1,7 +1,7 @@
 import React, { FC, Fragment, memo } from "react";
 import classNames from "classnames";
 import { COLUMNS, SORT_ORDER } from "../../Collections.constants";
-import Modal from "../../../../components/Modal/Mobile/Modal";
+import Modal from "../../../../components/Modal/mobile/Modal";
 import ArrowIcon from "../../../../icons/ArrowIcon";
 import ChevronIcon from "../../../../icons/ChevronIcon";
 import styles from './CollectionsList.module.scss';
@@ -35,7 +35,7 @@ const SortingModal: FC<SortingModalProps> = ({
 }) => (
   <Modal className={styles.modalInner}>
     <div className={styles.sortingHeader}>
-      <h3>Sorting</h3>
+      <h3>sorting</h3>
       <div onClick={() => setIsModalVisible(false)}>
         <ChevronIcon />
       </div>

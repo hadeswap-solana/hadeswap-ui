@@ -127,14 +127,14 @@ export const Collections: FC = () => {
                 <div className={styles.controlsWrapper}>
                   <Input
                     size="large"
-                    placeholder="Search by collection name"
+                    placeholder="search by collection name"
                     prefix={<SearchOutlined />}
                     className={styles.searchInput}
                     onChange={(event) => setSearch(event.target.value || '')}
                   />
                   {isMobile && (
                     <div className={styles.sortingBtn} onClick={() => setIsModalVisible(true)}>
-                      Sorting
+                      sorting
                     </div>
                   )}
                 </div>
