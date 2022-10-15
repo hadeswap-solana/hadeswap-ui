@@ -8,7 +8,7 @@ import { commonActions } from '../../state/common/actions';
 import { selectCartSiderVisible } from '../../state/common/selectors';
 import { SelectWalletModal } from '../SelectWalletModal/SelectWalletModal';
 import Header from '../Header';
-import { CartSider } from './CartSider';
+import CartSider from "../CartSider";
 import { TransactionsLoadingModal } from '../TransactionsLoadingModal';
 // import MediumIcon from '../../icons/MediumIcon';
 import DocsIcon from '../../icons/DocsIcon';
@@ -72,51 +72,55 @@ export const AppLayout: FC<LayoutProps> = ({
 
   return (
     <Layout className={className}>
-      <div
-        className={classNames(styles.main, {
-          [styles.mainAndSiderOpened]: cartSiderOpened,
-        })}
-      >
-        <Header />
-        <Content className={classNames(styles.content, contentClassName)}>
-          {children}
-        </Content>
-        {!hideFooter && (
-          <Footer>
-            <div className={styles.footerSocial}>
-              <div className={styles.footerSocialBlock}>
-                <Typography.Text>documentation</Typography.Text>
-                <ul className={styles.socialNavs}>
-                  {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
-                    <li className={styles.socialItem} key={idx}>
-                      <a href={to} target="_blank" rel="noreferrer">
-                        <Icon />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+      {/*<div*/}
+      {/*  className={classNames(styles.main, {*/}
+      {/*    [styles.mainAndSiderOpened]: cartSiderOpened,*/}
+      {/*  })}*/}
+      {/*>*/}
+      <div className={styles.mainWrapper}>
+        <div className={styles.main}>
+          <Header />
+          <Content className={classNames(styles.content, contentClassName)}>
+            {children}
+          </Content>
+          {!hideFooter && (
+            <Footer>
+              <div className={styles.footerSocial}>
+                <div className={styles.footerSocialBlock}>
+                  <Typography.Text>documentation</Typography.Text>
+                  <ul className={styles.socialNavs}>
+                    {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
+                      <li className={styles.socialItem} key={idx}>
+                        <a href={to} target="_blank" rel="noreferrer">
+                          <Icon />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className={styles.footerSocialBlock}>
+                  <Typography.Text>contact us</Typography.Text>
+                  <ul className={styles.socialNavs}>
+                    {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
+                      <li className={styles.socialItem} key={idx}>
+                        <a href={to} target="_blank" rel="noreferrer">
+                          <Icon />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              <div className={styles.footerSocialBlock}>
-                <Typography.Text>contact us</Typography.Text>
-                <ul className={styles.socialNavs}>
-                  {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
-                    <li className={styles.socialItem} key={idx}>
-                      <a href={to} target="_blank" rel="noreferrer">
-                        <Icon />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+              <div className={styles.footerDisclaimer}>
+                hadeswap is currently not audited and will be open sourced soon
+                after the audit is conducted. use at your own risk.
               </div>
-            </div>
-            <div className={styles.footerDisclaimer}>
-              hadeswap is currently not audited and will be open sourced soon
-              after the audit is conducted. use at your own risk.
-            </div>
-          </Footer>
-        )}
+            </Footer>
+          )}
+        </div>
+        <CartSider />
       </div>
-      <CartSider />
+      {/*</div>*/}
       <SelectWalletModal />
       <TransactionsLoadingModal />
     </Layout>

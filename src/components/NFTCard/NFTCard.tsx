@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Button, Typography } from 'antd';
 import classNames from 'classnames';
 
@@ -15,7 +15,7 @@ interface NFTCardProps {
   onBtnClick?: () => void;
 }
 
-export const NFTCard: FC<NFTCardProps> = ({
+export const NFTCard: FC<NFTCardProps> = memo(({
   className,
   selected = false,
   disabled = false,
@@ -56,4 +56,4 @@ export const NFTCard: FC<NFTCardProps> = ({
       )}
     </div>
   );
-};
+});
