@@ -5,7 +5,7 @@ import HeaderMobile from "./mobile/Header";
 
 const Header = (): JSX.Element => {
   const isMobile = useSelector<boolean>(selectIsMobile);
-  return (<>{isMobile ? <HeaderMobile /> : <HeaderDesktop />}</>)
+  return isMobile ? <HeaderMobile /> : <HeaderDesktop />;
 };
 
 export default Header;
