@@ -2,25 +2,25 @@ import React, { FC, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Typography, Row, Col, Button, Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
+import { Spinner } from '../../components/Spinner/Spinner';
 import { CollectionsList } from './components/CollectionsList';
 import { CollectionsList as CollectionsListMobile } from './components/mobile/CollectionsList';
 import SortingModal from './components/mobile/SortingModal';
-import { SORT_ORDER } from './Collections.constants';
+import { INITIAL_SORT_VALUE, SORT_ORDER } from './Collections.constants';
+import { sortCollection, filterCollections } from './helpers';
 
 import { coreActions } from '../../state/core/actions';
 import {
   selectAllMarkets,
-  selectAllMarketsLoading,
+  selectAllMarketsLoading
 } from '../../state/core/selectors';
 import { selectIsMobile } from '../../state/common/selectors';
 import { MarketInfo } from '../../state/core/types';
-import { Spinner } from '../../components/Spinner/Spinner';
-import { SearchOutlined } from '@ant-design/icons';
 import { useDebounce } from '../../hooks';
 import { COLLECTION_TABS, createCollectionLink } from '../../constants';
-import { specifyAndSort } from '../../utils';
 import styles from './Collections.module.scss';
 
 const { Title } = Typography;
@@ -41,60 +41,49 @@ export const Collections: FC = () => {
     setSearchStr(search.toUpperCase());
   }, 300);
 
-  const onRowClick = useCallback(
-    (data: string): void => {
-      history.push(createCollectionLink(COLLECTION_TABS.BUY, data));
-      window.scrollTo(0, 0);
-    },
-    [history],
-  );
-
-  const handleSort = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      if (sortValue !== e.currentTarget.dataset.value) {
-        setSortValue(e.currentTarget.dataset.value);
-      } else {
-        setSortValue(null);
-      }
-    },
-    [sortValue],
-  );
-
-  const filterCollections = (): MarketInfo[] => {
-    return markets.filter(({ collectionName }) =>
-      collectionName?.toUpperCase()?.includes(searchStr),
+  const onRowClick = useCallback((data: string): void => {
+    history.push(
+      createCollectionLink(
+        COLLECTION_TABS.BUY,
+        data
+      )
     );
-  };
+    window.scrollTo(0, 0);
+  }, [history]);
+
+  const handleSort = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    if (sortValue !== e.currentTarget.dataset.value) {
+      setSortValue(e.currentTarget.dataset.value);
+    } else {
+      setSortValue(null);
+    }
+  }, [sortValue]);
 
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
   }, []);
 
   useEffect(() => {
-    setCollections(filterCollections());
-  }, [searchStr, markets]);
+    setCollections(sortCollection(markets, INITIAL_SORT_VALUE, SORT_ORDER.DESC));
+  }, [markets]);
+
+  useEffect(() => {
+    setCollections(filterCollections(markets, searchStr));
+  }, [searchStr]);
 
   useEffect(() => {
     if (sortValue) {
       const [name, order] = sortValue.split('_');
-      const sorted = collections.sort((a, b) =>
-        specifyAndSort(a[name], b[name]),
-      );
-
-      if (order === SORT_ORDER.DESC) {
-        setCollections(sorted.reverse());
-      } else {
-        setCollections(sorted);
-      }
+      setCollections(sortCollection(collections, name, order));
     } else {
-      setCollections(filterCollections());
+      setCollections(sortCollection(collections, INITIAL_SORT_VALUE, SORT_ORDER.DESC));
     }
   }, [sortValue]);
 
   return (
     <AppLayout>
-      {isMobile && isModalVisible && (
-        <SortingModal
+      {isMobile && isModalVisible &&
+        (<SortingModal
           setIsModalVisible={setIsModalVisible}
           handleSort={handleSort}
           sortValue={sortValue}
