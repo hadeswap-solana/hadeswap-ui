@@ -15,7 +15,7 @@ import { sortCollection, filterCollections } from './helpers';
 import { coreActions } from '../../state/core/actions';
 import {
   selectAllMarkets,
-  selectAllMarketsLoading
+  selectAllMarketsLoading,
 } from '../../state/core/selectors';
 import { selectIsMobile } from '../../state/common/selectors';
 import { MarketInfo } from '../../state/core/types';
@@ -41,30 +41,33 @@ export const Collections: FC = () => {
     setSearchStr(search.toUpperCase());
   }, 300);
 
-  const onRowClick = useCallback((data: string): void => {
-    history.push(
-      createCollectionLink(
-        COLLECTION_TABS.BUY,
-        data
-      )
-    );
-    window.scrollTo(0, 0);
-  }, [history]);
+  const onRowClick = useCallback(
+    (data: string): void => {
+      history.push(createCollectionLink(COLLECTION_TABS.BUY, data));
+      window.scrollTo(0, 0);
+    },
+    [history],
+  );
 
-  const handleSort = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    if (sortValue !== e.currentTarget.dataset.value) {
-      setSortValue(e.currentTarget.dataset.value);
-    } else {
-      setSortValue(null);
-    }
-  }, [sortValue]);
+  const handleSort = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      if (sortValue !== e.currentTarget.dataset.value) {
+        setSortValue(e.currentTarget.dataset.value);
+      } else {
+        setSortValue(null);
+      }
+    },
+    [sortValue],
+  );
 
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
   }, []);
 
   useEffect(() => {
-    setCollections(sortCollection(markets, INITIAL_SORT_VALUE, SORT_ORDER.DESC));
+    setCollections(
+      sortCollection(markets, INITIAL_SORT_VALUE, SORT_ORDER.DESC),
+    );
   }, [markets]);
 
   useEffect(() => {
@@ -76,14 +79,16 @@ export const Collections: FC = () => {
       const [name, order] = sortValue.split('_');
       setCollections(sortCollection(collections, name, order));
     } else {
-      setCollections(sortCollection(collections, INITIAL_SORT_VALUE, SORT_ORDER.DESC));
+      setCollections(
+        sortCollection(collections, INITIAL_SORT_VALUE, SORT_ORDER.DESC),
+      );
     }
   }, [sortValue]);
 
   return (
     <AppLayout>
-      {isMobile && isModalVisible &&
-        (<SortingModal
+      {isMobile && isModalVisible && (
+        <SortingModal
           setIsModalVisible={setIsModalVisible}
           handleSort={handleSort}
           sortValue={sortValue}

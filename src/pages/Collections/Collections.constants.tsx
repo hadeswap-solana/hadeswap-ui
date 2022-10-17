@@ -28,7 +28,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
         </Col>
         <Col>{text || UNTITLED_COLLECTION}</Col>
       </Row>
-    )
+    ),
   },
   {
     key: 'listingsAmount',
@@ -36,7 +36,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
     dataIndex: 'listingsAmount',
     sorter: (a, b) => specifyAndSort(a?.listingsAmount, b?.listingsAmount),
     showSorterTooltip: false,
-    render: (text) => <Text>{text}</Text>
+    render: (text) => <Text>{text}</Text>,
   },
   {
     key: 'floorPrice',
@@ -49,7 +49,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
     dataIndex: 'floorPrice',
     sorter: (a, b) => specifyAndSort(a?.floorPrice, b?.floorPrice),
     showSorterTooltip: false,
-    render: (text) => <PriceWithIcon price={text} />
+    render: (text) => <PriceWithIcon price={text} />,
   },
   {
     key: 'bestoffer',
@@ -62,7 +62,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
     dataIndex: 'bestoffer',
     sorter: (a, b) => specifyAndSort(a?.bestoffer, b?.bestoffer),
     showSorterTooltip: false,
-    render: (text) => <PriceWithIcon price={text} />
+    render: (text) => <PriceWithIcon price={text} />,
   },
   {
     key: 'offerTVL',
@@ -76,6 +76,6 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
     sorter: (a, b) => specifyAndSort(a?.offerTVL, b?.offerTVL),
     showSorterTooltip: false,
     defaultSortOrder: 'descend',
-    render: (text) => <PriceWithIcon price={text} />
-  }
+    render: (text) => <PriceWithIcon price={text} />,
+  },
 ];
