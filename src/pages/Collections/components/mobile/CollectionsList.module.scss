@@ -1,0 +1,140 @@
+.cardWrapper {
+  width: 100%;
+  padding: 16px;
+  border: var(--border-base);
+  border-radius: 20px;
+  background: var(--secondary-background-color);
+
+  &:not(:last-child) {
+    margin-bottom: 16px;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+
+  img {
+    width: 48px;
+    height: 48px;
+    margin-right: 8px;
+  }
+
+  span {
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 28px;
+  }
+}
+
+.cardBody {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    line-height: 22px;
+
+    &:not(:last-child) {
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.listItem {
+  span {
+    font-weight: 400;
+    color: var(--primary-white-color);
+  }
+
+  & > span:nth-child(1) {
+    font-weight: 700;
+    color: var(--inactive-color);
+  }
+}
+
+.modalInner {
+  color: var(--primary-white-color);
+}
+
+.sortingHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h3 {
+    margin: 0;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+  }
+}
+
+.sortingBody {
+  font-weight: 500;
+  text-align: center;
+}
+
+.sortTitle {
+  display: flex;
+  justify-content: center;
+}
+
+.sortButtonsWrapper {
+  display: flex;
+  margin: 8px 0 16px;
+}
+
+.sortButton {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  border: var(--border-base);
+  border-radius: 0 20px 20px 0;
+
+  &.active {
+    border-color: var(--primary-color);
+
+    .arrowIcon path {
+      fill: var(--primary-color);
+    }
+  }
+}
+
+.arrowIcon {
+  width: 15px;
+  height: 15px;
+  transform: rotate(90deg);
+
+  path {
+    fill: var(--primary-white-color);
+  }
+}
+
+.leftSortBtn {
+  transform: rotateY(180deg);
+  border-left: 0;
+
+  &.active {
+    border-left: 1px solid var(--primary-color);
+  }
+
+  svg {
+    transform: rotate(-90deg);
+  }
+}

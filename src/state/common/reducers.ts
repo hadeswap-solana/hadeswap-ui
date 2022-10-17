@@ -20,6 +20,7 @@ import {
   // UserState,
   ConfettiState,
   CartSiderState,
+  MobileMode,
 } from './types';
 
 // export const initialSolanaHealthState: AsyncState<SolanaHealthState> =
@@ -47,7 +48,7 @@ export const initialModalState: ModalState = { isVisible: false };
 export const initialConfettiState: ModalState = { isVisible: false };
 
 export const initialCartSiderState: CartSiderState = { isVisible: false };
-
+const initialMobileMode: MobileMode = { isMobile: false };
 // const solanaHealthReducer = createReducer(
 //   initialSolanaHealthState,
 //   createHandlers<SolanaHealthState>(commonTypes.FETCH_SOLANA_HEALTH),
@@ -140,9 +141,20 @@ const setCartSiderReducer = createReducer<CartSiderState>(
     }),
   },
 );
-const toggleCartSiderReducer = createReducer<ModalState>(initialModalState, {
-  [commonTypes.TOGGLE_CART_SIDER]: (state) => ({
-    isVisible: !state.isVisible,
+
+const toggleCartSiderReducer = createReducer<CartSiderState>(
+  initialCartSiderState,
+  {
+    [commonTypes.TOGGLE_CART_SIDER]: (state) => ({
+      isVisible: !state.isVisible,
+    }),
+  },
+);
+
+const toggleMobileModeReducer = createReducer<MobileMode>(initialMobileMode, {
+  [commonTypes.TOGGLE_MOBILE_MODE]: (state, action) => ({
+    ...state,
+    isMobile: action.payload,
   }),
 });
 
@@ -158,4 +170,5 @@ export default combineReducers({
   // discordModal: toggleDiscordModalReducer,
   confetti: setConfettiReducer,
   cartSider: composeReducers(setCartSiderReducer, toggleCartSiderReducer),
+  mobileMode: toggleMobileModeReducer,
 });

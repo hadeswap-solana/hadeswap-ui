@@ -1,4 +1,4 @@
-//? Commit to start vercel
+//? Line for service (CI/CD) commits
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {

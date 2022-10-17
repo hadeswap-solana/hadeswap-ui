@@ -37,6 +37,7 @@ export const commonTypes = {
   SET_CONFETTI: 'common/SET_CONFETTI',
   SET_CART_SIDER: 'common/SET_CART_SIDER',
   TOGGLE_CART_SIDER: 'common/SET_CART_SIDER',
+  TOGGLE_MOBILE_MODE: 'common/TOGGLE_MOBILE_MODE',
 };
 
 export const commonActions = {
@@ -135,5 +136,9 @@ export const commonActions = {
   toggleCartSider: createCustomAction(
     commonTypes.TOGGLE_CART_SIDER,
     () => null,
+  ),
+  toggleMobileMode: createCustomAction(
+    commonTypes.TOGGLE_MOBILE_MODE,
+    (payload: boolean) => ({ payload }),
   ),
 };

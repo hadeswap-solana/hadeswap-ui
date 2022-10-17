@@ -1,6 +1,7 @@
 export enum IX_TYPE {
   CREATE_EMPTY_POOL,
   EDIT_POOL,
+  CLOSE_POOL,
 
   ADD_OR_REMOVE_SOL_FROM_POOL, //? For tokenForNft only
   ADD_OR_REMOVE_NFT_FROM_POOL, //? For nftForToken only

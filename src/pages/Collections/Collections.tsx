@@ -1,113 +1,105 @@
-import { Typography, Row, Col, Table, Avatar, Button, Input } from 'antd';
-import { FC, useEffect, useState } from 'react';
-import type { ColumnsType } from 'antd/es/table';
-import { useHistory } from 'react-router-dom';
-import { AppLayout } from '../../components/Layout/AppLayout';
-import { PriceWithIcon } from './PriceWithIcon';
-import { TitleWithInfo } from './TitleWithInfo';
-import { COLLECTION_TABS, createCollectionLink } from '../../constants';
+import React, { FC, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { Typography, Row, Col, Button, Input } from 'antd';
+
+import { AppLayout } from '../../components/Layout/AppLayout';
+import { CollectionsList } from './components/CollectionsList';
+import { CollectionsList as CollectionsListMobile } from './components/mobile/CollectionsList';
+import SortingModal from './components/mobile/SortingModal';
+import { SORT_ORDER } from './Collections.constants';
+
 import { coreActions } from '../../state/core/actions';
 import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../state/core/selectors';
+import { selectIsMobile } from '../../state/common/selectors';
 import { MarketInfo } from '../../state/core/types';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { SearchOutlined } from '@ant-design/icons';
-import styles from './Collections.module.scss';
 import { useDebounce } from '../../hooks';
+import { COLLECTION_TABS, createCollectionLink } from '../../constants';
+import { specifyAndSort } from '../../utils';
+import styles from './Collections.module.scss';
 
-const { Title, Text } = Typography;
-
-const columns: ColumnsType<MarketInfo> = [
-  {
-    key: 'collectionName',
-    title: 'name',
-    dataIndex: 'collectionName',
-    sorter: (a, b) => a?.collectionName?.localeCompare(b?.collectionName),
-    showSorterTooltip: false,
-    render: (text, record) => {
-      return (
-        <Row align="middle" gutter={[8, 0]}>
-          <Col>
-            <Avatar src={record?.collectionImage} />
-          </Col>
-          <Col>{text || 'untitled collection'}</Col>
-        </Row>
-      );
-    },
-  },
-  {
-    key: 'listingsAmount',
-    title: 'listings',
-    dataIndex: 'listingsAmount',
-    sorter: (a, b) => a?.listingsAmount - b?.listingsAmount,
-    showSorterTooltip: false,
-    render: (text) => <Text>{text}</Text>,
-  },
-  {
-    key: 'floorPrice',
-    title: (
-      <TitleWithInfo
-        title="floor price"
-        infoText="price of the cheapest NFT listed best offer"
-      />
-    ),
-    dataIndex: 'floorPrice',
-    sorter: (a, b) => parseFloat(a?.floorPrice) - parseFloat(b?.floorPrice),
-    showSorterTooltip: false,
-    render: (text) => <PriceWithIcon price={text} />,
-  },
-  {
-    key: 'bestoffer',
-    title: (
-      <TitleWithInfo
-        title="best offer"
-        infoText="value of the highest collection offer offer TVL"
-      />
-    ),
-    dataIndex: 'bestoffer',
-    sorter: (a, b) => parseFloat(a?.bestoffer) - parseFloat(b?.bestoffer),
-    showSorterTooltip: false,
-    render: (text) => <PriceWithIcon price={text} />,
-  },
-  {
-    key: 'offerTVL',
-    title: (
-      <TitleWithInfo
-        title="offer TVL"
-        infoText="total amount of SOL locked in collection offers delta"
-      />
-    ),
-    dataIndex: 'offerTVL',
-    sorter: (a, b) => parseFloat(a?.offerTVL) - parseFloat(b?.offerTVL),
-    showSorterTooltip: false,
-    defaultSortOrder: 'descend',
-    render: (text) => <PriceWithIcon price={text} />,
-  },
-];
+const { Title } = Typography;
 
 export const Collections: FC = () => {
   const history = useHistory();
-  const [searchStr, setSearchStr] = useState('');
+  const dispatch = useDispatch();
+  const [searchStr, setSearchStr] = useState<string>('');
+  const [sortValue, setSortValue] = useState<string | null>(null);
+  const [collections, setCollections] = useState<MarketInfo[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-  const setSearch = useDebounce((search: string) => {
+  const isMobile = useSelector(selectIsMobile) as boolean;
+  const markets = useSelector(selectAllMarkets) as MarketInfo[];
+  const collectionsLoading = useSelector(selectAllMarketsLoading) as boolean;
+
+  const setSearch = useDebounce((search: string): void => {
     setSearchStr(search.toUpperCase());
   }, 300);
 
-  const dispatch = useDispatch();
+  const onRowClick = useCallback(
+    (data: string): void => {
+      history.push(createCollectionLink(COLLECTION_TABS.BUY, data));
+      window.scrollTo(0, 0);
+    },
+    [history],
+  );
 
-  const collectionsLoading = useSelector(selectAllMarketsLoading);
+  const handleSort = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      if (sortValue !== e.currentTarget.dataset.value) {
+        setSortValue(e.currentTarget.dataset.value);
+      } else {
+        setSortValue(null);
+      }
+    },
+    [sortValue],
+  );
+
+  const filterCollections = (): MarketInfo[] => {
+    return markets.filter(({ collectionName }) =>
+      collectionName?.toUpperCase()?.includes(searchStr),
+    );
+  };
 
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
-  }, [dispatch]);
+  }, []);
 
-  const markets = useSelector(selectAllMarkets) as MarketInfo[];
+  useEffect(() => {
+    setCollections(filterCollections());
+  }, [searchStr, markets]);
+
+  useEffect(() => {
+    if (sortValue) {
+      const [name, order] = sortValue.split('_');
+      const sorted = collections.sort((a, b) =>
+        specifyAndSort(a[name], b[name]),
+      );
+
+      if (order === SORT_ORDER.DESC) {
+        setCollections(sorted.reverse());
+      } else {
+        setCollections(sorted);
+      }
+    } else {
+      setCollections(filterCollections());
+    }
+  }, [sortValue]);
 
   return (
     <AppLayout>
+      {isMobile && isModalVisible && (
+        <SortingModal
+          setIsModalVisible={setIsModalVisible}
+          handleSort={handleSort}
+          sortValue={sortValue}
+        />
+      )}
       <Row justify="center">
         <Col>
           <Title>collections</Title>
@@ -134,35 +126,31 @@ export const Collections: FC = () => {
           <Row>
             <Col span={24}>
               <div className={styles.tableWrapper}>
-                <Input
-                  size="large"
-                  placeholder="Search by collection name"
-                  prefix={<SearchOutlined />}
-                  className={styles.searchInput}
-                  onChange={(event) => setSearch(event.target.value || '')}
-                />
-                <Table
-                  className={styles.table}
-                  columns={columns}
-                  dataSource={markets.filter(({ collectionName }) =>
-                    collectionName?.toUpperCase()?.includes(searchStr),
+                <div className={styles.controlsWrapper}>
+                  <Input
+                    size="large"
+                    placeholder="search by collection name"
+                    prefix={<SearchOutlined />}
+                    className={styles.searchInput}
+                    onChange={(event) => setSearch(event.target.value || '')}
+                  />
+                  {isMobile && (
+                    <div
+                      className={styles.sortingBtn}
+                      onClick={() => setIsModalVisible(true)}
+                    >
+                      sorting
+                    </div>
                   )}
-                  pagination={false}
-                  rowKey={(record) => record.marketPubkey}
-                  onRow={({ marketPubkey }) => {
-                    return {
-                      onClick: () => {
-                        history.push(
-                          createCollectionLink(
-                            COLLECTION_TABS.BUY,
-                            marketPubkey,
-                          ),
-                        );
-                        window.scrollTo(0, 0);
-                      },
-                    };
-                  }}
-                />
+                </div>
+                {isMobile ? (
+                  <CollectionsListMobile
+                    data={collections}
+                    onRowClick={onRowClick}
+                  />
+                ) : (
+                  <CollectionsList data={collections} onRowClick={onRowClick} />
+                )}
               </div>
             </Col>
           </Row>
