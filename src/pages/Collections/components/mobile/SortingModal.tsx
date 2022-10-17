@@ -35,7 +35,7 @@ const SortingModal: FC<SortingModalProps> = ({
 }) => (
   <Modal className={styles.modalInner}>
     <div className={styles.sortingHeader}>
-      <h3>Sorting</h3>
+      <h3>sorting</h3>
       <div onClick={() => setIsModalVisible(false)}>
         <ChevronIcon />
       </div>

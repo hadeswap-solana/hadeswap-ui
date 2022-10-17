@@ -127,7 +127,12 @@
 }
 
 .leftSortBtn {
-  transform: rotateY(180deg) translateX(-1px);;
+  transform: rotateY(180deg);
+  border-left: 0;
+
+  &.active {
+    border-left: 1px solid var(--primary-color);
+  }
 
   svg {
     transform: rotate(-90deg);
