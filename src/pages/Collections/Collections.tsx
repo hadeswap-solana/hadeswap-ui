@@ -4,23 +4,23 @@ import { useHistory } from 'react-router-dom';
 import { Typography, Row, Col, Button, Input } from 'antd';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { CollectionsList } from "./components/CollectionsList";
+import { CollectionsList } from './components/CollectionsList';
 import { CollectionsList as CollectionsListMobile } from './components/mobile/CollectionsList';
-import SortingModal from "./components/mobile/SortingModal";
-import { SORT_ORDER } from "./Collections.constants";
+import SortingModal from './components/mobile/SortingModal';
+import { SORT_ORDER } from './Collections.constants';
 
 import { coreActions } from '../../state/core/actions';
 import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../state/core/selectors';
-import { selectIsMobile } from "../../state/common/selectors";
+import { selectIsMobile } from '../../state/common/selectors';
 import { MarketInfo } from '../../state/core/types';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { SearchOutlined } from '@ant-design/icons';
 import { useDebounce } from '../../hooks';
-import { COLLECTION_TABS, createCollectionLink } from "../../constants";
-import { specifyAndSort } from "../../utils";
+import { COLLECTION_TABS, createCollectionLink } from '../../constants';
+import { specifyAndSort } from '../../utils';
 import styles from './Collections.module.scss';
 
 const { Title } = Typography;
@@ -41,28 +41,29 @@ export const Collections: FC = () => {
     setSearchStr(search.toUpperCase());
   }, 300);
 
-  const onRowClick = useCallback((data: string): void => {
-    history.push(
-      createCollectionLink(
-        COLLECTION_TABS.BUY,
-        data,
-      ),
-    );
-    window.scrollTo(0, 0);
-  }, [history]);
+  const onRowClick = useCallback(
+    (data: string): void => {
+      history.push(createCollectionLink(COLLECTION_TABS.BUY, data));
+      window.scrollTo(0, 0);
+    },
+    [history],
+  );
 
-  const handleSort = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    if (sortValue !== e.currentTarget.dataset.value) {
-      setSortValue(e.currentTarget.dataset.value);
-    } else {
-      setSortValue(null);
-    }
-  }, [sortValue]);
+  const handleSort = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      if (sortValue !== e.currentTarget.dataset.value) {
+        setSortValue(e.currentTarget.dataset.value);
+      } else {
+        setSortValue(null);
+      }
+    },
+    [sortValue],
+  );
 
   const filterCollections = (): MarketInfo[] => {
     return markets.filter(({ collectionName }) =>
       collectionName?.toUpperCase()?.includes(searchStr),
-    )
+    );
   };
 
   useEffect(() => {
@@ -76,8 +77,8 @@ export const Collections: FC = () => {
   useEffect(() => {
     if (sortValue) {
       const [name, order] = sortValue.split('_');
-      const sorted = collections.sort(
-        (a, b) => specifyAndSort(a[name], b[name])
+      const sorted = collections.sort((a, b) =>
+        specifyAndSort(a[name], b[name]),
       );
 
       if (order === SORT_ORDER.DESC) {
@@ -92,12 +93,13 @@ export const Collections: FC = () => {
 
   return (
     <AppLayout>
-      {isMobile && isModalVisible &&
-        (<SortingModal
+      {isMobile && isModalVisible && (
+        <SortingModal
           setIsModalVisible={setIsModalVisible}
           handleSort={handleSort}
           sortValue={sortValue}
-        />)}
+        />
+      )}
       <Row justify="center">
         <Col>
           <Title>collections</Title>
@@ -133,15 +135,22 @@ export const Collections: FC = () => {
                     onChange={(event) => setSearch(event.target.value || '')}
                   />
                   {isMobile && (
-                    <div className={styles.sortingBtn} onClick={() => setIsModalVisible(true)}>
+                    <div
+                      className={styles.sortingBtn}
+                      onClick={() => setIsModalVisible(true)}
+                    >
                       sorting
                     </div>
                   )}
                 </div>
-                {isMobile ?
-                  <CollectionsListMobile data={collections} onRowClick={onRowClick} />
-                  : <CollectionsList data={collections} onRowClick={onRowClick} />
-                }
+                {isMobile ? (
+                  <CollectionsListMobile
+                    data={collections}
+                    onRowClick={onRowClick}
+                  />
+                ) : (
+                  <CollectionsList data={collections} onRowClick={onRowClick} />
+                )}
               </div>
             </Col>
           </Row>

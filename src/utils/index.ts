@@ -216,14 +216,18 @@ export const compareNumbers = (
   return numberB - numberA;
 };
 
-export const compareStrings = (
-  stringA: string,
-  stringB: string
-): number => stringA.localeCompare(stringB);
+export const compareStrings = (stringA: string, stringB: string): number =>
+  stringA.localeCompare(stringB);
 
-export const specifyAndSort = <T>(valueA: string | number, valueB: string | number): number => {
+export const specifyAndSort = (
+  valueA: string | number,
+  valueB: string | number,
+): number => {
   if (!isNaN(Number(valueA))) {
-    return compareNumbers(parseFloat(String(<number>valueA)), parseFloat(String(<number>valueB)));
+    return compareNumbers(
+      parseFloat(String(<number>valueA)),
+      parseFloat(String(<number>valueB)),
+    );
   }
   return compareStrings(<string>valueA, <string>valueB);
 };

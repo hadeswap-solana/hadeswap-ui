@@ -9,8 +9,11 @@ interface PriceWithIconProps {
   rightIcon?: boolean;
 }
 
-export const PriceWithIcon: FC<PriceWithIconProps> = ({ price, rightIcon = false }) => {
-  const Img = <img width={16} height={16} src={SolanaLogo} alt="SOL" />
+export const PriceWithIcon: FC<PriceWithIconProps> = ({
+  price,
+  rightIcon = false,
+}) => {
+  const Img = <img width={16} height={16} src={SolanaLogo} alt="SOL" />;
   return (
     <Row align="middle" justify="start" gutter={[8, 0]}>
       {!rightIcon && Img}

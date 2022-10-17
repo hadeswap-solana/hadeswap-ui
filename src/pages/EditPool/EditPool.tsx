@@ -180,17 +180,19 @@ export const EditPool: FC = () => {
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
     dispatch(coreActions.fetchPair(poolPubKey));
-  }, [dispatch]);
+  }, [dispatch, poolPubKey]);
 
   useEffect(() => {
     form.setFieldsValue({
       buyOrdersAmount: initialValues.buyOrdersAmount + nftsToAdd.length,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nftModal.selectedNfts.length]);
 
   useEffect(() => {
     //TODO: Why we need this?
     form.setFieldsValue({ buyOrdersAmount: pool?.buyOrdersAmount });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool?.buyOrdersAmount]);
 
   const onSelectNftsClick = () => {
