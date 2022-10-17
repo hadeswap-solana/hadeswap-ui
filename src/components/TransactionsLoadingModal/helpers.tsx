@@ -30,6 +30,12 @@ const makeEditPoolIxCard = (): ReactNode => (
   </IxCard>
 );
 
+const makeClosePoolIxCard = (): ReactNode => (
+  <IxCard>
+    <IxCardText>close pool</IxCardText>
+  </IxCard>
+);
+
 const makeAddOrRemoveSolFromPoolIxCard = (
   solAmount: number,
   isRemove = false,
@@ -102,6 +108,7 @@ const makeWithdrawFeesIxCard = (solAmount?: number): ReactNode => (
 export const createIxCardFuncs = {
   [IX_TYPE.CREATE_EMPTY_POOL]: makeCreateEmptyPoolIxCard,
   [IX_TYPE.EDIT_POOL]: makeEditPoolIxCard,
+  [IX_TYPE.CLOSE_POOL]: makeClosePoolIxCard,
   [IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL]: makeAddOrRemoveSolFromPoolIxCard,
   [IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL]: makeAddOrRemoveNftFromPoolIxCard,
   [IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL]: removeBuyOrdersFromPoolIxCard,

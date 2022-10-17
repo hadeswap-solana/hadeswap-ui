@@ -1,6 +1,6 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
-import { Nft, ProvisionOrders } from '../../state/core/types';
+import { ProvisionOrders } from '../../state/core/types';
 import { chunk } from 'lodash';
 
 const { withdrawLiquidityFromBuyOrdersPair } =

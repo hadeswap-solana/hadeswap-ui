@@ -60,3 +60,7 @@ export interface ConfettiState {
 export interface CartSiderState {
   isVisible: boolean;
 }
+
+export interface MobileMode {
+  isMobile: boolean;
+}
