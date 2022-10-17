@@ -35,7 +35,7 @@ const SortingButton: FC<SortingButtonProps> = ({
 const SortingModal: FC<SortingModalProps> = ({
   setIsModalVisible,
   handleSort,
-  sortValue
+  sortValue,
 }) => (
   <Modal className={styles.modalInner} closeModal={setIsModalVisible}>
     <div className={styles.sortingHeader}>
@@ -45,23 +45,23 @@ const SortingModal: FC<SortingModalProps> = ({
       </div>
     </div>
     <div className={styles.sortingBody}>
-      {COLUMNS.map(item => (
+      {COLUMNS.map((item) => (
         <Fragment key={item.key}>
           <div className={styles.sortTitle}>{item.title}</div>
           <div className={styles.sortButtonsWrapper}>
             <SortingButton
               dataValue={`${item.key}_${SORT_ORDER.ASC}`}
               onClick={handleSort}
-              className={classNames(styles.leftSortBtn,
-                { [styles.active]: sortValue === `${item.key}_${SORT_ORDER.ASC}` }
-              )}
+              className={classNames(styles.leftSortBtn, {
+                [styles.active]: sortValue === `${item.key}_${SORT_ORDER.ASC}`,
+              })}
             />
             <SortingButton
               dataValue={`${item.key}_${SORT_ORDER.DESC}`}
               onClick={handleSort}
-              className={classNames(
-                { [styles.active]: sortValue === `${item.key}_${SORT_ORDER.DESC}` }
-              )}
+              className={classNames({
+                [styles.active]: sortValue === `${item.key}_${SORT_ORDER.DESC}`,
+              })}
             />
           </div>
         </Fragment>
