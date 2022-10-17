@@ -361,7 +361,7 @@ export const NewPool: FC = () => {
                             style={{ width: '100%' }}
                             onChange={onSelectChange}
                             filterOption={(input, option) =>
-                              (option!.children as unknown as string)
+                              (option?.children as unknown as string)
                                 .toLowerCase()
                                 .includes(input.toLowerCase())
                             }

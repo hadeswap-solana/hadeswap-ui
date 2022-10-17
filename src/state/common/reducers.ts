@@ -142,11 +142,14 @@ const setCartSiderReducer = createReducer<CartSiderState>(
   },
 );
 
-const toggleCartSiderReducer = createReducer<CartSiderState>(initialCartSiderState, {
-  [commonTypes.TOGGLE_CART_SIDER]: (state) => ({
-    isVisible: !state.isVisible,
-  }),
-});
+const toggleCartSiderReducer = createReducer<CartSiderState>(
+  initialCartSiderState,
+  {
+    [commonTypes.TOGGLE_CART_SIDER]: (state) => ({
+      isVisible: !state.isVisible,
+    }),
+  },
+);
 
 const toggleMobileModeReducer = createReducer<MobileMode>(initialMobileMode, {
   [commonTypes.TOGGLE_MOBILE_MODE]: (state, action) => ({
@@ -167,5 +170,5 @@ export default combineReducers({
   // discordModal: toggleDiscordModalReducer,
   confetti: setConfettiReducer,
   cartSider: composeReducers(setCartSiderReducer, toggleCartSiderReducer),
-  mobileMode: toggleMobileModeReducer
+  mobileMode: toggleMobileModeReducer,
 });

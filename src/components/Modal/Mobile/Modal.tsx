@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './Modal.module.scss';
-import classNames from "classnames";
+import classNames from 'classnames';
 
 interface ModalProps {
   className?: string;
@@ -15,7 +15,9 @@ const Modal: FC<ModalProps> = ({ children, className }) => {
 
   useEffect(() => {
     root.appendChild(modalWrapper);
-    modalWrapper.className = classNames(styles.modalWrapper, { [className]: className });
+    modalWrapper.className = classNames(styles.modalWrapper, {
+      [className]: className,
+    });
     layout.classList.add(styles.heightFullScreen);
     return () => {
       root.removeChild(modalWrapper);

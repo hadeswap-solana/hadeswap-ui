@@ -5,7 +5,6 @@ import { Layout, Typography } from 'antd';
 import { commonActions } from '../../state/common/actions';
 import { ConnectWalletButton } from '../ConnectWalletButton/ConnectWalletButton';
 import { SelectWalletModal } from '../SelectWalletModal/SelectWalletModal';
-import styles from './AppLayout.module.scss';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import { CartSider } from './CartSider';
@@ -19,7 +18,8 @@ import TwitterIcon from '../../icons/TwitterIcon';
 import classNames from 'classnames';
 import { selectCartSiderVisible } from '../../state/common/selectors';
 import { throttle } from 'lodash';
-import { DESKTOP_SIZE } from "../../constants/common";
+import { DESKTOP_SIZE } from '../../constants/common';
+import styles from './AppLayout.module.scss';
 
 const { Header, Content, Footer } = Layout;
 
@@ -58,12 +58,14 @@ export const AppLayout: FC<LayoutProps> = ({
 
   useEffect(() => {
     setMobileMode();
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const resizeThrottled = throttle(setMobileMode, 300);
     window.addEventListener('resize', resizeThrottled);
     return () => window.removeEventListener('resize', resizeThrottled);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

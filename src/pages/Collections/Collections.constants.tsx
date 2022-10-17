@@ -1,9 +1,9 @@
-import { Avatar, Col, Row, Typography } from "antd";
-import { ColumnsType } from "antd/es/table";
-import { MarketInfo } from "../../state/core/types";
-import { TitleWithInfo } from "./components/TitleWithInfo";
-import { PriceWithIcon } from "./components/PriceWithIcon";
-import { specifyAndSort } from "../../utils";
+import { Avatar, Col, Row, Typography } from 'antd';
+import { ColumnsType } from 'antd/es/table';
+import { MarketInfo } from '../../state/core/types';
+import { TitleWithInfo } from './components/TitleWithInfo';
+import { PriceWithIcon } from './components/PriceWithIcon';
+import { specifyAndSort } from '../../utils';
 
 const { Text } = Typography;
 
@@ -11,7 +11,7 @@ export const UNTITLED_COLLECTION = 'untitled collection';
 export const SORT_ORDER = {
   ASC: 'asc',
   DESC: 'desc',
-}
+};
 
 export const COLUMNS: ColumnsType<MarketInfo> = [
   {
@@ -27,7 +27,7 @@ export const COLUMNS: ColumnsType<MarketInfo> = [
         </Col>
         <Col>{text || UNTITLED_COLLECTION}</Col>
       </Row>
-    )
+    ),
   },
   {
     key: 'listingsAmount',

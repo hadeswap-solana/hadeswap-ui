@@ -65,5 +65,5 @@ export const selectCartSiderVisible = createSelector(
 
 export const selectIsMobile = createSelector(
   (store: any) => (store?.common?.mobileMode?.isMobile as boolean) || false,
-  identity<boolean>
+  identity<boolean>,
 );

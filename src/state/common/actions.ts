@@ -140,5 +140,5 @@ export const commonActions = {
   toggleMobileMode: createCustomAction(
     commonTypes.TOGGLE_MOBILE_MODE,
     (payload: boolean) => ({ payload }),
-  )
+  ),
 };

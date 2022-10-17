@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { PriceWithIcon } from "../PriceWithIcon";
-import { UNTITLED_COLLECTION } from "../../Collections.constants";
+import { PriceWithIcon } from '../PriceWithIcon';
+import { UNTITLED_COLLECTION } from '../../Collections.constants';
 import { MarketInfo } from '../../../../state/core/types';
 import styles from './CollectionsList.module.scss';
 
@@ -9,9 +9,12 @@ interface CollectionsListProps {
   onRowClick: (marketPubkey: string) => void;
 }
 
-export const CollectionsList: FC<CollectionsListProps> = ({ data, onRowClick }) => (
+export const CollectionsList: FC<CollectionsListProps> = ({
+  data,
+  onRowClick,
+}) => (
   <>
-    {data.map(item => (
+    {data.map((item) => (
       <div
         key={item.marketPubkey}
         className={styles.cardWrapper}
