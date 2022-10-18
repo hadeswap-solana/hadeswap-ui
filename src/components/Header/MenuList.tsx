@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { PATHS } from "../../constants";
 
 interface MenuListProps {
-  styles: {
+  classNames: {
     nav?: string;
     navLink?: string;
     navLinkActive?: string;
@@ -11,7 +11,7 @@ interface MenuListProps {
 }
 
 const MenuList: FC<MenuListProps> = (
-  { styles: { nav = null, navLink = null, navLinkActive = null } }
+  { classNames: { nav = null, navLink = null, navLinkActive = null } }
 ): JSX.Element => (
   <nav className={nav}>
     <NavLink
