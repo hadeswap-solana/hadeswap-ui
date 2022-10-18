@@ -1,0 +1,57 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--header-height-mobile);
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-color-base);
+  background: var(--primary-background-color);
+}
+
+.logoLink {
+  display: flex;
+}
+
+.logoIcon {
+  width: 115px;
+  margin-right: 16px;
+}
+
+.buttonsWrapper {
+  display: flex;
+}
+
+.menuBtnWrapper {
+  display: flex;
+  align-items: center;
+  width: 25px;
+  margin-left: 16px;
+}
+
+.modalMenu {
+  transform: translateY(-1px);
+  border: 0;
+  border-radius: 0;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 54px;
+  row-gap: 32px;
+}
+
+.navLink {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+.navLinkActive {
+  color: var(--primary-color);
+
+  &:visited {
+    color: var(--primary-color);
+  }
+}
