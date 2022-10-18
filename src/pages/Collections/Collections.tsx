@@ -70,7 +70,7 @@ export const Collections: FC = () => {
 
   useEffect(() => {
     setCollections(
-      sortCollection(markets, INITIAL_SORT_VALUE, SORT_ORDER.DESC),
+      sortCollection(markets.slice(), INITIAL_SORT_VALUE, SORT_ORDER.DESC),
     );
     setSortValue(`${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`);
   }, [markets]);
