@@ -68,6 +68,7 @@ export const Collections: FC = () => {
     setCollections(
       sortCollection(markets, INITIAL_SORT_VALUE, SORT_ORDER.DESC),
     );
+    setSortValue(`${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`);
   }, [markets]);
 
   useEffect(() => {
@@ -79,9 +80,11 @@ export const Collections: FC = () => {
       const [name, order] = sortValue.split('_');
       setCollections(sortCollection(collections, name, order));
     } else {
-      setCollections(
-        sortCollection(collections, INITIAL_SORT_VALUE, SORT_ORDER.DESC),
-      );
+      if (searchStr) {
+        setCollections(collections);
+      } else {
+        setCollections(markets);
+      }
     }
   }, [sortValue]);
 
