@@ -45,7 +45,7 @@ const SortingModal: FC<SortingModalProps> = ({
       </div>
     </div>
     <div className={styles.sortingBody}>
-      {COLUMNS.map(item => (
+      {COLUMNS.map((item) => (
         <Fragment key={item.key}>
           <div className={styles.sortTitle}>{item.title}</div>
           <div className={styles.sortButtonsWrapper}>

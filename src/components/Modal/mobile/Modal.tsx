@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './Modal.module.scss';
 import classNames from 'classnames';
+import styles from './Modal.module.scss';
 
 interface ModalProps {
   className?: string;
