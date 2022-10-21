@@ -1,8 +1,12 @@
-.root {
-  border-color: #9dcaff !important;
-  color: #9dcaff !important;
+button.root {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  border-color: var(--primary-color);
+  font-size: 16px;
+  color: var(--primary-color);
 
   &:hover {
-    background: rgba(157, 202, 255, 0.3) !important;
+    background: rgba(157, 202, 255, 0.3);
   }
 }

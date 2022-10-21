@@ -12,6 +12,7 @@ export const SORT_ORDER = {
   ASC: 'asc',
   DESC: 'desc',
 };
+export const INITIAL_SORT_VALUE = 'offerTVL';
 
 export const COLUMNS: ColumnsType<MarketInfo> = [
   {
