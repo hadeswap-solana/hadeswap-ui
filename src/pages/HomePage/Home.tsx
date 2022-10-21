@@ -8,6 +8,7 @@ import { PATHS } from '../../constants';
 import { useQuery } from '@tanstack/react-query';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 import { formatPriceNumber } from '../../utils/solanaUtils';
+import TopMarkets from '../../components/TopMarkets/TopMarkets';
 
 const useStats = () => {
   return useQuery(
@@ -59,7 +60,7 @@ export const Home: FC = () => {
           on <span className={styles.solanaWord}>Solana</span> for traders
           <br />
         </Typography.Title>
-        <NavLink to={PATHS.COLLECTIONS}>
+        {/* <NavLink to={PATHS.COLLECTIONS}>
           <button className={styles.btn}>
             <svg
               width="28"
@@ -72,9 +73,10 @@ export const Home: FC = () => {
             </svg>
             <span>trade</span>
           </button>
-        </NavLink>
+        </NavLink> */}
         <p className={styles.zeroFees}>0% fees</p>
       </div>
+      <TopMarkets />
     </AppLayout>
   );
 };

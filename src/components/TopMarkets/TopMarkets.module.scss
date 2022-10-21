@@ -1,0 +1,110 @@
+.wrapper {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  & > div {
+    padding: 50px;
+  }
+}
+.title {
+  margin-bottom: 0px !important;
+  @media (max-width: 480px) {
+    margin-bottom: 28px !important;
+    padding: 0 16px;
+    text-align: center;
+  }
+}
+
+.list {
+  width: 100%;
+  padding: 50px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+
+  list-style-type: none;
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+  }
+  @media (max-width: 787px) {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(20, 1fr);
+  }
+  @media (max-width: 480px) {
+    padding: 0 16px;
+  }
+}
+.item {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.itemNumber {
+  width: 18px;
+  margin-right: 10px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn {
+  font-size: 14px;
+  line-height: 0;
+  height: 28px;
+  background: #94c5fd;
+  padding: 2px 12px;
+  color: var(--black-color);
+  border: unset;
+  border-radius: 40px;
+  border-color: #94c5fd;
+  border: 1px solid #94c5fd;
+  box-shadow: 0px 2px 0px rgb(0 0 0 / 4%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  cursor: pointer;
+  transition: background var(--ease-base-out) var(--animation-duration-base),
+    border-color var(--ease-base-out) var(--animation-duration-base);
+
+  svg {
+    fill: black;
+  }
+
+  &:hover {
+    background: #d1e4ff;
+    border-color: #d1e4ff;
+  }
+}
+
+.description {
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.poolName {
+  font-size: 16px;
+}
+
+.offerTVL {
+  display: flex;
+  font-size: 14px;
+  color: #fff;
+  & span {
+    display: block;
+  }
+}
+
+.offerLabel {
+  color: rgba(255, 255, 255, 0.3);
+}
