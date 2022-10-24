@@ -1,18 +1,18 @@
 import { FC } from 'react';
-import { NavLink } from "react-router-dom";
-import { PATHS } from "../../constants";
+import { NavLink } from 'react-router-dom';
+import { PATHS } from '../../constants';
 
 interface MenuListProps {
   classNames: {
     nav?: string;
     navLink?: string;
     navLinkActive?: string;
-  }
+  };
 }
 
-const MenuList: FC<MenuListProps> = (
-  { classNames: { nav = null, navLink = null, navLinkActive = null } }
-): JSX.Element => (
+const MenuList: FC<MenuListProps> = ({
+  classNames: { nav = null, navLink = null, navLinkActive = null },
+}): JSX.Element => (
   <nav className={nav}>
     <NavLink
       to={PATHS.COLLECTIONS}

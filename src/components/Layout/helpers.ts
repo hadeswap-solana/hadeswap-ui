@@ -73,7 +73,12 @@ const createBuyNftFromPairIx: CreateIx = async ({
       protocolFeeReceiver: new web3.PublicKey(process.env.PROTOCOL_FEE_PUBKEY),
     },
     args: {
-      maxAmountToPay: order.price + PRECISION_CORRECTION,
+      maxAmountToPay:
+        order.price +
+        PRECISION_CORRECTION +
+        (pair.market === 'H3vHxrAiGkTS7eDdkMqDBj97BjtkL75JVn8L5arHktsM'
+          ? Math.ceil(order.price / 2)
+          : 0),
       skipFailed: false,
     },
   });
