@@ -13,7 +13,7 @@
     "antd": "^4.6.6",
     "classnames": "^2.3.1",
     "crypto-browserify": "^3.12.0",
-    "hadeswap-sdk": "^0.3.10",
+    "hadeswap-sdk": "^0.4.6",
     "moment": "^2.29.1",
     "os-browserify": "^0.3.0",
     "ramda": "^0.28.0",

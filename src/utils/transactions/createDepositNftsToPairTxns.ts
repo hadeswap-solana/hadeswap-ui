@@ -22,7 +22,7 @@ type CreateDepositNftsToPairTxns = (params: {
   }[]
 >;
 
-const IXNS_PER_CHUNK = 2; //? Maybe it will work with 3
+const IXNS_PER_CHUNK = 1; //? Maybe it will work with 3
 
 export const createDepositNftsToPairTxns: CreateDepositNftsToPairTxns = async ({
   connection,
