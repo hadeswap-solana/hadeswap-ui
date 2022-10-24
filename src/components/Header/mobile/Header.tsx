@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { PATHS } from "../../../constants";
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { PATHS } from '../../../constants';
 import Logo from '../../../icons/Logo';
-import { BurgerIcon } from "../../../icons/BurgerIcon";
-import { CloseCrossIcon } from "../../../icons/CloseCrossIcon";
+import { BurgerIcon } from '../../../icons/BurgerIcon';
+import { CloseCrossIcon } from '../../../icons/CloseCrossIcon';
 import Menu from './Menu';
-import { ConnectWalletButton } from "../../ConnectWalletButton/ConnectWalletButton";
+import { ConnectWalletButton } from '../../ConnectWalletButton/ConnectWalletButton';
 import styles from './Header.module.scss';
 
 const HeaderMobile = (): JSX.Element => {
@@ -26,9 +26,9 @@ const HeaderMobile = (): JSX.Element => {
           {isMenuVisible && <CloseCrossIcon />}
         </div>
       </div>
-      {isMenuVisible && <Menu />}
+      {isMenuVisible && <Menu modalClassName={styles.modalMenu} />}
     </header>
-  )
+  );
 };
 
 export default HeaderMobile;

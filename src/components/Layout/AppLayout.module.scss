@@ -1,36 +1,17 @@
-//.main {
-//  transition: margin-right 0.5s;
-//}
-//
-//.mainAndSiderOpened {
-//  @media screen and (min-width: 769px) {
-//    margin-right: 320px;
-//  }
-//}
-
 .mainWrapper {
   display: flex;
 }
 
 .main {
-  //position: relative;
   flex-grow: 1;
 }
-
-//.stickyWrapper {
-//  height: 500px;
-//}
-//.sticky {
-//  position: sticky;
-//  top: 5px;
-//}
 
 .content {
   position: relative;
   min-height: 280px;
   padding: 24px 50px;
 
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 768px) {
     padding: 12px 12px;
   }
 }

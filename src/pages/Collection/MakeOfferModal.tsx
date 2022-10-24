@@ -18,9 +18,9 @@ export const MakeOfferModal: FC<IMakeOfferModal> = ({
     form.submit();
   };
 
-  const onFormChange = () => {
-    console.log(form.getFieldsValue(['nftAmount', 'price', 'decreaseBy']));
-  };
+  // const onFormChange = () => {
+  //   console.log(form.getFieldsValue(['nftAmount', 'price', 'decreaseBy']));
+  // };
 
   return (
     <Modal
@@ -38,6 +38,7 @@ export const MakeOfferModal: FC<IMakeOfferModal> = ({
           width={100}
           height={100}
           src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg"
+          alt="nft card"
         />
         <Descriptions title="Collection" column={1}>
           <Descriptions.Item label="Lowest floor">0.424 sol</Descriptions.Item>
@@ -48,7 +49,7 @@ export const MakeOfferModal: FC<IMakeOfferModal> = ({
         layout="vertical"
         form={form}
         initialValues={{ nftAmount: 1, price: 1, decreaseBy: 0 }}
-        onValuesChange={onFormChange}
+        // onValuesChange={onFormChange}
       >
         <Form.Item
           name="nftAmount"

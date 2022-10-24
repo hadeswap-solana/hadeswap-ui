@@ -1,7 +1,9 @@
 import { createSelector } from 'reselect';
 import { Socket } from 'socket.io-client';
-import { pathOr, identity } from 'ramda';
+import { identity, pathOr } from 'ramda';
 import moment from 'moment';
+import { ScreenTypes } from './types';
+import { DESKTOP } from '../../constants/common';
 
 export const selectSolanaHealth = createSelector(
   [pathOr(null, ['common', 'solanaHealth', 'data'])],
@@ -63,7 +65,7 @@ export const selectCartSiderVisible = createSelector(
   identity,
 );
 
-export const selectIsMobile = createSelector(
-  (store: any) => (store?.common?.mobileMode?.isMobile as boolean) || false,
-  identity<boolean>,
+export const selectScreeMode = createSelector(
+  (store: any) => (store?.common?.screenMode as ScreenTypes) || DESKTOP,
+  identity,
 );

@@ -1,9 +1,9 @@
-import React, { FC, Fragment, memo } from 'react';
+import React, { FC, Fragment } from 'react';
 import classNames from 'classnames';
 import { COLUMNS, SORT_ORDER } from '../../Collections.constants';
-import Modal from '../../../../components/Modal/mobile/Modal';
 import ArrowIcon from '../../../../icons/ArrowIcon';
 import ChevronIcon from '../../../../icons/ChevronIcon';
+import withModal from '../../../../components/Modal/mobile/Modal';
 import styles from './CollectionsList.module.scss';
 
 interface SortingButtonProps {
@@ -37,15 +37,15 @@ const SortingModal: FC<SortingModalProps> = ({
   handleSort,
   sortValue,
 }) => (
-  <Modal className={styles.modalInner} closeModal={setIsModalVisible}>
+  <>
     <div className={styles.sortingHeader}>
-      <h3>Sorting</h3>
+      <h3>sorting</h3>
       <div onClick={() => setIsModalVisible((value: boolean) => !value)}>
         <ChevronIcon />
       </div>
     </div>
     <div className={styles.sortingBody}>
-      {COLUMNS.map(item => (
+      {COLUMNS.map((item) => (
         <Fragment key={item.key}>
           <div className={styles.sortTitle}>{item.title}</div>
           <div className={styles.sortButtonsWrapper}>
@@ -67,7 +67,7 @@ const SortingModal: FC<SortingModalProps> = ({
         </Fragment>
       ))}
     </div>
-  </Modal>
+  </>
 );
 
-export default memo(SortingModal);
+export default withModal(SortingModal);

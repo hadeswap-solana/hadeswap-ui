@@ -1,5 +1,6 @@
 import { web3 } from 'hadeswap-sdk';
 import { Socket } from 'socket.io-client';
+import { TABLET, SMALL_SCREEN, DESKTOP } from '../../constants/common';
 
 export interface NotificationState {
   config?: { mode: 'error' | 'warning'; content: JSX.Element };
@@ -61,6 +62,4 @@ export interface CartSiderState {
   isVisible: boolean;
 }
 
-export interface MobileMode {
-  isMobile: boolean;
-}
+export type ScreenTypes = typeof TABLET | typeof SMALL_SCREEN | typeof DESKTOP;

@@ -1,43 +1,22 @@
 .cartSider {
   position: sticky;
-  //display: none;
   top: 0;
-  right: 0;
-  //
-  // width: 320px;
-  height: 100%;
+  width: 0;
+  height: 100vh;
+  transform: translateX(1px);
+  border-left: var(--border-base);
   z-index: 1;
-  border-left: 1px solid var(--border-color-base);
-  //transition: width .5s; /* 0.5 second transition effect to slide in the sidenav */
-  animation: appear 2s;
+  transition: width var(--base-animation-time);
 }
 
-@keyframes appear {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 320px;
-  }
+.openCart {
+  width: var(--cart-sider-width);
 }
 
-.closeCart {
-  animation: close 2s;
+.badgeButton {
+  width: 36px !important;
+  height: 36px !important;
 }
-
-@keyframes close {
-  0% {
-    width: 320px;
-  }
-  100% {
-    width: 0;
-  }
-}
-
-//.cartSiderOpened {
-//  //position: fixed;
-//  width: 320px;
-//}
 
 .toggleCartSiderBtn {
   position: absolute !important;
@@ -50,18 +29,21 @@
   visibility: hidden;
 }
 
-.siderContent {
-  width: 320px;
+.cartBody {
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+
+  &.expandBody {
+    width: var(--cart-sider-width);
+    padding: 16px;
+  }
 }
 
-.cardsSection {
+.cartSection {
   display: flex;
   flex-direction: column;
   margin-bottom: 32px;
@@ -82,7 +64,7 @@
 }
 
 .cartItemsInvalid {
-  opacity: 0.6;
+  opacity: .6;
 }
 
 .submitWrapper {
@@ -94,7 +76,7 @@
 .card {
   overflow: hidden;
   border-radius: var(--border-radius-small);
-  border: 1px solid var(--border-color-base);
+  border: var(--border-base);
   display: flex;
   height: 64px;
 }

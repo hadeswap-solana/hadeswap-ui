@@ -30,6 +30,11 @@
   --border-radius-small: 10px; // major border radius
   --header-height-mobile: 56px;
   --border-base: 1px solid var(--border-color-base);
+  --base-animation-time: .5s;
+
+  // components
+  --cart-sider-width: 320px;
+  --cart-sider-pocket-mode-height: calc(100% - 68px);
 
   // Animation
   --ease-base-out: cubic-bezier(0.7, 0.3, 0.1, 1);

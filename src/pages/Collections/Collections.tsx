@@ -14,8 +14,10 @@ import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../state/core/selectors';
-import { selectIsMobile } from '../../state/common/selectors';
+import { selectScreeMode } from '../../state/common/selectors';
+import { ScreenTypes } from '../../state/common/types';
 import { MarketInfo } from '../../state/core/types';
+import { TABLET } from '../../constants/common';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { SearchOutlined } from '@ant-design/icons';
 import { useDebounce } from '../../hooks';
@@ -33,9 +35,11 @@ export const Collections: FC = () => {
   const [collections, setCollections] = useState<MarketInfo[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-  const isMobile = useSelector(selectIsMobile) as boolean;
+  const screenMode = useSelector(selectScreeMode) as ScreenTypes;
   const markets = useSelector(selectAllMarkets) as MarketInfo[];
   const collectionsLoading = useSelector(selectAllMarketsLoading) as boolean;
+
+  const isMobile = screenMode === TABLET;
 
   const setSearch = useDebounce((search: string): void => {
     setSearchStr(search.toUpperCase());
@@ -68,10 +72,12 @@ export const Collections: FC = () => {
 
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setCollections(filterCollections());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchStr, markets]);
 
   useEffect(() => {
@@ -89,7 +95,8 @@ export const Collections: FC = () => {
     } else {
       setCollections(filterCollections());
     }
-  }, [sortValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortValue, collections]);
 
   return (
     <AppLayout>

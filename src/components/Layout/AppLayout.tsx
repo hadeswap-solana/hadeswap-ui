@@ -1,24 +1,18 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Layout, Typography } from 'antd';
+import { FC, useEffect, memo } from 'react';
+import { useDispatch } from 'react-redux';
+import { Layout as AntdLayout, Typography } from 'antd';
 import classNames from 'classnames';
-import { throttle } from 'lodash';
-
 import { commonActions } from '../../state/common/actions';
-import { selectCartSiderVisible } from '../../state/common/selectors';
 import { SelectWalletModal } from '../SelectWalletModal/SelectWalletModal';
 import Header from '../Header';
-import CartSider from "../CartSider";
+import CartSider from '../CartSider';
 import { TransactionsLoadingModal } from '../TransactionsLoadingModal';
-// import MediumIcon from '../../icons/MediumIcon';
 import DocsIcon from '../../icons/DocsIcon';
 import DiscordIcon from '../../icons/DiscordIcon';
 import TwitterIcon from '../../icons/TwitterIcon';
-// import GitHubIcon from '../../icons/GitHubIcon';
-import { DESKTOP_SIZE } from "../../constants/common";
 import styles from './AppLayout.module.scss';
 
-const { Content, Footer } = Layout;
+const { Content, Footer } = AntdLayout;
 
 interface LayoutProps {
   customHeader?: JSX.Element;
@@ -36,34 +30,13 @@ const SOCIALS_LIST = [
   // { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
 ];
 
-export const AppLayout: FC<LayoutProps> = ({
+const Layout: FC<LayoutProps> = ({
   children,
   className = '',
   hideFooter = false,
   contentClassName = '',
 }) => {
   const dispatch = useDispatch();
-  const cartSiderOpened = useSelector(selectCartSiderVisible);
-
-  const setMobileMode = () => {
-    if (window.screen.width < DESKTOP_SIZE) {
-      dispatch(commonActions.toggleMobileMode(true));
-    } else {
-      dispatch(commonActions.toggleMobileMode(false));
-    }
-  };
-
-  useEffect(() => {
-    setMobileMode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const resizeThrottled = throttle(setMobileMode, 300);
-    window.addEventListener('resize', resizeThrottled);
-    return () => window.removeEventListener('resize', resizeThrottled);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     dispatch(commonActions.setWalletModal({ isVisible: false }));
@@ -71,12 +44,7 @@ export const AppLayout: FC<LayoutProps> = ({
   }, [location]);
 
   return (
-    <Layout className={className}>
-      {/*<div*/}
-      {/*  className={classNames(styles.main, {*/}
-      {/*    [styles.mainAndSiderOpened]: cartSiderOpened,*/}
-      {/*  })}*/}
-      {/*>*/}
+    <AntdLayout className={className}>
       <div className={styles.mainWrapper}>
         <div className={styles.main}>
           <Header />
@@ -120,9 +88,10 @@ export const AppLayout: FC<LayoutProps> = ({
         </div>
         <CartSider />
       </div>
-      {/*</div>*/}
       <SelectWalletModal />
       <TransactionsLoadingModal />
-    </Layout>
+    </AntdLayout>
   );
 };
+
+export const AppLayout = memo(Layout);
