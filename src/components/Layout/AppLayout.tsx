@@ -15,7 +15,7 @@ import DocsIcon from '../../icons/DocsIcon';
 import DiscordIcon from '../../icons/DiscordIcon';
 import TwitterIcon from '../../icons/TwitterIcon';
 // import GitHubIcon from '../../icons/GitHubIcon';
-import { DESKTOP_SIZE } from "../../constants/common";
+import { DESKTOP_SIZE } from '../../constants/common';
 import styles from './AppLayout.module.scss';
 
 const { Content, Footer } = Layout;
@@ -27,7 +27,7 @@ interface LayoutProps {
   contentClassName?: string;
   hideFooter?: boolean;
 }
-
+console.log('n');
 const DOCS_LIST = [{ to: 'https://docs.hadeswap.com/', icon: DocsIcon }];
 
 const SOCIALS_LIST = [
