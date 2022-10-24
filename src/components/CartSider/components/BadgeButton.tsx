@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC } from 'react';
 import { Badge, Button } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { commonActions } from '../../../state/common/actions';
@@ -31,4 +31,4 @@ const BadgeButton: FC<BadgeButtonProps> = ({
   </Badge>
 );
 
-export default memo(BadgeButton);
+export default BadgeButton;

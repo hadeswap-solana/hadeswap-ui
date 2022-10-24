@@ -13,7 +13,6 @@ import {
   SocketState,
   WalletState,
 } from './types';
-import { DESKTOP } from '../../constants/common';
 
 // export const initialSolanaHealthState: AsyncState<SolanaHealthState> =
 //   createInitialAsyncState<SolanaHealthState>({
@@ -40,7 +39,7 @@ export const initialModalState: ModalState = { isVisible: false };
 export const initialConfettiState: ModalState = { isVisible: false };
 
 export const initialCartSiderState: CartSiderState = { isVisible: false };
-const initialScreenMode: ScreenTypes = DESKTOP;
+const initialScreenMode: ScreenTypes = ScreenTypes.DESKTOP;
 // const solanaHealthReducer = createReducer(
 //   initialSolanaHealthState,
 //   createHandlers<SolanaHealthState>(commonTypes.FETCH_SOLANA_HEALTH),

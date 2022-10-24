@@ -1,28 +1,23 @@
+import { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  DESKTOP,
-  SMALL_SCREEN,
-  SMALL_SCREEN_SIZE,
-  TABLET,
-  TABLET_SIZE,
-} from '../constants/common';
+import { SMALL_SCREEN_SIZE, TABLET_SIZE } from '../constants/common';
+import { ScreenTypes } from '../state/common/types';
 import { commonActions } from '../state/common/actions';
-import { useEffect } from 'react';
 import { throttle } from 'lodash';
 
-export const useDesktopMode = () => {
+export const useDesktopMode = (): void => {
   const dispatch = useDispatch();
 
-  const setMobileMode = (): void => {
+  const setMobileMode = useCallback((): void => {
     if (window.screen.width <= TABLET_SIZE) {
-      dispatch(commonActions.setScreenMode(TABLET));
+      dispatch(commonActions.setScreenMode(ScreenTypes.TABLET));
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     } else if (window.screen.width <= SMALL_SCREEN_SIZE) {
-      dispatch(commonActions.setScreenMode(SMALL_SCREEN));
+      dispatch(commonActions.setScreenMode(ScreenTypes.SMALL_SCREEN));
     } else {
-      dispatch(commonActions.setScreenMode(DESKTOP));
+      dispatch(commonActions.setScreenMode(ScreenTypes.DESKTOP));
     }
-  };
+  }, [dispatch]);
 
   setMobileMode();
 
@@ -32,6 +27,5 @@ export const useDesktopMode = () => {
     return () => {
       window.removeEventListener('resize', resizeThrottled);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setMobileMode]);
 };

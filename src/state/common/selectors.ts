@@ -3,7 +3,6 @@ import { Socket } from 'socket.io-client';
 import { identity, pathOr } from 'ramda';
 import moment from 'moment';
 import { ScreenTypes } from './types';
-import { DESKTOP } from '../../constants/common';
 
 export const selectSolanaHealth = createSelector(
   [pathOr(null, ['common', 'solanaHealth', 'data'])],
@@ -66,6 +65,6 @@ export const selectCartSiderVisible = createSelector(
 );
 
 export const selectScreeMode = createSelector(
-  (store: any) => (store?.common?.screenMode as ScreenTypes) || DESKTOP,
-  identity,
+  (store: any) => store?.common?.screenMode as ScreenTypes,
+  (screenType: ScreenTypes) => screenType,
 );

@@ -1,4 +1,4 @@
-import { FC, useEffect, memo } from 'react';
+import { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Layout as AntdLayout, Typography } from 'antd';
 import classNames from 'classnames';
@@ -30,7 +30,7 @@ const SOCIALS_LIST = [
   // { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
 ];
 
-const Layout: FC<LayoutProps> = ({
+export const AppLayout: FC<LayoutProps> = ({
   children,
   className = '',
   hideFooter = false,
@@ -93,5 +93,3 @@ const Layout: FC<LayoutProps> = ({
     </AntdLayout>
   );
 };
-
-export const AppLayout = memo(Layout);

@@ -18,10 +18,6 @@ export const MakeOfferModal: FC<IMakeOfferModal> = ({
     form.submit();
   };
 
-  // const onFormChange = () => {
-  //   console.log(form.getFieldsValue(['nftAmount', 'price', 'decreaseBy']));
-  // };
-
   return (
     <Modal
       visible={isVisible}
@@ -49,7 +45,6 @@ export const MakeOfferModal: FC<IMakeOfferModal> = ({
         layout="vertical"
         form={form}
         initialValues={{ nftAmount: 1, price: 1, decreaseBy: 0 }}
-        // onValuesChange={onFormChange}
       >
         <Form.Item
           name="nftAmount"

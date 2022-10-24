@@ -38,7 +38,7 @@ const CartSiderMobile: FC<CartSiderProps> = (props) => {
           <div className={styles.section}>
             <div className={styles.header}>
               <span className={styles.headerTitle}>
-                buy&nbsp;{cartItems.buy.length}&nbsp;
+                buy {cartItems.buy.length}{' '}
                 {cartItems.buy.length > 1 ? 'NFTs' : 'NFT'}
               </span>
               <SolPrice className={styles.headerPrice} price={totalBuy} raw />

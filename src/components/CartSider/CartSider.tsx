@@ -48,7 +48,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
           <div className={styles.cartSection}>
             <div className={styles.cartTitle}>
               <Typography.Title level={4}>
-                buy&nbsp;{cartItems.buy.length}&nbsp;
+                buy {cartItems.buy.length}{' '}
                 {cartItems.buy.length > 1 ? 'NFTs' : 'NFT'}
               </Typography.Title>
               <Typography.Text>

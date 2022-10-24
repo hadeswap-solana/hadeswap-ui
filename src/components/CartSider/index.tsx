@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectScreeMode } from '../../state/common/selectors';
 import CartSiderDesktop from './CartSider';
 import CartSiderMobile from './mobile/CartSider';
-import { TABLET } from '../../constants/common';
 import { useCartSider, useSwap } from './hooks';
 import styles from './mobile/CartSider.module.scss';
+import { ScreenTypes } from '../../state/common/types';
 import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
 
@@ -34,8 +34,8 @@ const CartSider: FC = () => {
   const screenMode = useSelector(selectScreeMode);
 
   const [visible, setVisible] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState(null);
-  const [modalClassName, setModalClassName] = useState('');
+  const [showModal, setShowModal] = useState<boolean | null>(null);
+  const [modalClassName, setModalClassName] = useState<string>('');
 
   const {
     cartItems,
@@ -86,7 +86,7 @@ const CartSider: FC = () => {
     }
   }, [isCartEmpty, visible, showModal, isHeaderVisible]);
 
-  return screenMode === TABLET ? (
+  return screenMode === ScreenTypes.TABLET ? (
     visible && (
       <CartSiderMobile
         createOnDeselectHandler={createOnDeselectHandler}
