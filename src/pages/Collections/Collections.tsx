@@ -96,7 +96,7 @@ export const Collections: FC = () => {
       setCollections(filterCollections());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortValue, collections]);
+  }, [sortValue]);
 
   return (
     <AppLayout>
