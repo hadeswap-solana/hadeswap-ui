@@ -25,12 +25,12 @@ const Modal: FC<ModalProps> = ({ children, className, closeModal }) => {
     });
     layout.classList.add(styles.heightFullScreen);
 
-    closeModal && layout.addEventListener("click", handleClickOutOfModal);
+    closeModal && layout.addEventListener('click', handleClickOutOfModal);
 
     return () => {
       root.removeChild(modalWrapper);
       layout.classList.remove(styles.heightFullScreen);
-      layout.removeEventListener("click", handleClickOutOfModal);
+      layout.removeEventListener('click', handleClickOutOfModal);
     };
   }, [children, className]);
 
