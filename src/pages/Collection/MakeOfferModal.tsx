@@ -19,7 +19,7 @@ export const MakeOfferModal: FC<IMakeOfferModal> = ({
   };
 
   const onFormChange = () => {
-    console.log(form.getFieldsValue(['nftAmount', 'price', 'decreaseBy']));
+    // console.log(form.getFieldsValue(['nftAmount', 'price', 'decreaseBy']));
   };
 
   return (
