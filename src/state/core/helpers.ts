@@ -295,17 +295,14 @@ export const parseDelta = (rawDelta: number, curveType: string): string => {
     : `${formatBNToString(new BN(rawDelta))} SOL`;
 };
 
+enum PairType {
+  nftForToken = 'sell',
+  tokenForNft = 'buy',
+  liquidityProvision = 'liquidity provision',
+}
+
 export const renamePairType = (type: string): string => {
-  switch (type) {
-    case 'nftForToken':
-      return 'sell';
-    case 'tokenForNft':
-      return 'buy';
-    case 'liquidityProvision':
-      return 'liquidity provision';
-    default:
-      return '';
-  }
+  return PairType[type] || '';
 };
 
 type CreatePoolTableRow = (
