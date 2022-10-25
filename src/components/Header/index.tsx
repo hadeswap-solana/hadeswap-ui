@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { selectScreeMode } from '../../state/common/selectors';
 import HeaderDesktop from './Header';
@@ -14,4 +14,4 @@ const Header: FC = () => {
   );
 };
 
-export default memo(Header);
+export default Header;
