@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectScreeMode } from '../../state/common/selectors';
 import CartSiderDesktop from './CartSider';
@@ -102,7 +102,8 @@ const CartSider: FC = () => {
         isSwapButtonDisabled={isSwapButtonDisabled}
         totalBuy={totalBuy}
         totalSell={totalSell}
-        stopScroll={isHeaderVisible && showModal}
+        stopScroll={showModal}
+        scrollToTop={showModal && isHeaderVisible}
       />
     )
   ) : (
@@ -122,4 +123,4 @@ const CartSider: FC = () => {
   );
 };
 
-export default memo(CartSider);
+export default CartSider;
