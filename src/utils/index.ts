@@ -5,8 +5,8 @@ import { Dictionary } from 'lodash';
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
 export enum PoolType {
-  tokenForNft = 'token for nft',
-  nftForToken = 'nft for token',
+  tokenForNft = 'buy',
+  nftForToken = 'sell',
   liquidityProvision = 'liquidity provision',
 }
 
