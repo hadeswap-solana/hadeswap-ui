@@ -6,9 +6,7 @@ import { SearchOutlined } from '@ant-design/icons';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Spinner } from '../../components/Spinner/Spinner';
-import CollectionList from './mobile/CollectionsList';
-import { COLUMNS } from './Collections.constants';
-import { CollectionsList as CollectionsListMobile } from './mobile/CollectionsList';
+import CollectionList from "./components/CollectionsList";
 import SortingModal from './mobile/SortingModal';
 import { INITIAL_SORT_VALUE } from './Collections.constants';
 import { SORT_ORDER } from '../../constants/common';
@@ -131,10 +129,8 @@ export const Collections: FC = () => {
                   )}
                 </div>
                 <CollectionList
-                  itemKey="marketPubkey"
                   onRowClick={onRowClick}
                   data={collections}
-                  columns={COLUMNS}
                 />
               </div>
             </Col>

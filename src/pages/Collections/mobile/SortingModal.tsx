@@ -1,6 +1,6 @@
 import React, { FC, Fragment } from 'react';
 import classNames from 'classnames';
-import { COLUMNS } from '../Collections.constants';
+import { COLUMNS_DESKTOP } from '../Collections.constants';
 import { SORT_ORDER } from '../../../constants/common';
 import ArrowIcon from '../../../icons/ArrowIcon';
 import ChevronIcon from '../../../icons/ChevronIcon';
@@ -46,7 +46,7 @@ const SortingModal: FC<SortingModalProps> = ({
       </div>
     </div>
     <div className={styles.sortingBody}>
-      {COLUMNS.map((item) => (
+      {COLUMNS_DESKTOP.map((item) => (
         <Fragment key={item.key}>
           <div className={styles.sortTitle}>{item.title}</div>
           <div className={styles.sortButtonsWrapper}>

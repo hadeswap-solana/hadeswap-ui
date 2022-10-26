@@ -5,8 +5,8 @@ import { Typography, Button } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
-import Table from '../Collections/mobile/CollectionsList';
-import { PoolsList } from './components/PoolsList';
+//import Table from '../Collections/mobile/CollectionsList';
+//import { PoolsList } from './components/PoolsList';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
 import { coreActions } from '../../state/core/actions';
@@ -74,12 +74,13 @@ export const MyPools: FC = () => {
       )}
 
       {!loading && wallet.connected && !!poolsTableInfo.length && (
-        <Table
-          columns={POOL_TABLE_COLUMNS}
-          data={poolsTableInfo}
-          onRowClick={onRowClick}
-          dataKey="pairPubkey"
-        />
+        <div>pools</div>
+        // <Table
+        //   columns={POOL_TABLE_COLUMNS}
+        //   data={poolsTableInfo}
+        //   onRowClick={onRowClick}
+        //   dataKey="pairPubkey"
+        // />
       )}
     </AppLayout>
   );

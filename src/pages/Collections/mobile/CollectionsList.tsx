@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Index } from '../../../components/PriceWithIcon';
+import { PriceWithIcon } from '../../../components/PriceWithIcon';
 import { UNTITLED_COLLECTION } from '../Collections.constants';
 import { MarketInfo } from '../../../state/core/types';
 import styles from './CollectionsList.module.scss';
@@ -32,15 +32,15 @@ export const CollectionsList: FC<CollectionsListProps> = ({
             </li>
             <li className={styles.listItem}>
               <span>FLOOR PRICE</span>
-              <Index price={item.floorPrice} rightIcon />
+              <PriceWithIcon price={item.floorPrice} rightIcon />
             </li>
             <li className={styles.listItem}>
               <span>BEST OFFER</span>
-              <Index price={item.bestoffer} rightIcon />
+              <PriceWithIcon price={item.bestoffer} rightIcon />
             </li>
             <li className={styles.listItem}>
               <span>OFFER TVL</span>
-              <Index price={item.offerTVL} rightIcon />
+              <PriceWithIcon price={item.offerTVL} rightIcon />
             </li>
           </ul>
         </div>

@@ -10,7 +10,7 @@ const { Text } = Typography;
 export const UNTITLED_COLLECTION = 'untitled collection';
 export const INITIAL_SORT_VALUE = 'offerTVL';
 
-export const COLUMNS: ColumnsType<MarketInfo> = [
+export const COLUMNS_DESKTOP: ColumnsType<MarketInfo> = [
   {
     key: 'collectionName',
     title: 'name',

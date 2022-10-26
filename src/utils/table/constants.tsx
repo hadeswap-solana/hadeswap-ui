@@ -1,7 +1,7 @@
 import { ColumnsType } from 'antd/es/table';
 import { createPoolTableRow } from '../../state/core/helpers';
 import { Avatar, Col, Row, Typography } from 'antd';
-import { Index } from '../../components/PriceWithIcon';
+import { PriceWithIcon } from '../../components/PriceWithIcon';
 import { formatBNToString } from '../index';
 import { BN } from 'hadeswap-sdk';
 import { TitleWithInfo } from '../../components/TitleWithInfo';
@@ -42,7 +42,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<ReturnType<typeof createPoolTableRo
     dataIndex: 'spotPrice',
     sorter: (a, b) => parseFloat(a?.spotPrice) - parseFloat(b?.spotPrice),
     showSorterTooltip: false,
-    render: (text) => <Index price={text} />,
+    render: (text) => <PriceWithIcon price={text} />,
   },
   {
     key: 'fee',
@@ -64,7 +64,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<ReturnType<typeof createPoolTableRo
       record.type === 'nftForToken' ? (
         <Typography.Text>--</Typography.Text>
       ) : (
-        <Index price={text} />
+        <PriceWithIcon price={text} />
       ),
   },
   {
@@ -109,7 +109,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<ReturnType<typeof createPoolTableRo
     render: (text = 0, record) => (
       <Typography.Text>
         {record.type === 'liquidityProvision' ? (
-          <Index price={formatBNToString(new BN(text || '0'))} />
+          <PriceWithIcon price={formatBNToString(new BN(text || '0'))} />
         ) : (
           '--'
         )}
