@@ -1,18 +1,22 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Typography, Table, Button } from 'antd';
+import { useHistory } from 'react-router-dom';
+import { Typography, Button } from 'antd';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
+import Table from '../Collections/mobile/CollectionsList';
+import { PoolsList } from './components/PoolsList';
+import { Spinner } from '../../components/Spinner/Spinner';
+import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
 import { coreActions } from '../../state/core/actions';
 import {
   selectAllMarketsLoading,
   selectMyPoolsPageTableInfo,
   selectWalletPairsLoading,
 } from '../../state/core/selectors';
-import { Spinner } from '../../components/Spinner/Spinner';
-import { useHistory } from 'react-router-dom';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
+import { selectScreeMode } from '../../state/common/selectors';
+import { ScreenTypes } from '../../state/common/types';
 
 import styles from './MyPools.module.scss';
 
@@ -25,8 +29,16 @@ export const MyPools: FC = () => {
 
   const marketsLoading = useSelector(selectAllMarketsLoading);
   const poolsLoading = useSelector(selectWalletPairsLoading);
+  const screenMode = useSelector(selectScreeMode);
+
+  const isMobile = screenMode === ScreenTypes.TABLET;
 
   const loading = marketsLoading || poolsLoading;
+
+  const onRowClick = (value) => {
+    history.push(`/pools/${value}`);
+    window.scrollTo(0, 0);
+  };
 
   useEffect(() => {
     if (wallet.connected) {
@@ -36,7 +48,7 @@ export const MyPools: FC = () => {
   }, [dispatch, wallet]);
 
   const poolsTableInfo = useSelector(selectMyPoolsPageTableInfo);
-
+  //console.log('poolsTableInfo', poolsTableInfo);
   return (
     <AppLayout>
       <Title>my pools</Title>
@@ -64,18 +76,9 @@ export const MyPools: FC = () => {
       {!loading && wallet.connected && !!poolsTableInfo.length && (
         <Table
           columns={POOL_TABLE_COLUMNS}
-          dataSource={poolsTableInfo}
-          pagination={false}
-          style={{ cursor: 'pointer' }}
-          rowKey={(record) => record.pairPubkey}
-          onRow={({ pairPubkey }) => {
-            return {
-              onClick: () => {
-                history.push(`/pools/${pairPubkey}`);
-                window.scrollTo(0, 0);
-              },
-            };
-          }}
+          data={poolsTableInfo}
+          onRowClick={onRowClick}
+          dataKey="pairPubkey"
         />
       )}
     </AppLayout>

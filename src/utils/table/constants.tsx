@@ -1,15 +1,13 @@
-import { Avatar, Col, Row, Typography } from 'antd';
-import { BN } from 'hadeswap-sdk';
-import type { ColumnsType } from 'antd/es/table';
-import { PriceWithIcon } from '../../pages/Collections/components/PriceWithIcon';
-import { TitleWithInfo } from '../../pages/Collections/components/TitleWithInfo';
+import { ColumnsType } from 'antd/es/table';
 import { createPoolTableRow } from '../../state/core/helpers';
-import { shortenAddress } from '../solanaUtils';
+import { Avatar, Col, Row, Typography } from 'antd';
+import { Index } from '../../components/PriceWithIcon';
 import { formatBNToString } from '../index';
+import { BN } from 'hadeswap-sdk';
+import { TitleWithInfo } from '../../components/TitleWithInfo';
+import { shortenAddress } from '../solanaUtils';
 
-export const POOL_TABLE_COLUMNS: ColumnsType<
-  ReturnType<typeof createPoolTableRow>
-> = [
+export const POOL_TABLE_COLUMNS: ColumnsType<ReturnType<typeof createPoolTableRow>> = [
   {
     key: 'collection',
     title: 'collection',
@@ -44,7 +42,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
     dataIndex: 'spotPrice',
     sorter: (a, b) => parseFloat(a?.spotPrice) - parseFloat(b?.spotPrice),
     showSorterTooltip: false,
-    render: (text) => <PriceWithIcon price={text} />,
+    render: (text) => <Index price={text} />,
   },
   {
     key: 'fee',
@@ -66,7 +64,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
       record.type === 'nftForToken' ? (
         <Typography.Text>--</Typography.Text>
       ) : (
-        <PriceWithIcon price={text} />
+        <Index price={text} />
       ),
   },
   {
@@ -111,7 +109,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
     render: (text = 0, record) => (
       <Typography.Text>
         {record.type === 'liquidityProvision' ? (
-          <PriceWithIcon price={formatBNToString(new BN(text || '0'))} />
+          <Index price={formatBNToString(new BN(text || '0'))} />
         ) : (
           '--'
         )}

@@ -1,9 +1,10 @@
 import React, { FC, Fragment } from 'react';
 import classNames from 'classnames';
-import { COLUMNS, SORT_ORDER } from '../../Collections.constants';
-import ArrowIcon from '../../../../icons/ArrowIcon';
-import ChevronIcon from '../../../../icons/ChevronIcon';
-import withModal from '../../../../components/Modal/mobile/Modal';
+import { COLUMNS } from '../Collections.constants';
+import { SORT_ORDER } from '../../../constants/common';
+import ArrowIcon from '../../../icons/ArrowIcon';
+import ChevronIcon from '../../../icons/ChevronIcon';
+import withModal from '../../../components/Modal/mobile/Modal';
 import styles from './CollectionsList.module.scss';
 
 interface SortingButtonProps {

@@ -12,7 +12,6 @@ import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
 
 export const CollectionPoolsPage: FC = () => {
   const history = useHistory();
-
   const poolsTableInfo = useSelector(selectPoolsTableInfo);
   const loading = useSelector(selectMarketPairsLoading);
 

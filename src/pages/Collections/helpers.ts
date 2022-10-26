@@ -1,6 +1,6 @@
 import { specifyAndSort } from '../../utils';
 import { MarketInfo } from '../../state/core/types';
-import { SORT_ORDER } from './Collections.constants';
+import { SORT_ORDER } from '../../constants/common';
 
 export const sortCollection = (
   collections: MarketInfo[],

@@ -6,10 +6,12 @@ import { SearchOutlined } from '@ant-design/icons';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Spinner } from '../../components/Spinner/Spinner';
-import { CollectionsList } from './components/CollectionsList';
-import { CollectionsList as CollectionsListMobile } from './components/mobile/CollectionsList';
-import SortingModal from './components/mobile/SortingModal';
-import { INITIAL_SORT_VALUE, SORT_ORDER } from './Collections.constants';
+import CollectionList from './mobile/CollectionsList';
+import { COLUMNS } from './Collections.constants';
+import { CollectionsList as CollectionsListMobile } from './mobile/CollectionsList';
+import SortingModal from './mobile/SortingModal';
+import { INITIAL_SORT_VALUE } from './Collections.constants';
+import { SORT_ORDER } from '../../constants/common';
 import { sortCollection, filterCollections } from './helpers';
 
 import { coreActions } from '../../state/core/actions';
@@ -46,13 +48,10 @@ export const Collections: FC = () => {
     setSearchStr(search.toUpperCase());
   }, 300);
 
-  const onRowClick = useCallback(
-    (data: string): void => {
-      history.push(createCollectionLink(COLLECTION_TABS.BUY, data));
-      window.scrollTo(0, 0);
-    },
-    [history],
-  );
+  const onRowClick = useCallback((data: string): void => {
+    history.push(createCollectionLink(COLLECTION_TABS.BUY, data));
+    window.scrollTo(0, 0);
+  }, [history]);
 
   const handleSort = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
@@ -131,14 +130,12 @@ export const Collections: FC = () => {
                     </div>
                   )}
                 </div>
-                {isMobile ? (
-                  <CollectionsListMobile
-                    data={collections}
-                    onRowClick={onRowClick}
-                  />
-                ) : (
-                  <CollectionsList data={collections} onRowClick={onRowClick} />
-                )}
+                <CollectionList
+                  itemKey="marketPubkey"
+                  onRowClick={onRowClick}
+                  data={collections}
+                  columns={COLUMNS}
+                />
               </div>
             </Col>
           </Row>
