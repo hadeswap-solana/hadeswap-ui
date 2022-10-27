@@ -75,7 +75,7 @@ export const MyPools: FC = () => {
           >
             + create pool
           </Button>
-          {isMobile && (
+          {isMobile && !!poolsTableInfo.length && (
             <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
           )}
         </div>
