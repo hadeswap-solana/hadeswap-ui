@@ -3,7 +3,7 @@
   top: var(--header-height-mobile);
   left: 0;
   width: 100%;
-  height: calc(100vh - var(--header-height-mobile));
+  height: calc(100vh - var(--header-height-mobile) + 1px);
   padding: 16px;
   text-align: center;
   border-width: 0 1px 0 1px;

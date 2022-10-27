@@ -27,13 +27,14 @@ const CartSiderMobile: FC<CartSiderProps> = (props) => {
 
   return (
     <div className={styles.modalInner}>
-      <div className={styles.main}>
+      <div className={styles.badgeButtonWrapper}>
         <BadgeButton
           setShowModal={setShowModal}
           dispatch={dispatch}
           itemsAmount={itemsAmount}
-          className={styles.badgeButtonWrapper}
         />
+      </div>
+      <div className={styles.main}>
         {!!cartItems.buy.length && (
           <div className={styles.section}>
             <div className={styles.header}>

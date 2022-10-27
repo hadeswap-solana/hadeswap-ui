@@ -26,6 +26,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
 }) => {
   const badgeClassName = classNames(styles.toggleCartSiderBtn, {
     [styles.toggleCartSiderBtnHidden]: isCartEmpty,
+    [styles.opened]: cartOpened,
   });
 
   return (
