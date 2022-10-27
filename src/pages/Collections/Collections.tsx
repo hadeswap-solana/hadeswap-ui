@@ -21,7 +21,6 @@ import {
 } from '../../state/core/selectors';
 import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
-import { MarketInfo } from '../../state/core/types';
 import { useDebounce } from '../../hooks';
 import { COLLECTION_TABS, createCollectionLink } from '../../constants';
 import styles from './Collections.module.scss';
@@ -37,7 +36,7 @@ export const Collections: FC = () => {
   const [sortValue, setSortValue] = useState<string>(
     `${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`,
   );
-  const [collections, setCollections] = useState<MarketInfo[]>([]);
+  const [collections, setCollections] = useState([]);
   const [isSortingVisible, setIsSortingVisible] = useState<boolean>(false);
 
   const screenMode = useSelector(selectScreeMode);
