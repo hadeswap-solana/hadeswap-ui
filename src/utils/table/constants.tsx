@@ -2,14 +2,20 @@ import { ColumnsType } from 'antd/es/table';
 import { createPoolTableRow } from '../../state/core/helpers';
 import { Avatar, Col, Row, Typography } from 'antd';
 import { PriceWithIcon } from '../../components/PriceWithIcon';
-import { formatBNToString } from '../index';
+import { formatBNToString, specifyAndSort } from '../index';
 import { BN } from 'hadeswap-sdk';
 import { TitleWithInfo } from '../../components/TitleWithInfo';
 import { shortenAddress } from '../solanaUtils';
+import { MarketInfo } from '../../state/core/types';
+import { UNTITLED_COLLECTION } from '../../constants/common';
 
-export const POOL_TABLE_COLUMNS: ColumnsType<ReturnType<typeof createPoolTableRow>> = [
+const { Text } = Typography;
+
+export const POOL_TABLE_COLUMNS: ColumnsType<
+  ReturnType<typeof createPoolTableRow>
+> = [
   {
-    key: 'collection',
+    key: 'collectionName',
     title: 'collection',
     dataIndex: 'collectionName',
     sorter: (a, b) => a?.collectionName?.localeCompare(b?.collectionName),
@@ -137,5 +143,71 @@ export const POOL_TABLE_COLUMNS: ColumnsType<ReturnType<typeof createPoolTableRo
     render: (text: string) => (
       <Typography.Text>{shortenAddress(text)}</Typography.Text>
     ),
+  },
+];
+
+export const COLLECTION_COLUMNS: ColumnsType<MarketInfo> = [
+  {
+    key: 'collectionName',
+    title: 'name',
+    dataIndex: 'collectionName',
+    sorter: (a, b) => specifyAndSort(a?.collectionName, b?.collectionName),
+    showSorterTooltip: false,
+    render: (text: string, record: MarketInfo): JSX.Element => (
+      <Row align="middle" gutter={[8, 0]}>
+        <Col>
+          <Avatar src={record?.collectionImage} />
+        </Col>
+        <Col>{text || UNTITLED_COLLECTION}</Col>
+      </Row>
+    ),
+  },
+  {
+    key: 'listingsAmount',
+    title: 'listings',
+    dataIndex: 'listingsAmount',
+    sorter: (a, b) => specifyAndSort(a?.listingsAmount, b?.listingsAmount),
+    showSorterTooltip: false,
+    render: (text) => <Text>{text}</Text>,
+  },
+  {
+    key: 'floorPrice',
+    title: (
+      <TitleWithInfo
+        title="floor price"
+        infoText="price of the cheapest NFT listed best offer"
+      />
+    ),
+    dataIndex: 'floorPrice',
+    sorter: (a, b) => specifyAndSort(a?.floorPrice, b?.floorPrice),
+    showSorterTooltip: false,
+    render: (text) => <PriceWithIcon price={text} />,
+  },
+  {
+    key: 'bestoffer',
+    title: (
+      <TitleWithInfo
+        title="best offer"
+        infoText="value of the highest collection offer offer TVL"
+      />
+    ),
+    dataIndex: 'bestoffer',
+    sorter: (a, b) => specifyAndSort(a?.bestoffer, b?.bestoffer),
+    showSorterTooltip: false,
+    render: (text) => <PriceWithIcon price={text} />,
+  },
+  {
+    key: 'offerTVL',
+    title: (
+      <TitleWithInfo
+        title="offer TVL"
+        infoText="total amount of SOL locked in collection offers delta"
+      />
+    ),
+    dataIndex: 'offerTVL',
+    sorter: (a, b) => specifyAndSort(a?.offerTVL, b?.offerTVL),
+    showSorterTooltip: false,
+    defaultSortOrder: 'descend',
+    render: (text) => <PriceWithIcon price={text} />,
   },
 ];

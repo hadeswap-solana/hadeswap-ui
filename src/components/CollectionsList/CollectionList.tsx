@@ -1,13 +1,16 @@
 import { FC } from 'react';
 import { Table } from 'antd';
-import { TableProps } from './index'
-import {COLUMNS_DESKTOP} from "../../Collections.constants";
+import { CollectionTableProps } from './index';
+import { COLLECTION_COLUMNS } from '../../utils/table/constants';
 import styles from './CollectionList.module.scss';
 
-export const CollectionList: FC<TableProps> = ({ data, onRowClick }) => (
+export const CollectionList: FC<CollectionTableProps> = ({
+  data,
+  onRowClick,
+}) => (
   <Table
     className={styles.table}
-    columns={COLUMNS_DESKTOP}
+    columns={COLLECTION_COLUMNS}
     dataSource={data}
     pagination={false}
     rowKey={(record) => record.marketPubkey}

@@ -1,22 +1,25 @@
-import { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Typography, Button } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
-//import Table from '../Collections/mobile/CollectionsList';
-//import { PoolsList } from './components/PoolsList';
 import { Spinner } from '../../components/Spinner/Spinner';
+import PoolsList from '../../components/PoolsList';
+import Sorting from '../../components/Sorting/mobile/Sorting';
+import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
+import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
+import { SORT_ORDER } from '../../constants/common';
+import { selectScreeMode } from '../../state/common/selectors';
+import { ScreenTypes } from '../../state/common/types';
 import { coreActions } from '../../state/core/actions';
 import {
   selectAllMarketsLoading,
   selectMyPoolsPageTableInfo,
   selectWalletPairsLoading,
 } from '../../state/core/selectors';
-import { selectScreeMode } from '../../state/common/selectors';
-import { ScreenTypes } from '../../state/common/types';
 
 import styles from './MyPools.module.scss';
 
@@ -27,10 +30,18 @@ export const MyPools: FC = () => {
   const wallet = useWallet();
   const dispatch = useDispatch();
 
+  const INITIAL_SORT_VALUE = 'collectionName';
+
+  const [isSortingVisible, setIsSortingVisible] = useState<boolean>(false);
+  const [sortValue, setSortValue] = useState<string>(
+    `${INITIAL_SORT_VALUE}_${SORT_ORDER.ASC}`,
+  );
+  const [pools, setPools] = useState([]);
+
+  const poolsTableInfo = useSelector(selectMyPoolsPageTableInfo);
   const marketsLoading = useSelector(selectAllMarketsLoading);
   const poolsLoading = useSelector(selectWalletPairsLoading);
   const screenMode = useSelector(selectScreeMode);
-
   const isMobile = screenMode === ScreenTypes.TABLET;
 
   const loading = marketsLoading || poolsLoading;
@@ -41,19 +52,22 @@ export const MyPools: FC = () => {
   };
 
   useEffect(() => {
+    const [name, order] = sortValue.split('_');
+    setPools(sortCollection([...poolsTableInfo], name, order));
+  }, [sortValue, poolsTableInfo]);
+
+  useEffect(() => {
     if (wallet.connected) {
       dispatch(coreActions.fetchAllMarkets());
       dispatch(coreActions.fetchWalletPairs());
     }
   }, [dispatch, wallet]);
 
-  const poolsTableInfo = useSelector(selectMyPoolsPageTableInfo);
-  //console.log('poolsTableInfo', poolsTableInfo);
   return (
     <AppLayout>
       <Title>my pools</Title>
       {wallet.connected && (
-        <div className={styles.buttons}>
+        <div className={styles.buttonsWrapper}>
           <Button
             onClick={() => {
               history.push('/create-pool');
@@ -61,6 +75,9 @@ export const MyPools: FC = () => {
           >
             + create pool
           </Button>
+          {isMobile && (
+            <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
+          )}
         </div>
       )}
       {!wallet.connected && (
@@ -74,13 +91,17 @@ export const MyPools: FC = () => {
       )}
 
       {!loading && wallet.connected && !!poolsTableInfo.length && (
-        <div>pools</div>
-        // <Table
-        //   columns={POOL_TABLE_COLUMNS}
-        //   data={poolsTableInfo}
-        //   onRowClick={onRowClick}
-        //   dataKey="pairPubkey"
-        // />
+        <>
+          <PoolsList data={pools} onRowClick={onRowClick} />
+          {isMobile && isSortingVisible && (
+            <Sorting
+              setIsSortingVisible={setIsSortingVisible}
+              sortValue={sortValue}
+              setSortValue={setSortValue}
+              data={POOL_TABLE_COLUMNS}
+            />
+          )}
+        </>
       )}
     </AppLayout>
   );

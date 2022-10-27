@@ -6,11 +6,13 @@ import { SearchOutlined } from '@ant-design/icons';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Spinner } from '../../components/Spinner/Spinner';
-import CollectionList from "./components/CollectionsList";
-import SortingModal from './mobile/SortingModal';
-import { INITIAL_SORT_VALUE } from './Collections.constants';
+import CollectionList from '../../components/CollectionsList';
+import Sorting from '../../components/Sorting/mobile/Sorting';
+import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
+import { sortCollection } from '../../components/Sorting/mobile/helpers';
+import { COLLECTION_COLUMNS } from '../../utils/table/constants';
 import { SORT_ORDER } from '../../constants/common';
-import { sortCollection, filterCollections } from './helpers';
+import { filterCollections } from './helpers';
 
 import { coreActions } from '../../state/core/actions';
 import {
@@ -27,6 +29,8 @@ import styles from './Collections.module.scss';
 const { Title } = Typography;
 
 export const Collections: FC = () => {
+  const INITIAL_SORT_VALUE = 'offerTVL';
+
   const history = useHistory();
   const dispatch = useDispatch();
   const [searchStr, setSearchStr] = useState<string>('');
@@ -34,7 +38,7 @@ export const Collections: FC = () => {
     `${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`,
   );
   const [collections, setCollections] = useState<MarketInfo[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isSortingVisible, setIsSortingVisible] = useState<boolean>(false);
 
   const screenMode = useSelector(selectScreeMode);
   const markets = useSelector(selectAllMarkets);
@@ -46,20 +50,12 @@ export const Collections: FC = () => {
     setSearchStr(search.toUpperCase());
   }, 300);
 
-  const onRowClick = useCallback((data: string): void => {
-    history.push(createCollectionLink(COLLECTION_TABS.BUY, data));
-    window.scrollTo(0, 0);
-  }, [history]);
-
-  const handleSort = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      if (sortValue !== e.currentTarget.dataset.value) {
-        setSortValue(e.currentTarget.dataset.value);
-      } else {
-        setSortValue('');
-      }
+  const onRowClick = useCallback(
+    (data: string): void => {
+      history.push(createCollectionLink(COLLECTION_TABS.BUY, data));
+      window.scrollTo(0, 0);
     },
-    [sortValue],
+    [history],
   );
 
   useEffect(() => {
@@ -78,11 +74,12 @@ export const Collections: FC = () => {
 
   return (
     <AppLayout>
-      {isMobile && isModalVisible && (
-        <SortingModal
-          setIsModalVisible={setIsModalVisible}
-          handleSort={handleSort}
+      {isMobile && isSortingVisible && (
+        <Sorting
+          setIsSortingVisible={setIsSortingVisible}
           sortValue={sortValue}
+          setSortValue={setSortValue}
+          data={COLLECTION_COLUMNS}
         />
       )}
       <Row justify="center">
@@ -120,18 +117,10 @@ export const Collections: FC = () => {
                     onChange={(event) => setSearch(event.target.value || '')}
                   />
                   {isMobile && (
-                    <div
-                      className={styles.sortingBtn}
-                      onClick={() => setIsModalVisible(true)}
-                    >
-                      sorting
-                    </div>
+                    <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
                   )}
                 </div>
-                <CollectionList
-                  onRowClick={onRowClick}
-                  data={collections}
-                />
+                <CollectionList onRowClick={onRowClick} data={collections} />
               </div>
             </Col>
           </Row>

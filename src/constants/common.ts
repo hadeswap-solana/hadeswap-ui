@@ -5,3 +5,7 @@ export const SORT_ORDER = {
   ASC: 'asc',
   DESC: 'desc',
 };
+
+export const UNTITLED_COLLECTION = 'untitled collection';
+
+export const COLLECTION = 'collection';
