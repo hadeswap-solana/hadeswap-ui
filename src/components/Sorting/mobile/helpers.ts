@@ -3,13 +3,11 @@ import { MarketInfo } from '../../../state/core/types';
 import { SORT_ORDER } from '../../../constants/common';
 import { specifyAndSort } from '../../../utils';
 
-type Collections = ReturnType<typeof createPoolTableRow>[] | MarketInfo[];
-
 export const sortCollection = (
-  collections: Collections,
+  collections: ReturnType<typeof createPoolTableRow>[] | MarketInfo[],
   sortValue: string,
   order: string,
-): Collections => {
+): ReturnType<typeof createPoolTableRow>[] | MarketInfo[] => {
   const sorted = collections.sort((a, b) =>
     specifyAndSort(a[sortValue], b[sortValue]),
   );
