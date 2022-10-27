@@ -1,30 +1,25 @@
-import { FC, useEffect, useCallback } from 'react';
+import { FC, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import styles from './Modal.module.scss';
 
 interface ModalProps {
-  modalWrapper: HTMLDivElement;
+  modalElement: HTMLDivElement;
   children: JSX.Element;
   modalClassName?: string;
   closeModal?: (arg: (value: boolean) => boolean) => void;
   stopScroll?: boolean;
+  scrollToTop?: boolean;
 }
 
 const root = document.getElementById('root');
 
 const withModal = (Component: FC): ((arg) => JSX.Element) => {
-  const modalWrapper = document.createElement('div');
+  const modalElement = document.createElement('div');
 
   const Modal = (props) => {
-    const { modalClassName, stopScroll, closeModal } = props;
     return (
-      <ModalWrapper
-        modalWrapper={modalWrapper}
-        modalClassName={modalClassName}
-        closeModal={closeModal}
-        stopScroll={stopScroll}
-      >
+      <ModalWrapper {...props} modalElement={modalElement}>
         <Component {...props} />
       </ModalWrapper>
     );
@@ -33,41 +28,36 @@ const withModal = (Component: FC): ((arg) => JSX.Element) => {
 };
 
 const ModalWrapper: FC<ModalProps> = ({
-  modalWrapper,
+  modalElement,
   children,
   modalClassName = '',
-  closeModal,
   stopScroll = true,
+  scrollToTop = true,
 }) => {
-  const layout = document.querySelector('.ant-layout');
-
-  const handleClickOutOfModal = useCallback(() => {
-    closeModal((value) => !value);
-  }, [closeModal]);
+  const body = document.querySelector('body');
 
   useEffect(() => {
-    root.appendChild(modalWrapper);
+    root.appendChild(modalElement);
     return () => {
-      root.removeChild(modalWrapper);
+      root.removeChild(modalElement);
     };
-  }, [modalWrapper]);
+  }, [modalElement]);
 
   useEffect(() => {
-    closeModal && layout.addEventListener('click', handleClickOutOfModal);
-    stopScroll && layout.classList.add(styles.stopScrollLayout);
+    stopScroll && body.classList.add(styles.stopScroll);
+    scrollToTop && window.scrollTo(0, 0);
     return () => {
-      closeModal && layout.removeEventListener('click', handleClickOutOfModal);
-      stopScroll && layout.classList.remove(styles.stopScrollLayout);
+      stopScroll && body.classList.remove(styles.stopScroll);
     };
   });
 
   useEffect(() => {
-    modalWrapper.className = classNames(styles.modalWrapper, {
+    modalElement.className = classNames(styles.modalWrapper, {
       [modalClassName]: modalClassName,
     });
-  }, [modalClassName, modalWrapper]);
+  }, [modalClassName, modalElement]);
 
-  return ReactDOM.createPortal(children, modalWrapper);
+  return ReactDOM.createPortal(children, modalElement);
 };
 
 export default withModal;
