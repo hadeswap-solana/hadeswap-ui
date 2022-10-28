@@ -20,6 +20,7 @@ import {
   selectCertainPair,
   selectCertainPairLoading,
 } from '../../state/core/selectors';
+import Chart from '../../components/ChartLine/ChartLine';
 
 import styles from './PoolPage.module.scss';
 
@@ -172,6 +173,7 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
           </div>
         )}
       </div>
+      <Chart pool={pool} />
     </div>
   );
 };
