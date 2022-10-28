@@ -46,8 +46,6 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     type,
   } = pool;
 
-  console.log(pool);
-
   const CHART_COLORS = {
     white: 'rgb(244, 239, 239)',
     whiteOpacity: 'rgba(244, 239, 239, 0.5)',
@@ -75,8 +73,6 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     counter: mathCounter + 1,
   });
 
-  console.log(priceArrayBuy, 'priceArrayBuy');
-
   const priceArraySell = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
     delta: delta,
@@ -88,8 +84,6 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     orderType: OrderType.Buy,
     counter: mathCounter,
   });
-
-  console.log(priceArraySell, 'priceArraySell');
 
   const amountOrder: number = buyOrdersAmount + sellOrders.length;
 
