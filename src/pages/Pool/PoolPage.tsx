@@ -21,6 +21,7 @@ import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { createEditPollLink } from '../../constants';
 import { parseDelta } from '../../state/core/helpers';
 import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
+import Chart from '../../components/ChartLine/ChartLine';
 
 const { Title, Text } = Typography;
 
@@ -126,68 +127,73 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
   );
 
   return (
-    <div
-      className={`${styles.generalInfo} ${
-        isLiquidityProvisionPool ? styles.generalInfoFull : ''
-      }`}
-    >
-      <Title
-        level={4}
-        className={styles.generalInfoTitle}
-        style={{ marginBottom: 0 }}
+    <>
+      <div
+        className={`${styles.generalInfo} ${
+          isLiquidityProvisionPool ? styles.generalInfoFull : ''
+        }`}
       >
-        general Info
-        {onEdit && (
-          <Button type="primary" onClick={onEdit}>
-            edit
-          </Button>
-        )}
-      </Title>
-      <div className={styles.generalInfoBlock}>
-        <Title level={5}>collection</Title>
-        <Row align="middle" gutter={[8, 0]}>
-          <Col>
-            <Avatar src={market?.collectionImage} />
-          </Col>
-          <Col>{market?.collectionName}</Col>
-        </Row>
-      </div>
-      <div className={styles.generalInfoBlock}>
-        <Title level={5}>pool type</Title>
-        <Text className={styles.generalInfoText}>{PoolType[pool?.type]}</Text>
-      </div>
-      <div className={styles.generalInfoBlock}>
-        <Title level={5}>SOL balance</Title>
-        <Text className={styles.generalInfoText}>
-          {formatBNToString(new BN(pool?.fundsSolOrTokenBalance || '0'))} SOL
-        </Text>
-      </div>
-      <div className={styles.generalInfoBlock}>
-        <Title level={5}>amount of NFTs</Title>
-        <Text className={styles.generalInfoText}>{pool?.nftsCount || '0'}</Text>
-      </div>
-      <div className={styles.generalInfoBlock}>
-        <Title level={5}>delta</Title>
-        <Text className={styles.generalInfoText}>
-          {parseDelta(pool?.delta, pool?.bondingCurve)}
-        </Text>
-      </div>
-      <div className={styles.generalInfoBlock}>
-        <Title level={5}>fee</Title>
-        <Text className={styles.generalInfoText}>{pool?.fee / 100}%</Text>
-      </div>
-      <div className={styles.generalInfoBlock}>
-        <Title level={5}>status</Title>
-        <Text className={styles.generalInfoText}>{pool?.pairState}</Text>
-      </div>
-      {isLiquidityProvisionPool && (
+        <Title
+          level={4}
+          className={styles.generalInfoTitle}
+          style={{ marginBottom: 0 }}
+        >
+          general Info
+          {onEdit && (
+            <Button type="primary" onClick={onEdit}>
+              edit
+            </Button>
+          )}
+        </Title>
         <div className={styles.generalInfoBlock}>
-          <Title level={5}>accumulated fees</Title>
+          <Title level={5}>collection</Title>
+          <Row align="middle" gutter={[8, 0]}>
+            <Col>
+              <Avatar src={market?.collectionImage} />
+            </Col>
+            <Col>{market?.collectionName}</Col>
+          </Row>
+        </div>
+        <div className={styles.generalInfoBlock}>
+          <Title level={5}>pool type</Title>
+          <Text className={styles.generalInfoText}>{PoolType[pool?.type]}</Text>
+        </div>
+        <div className={styles.generalInfoBlock}>
+          <Title level={5}>SOL balance</Title>
           <Text className={styles.generalInfoText}>
-            {formatBNToString(new BN(accumulatedFees || '0'))} SOL
+            {formatBNToString(new BN(pool?.fundsSolOrTokenBalance || '0'))} SOL
           </Text>
         </div>
-      )}
-    </div>
+        <div className={styles.generalInfoBlock}>
+          <Title level={5}>amount of NFTs</Title>
+          <Text className={styles.generalInfoText}>
+            {pool?.nftsCount || '0'}
+          </Text>
+        </div>
+        <div className={styles.generalInfoBlock}>
+          <Title level={5}>delta</Title>
+          <Text className={styles.generalInfoText}>
+            {parseDelta(pool?.delta, pool?.bondingCurve)}
+          </Text>
+        </div>
+        <div className={styles.generalInfoBlock}>
+          <Title level={5}>fee</Title>
+          <Text className={styles.generalInfoText}>{pool?.fee / 100}%</Text>
+        </div>
+        <div className={styles.generalInfoBlock}>
+          <Title level={5}>status</Title>
+          <Text className={styles.generalInfoText}>{pool?.pairState}</Text>
+        </div>
+        {isLiquidityProvisionPool && (
+          <div className={styles.generalInfoBlock}>
+            <Title level={5}>accumulated fees</Title>
+            <Text className={styles.generalInfoText}>
+              {formatBNToString(new BN(accumulatedFees || '0'))} SOL
+            </Text>
+          </div>
+        )}
+      </div>
+      <Chart pool={pool} />
+    </>
   );
 };
