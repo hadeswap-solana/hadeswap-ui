@@ -50,6 +50,7 @@ const Stats: FC = () => {
 };
 
 export const Home: FC = () => {
+  const { data, isLoading } = useQuery(['USER_QUERY'], fetchTop);
   return (
     <AppLayout hideFooter contentClassName={styles.content}>
       <div className={styles.root}>
@@ -76,7 +77,7 @@ export const Home: FC = () => {
         </NavLink> */}
         <p className={styles.zeroFees}>0% fees</p>
       </div>
-      <TopMarkets />
+      <TopMarkets data={data} isLoading={isLoading} />
     </AppLayout>
   );
 };
@@ -116,3 +117,8 @@ const fetchVolume24 = async (): Promise<string> => {
 
   return data.volume;
 };
+
+const fetchTop = async () =>
+  await (
+    await fetch(`https://${process.env.BACKEND_DOMAIN}/stats/volume24h`)
+  ).json();
