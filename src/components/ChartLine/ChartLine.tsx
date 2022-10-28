@@ -46,6 +46,8 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     type,
   } = pool;
 
+  console.log(pool);
+
   const CHART_COLORS = {
     white: 'rgb(244, 239, 239)',
     whiteOpacity: 'rgba(244, 239, 239, 0.5)',
@@ -70,8 +72,10 @@ const ChartLine: FC<IProps> = ({ pool }) => {
         ? BondingCurveType.Linear
         : BondingCurveType.Exponential,
     orderType: OrderType.Sell,
-    counter: mathCounter,
+    counter: mathCounter + 1,
   });
+
+  console.log(priceArrayBuy, 'priceArrayBuy');
 
   const priceArraySell = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
@@ -84,6 +88,8 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     orderType: OrderType.Buy,
     counter: mathCounter,
   });
+
+  console.log(priceArraySell, 'priceArraySell');
 
   const amountOrder: number = buyOrdersAmount + sellOrders.length;
 
@@ -118,7 +124,10 @@ const ChartLine: FC<IProps> = ({ pool }) => {
       return { mid: 0, arr: [0, ...labelsSell] };
     }
     if (type === 'liquidityProvision') {
-      return { mid: labels.length / 2, arr: [...labels, amountOrder] };
+      return {
+        mid: labels.length / 2 + mathCounter,
+        arr: [...labels, amountOrder],
+      };
     }
   };
 
