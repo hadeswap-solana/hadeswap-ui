@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { BN, hadeswap } from 'hadeswap-sdk';
+import { BN } from 'hadeswap-sdk';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,7 +16,7 @@ import {
   BondingCurveType,
   OrderType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
-import { BasePair, Pair } from '../../state/core/types';
+import { Pair } from '../../state/core/types';
 import { formatBNToString } from '../../utils';
 
 ChartJS.register(
@@ -36,18 +36,15 @@ interface IProps {
 const ChartLine: FC<IProps> = ({ pool }) => {
   const {
     baseSpotPrice,
-    currentSpotPrice,
     delta,
     fee,
     buyOrdersAmount,
     sellOrders,
-    liquidityProvisionOrders,
     bondingCurve,
     nftsCount,
     mathCounter,
     type,
   } = pool;
-  console.log(pool);
 
   const CHART_COLORS = {
     white: 'rgb(244, 239, 239)',
@@ -58,13 +55,13 @@ const ChartLine: FC<IProps> = ({ pool }) => {
 
   const spotPrice = +formatBNToString(new BN(baseSpotPrice));
 
-  const parseDelta = (rawDelta: number, curveType: string): any => {
+  const parseDelta = (rawDelta: number, curveType: string): number => {
     return curveType === 'exponential'
-      ? ((+spotPrice * +rawDelta) / 1e4).toFixed(2)
+      ? +((spotPrice * rawDelta) / 1e4).toFixed(2)
       : +formatBNToString(new BN(rawDelta));
   };
 
-  const priceArrayBuy: any = helpers.calculatePricesArray({
+  const priceArrayBuy = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
     delta: delta,
     amount: buyOrdersAmount,
@@ -75,7 +72,8 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     orderType: OrderType.Sell,
     counter: mathCounter,
   });
-  const priceArraySell: any = helpers.calculatePricesArray({
+
+  const priceArraySell = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
     delta: delta,
     amount: nftsCount,
@@ -87,9 +85,7 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     counter: mathCounter,
   });
 
-  console.log(priceArraySell, 'priceArraySell');
-
-  const amountOrder = buyOrdersAmount + sellOrders.length;
+  const amountOrder: number = buyOrdersAmount + sellOrders.length;
 
   const labelsBuy = Array(priceArrayBuy.array.length)
     .fill(0)
@@ -114,7 +110,7 @@ const ChartLine: FC<IProps> = ({ pool }) => {
       else return Math.abs(i - half);
     });
 
-  const typeCheck = (type) => {
+  const typeCheck = (type: string) => {
     if (type === 'tokenForNft') {
       return { mid: labelsBuy.length, arr: [...labelsBuy, 0] };
     }
@@ -125,8 +121,6 @@ const ChartLine: FC<IProps> = ({ pool }) => {
       return { mid: labels.length / 2, arr: [...labels, amountOrder] };
     }
   };
-
-  console.log(labels, 'labelslabels');
 
   const newType = typeCheck(type);
 
@@ -155,29 +149,20 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     },
   ];
 
-  const counterTest = 0;
-
-  const arrCordBuy = priceArrayBuy.array.map((price, i) => {
+  const arrCordBuy = priceArrayBuy.array.map((price: number, i: number) => {
     const newPrice = price / 1e9;
-    return { x: -i - 1 + counterTest, y: newPrice - newPrice * (fee / 10000) };
+    return { x: -i + mathCounter, y: newPrice - newPrice * (fee / 10000) };
   });
 
-  const arrCordSell = priceArraySell.array.map((price, i) => {
+  const arrCordSell = priceArraySell.array.map((price: number, i: number) => {
     const newPrice = price / 1e9;
     return {
-      x: i + 1 + counterTest,
+      x: i + 1 + mathCounter,
       y: newPrice + newPrice * (fee / 10000),
     };
   });
 
-  const test = [...arrCordBuy.reverse(), ...arrCordSell];
-
-  // console.log(parseDelta(delta, bondingCurve), 'deltaParse');
-
-  const midPoint = {
-    x: counterTest,
-    y: spotPrice + spotPrice * (fee / 10000),
-  };
+  const dataArr = [...arrCordBuy.reverse(), ...arrCordSell];
 
   const options: any = {
     responsive: true,
@@ -186,20 +171,12 @@ const ChartLine: FC<IProps> = ({ pool }) => {
         ticks: {
           stepSize: 1,
         },
-        grid: {
-          // lineWidth: 0,
-          // color: 'rgba(255,255,255,0)',
-        },
       },
       y: {
         suggestedMin: 0,
         suggestedMax: spotPrice + 1,
         ticks: {
           stepSize: delta ? parseDelta(delta, bondingCurve) : 0.5,
-        },
-        grid: {
-          // lineWidth: 0,
-          // color: 'rgba(255,255,255,0)',
         },
       },
     },
@@ -211,39 +188,23 @@ const ChartLine: FC<IProps> = ({ pool }) => {
         interaction: {
           displayColors: false,
           callbacks: {
-            // title: hideTitle,
             title: () => '',
-            label: (context, data) => 'price: ' + context.parsed.y.toFixed(3),
+            label: (context) => 'price: ' + context.parsed.y.toFixed(3),
           },
         },
       },
       legend: {
         display: false,
-        position: 'top' as const,
-      },
-      title: {
-        // display: true,
-        // text: 'Chart.js Line Chart',
       },
     },
   };
-
-  // console.log(priceArraySell.array, 'priceArraySell.array');
-
-  console.log(arrCordBuy, 'arrCordBuy');
-  console.log(arrCordSell, 'arrCordSell');
-
-  // console.log(newType.arr);
 
   const data = {
     labels: newType.arr,
     datasets: [
       {
         label: 'Dataset',
-        data:
-          // amountOrder
-          // ? [...arrCordBuy, midPoint, ...arrCordSell]
-          [...arrCordBuy, ...arrCordSell],
+        data: dataArr,
         borderColor: CHART_COLORS.white,
         backgroundColor: CHART_COLORS.whiteOpacity,
         pointStyle: 'circle',
