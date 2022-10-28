@@ -58,9 +58,9 @@ const ChartLine: FC<IProps> = ({ pool }) => {
 
   const spotPrice = +formatBNToString(new BN(baseSpotPrice));
 
-  const parseDelta = (rawDelta: number, curveType: string): number => {
+  const parseDelta = (rawDelta: number, curveType: string): any => {
     return curveType === 'exponential'
-      ? (spotPrice / 100) * +(rawDelta / 100).toFixed(2)
+      ? ((+spotPrice * +rawDelta) / 1e4).toFixed(2)
       : +formatBNToString(new BN(rawDelta));
   };
 
@@ -97,6 +97,7 @@ const ChartLine: FC<IProps> = ({ pool }) => {
       const half = Math.ceil(priceArrayBuy.array.length);
       if (i < half) return i - half;
     });
+
   const labelsSell = Array(priceArraySell.array.length)
     .fill(0)
     .map((none, i) => {
@@ -104,10 +105,6 @@ const ChartLine: FC<IProps> = ({ pool }) => {
       return Math.abs(i - half);
     })
     .reverse();
-  // console.log('looooog', [...labelsBuy, ...labelsSell]);
-
-  // console.log(priceArrayBuy, 'priceArrayBuy');
-  // console.log(priceArraySell, 'priceArraySell');
 
   const labels = Array(amountOrder * 2)
     .fill(0)
@@ -121,13 +118,16 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     if (type === 'tokenForNft') {
       return { mid: labelsBuy.length, arr: [...labelsBuy, 0] };
     }
-    if (type === 'NftForToken') {
+    if (type === 'nftForToken') {
       return { mid: 0, arr: [0, ...labelsSell] };
     }
     if (type === 'liquidityProvision') {
       return { mid: labels.length / 2, arr: [...labels, amountOrder] };
     }
   };
+
+  console.log(labels, 'labelslabels');
+
   const newType = typeCheck(type);
 
   const quadrants: any[] = [
@@ -138,7 +138,7 @@ const ChartLine: FC<IProps> = ({ pool }) => {
           chartArea: { left, top, right, bottom },
           scales: { x, y },
         } = chart;
-        const midX = x.getPixelForValue(newType.mid);
+        const midX = x.getPixelForValue(newType?.mid ?? 0);
         const midY = y.getPixelForValue(1);
 
         ctx.save();
@@ -155,7 +155,29 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     },
   ];
 
+  const counterTest = 0;
+
+  const arrCordBuy = priceArrayBuy.array.map((price, i) => {
+    const newPrice = price / 1e9;
+    return { x: -i - 1 + counterTest, y: newPrice - newPrice * (fee / 10000) };
+  });
+
+  const arrCordSell = priceArraySell.array.map((price, i) => {
+    const newPrice = price / 1e9;
+    return {
+      x: i + 1 + counterTest,
+      y: newPrice + newPrice * (fee / 10000),
+    };
+  });
+
+  const test = [...arrCordBuy.reverse(), ...arrCordSell];
+
   // console.log(parseDelta(delta, bondingCurve), 'deltaParse');
+
+  const midPoint = {
+    x: counterTest,
+    y: spotPrice + spotPrice * (fee / 10000),
+  };
 
   const options: any = {
     responsive: true,
@@ -181,7 +203,20 @@ const ChartLine: FC<IProps> = ({ pool }) => {
         },
       },
     },
+    tooltips: {
+      enabled: false,
+    },
     plugins: {
+      tooltip: {
+        interaction: {
+          displayColors: false,
+          callbacks: {
+            // title: hideTitle,
+            title: () => '',
+            label: (context, data) => 'price: ' + context.parsed.y.toFixed(3),
+          },
+        },
+      },
       legend: {
         display: false,
         position: 'top' as const,
@@ -193,41 +228,22 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     },
   };
 
-  const counterTest = 0;
-
-  const arrCordBuy = priceArrayBuy.array.map((price, i) => {
-    const newPrice = price / 1e9;
-    return { x: -i - 1 + counterTest, y: newPrice + newPrice * (fee / 10000) };
-  });
-
-  const arrCordSell = priceArraySell.array.map((price, i) => {
-    const newPrice = price / 1e9;
-    return {
-      x: i + 1 + counterTest,
-      y: newPrice + newPrice * (fee / 10000),
-    };
-  });
-
   // console.log(priceArraySell.array, 'priceArraySell.array');
 
   console.log(arrCordBuy, 'arrCordBuy');
   console.log(arrCordSell, 'arrCordSell');
 
-  console.log(newType.arr);
+  // console.log(newType.arr);
 
   const data = {
     labels: newType.arr,
     datasets: [
       {
         label: 'Dataset',
-        data: [
-          ...arrCordBuy,
-          {
-            x: counterTest,
-            y: spotPrice + spotPrice * (fee / 10000),
-          },
-          ...arrCordSell,
-        ],
+        data:
+          // amountOrder
+          // ? [...arrCordBuy, midPoint, ...arrCordSell]
+          [...arrCordBuy, ...arrCordSell],
         borderColor: CHART_COLORS.white,
         backgroundColor: CHART_COLORS.whiteOpacity,
         pointStyle: 'circle',
