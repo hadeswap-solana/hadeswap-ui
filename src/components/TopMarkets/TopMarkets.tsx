@@ -41,33 +41,31 @@ const TopMarkets: FC<IProps> = ({ data, isLoading }) => {
         <Spinner />
       ) : (
         <ol className={styles.list}>
-          <>
-            {data?.map((item, idx) => (
-              <li className={styles.item} key={item.collectionPublicKey}>
-                <div className={styles.itemNumber}>{idx + 1}</div>
-                <Avatar size={34} src={item.collectionImage} />
+          {data?.map((item, idx) => (
+            <li className={styles.item} key={item.collectionPublicKey}>
+              <div className={styles.itemNumber}>{idx + 1}</div>
+              <Avatar size={34} src={item.collectionImage} />
 
-                <div className={styles.description}>
-                  <div className={styles.poolName}>{item.collectionName}</div>
-                  <div className={styles.offerTVL}>
-                    <span className={styles.offerLabel}>offer TVL: &nbsp;</span>
-                    <PriceWithIcon
-                      price={(item.volume24 / 1e9).toString()}
-                      rightIcon
-                    />
-                  </div>
+              <div className={styles.description}>
+                <div className={styles.poolName}>{item.collectionName}</div>
+                <div className={styles.offerTVL}>
+                  <span className={styles.offerLabel}>offer TVL: &nbsp;</span>
+                  <PriceWithIcon
+                    price={(item.volume24 / 1e9).toString()}
+                    rightIcon
+                  />
                 </div>
+              </div>
 
-                <button
-                  className={styles.btn}
-                  onClick={handleClick(item.collectionPublicKey)}
-                >
-                  <ArrowIcon width={18} height={16} />
-                  <span>trade</span>
-                </button>
-              </li>
-            ))}
-          </>
+              <button
+                className={styles.btn}
+                onClick={handleClick(item.collectionPublicKey)}
+              >
+                <ArrowIcon width={18} height={16} />
+                <span>trade</span>
+              </button>
+            </li>
+          ))}
         </ol>
       )}
     </div>
