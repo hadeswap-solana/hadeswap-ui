@@ -110,9 +110,6 @@ const ChartLine: FC<ChartLineProps> = ({ pool }) => {
       return Math.abs(i - half);
     });
 
-  console.log(labelsBuy, 'labelsBuy');
-  console.log(labelsSell, 'labelsSell');
-
   const typeCheck = (type: string) => {
     if (type === 'tokenForNft') {
       return { mid: labelsBuy.length, arr: [...labelsBuy, 0] };
