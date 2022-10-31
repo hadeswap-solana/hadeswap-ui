@@ -7,6 +7,7 @@
 
   //? Antd variables copy
   //? Full list here (https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less)
+  --body-background: #1a1c1e; // heading text color
   --primary-color: #9dcaff;
   --primary-white-color: #e3e2e5;
   --primary-background-color: #282f37;
@@ -16,7 +17,6 @@
   --success-color: #52c41a; // success state color
   --warning-color: #faad14; // warning state color
   --error-color: #f5222d; // error state color
-  --heading-color: #1a1c1e; // heading text color
   --text-color: rgba(0, 0, 0, 0.65); // major text color
   --text-color-secondary: rgba(0, 0, 0, 0.45); // secondary text color
   --disabled-color: rgba(0, 0, 0, 0.25); // disable state color

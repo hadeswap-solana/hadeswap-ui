@@ -1,10 +1,12 @@
 .cartSider {
   position: sticky;
   top: 0;
+  right: 0;
   width: 0;
   height: 100vh;
   border-left: var(--border-base);
   transform: translateX(1px);
+  background: var(--body-background);
   z-index: 1;
   transition: width var(--base-animation-time);
 }
@@ -17,9 +19,8 @@
   overflow-x: hidden;
   overflow-y: auto;
   height: calc(100% - 40px - 16px - 32px);
-  width: var(--cart-sider-width);
+  width: calc(var(--cart-sider-width) + 16px);
   padding: 16px 0 0 16px;
-  margin-right: -16px;
 }
 
 .badgeButton {
@@ -31,20 +32,15 @@
   position: absolute !important;
   top: 50%;
   transform: translateY(-50%);
-  left: -37px;
-
-  &.opened {
-    left: -30px;
-  }
+  left: -30px;
 }
 
 .toggleCartSiderBtnHidden {
   visibility: hidden;
 }
 
-
 .cartSection {
-  width: calc(var(--cart-sider-width) - 48px);
+  width: calc(var(--cart-sider-width) - 32px);
 
   &:not(:last-child) {
     margin-bottom: 32px;
