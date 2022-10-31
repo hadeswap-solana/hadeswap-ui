@@ -29,11 +29,11 @@ ChartJS.register(
   Legend,
 );
 
-interface IProps {
+interface ChartLineProps {
   pool: Pair;
 }
 
-const ChartLine: FC<IProps> = ({ pool }) => {
+const ChartLine: FC<ChartLineProps> = ({ pool }) => {
   const {
     baseSpotPrice,
     delta,
@@ -85,18 +85,18 @@ const ChartLine: FC<IProps> = ({ pool }) => {
     counter: mathCounter,
   });
 
-  const amountOrder: number = buyOrdersAmount + sellOrders.length;
+  const amountOrder = buyOrdersAmount + sellOrders.length;
 
   const labelsBuy = Array(priceArrayBuy.array.length)
     .fill(0)
-    .map((none, i) => {
+    .map((_, i) => {
       const half = Math.ceil(priceArrayBuy.array.length);
       if (i < half) return i - half;
     });
 
   const labelsSell = Array(priceArraySell.array.length)
     .fill(0)
-    .map((none, i) => {
+    .map((_, i) => {
       const half = Math.ceil(priceArraySell.array.length);
       return Math.abs(i - half);
     })
@@ -104,11 +104,14 @@ const ChartLine: FC<IProps> = ({ pool }) => {
 
   const labels = Array(amountOrder * 2)
     .fill(0)
-    .map((none, i) => {
+    .map((_, i) => {
       const half = Math.ceil(amountOrder);
       if (i < half) return i - half;
-      else return Math.abs(i - half);
+      return Math.abs(i - half);
     });
+
+  console.log(labelsBuy, 'labelsBuy');
+  console.log(labelsSell, 'labelsSell');
 
   const typeCheck = (type: string) => {
     if (type === 'tokenForNft') {
