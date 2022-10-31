@@ -40,11 +40,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
         itemsAmount={itemsAmount}
         className={badgeClassName}
       />
-      <div
-        className={classNames(styles.cartBody, {
-          [styles.expandBody]: cartOpened,
-        })}
-      >
+      <div className={styles.cartBody}>
         {!!cartItems.buy.length && (
           <div className={styles.cartSection}>
             <div className={styles.cartTitle}>
@@ -131,17 +127,17 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
             </div>
           </div>
         )}
-        <div className={styles.submitWrapper}>
-          <Button
-            disabled={isSwapButtonDisabled}
-            type="primary"
-            block
-            size="large"
-            onClick={swap}
-          >
-            swap
-          </Button>
-        </div>
+      </div>
+      <div className={styles.submitWrapper}>
+        <Button
+          disabled={isSwapButtonDisabled}
+          type="primary"
+          block
+          size="large"
+          onClick={swap}
+        >
+          swap
+        </Button>
       </div>
     </div>
   );
