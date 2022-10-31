@@ -56,7 +56,7 @@ export const POOL_ITEM: Item = {
       price: true,
     },
     {
-      title: 'FEE',
+      title: 'fee',
       valueKey: 'fee',
       percent: true,
     },
