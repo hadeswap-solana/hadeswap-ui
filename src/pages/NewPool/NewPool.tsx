@@ -51,10 +51,11 @@ import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../components/TransactionsLoadingModal';
+import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 
-import styles from './NewPool.module.scss';
 import { chunk } from 'lodash';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
+import styles from './NewPool.module.scss';
 
 const { Step } = Steps;
 const { Title, Paragraph } = Typography;
@@ -501,9 +502,33 @@ export const NewPool: FC = () => {
                             min="0"
                           />
                         </Form.Item>
-                        {Boolean(spotPrice) && (
+                        {/* {Boolean(spotPrice) && (
                           <Paragraph>
                             you have selected a starting price of {spotPrice}{' '}
+                            SOL.
+                          </Paragraph>
+                        )} */}
+                        {Boolean(
+                          type === PairType.TokenForNFT ||
+                            type === PairType.LiquidityProvision,
+                        ) && (
+                          <Paragraph>
+                            starting buying price {spotPrice} SOL.
+                          </Paragraph>
+                        )}
+                        {Boolean(
+                          type === PairType.NftForToken ||
+                            type === PairType.LiquidityProvision,
+                        ) && (
+                          <Paragraph>
+                            starting selling price{' '}
+                            {helpers.calculateNextSpotPrice({
+                              orderType: OrderType.Buy,
+                              delta: delta,
+                              spotPrice: spotPrice,
+                              bondingCurveType: curve,
+                              counter: 0,
+                            })}{' '}
                             SOL.
                           </Paragraph>
                         )}

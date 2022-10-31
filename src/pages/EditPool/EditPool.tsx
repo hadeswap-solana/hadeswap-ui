@@ -58,8 +58,10 @@ import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../components/TransactionsLoadingModal';
+import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 
 import styles from './EditPool.module.scss';
+import { renamePairType } from '../../state/core/helpers';
 
 const { Title, Paragraph } = Typography;
 
@@ -979,16 +981,39 @@ export const EditPool: FC = () => {
                             min="0"
                           />
                         </Form.Item>
-                        {Boolean(spotPrice) && (
+                        {/* {Boolean(spotPrice) && (
                           <Paragraph>
                             you have selected a starting price of {spotPrice}{' '}
+                            SOL.
+                          </Paragraph>
+                        )} */}
+                        {Boolean(
+                          isTokenForNFTPool || isLiquidityProvisionPool,
+                        ) && (
+                          <Paragraph>
+                            starting buying price {spotPrice} SOL.
+                          </Paragraph>
+                        )}
+                        {Boolean(
+                          isNftForTokenPool || isLiquidityProvisionPool,
+                        ) && (
+                          <Paragraph>
+                            starting selling price{' '}
+                            {helpers.calculateNextSpotPrice({
+                              orderType: OrderType.Buy,
+                              delta: delta,
+                              spotPrice: spotPrice,
+                              bondingCurveType: curve,
+                              counter: 0,
+                            })}{' '}
                             SOL.
                           </Paragraph>
                         )}
                         {Boolean(delta) && (
                           <Paragraph>
-                            each time your pool {type}s an NFT, your {type}{' '}
-                            price will adjust up by {delta} {unit}.
+                            each time your pool {renamePairType(type)}s an NFT,
+                            your {renamePairType(type)} price will adjust up by{' '}
+                            {delta} {unit}.
                           </Paragraph>
                         )}
                       </Card>
