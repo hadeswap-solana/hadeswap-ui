@@ -3,19 +3,22 @@
   top: 0;
   width: 0;
   height: 100vh;
+  border-left: var(--border-base);
+  transform: translateX(1px);
   z-index: 1;
   transition: width var(--base-animation-time);
 }
 
 .openCart {
   width: var(--cart-sider-width);
-  transform: translateX(-1px);
-  border-left: var(--border-base);
+}
 
-  .cartBody {
-    width: var(--cart-sider-width);
-    padding: 16px 16px 0 16px;
-  }
+.cartBody {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(100% - 40px - 16px - 32px);
+  width: var(--cart-sider-width);
+  padding: 16px 16px 0 16px;
 }
 
 .badgeButton {
@@ -38,11 +41,6 @@
   visibility: hidden;
 }
 
-.cartBody {
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: calc(100% - 40px - 16px - 32px);
-}
 
 .cartSection {
   &:not(:last-child) {
