@@ -20,21 +20,21 @@ export const COLLECTION_ITEM: Item = {
   imageKey: 'collectionImage',
   list: [
     {
-      title: 'LISTINGS',
+      title: 'listings',
       valueKey: 'listingsAmount',
     },
     {
-      title: 'FLOOR PRICE',
+      title: 'floor price',
       valueKey: 'floorPrice',
       price: true,
     },
     {
-      title: 'BEST OFFER',
+      title: 'best offer',
       valueKey: 'bestoffer',
       price: true,
     },
     {
-      title: 'OFFER TVL',
+      title: 'offer TVL',
       valueKey: 'offerTVL',
       price: true,
     },
@@ -47,11 +47,11 @@ export const POOL_ITEM: Item = {
   imageKey: 'collectionImage',
   list: [
     {
-      title: 'POOL TYPE',
+      title: 'pool type',
       valueKey: 'type',
     },
     {
-      title: 'SPOT PRICE',
+      title: 'spot price',
       valueKey: 'spotPrice',
       price: true,
     },
@@ -61,29 +61,29 @@ export const POOL_ITEM: Item = {
       percent: true,
     },
     {
-      title: 'SOL BALANCE',
+      title: 'SOL balance',
       valueKey: 'fundsSolOrTokenBalance',
       price: true,
     },
     {
-      title: 'BUY ORDERS',
+      title: 'buy orders',
       valueKey: 'buyOrdersAmount',
     },
     {
-      title: 'SELL ORDERS',
+      title: 'sell orders',
       valueKey: 'sellOrdersAmount',
     },
     {
-      title: 'ACCUMULATED FEES',
+      title: 'accumulated fees',
       valueKey: 'totalAccumulatedFees',
       price: true,
     },
     {
-      title: 'DELTA',
+      title: 'delta',
       valueKey: 'delta',
     },
     {
-      title: 'OWNER',
+      title: 'owner',
       valueKey: OWNER_PUBLIC_KEY,
     },
   ],
