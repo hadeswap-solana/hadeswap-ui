@@ -1,4 +1,4 @@
-export const CloseCrossIcon = () => (
+export const CloseCrossIcon = (): JSX.Element => (
   <svg
     width="25"
     height="24"

@@ -26,7 +26,7 @@ const HeaderMobile = (): JSX.Element => {
           {isMenuVisible && <CloseCrossIcon />}
         </div>
       </div>
-      {isMenuVisible && <Menu />}
+      {isMenuVisible && <Menu modalClassName={styles.modalMenu} />}
     </header>
   );
 };

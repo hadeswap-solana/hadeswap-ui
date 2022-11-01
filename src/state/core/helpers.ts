@@ -323,6 +323,7 @@ type CreatePoolTableRow = (
   totalAccumulatedFees: number;
   delta: string;
 };
+
 export const createPoolTableRow: CreatePoolTableRow = (pair, marketInfo) => {
   return {
     pairPubkey: pair?.pairPubkey || '',

@@ -1,4 +1,4 @@
-export const BurgerIcon = () => (
+export const BurgerIcon = (): JSX.Element => (
   <svg
     width="24"
     height="24"

@@ -1,26 +1,17 @@
 // import { AsyncState } from './../../utils/state/types';
-import { commonActions } from './actions';
+import { commonActions, commonTypes } from './actions';
 import { combineReducers } from 'redux';
 import { createReducer } from 'typesafe-actions';
 
+import { composeReducers } from '../../utils/state';
 import {
-  // createHandlers,
-  composeReducers,
-  // createInitialAsyncState,
-} from '../../utils/state/reducers';
-import { commonTypes } from '../../state/common/actions';
-import {
-  ConnectionState,
-  // NotificationState,
-  SocketState,
-  // SolanaHealthState,
-  // SolanaNetworkHealth,
-  ModalState,
-  WalletState,
-  // UserState,
-  ConfettiState,
   CartSiderState,
-  MobileMode,
+  ConfettiState,
+  ConnectionState,
+  ModalState,
+  ScreenTypes,
+  SocketState,
+  WalletState,
 } from './types';
 
 // export const initialSolanaHealthState: AsyncState<SolanaHealthState> =
@@ -48,7 +39,7 @@ export const initialModalState: ModalState = { isVisible: false };
 export const initialConfettiState: ModalState = { isVisible: false };
 
 export const initialCartSiderState: CartSiderState = { isVisible: false };
-const initialMobileMode: MobileMode = { isMobile: false };
+const initialScreenMode: ScreenTypes = ScreenTypes.DESKTOP;
 // const solanaHealthReducer = createReducer(
 //   initialSolanaHealthState,
 //   createHandlers<SolanaHealthState>(commonTypes.FETCH_SOLANA_HEALTH),
@@ -151,11 +142,8 @@ const toggleCartSiderReducer = createReducer<CartSiderState>(
   },
 );
 
-const toggleMobileModeReducer = createReducer<MobileMode>(initialMobileMode, {
-  [commonTypes.TOGGLE_MOBILE_MODE]: (state, action) => ({
-    ...state,
-    isMobile: action.payload,
-  }),
+const setScreenModeReducer = createReducer<ScreenTypes>(initialScreenMode, {
+  [commonTypes.SET_SCREEN_MODE]: (__, action) => action.payload,
 });
 
 export default combineReducers({
@@ -170,5 +158,5 @@ export default combineReducers({
   // discordModal: toggleDiscordModalReducer,
   confetti: setConfettiReducer,
   cartSider: composeReducers(setCartSiderReducer, toggleCartSiderReducer),
-  mobileMode: toggleMobileModeReducer,
+  screenMode: setScreenModeReducer,
 });
