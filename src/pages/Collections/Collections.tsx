@@ -17,7 +17,8 @@ import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../state/core/selectors';
-import { selectIsMobile } from '../../state/common/selectors';
+import { selectScreeMode } from '../../state/common/selectors';
+import { ScreenTypes } from '../../state/common/types';
 import { MarketInfo } from '../../state/core/types';
 import { useDebounce } from '../../hooks';
 import { COLLECTION_TABS, createCollectionLink } from '../../constants';
@@ -29,13 +30,17 @@ export const Collections: FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [searchStr, setSearchStr] = useState<string>('');
-  const [sortValue, setSortValue] = useState<string | null>(null);
+  const [sortValue, setSortValue] = useState<string>(
+    `${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`,
+  );
   const [collections, setCollections] = useState<MarketInfo[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-  const isMobile = useSelector(selectIsMobile) as boolean;
-  const markets = useSelector(selectAllMarkets) as MarketInfo[];
-  const collectionsLoading = useSelector(selectAllMarketsLoading) as boolean;
+  const screenMode = useSelector(selectScreeMode);
+  const markets = useSelector(selectAllMarkets);
+  const collectionsLoading = useSelector(selectAllMarketsLoading);
+
+  const isMobile = screenMode === ScreenTypes.TABLET;
 
   const setSearch = useDebounce((search: string): void => {
     setSearchStr(search.toUpperCase());
@@ -54,7 +59,7 @@ export const Collections: FC = () => {
       if (sortValue !== e.currentTarget.dataset.value) {
         setSortValue(e.currentTarget.dataset.value);
       } else {
-        setSortValue(null);
+        setSortValue('');
       }
     },
     [sortValue],
@@ -62,31 +67,17 @@ export const Collections: FC = () => {
 
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    setCollections(
-      sortCollection(markets.slice(), INITIAL_SORT_VALUE, SORT_ORDER.DESC),
-    );
-    setSortValue(`${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`);
-  }, [markets]);
-
-  useEffect(() => {
-    setCollections(filterCollections(markets, searchStr));
-  }, [searchStr]);
-
-  useEffect(() => {
+    const collection = filterCollections(markets.slice(), searchStr);
     if (sortValue) {
       const [name, order] = sortValue.split('_');
-      setCollections(sortCollection(collections, name, order));
+      setCollections(sortCollection(collection, name, order));
     } else {
-      if (searchStr) {
-        setCollections(collections);
-      } else {
-        setCollections(markets);
-      }
+      setCollections(collection);
     }
-  }, [sortValue]);
+  }, [searchStr, markets, sortValue]);
 
   return (
     <AppLayout>

@@ -1,11 +1,17 @@
+import { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { selectIsMobile } from '../../state/common/selectors';
+import { selectScreeMode } from '../../state/common/selectors';
 import HeaderDesktop from './Header';
 import HeaderMobile from './mobile/Header';
+import { ScreenTypes } from '../../state/common/types';
 
-const Header = (): JSX.Element => {
-  const isMobile = useSelector<boolean>(selectIsMobile);
-  return isMobile ? <HeaderMobile /> : <HeaderDesktop />;
+const Header: FC = () => {
+  const screenMode = useSelector(selectScreeMode);
+  return screenMode !== ScreenTypes.DESKTOP ? (
+    <HeaderMobile />
+  ) : (
+    <HeaderDesktop />
+  );
 };
 
 export default Header;

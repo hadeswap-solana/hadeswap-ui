@@ -44,7 +44,7 @@ export const NFTCard: FC<NFTCardProps> = ({
           )}
           {price && (
             <Typography.Text className={styles.cardPrice}>
-              <img width={16} height={16} src={solanaLogo} /> {price}
+              <img width={16} height={16} src={solanaLogo} alt="sol" /> {price}
             </Typography.Text>
           )}
           {onBtnClick && (

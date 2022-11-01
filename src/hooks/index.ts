@@ -13,3 +13,4 @@ export { useWebSocketSubscriptions } from './useWebSocketSubscriptions';
 export { useScrollRestore } from './useScrollRestore';
 export { useWalletInit } from './useWalletInit';
 export { useIntersection } from './useIntersection';
+export { useDesktopMode } from './useDesktopMode';
