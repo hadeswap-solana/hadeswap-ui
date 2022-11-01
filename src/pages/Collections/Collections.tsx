@@ -6,19 +6,21 @@ import { SearchOutlined } from '@ant-design/icons';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Spinner } from '../../components/Spinner/Spinner';
-import { CollectionsList } from './components/CollectionsList';
-import { CollectionsList as CollectionsListMobile } from './components/mobile/CollectionsList';
-import SortingModal from './components/mobile/SortingModal';
-import { INITIAL_SORT_VALUE, SORT_ORDER } from './Collections.constants';
-import { sortCollection, filterCollections } from './helpers';
+import CollectionList from '../../components/CollectionsList';
+import Sorting from '../../components/Sorting/mobile/Sorting';
+import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
+import { sortCollection } from '../../components/Sorting/mobile/helpers';
+import { COLLECTION_COLUMNS } from '../../utils/table/constants';
+import { SORT_ORDER } from '../../constants/common';
+import { filterCollections } from './helpers';
 
 import { coreActions } from '../../state/core/actions';
 import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../state/core/selectors';
-import { selectIsMobile } from '../../state/common/selectors';
-import { MarketInfo } from '../../state/core/types';
+import { selectScreeMode } from '../../state/common/selectors';
+import { ScreenTypes } from '../../state/common/types';
 import { useDebounce } from '../../hooks';
 import { COLLECTION_TABS, createCollectionLink } from '../../constants';
 import styles from './Collections.module.scss';
@@ -26,16 +28,22 @@ import styles from './Collections.module.scss';
 const { Title } = Typography;
 
 export const Collections: FC = () => {
+  const INITIAL_SORT_VALUE = 'offerTVL';
+
   const history = useHistory();
   const dispatch = useDispatch();
   const [searchStr, setSearchStr] = useState<string>('');
-  const [sortValue, setSortValue] = useState<string | null>(null);
-  const [collections, setCollections] = useState<MarketInfo[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [sortValue, setSortValue] = useState<string>(
+    `${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`,
+  );
+  const [collections, setCollections] = useState([]);
+  const [isSortingVisible, setIsSortingVisible] = useState<boolean>(false);
 
-  const isMobile = useSelector(selectIsMobile) as boolean;
-  const markets = useSelector(selectAllMarkets) as MarketInfo[];
-  const collectionsLoading = useSelector(selectAllMarketsLoading) as boolean;
+  const screenMode = useSelector(selectScreeMode);
+  const markets = useSelector(selectAllMarkets);
+  const collectionsLoading = useSelector(selectAllMarketsLoading);
+
+  const isMobile = screenMode === ScreenTypes.TABLET;
 
   const setSearch = useDebounce((search: string): void => {
     setSearchStr(search.toUpperCase());
@@ -49,52 +57,28 @@ export const Collections: FC = () => {
     [history],
   );
 
-  const handleSort = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      if (sortValue !== e.currentTarget.dataset.value) {
-        setSortValue(e.currentTarget.dataset.value);
-      } else {
-        setSortValue(null);
-      }
-    },
-    [sortValue],
-  );
-
   useEffect(() => {
     dispatch(coreActions.fetchAllMarkets());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    setCollections(
-      sortCollection(markets.slice(), INITIAL_SORT_VALUE, SORT_ORDER.DESC),
-    );
-    setSortValue(`${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`);
-  }, [markets]);
-
-  useEffect(() => {
-    setCollections(filterCollections(markets, searchStr));
-  }, [searchStr]);
-
-  useEffect(() => {
+    const collection = filterCollections(markets.slice(), searchStr);
     if (sortValue) {
       const [name, order] = sortValue.split('_');
-      setCollections(sortCollection(collections, name, order));
+      setCollections(sortCollection(collection, name, order));
     } else {
-      if (searchStr) {
-        setCollections(collections);
-      } else {
-        setCollections(markets);
-      }
+      setCollections(collection);
     }
-  }, [sortValue]);
+  }, [searchStr, markets, sortValue]);
 
   return (
     <AppLayout>
-      {isMobile && isModalVisible && (
-        <SortingModal
-          setIsModalVisible={setIsModalVisible}
-          handleSort={handleSort}
+      {isMobile && isSortingVisible && (
+        <Sorting
+          setIsSortingVisible={setIsSortingVisible}
           sortValue={sortValue}
+          setSortValue={setSortValue}
+          data={COLLECTION_COLUMNS}
         />
       )}
       <Row justify="center">
@@ -132,22 +116,10 @@ export const Collections: FC = () => {
                     onChange={(event) => setSearch(event.target.value || '')}
                   />
                   {isMobile && (
-                    <div
-                      className={styles.sortingBtn}
-                      onClick={() => setIsModalVisible(true)}
-                    >
-                      sorting
-                    </div>
+                    <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
                   )}
                 </div>
-                {isMobile ? (
-                  <CollectionsListMobile
-                    data={collections}
-                    onRowClick={onRowClick}
-                  />
-                ) : (
-                  <CollectionsList data={collections} onRowClick={onRowClick} />
-                )}
+                <CollectionList onRowClick={onRowClick} data={collections} />
               </div>
             </Col>
           </Row>

@@ -1,26 +1,55 @@
-import { coreActions } from './../../state/core/actions/index';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectCartPendingOrders,
-  selectCartPairs,
-} from '../../state/core/selectors';
-import { chunk, keyBy } from 'lodash';
-import { useConnection } from '../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { chunk, keyBy } from 'lodash';
+
+import { useConnection } from '../../hooks';
 import {
   createIx,
   mergeIxsIntoTxn,
   signAndSendTransactionsInSeries,
-} from './helpers';
-import { notify } from '../../utils';
-import { NotifyType } from '../../utils/solanaUtils';
+} from '../Layout/helpers';
 import { commonActions } from '../../state/common/actions';
+import { coreActions } from '../../state/core/actions';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
+import { selectCartSiderVisible } from '../../state/common/selectors';
+import {
+  selectAllInvalidCartOrders,
+  selectCartItems,
+  selectCartPairs,
+  selectCartPendingOrders,
+  selectIsCartEmpty,
+} from '../../state/core/selectors';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
+import { notify } from '../../utils';
+import { NotifyType } from '../../utils/solanaUtils';
+import { CartSiderProps } from './index';
+
+type UseCartSider = () => CartSiderProps;
 
 type UseSwap = () => {
   swap: () => Promise<void>;
+};
+
+export const useCartSider: UseCartSider = () => {
+  const cartItems = useSelector(selectCartItems);
+  const cartOpened = useSelector(selectCartSiderVisible);
+  const invalidItems = useSelector(selectAllInvalidCartOrders);
+  const isCartEmpty = useSelector(selectIsCartEmpty);
+
+  const itemsAmount = cartItems.buy.length + cartItems.sell.length;
+  const totalBuy = cartItems.buy.reduce((acc, item) => acc + item.price, 0);
+  const totalSell = cartItems.sell.reduce((acc, item) => acc + item.price, 0);
+
+  return {
+    cartItems,
+    cartOpened,
+    isCartEmpty,
+    invalidItems,
+    itemsAmount,
+    totalBuy,
+    totalSell,
+  };
 };
 
 export const useSwap: UseSwap = () => {

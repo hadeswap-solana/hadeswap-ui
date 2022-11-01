@@ -61,6 +61,8 @@ export interface CartSiderState {
   isVisible: boolean;
 }
 
-export interface MobileMode {
-  isMobile: boolean;
+export enum ScreenTypes {
+  TABLET = 'tablet',
+  SMALL_SCREEN = 'smallScreen',
+  DESKTOP = 'desktop',
 }
