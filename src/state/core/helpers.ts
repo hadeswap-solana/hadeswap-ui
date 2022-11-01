@@ -295,6 +295,16 @@ export const parseDelta = (rawDelta: number, curveType: string): string => {
     : `${formatBNToString(new BN(rawDelta))} SOL`;
 };
 
+enum PairType {
+  nftForToken = 'sell',
+  tokenForNft = 'buy',
+  liquidityProvision = 'liquidity provision',
+}
+
+export const renamePairType = (type: string): string => {
+  return PairType[type] || '';
+};
+
 type CreatePoolTableRow = (
   pair: Pair,
   marketInfo: MarketInfo,
@@ -320,7 +330,7 @@ export const createPoolTableRow: CreatePoolTableRow = (pair, marketInfo) => {
     ownerPublicKey: pair?.assetReceiver || '',
     collectionName: marketInfo?.collectionName || 'untitled collection',
     collectionImage: marketInfo?.collectionImage || '',
-    type: pair?.type || '',
+    type: renamePairType(pair?.type),
     spotPrice: formatBNToString(new BN(pair.currentSpotPrice || '0')),
     fee: parseFee(pair?.fee || 0),
     fundsSolOrTokenBalance: formatBNToString(

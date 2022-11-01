@@ -27,13 +27,13 @@
 
   &:hover {
     background: var(--primary-color);
-    color: var(--heading-color);
+    color: var(--body-background);
   }
 }
 
 .navLinkActive {
   background: var(--primary-color);
-  color: var(--heading-color);
+  color: var(--body-background);
 }
 
 .connectBtn {

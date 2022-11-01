@@ -1,16 +1,26 @@
 .cartSider {
   position: sticky;
   top: 0;
+  right: 0;
   width: 0;
   height: 100vh;
+  border-left: var(--border-base);
+  transform: translateX(1px);
+  background: var(--body-background);
   z-index: 1;
   transition: width var(--base-animation-time);
 }
 
 .openCart {
   width: var(--cart-sider-width);
-  transform: translateX(-1px);
-  border-left: var(--border-base);
+}
+
+.cartBody {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(100% - 40px - 16px - 32px);
+  width: calc(var(--cart-sider-width) + 16px);
+  padding: 16px 0 0 16px;
 }
 
 .badgeButton {
@@ -22,46 +32,28 @@
   position: absolute !important;
   top: 50%;
   transform: translateY(-50%);
-  left: -37px;
-
-  &.opened {
-    left: -30px;
-  }
+  left: -30px;
 }
 
 .toggleCartSiderBtnHidden {
   visibility: hidden;
 }
 
-.cartBody {
-  overflow-x: hidden;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-
-  &.expandBody {
-    width: var(--cart-sider-width);
-    padding: 16px;
-  }
-}
-
 .cartSection {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 32px;
+  width: calc(var(--cart-sider-width) - 32px);
+
+  &:not(:last-child) {
+    margin-bottom: 32px;
+  }
 }
 
 .cartTitle {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 
 .cartItems {
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -72,9 +64,7 @@
 }
 
 .submitWrapper {
-  display: flex;
-  align-items: flex-end;
-  flex-grow: 1;
+  margin: 32px 16px 16px;
 }
 
 .card {
