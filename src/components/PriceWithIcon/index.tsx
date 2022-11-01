@@ -1,6 +1,6 @@
 import { Typography, Row, Col } from 'antd';
 import { FC } from 'react';
-import SolanaLogo from '../../../assets/icons/svg/solana-sol-logo.svg';
+import SolanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 
 const { Text } = Typography;
 
