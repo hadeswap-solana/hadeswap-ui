@@ -1,7 +1,6 @@
 import { useQuery, useQueries } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { MarketInfo, Pair } from '../state/core/types';
-import { selectWalletPublicKey } from '../state/common/selectors';
 import { web3 } from 'hadeswap-sdk';
 import { fetchAllMarkets, fetchWalletPairs } from './requests';
 
@@ -32,13 +31,13 @@ export const useFetchAllMarkets = () => {
 };
 
 export const useFetchAllMarketsAndPairs = () => {
-  const walletPubkey: web3.PublicKey = useSelector(selectWalletPublicKey);
+  const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
 
   const walletPairsQuery: WalletPairsQuery = {
-    queryKey: ['fetchWalletPairs', `${walletPubkey}`],
-    queryFn: () => fetchWalletPairs(walletPubkey),
+    queryKey: ['fetchWalletPairs', `${publicKey}`],
+    queryFn: () => fetchWalletPairs(publicKey),
     staleTime: 5,
-    enabled: !!walletPubkey,
+    enabled: !!publicKey,
   };
 
   const response = useQueries({
