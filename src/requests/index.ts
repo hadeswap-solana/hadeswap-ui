@@ -1,54 +1,29 @@
-import { useQuery, useQueries, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueries } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { query } from './constants';
+import { MarketInfo, Pair } from '../state/core/types';
+import { selectWalletPublicKey } from '../state/common/selectors';
+import { web3 } from 'hadeswap-sdk';
 
-export interface QueryProps {
-  queryKey: string[];
-  queryFn: () => Promise<void>;
-  cacheTime: number;
-}
-
-interface QueryResponse {
-  data: [];
-  isLoading: boolean;
-}
-
-type QueryRequest = ({ queryKey, queryFn }: QueryProps) => QueryResponse;
-
-type MultiQueryRequest = (queriesData: any[]) => {
-  data: any;
-  isLoading: boolean;
+export const useFetchAllMarkets = () => {
+  const { data, isLoading }: { data: MarketInfo[]; isLoading: boolean } =
+    useQuery(query.fetchAllMarkets);
+  return { data, isLoading };
 };
 
-export const useFetch: QueryRequest = ({ queryKey, queryFn, cacheTime }) => {
-  const queryClient = useQueryClient();
-  const queryEnabled = !queryClient.getQueryData(queryKey);
-
-  const { data, isLoading }: QueryResponse = useQuery(queryKey, queryFn, {
-    enabled: queryEnabled,
-    cacheTime: cacheTime,
+export const useFetchAllMarketsAndPairs = () => {
+  const walletPubkey: web3.PublicKey = useSelector(selectWalletPublicKey);
+  const response = useQueries({
+    queries: [
+      query.fetchAllMarkets,
+      {
+        ...query.fetchWalletPairs(walletPubkey),
+        enabled: !!walletPubkey,
+      },
+    ],
   });
 
-  return {
-    data,
-    isLoading,
-  };
-};
-
-export const useFetchMultiple: MultiQueryRequest = (queriesData) => {
-  const queryClient = useQueryClient();
-
-  const queries = queriesData.map((query) => ({
-    queryKey: query.queryKey,
-    queryFn: query.queryFn,
-    enabled: !queryClient.getQueryData(query.queryKey),
-    cacheTime: query.cacheTime,
-  }));
-
-  const response = useQueries({ queries });
-  const data = response.map((item) => item.data);
-  const isLoading = response.some((item) => item.isLoading);
-
-  return {
-    data,
-    isLoading,
-  };
+  const data: (MarketInfo[] | Pair[])[] = response.map((item) => item.data);
+  const isLoading: boolean = response.some((item) => item.isLoading);
+  return { data, isLoading };
 };

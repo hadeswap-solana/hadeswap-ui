@@ -14,8 +14,7 @@ import { COLLECTION_COLUMNS } from '../../utils/table/constants';
 import { SORT_ORDER } from '../../constants/common';
 import { filterCollections } from './helpers';
 import { MarketInfo } from '../../state/core/types';
-import { useFetch } from '../../requests';
-import { query } from '../../requests/constants';
+import { useFetchAllMarkets } from '../../requests';
 
 import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
@@ -54,9 +53,7 @@ export const Collections: FC = () => {
   const {
     data: markets = [],
     isLoading,
-  }: { data: MarketInfo[]; isLoading: boolean } = useFetch(
-    query.fetchAllMarkets,
-  );
+  }: { data: MarketInfo[]; isLoading: boolean } = useFetchAllMarkets();
 
   useEffect(() => {
     const collection = filterCollections([...markets], searchStr);

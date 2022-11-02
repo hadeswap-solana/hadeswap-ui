@@ -3,10 +3,8 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Typography, Button } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { web3 } from 'hadeswap-sdk';
 
-import { useFetchMultiple } from '../../requests';
-import { query } from '../../requests/constants';
+import { useFetchAllMarketsAndPairs } from '../../requests';
 import { combineMyPoolsPageTableInfo } from './helpers';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Spinner } from '../../components/Spinner/Spinner';
@@ -16,10 +14,7 @@ import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
 import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
 import { SORT_ORDER } from '../../constants/common';
-import {
-  selectScreeMode,
-  selectWalletPublicKey,
-} from '../../state/common/selectors';
+import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
 import { MarketInfo, Pair } from '../../state/core/types';
 
@@ -49,18 +44,16 @@ export const MyPools: FC = () => {
     window.scrollTo(0, 0);
   };
 
-  const walletPubkey: web3.PublicKey = useSelector(selectWalletPublicKey);
-
-  const { data, isLoading } = useFetchMultiple([
-    query.fetchAllMarkets,
-    query.fetchWalletPairs(walletPubkey),
-  ]);
-
-  const [markets, pairs]: [MarketInfo[], Pair[]] = data;
+  const {
+    data,
+    isLoading,
+  }: { data: (MarketInfo[] | Pair[])[]; isLoading: boolean } =
+    useFetchAllMarketsAndPairs();
+  const [markets, pairs] = data;
 
   useEffect(() => {
     !isLoading && setPools(combineMyPoolsPageTableInfo(markets, pairs));
-  }, [isLoading, markets, pairs]);
+  });
 
   useEffect(() => {
     const [name, order] = sortValue.split('_');
