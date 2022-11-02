@@ -1,4 +1,5 @@
 export const OWNER_PUBLIC_KEY = 'ownerPublicKey';
+export const TOTAL_ACCUMULATED_FEES = 'totalAccumulatedFees';
 
 interface List {
   title: string;
@@ -75,7 +76,7 @@ export const POOL_ITEM: Item = {
     },
     {
       title: 'accumulated fees',
-      valueKey: 'totalAccumulatedFees',
+      valueKey: TOTAL_ACCUMULATED_FEES,
       price: true,
     },
     {

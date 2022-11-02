@@ -1,11 +1,19 @@
 import { FC } from 'react';
-import { COLLECTION_ITEM, POOL_ITEM, OWNER_PUBLIC_KEY } from '../constants';
+import { BN } from 'hadeswap-sdk';
+import {
+  COLLECTION_ITEM,
+  POOL_ITEM,
+  OWNER_PUBLIC_KEY,
+  TOTAL_ACCUMULATED_FEES,
+} from '../constants';
 import { UNTITLED_COLLECTION, COLLECTION } from '../../../constants/common';
+import { formatBNToString } from '../../../utils';
 import { shortenAddress } from '../../../utils/solanaUtils';
 import { PriceWithIcon } from '../../PriceWithIcon';
-import styles from './CollectionItem.module.scss';
 import { createPoolTableRow } from '../../../state/core/helpers';
 import { MarketInfo } from '../../../state/core/types';
+
+import styles from './CollectionItem.module.scss';
 
 interface CollectionItemsProps {
   item: ReturnType<typeof createPoolTableRow> | MarketInfo;
@@ -34,10 +42,14 @@ const CollectionItem: FC<CollectionItemsProps> = ({
         <ul>
           {itemMap.list.map((listItem) => {
             let value = item[listItem.valueKey];
-            value =
-              listItem.valueKey === OWNER_PUBLIC_KEY
-                ? shortenAddress(value)
-                : value;
+
+            if (listItem.valueKey === OWNER_PUBLIC_KEY) {
+              value = shortenAddress(value);
+            }
+
+            if (listItem.valueKey === TOTAL_ACCUMULATED_FEES) {
+              value = formatBNToString(new BN(value || '0'));
+            }
 
             return (
               <li key={listItem.valueKey} className={styles.listItem}>
