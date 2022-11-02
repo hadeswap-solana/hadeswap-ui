@@ -1,8 +1,7 @@
 import { web3 } from 'hadeswap-sdk';
 
 export const fetchWalletPairs =
-  (walletPubkey: web3.PublicKey): Promise<void> =>
-  async () => {
+  (walletPubkey: web3.PublicKey) => async (): Promise<void> => {
     const response = await fetch(
       `https://${
         process.env.BACKEND_DOMAIN

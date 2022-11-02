@@ -4,7 +4,7 @@ import { QueryProps } from './index';
 
 type FetchWalletPairs = (walletPubkey: web3.PublicKey) => {
   queryKey: string[];
-  queryFn: () => Promise<void>;
+  queryFn: (walletPubkey) => () => Promise<void>;
   cacheTime: number;
 };
 
