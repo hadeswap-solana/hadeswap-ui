@@ -2,9 +2,9 @@ import { web3 } from 'hadeswap-sdk';
 import { fetchAllMarkets, fetchWalletPairs } from './requests';
 import { QueryProps } from './index';
 
-type FetchWalletPairs = (walletPubkey: web3.PublicKey) => {
+export type FetchWalletPairs = (walletPubkey: web3.PublicKey) => {
   queryKey: string[];
-  queryFn: (walletPubkey) => () => Promise<void>;
+  queryFn: () => Promise<void>;
   cacheTime: number;
 };
 

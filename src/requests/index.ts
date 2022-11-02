@@ -13,7 +13,7 @@ interface QueryResponse {
 
 type QueryRequest = ({ queryKey, queryFn }: QueryProps) => QueryResponse;
 
-type MultiQueryRequest = (queriesData: QueryProps[]) => {
+type MultiQueryRequest = (queriesData: any[]) => {
   data: any;
   isLoading: boolean;
 };
