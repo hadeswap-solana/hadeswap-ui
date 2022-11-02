@@ -17,6 +17,7 @@ import { SORT_ORDER } from '../../constants/common';
 import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
 import { MarketInfo, Pair } from '../../state/core/types';
+import { createPoolTableRow } from '../../state/core/helpers';
 
 import styles from './MyPools.module.scss';
 
@@ -33,7 +34,7 @@ export const MyPools: FC = () => {
     `${INITIAL_SORT_VALUE}_${SORT_ORDER.ASC}`,
   );
   const [pools, setPools] = useState<
-    Array<ReturnType<typeof combineMyPoolsPageTableInfo>>
+    Array<ReturnType<typeof createPoolTableRow>>
   >([]);
 
   const screenMode = useSelector(selectScreeMode);
@@ -45,11 +46,11 @@ export const MyPools: FC = () => {
   };
 
   const {
-    data,
+    markets,
+    pairs,
     isLoading,
-  }: { data: (MarketInfo[] | Pair[])[]; isLoading: boolean } =
+  }: { markets: MarketInfo[]; pairs: Pair[]; isLoading: boolean } =
     useFetchAllMarketsAndPairs();
-  const [markets, pairs] = data;
 
   useEffect(() => {
     !isLoading && setPools(combineMyPoolsPageTableInfo(markets, pairs));

@@ -5,7 +5,7 @@ import { Pair, MarketInfo } from '../../state/core/types';
 export const combineMyPoolsPageTableInfo = (
   markets: MarketInfo[],
   pairs: Pair[],
-): Array<ReturnType<typeof combineMyPoolsPageTableInfo>> => {
+): Array<ReturnType<typeof createPoolTableRow>> => {
   const marketByPubkey = keyBy(markets, 'marketPubkey');
 
   return pairs.map((pair) => {
