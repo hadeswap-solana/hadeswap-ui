@@ -1,4 +1,4 @@
-import { coreTypes, coreActions } from './actions/index';
+import { coreTypes, coreActions } from './actions';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 import { web3 } from 'hadeswap-sdk';
 
@@ -92,26 +92,6 @@ const fetchMarketWalletNftsSaga = function* (
   }
 };
 
-const fetchWalletPairsSaga = function* () {
-  const walletPubkey: web3.PublicKey = yield select(selectWalletPublicKey);
-
-  if (!walletPubkey) {
-    return;
-  }
-
-  yield put(coreActions.fetchWalletPairsPending(walletPubkey.toBase58()));
-  try {
-    const data: Pair[] = yield call(networkRequest, {
-      url: `https://${
-        process.env.BACKEND_DOMAIN
-      }/my-pairs/${walletPubkey.toBase58()}`,
-    });
-    yield put(coreActions.fetchWalletPairsFulfilled(data));
-  } catch (error) {
-    yield put(coreActions.fetchWalletPairsFailed(error));
-  }
-};
-
 const fetchPairSaga = function* (
   action: ReturnType<typeof coreActions.fetchPair>,
 ) {
@@ -175,7 +155,6 @@ const coreSagas = function* (): Generator {
   yield all([
     takeLatest(coreTypes.FETCH_MARKET_WALLET_NFTS, fetchMarketWalletNftsSaga),
   ]);
-  yield all([takeLatest(coreTypes.FETCH_WALLET_PAIRS, fetchWalletPairsSaga)]);
   yield all([takeLatest(coreTypes.FETCH_MARKET_PAIRS, fetchMarketPairsSaga)]);
   yield all([takeLatest(coreTypes.FETCH_PAIR, fetchPairSaga)]);
   yield all([
