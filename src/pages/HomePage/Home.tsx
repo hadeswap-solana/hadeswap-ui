@@ -3,12 +3,10 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import logoImg from '../../assets/Logo.svg';
 import styles from './Home.module.scss';
 import { Typography } from 'antd';
-import { NavLink } from 'react-router-dom';
-import { PATHS } from '../../constants';
 import { useQuery } from '@tanstack/react-query';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 import { formatPriceNumber } from '../../utils/solanaUtils';
-import TopMarkets, { IMarket } from '../../components/TopMarkets/TopMarkets';
+import TopMarkets from '../../components/TopMarkets/TopMarkets';
 
 const useStats = () => {
   return useQuery(

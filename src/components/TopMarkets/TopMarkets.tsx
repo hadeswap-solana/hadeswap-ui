@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Spinner } from '../Spinner/Spinner';
 import { PriceWithIcon } from '../../pages/Collections/components/PriceWithIcon';
@@ -8,7 +8,7 @@ import { Avatar, Typography } from 'antd';
 import ArrowIcon from '../../icons/ArrowIcon';
 import styles from './TopMarkets.module.scss';
 
-export interface IMarket {
+export interface MarketItem {
   collectionImage: string;
   collectionName: string;
   collectionPublicKey: string;
@@ -16,7 +16,7 @@ export interface IMarket {
 }
 
 interface TopMarketsProps {
-  data: IMarket[];
+  data: MarketItem[];
   isLoading: boolean;
 }
 
