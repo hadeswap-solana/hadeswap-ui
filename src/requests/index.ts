@@ -36,7 +36,7 @@ export const useFetchAllMarketsAndPairs = () => {
   const walletPairsQuery: WalletPairsQuery = {
     queryKey: ['fetchWalletPairs', `${publicKey}`],
     queryFn: () => fetchWalletPairs(publicKey),
-    staleTime: 5,
+    staleTime: 5000,
     enabled: !!publicKey,
   };
 
