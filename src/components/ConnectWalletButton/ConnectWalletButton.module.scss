@@ -2,11 +2,34 @@ button.root {
   display: flex;
   align-items: center;
   height: 40px;
-  border-color: var(--primary-color);
+  padding: 7px 10px;
+  border: 1px solid;
+  border-radius: var(--border-radius-base);
+  border-color: var(--blue-color);
   font-size: 16px;
-  color: var(--primary-color);
+  font-weight: 400;
+  line-height: 24px;
+  transition: opacity .3s;
+
+  span {
+    font-family: var(--font-family-rubik);
+    color: var(--blue-color);
+  }
 
   &:hover {
-    background: rgba(157, 202, 255, 0.3);
+    opacity: .7;
+  }
+}
+
+.phantomIcon {
+  margin-right: 10px;
+}
+
+.chevronIcon {
+  width: 14px;
+  margin-left: 15px;
+
+  path {
+    fill: var(--blue-color);
   }
 }
