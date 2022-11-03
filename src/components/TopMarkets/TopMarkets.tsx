@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Spinner } from '../Spinner/Spinner';
 import { PriceWithIcon } from '../../pages/Collections/components/PriceWithIcon';
@@ -8,19 +8,19 @@ import { Avatar, Typography } from 'antd';
 import ArrowIcon from '../../icons/ArrowIcon';
 import styles from './TopMarkets.module.scss';
 
-interface IMarket {
+export interface IMarket {
   collectionImage: string;
   collectionName: string;
   collectionPublicKey: string;
   volume24: number;
 }
 
-interface IProps {
+interface TopMarketsProps {
   data: IMarket[];
   isLoading: boolean;
 }
 
-const TopMarkets: FC<IProps> = ({ data, isLoading }) => {
+const TopMarkets: FC<TopMarketsProps> = ({ data, isLoading }) => {
   const history = useHistory();
 
   const handleClick = useCallback(
@@ -42,7 +42,7 @@ const TopMarkets: FC<IProps> = ({ data, isLoading }) => {
       ) : (
         <ol className={styles.list}>
           {data?.map((item, idx) => (
-            <li className={styles.item} key={item.collectionPublicKey}>
+            <li className={styles.item} key={item.collectionPublicKey + idx}>
               <div className={styles.itemNumber}>{idx + 1}</div>
               <Avatar size={34} src={item.collectionImage} />
 
