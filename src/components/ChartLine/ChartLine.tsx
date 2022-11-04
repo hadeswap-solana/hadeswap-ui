@@ -89,25 +89,18 @@ const ChartLine: FC<ChartLineProps> = ({ pool }) => {
 
   const labelsBuy = Array(priceArrayBuy.array.length)
     .fill(0)
-    .map((_, i) => {
-      const half = Math.ceil(priceArrayBuy.array.length);
-      if (i < half) return i - half;
-    });
+    .map((_, i) => i - priceArrayBuy.array.length);
 
   const labelsSell = Array(priceArraySell.array.length)
     .fill(0)
-    .map((_, i) => {
-      const half = Math.ceil(priceArraySell.array.length);
-      return Math.abs(i - half);
-    })
+    .map((_, i) => Math.abs(i - priceArraySell.array.length))
     .reverse();
 
   const labels = Array(amountOrder * 2)
     .fill(0)
     .map((_, i) => {
-      const half = Math.ceil(amountOrder);
-      if (i < half) return i - half;
-      return Math.abs(i - half);
+      if (i < amountOrder) return i - amountOrder;
+      return Math.abs(i - amountOrder);
     });
 
   const typeCheck = (type: string) => {
