@@ -21,7 +21,7 @@ import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { createEditPollLink } from '../../constants';
 import { parseDelta } from '../../state/core/helpers';
 import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
-import Chart from '../../components/ChartLine/ChartLine';
+import ChartLine from '../../components/ChartLine/ChartLine';
 
 const { Title, Text } = Typography;
 
@@ -193,7 +193,7 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
           </div>
         )}
       </div>
-      <Chart pool={pool} />
+      <ChartLine pool={pool} />
     </>
   );
 };
