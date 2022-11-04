@@ -6,7 +6,7 @@
   height: 100vh;
   border-left: var(--border-base);
   transform: translateX(1px);
-  background: var(--body-background);
+  background: var(--cart-sider-background);
   z-index: 1;
   transition: width var(--base-animation-time);
 }

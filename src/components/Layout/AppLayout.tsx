@@ -12,7 +12,7 @@ import DiscordIcon from '../../icons/DiscordIcon';
 import TwitterIcon from '../../icons/TwitterIcon';
 import styles from './AppLayout.module.scss';
 
-const { Content, Footer } = AntdLayout;
+const { Footer } = AntdLayout;
 
 interface LayoutProps {
   customHeader?: JSX.Element;
@@ -32,7 +32,6 @@ const SOCIALS_LIST = [
 
 export const AppLayout: FC<LayoutProps> = ({
   children,
-  className = '',
   hideFooter = false,
   contentClassName = '',
 }) => {
@@ -44,13 +43,13 @@ export const AppLayout: FC<LayoutProps> = ({
   }, [location]);
 
   return (
-    <AntdLayout className={className}>
+    <>
       <div className={styles.mainWrapper}>
         <div className={styles.main}>
           <Header />
-          <Content className={classNames(styles.content, contentClassName)}>
+          <main className={classNames(styles.content, contentClassName)}>
             {children}
-          </Content>
+          </main>
           {!hideFooter && (
             <Footer>
               <div className={styles.footerSocial}>
@@ -90,6 +89,6 @@ export const AppLayout: FC<LayoutProps> = ({
       </div>
       <SelectWalletModal />
       <TransactionsLoadingModal />
-    </AntdLayout>
+    </>
   );
 };
