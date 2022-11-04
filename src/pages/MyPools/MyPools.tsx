@@ -91,11 +91,11 @@ export const MyPools: FC = () => {
         </Typography.Title>
       )}
       {connected && (isLoading || isFetching) && <Spinner />}
-      {connected && !isLoading && !isFetching && !pools.length && (
+      {connected && !isLoading && !isFetching && !pairs.length && (
         <Typography.Title level={3}>no pools found</Typography.Title>
       )}
 
-      {!isLoading && connected && !!pools.length && (
+      {connected && !isLoading && !isFetching && !!pools.length && (
         <>
           <PoolsList data={pools} onRowClick={onRowClick} />
           {isMobile && isSortingVisible && (
