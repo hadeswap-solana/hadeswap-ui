@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import { OrderType, MarketOrder } from '../types';
-import { keyBy } from 'lodash';
 import {
   calcNextSpotPrice,
   calcPriceWithFee,
@@ -17,8 +16,6 @@ import {
   selectCartPendingOrders,
 } from './cartSelectors';
 import { selectMarketWalletNfts } from './marketWalletNftsSelectors';
-import { selectAllMarkets } from './allMarketsSelectors';
-import { selectWalletPairs } from './walletPairsSelectors';
 
 export const selectPoolsTableInfo = createSelector(
   [selectCertainMarket, selectRawMarketPairs],
@@ -138,16 +135,5 @@ export const selectAllSellOrdersForMarket = createSelector(
       (a: MarketOrder, b: MarketOrder) =>
         b.price - a.price || a?.name?.localeCompare(b?.name),
     ) as MarketOrder[];
-  },
-);
-
-export const selectMyPoolsPageTableInfo = createSelector(
-  [selectAllMarkets, selectWalletPairs],
-  (markets, pairs) => {
-    const marketByPubkey = keyBy(markets, 'marketPubkey');
-
-    return pairs.map((pair) => {
-      return createPoolTableRow(pair, marketByPubkey[pair.market]);
-    });
   },
 );
