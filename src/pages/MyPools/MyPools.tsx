@@ -49,14 +49,19 @@ export const MyPools: FC = () => {
     markets,
     pairs,
     isLoading,
-  }: { markets: MarketInfo[]; pairs: Pair[]; isLoading: boolean } =
-    useFetchAllMarketsAndPairs();
+    isFetching,
+  }: {
+    markets: MarketInfo[];
+    pairs: Pair[];
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useFetchAllMarketsAndPairs();
 
   useEffect(() => {
     !isLoading &&
-      !pools.length &&
+      !isFetching &&
       setPools(combineMyPoolsPageTableInfo(markets, pairs));
-  });
+  }, [isLoading, isFetching]);
 
   useEffect(() => {
     const [name, order] = sortValue.split('_');
@@ -85,8 +90,8 @@ export const MyPools: FC = () => {
           connect your wallet to see your pools
         </Typography.Title>
       )}
-      {connected && isLoading && <Spinner />}
-      {!isLoading && connected && !pools.length && (
+      {connected && (isLoading || isFetching) && <Spinner />}
+      {connected && !isLoading && !isFetching && !pools.length && (
         <Typography.Title level={3}>no pools found</Typography.Title>
       )}
 

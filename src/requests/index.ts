@@ -3,6 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { MarketInfo, Pair } from '../state/core/types';
 import { web3 } from 'hadeswap-sdk';
 import { fetchAllMarkets, fetchWalletPairs } from './requests';
+import { FETCHING } from '../constants/common';
 
 interface AllMarketsQuery {
   queryKey: string[];
@@ -36,7 +37,7 @@ export const useFetchAllMarketsAndPairs = () => {
   const walletPairsQuery: WalletPairsQuery = {
     queryKey: ['fetchWalletPairs', `${publicKey}`],
     queryFn: () => fetchWalletPairs(publicKey),
-    staleTime: 5000,
+    staleTime: 10,
     enabled: !!publicKey,
   };
 
@@ -47,5 +48,9 @@ export const useFetchAllMarketsAndPairs = () => {
   const markets: MarketInfo[] = response[0].data;
   const pairs: Pair[] = response[1].data;
   const isLoading: boolean = response.some((item) => item.isLoading);
-  return { markets, pairs, isLoading };
+  const isFetching: boolean = response.some(
+    (item) => item.fetchStatus === FETCHING,
+  );
+
+  return { markets, pairs, isLoading, isFetching };
 };
