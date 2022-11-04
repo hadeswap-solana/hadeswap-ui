@@ -53,8 +53,10 @@ export const MyPools: FC = () => {
     useFetchAllMarketsAndPairs();
 
   useEffect(() => {
-    !isLoading && setPools(combineMyPoolsPageTableInfo(markets, pairs));
-  }, [isLoading]);
+    !isLoading &&
+      !pools.length &&
+      setPools(combineMyPoolsPageTableInfo(markets, pairs));
+  });
 
   useEffect(() => {
     const [name, order] = sortValue.split('_');
