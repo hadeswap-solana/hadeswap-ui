@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../../state/core/selectors';
-import { BellIcon } from '../../icons/BellIcon';
-import { CartIcon } from '../../icons/CartIcon';
 import { commonActions } from '../../state/common/actions';
+import { BellIcon } from '../../icons/BellIcon';
+import RoundIconButton from '../Buttons/RoundIconButton';
+import BadgeButton from '../Buttons/BadgeButton';
 
 import styles from './Header.module.scss';
 
@@ -14,20 +15,13 @@ const CartBlock: FC = () => {
 
   return (
     <div className={styles.cartBlock}>
-      <button className={styles.cartIconWrapper}>
+      <RoundIconButton onClick={() => null}>
         <BellIcon />
-      </button>
-      <div className={styles.cartButtonWrapper}>
-        {!!itemsAmount && (
-          <div className={styles.cartButtonBadge}>{itemsAmount}</div>
-        )}
-        <button
-          className={styles.cartIconWrapper}
-          onClick={() => dispatch(commonActions.toggleCartSider())}
-        >
-          <CartIcon />
-        </button>
-      </div>
+      </RoundIconButton>
+      <BadgeButton
+        itemsAmount={itemsAmount}
+        onClick={() => dispatch(commonActions.toggleCartSider())}
+      />
     </div>
   );
 };

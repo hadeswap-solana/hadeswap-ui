@@ -1,0 +1,76 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  padding: 7px 10px;
+  border-radius: var(--border-radius-base);
+  background-color: var(--blue-color);
+  transition: opacity .3s;
+
+  span {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    font-family: var(--font-family-rubik);
+  }
+
+  &:hover {
+    opacity: .7;
+  }
+}
+
+.disabled {
+  opacity: .7;
+  cursor: default;
+}
+
+.outlined {
+  border: 1px solid;
+  border-color: var(--blue-color);
+  background-color: var(--transparent-color);
+
+  span {
+    color: var(--blue-color);
+  }
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+}
+
+.roundIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: var(--border-base);
+  border-radius: 100%;
+}
+
+.badgeButtonWrapper {
+  position: relative;
+  width: 40px;
+  margin: auto;
+}
+
+.badge {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: -20%;
+  right: -15%;
+  width: 20px;
+  height: 20px;
+  background-color: var(--red-color);
+  border: 1px solid var(--component-secondary-background);
+  border-radius: 100%;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+}

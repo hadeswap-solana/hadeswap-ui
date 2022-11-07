@@ -1,3 +1,8 @@
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .mainWrapper {
   display: flex;
   overflow-x: clip;

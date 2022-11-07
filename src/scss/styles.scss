@@ -27,7 +27,13 @@
 
   button {
     padding: 0;
+    border: 0;
     background-color: var(--transparent-color);
     cursor: pointer;
+  }
+
+  h4 {
+    margin: 0;
+    color: unset;
   }
 }
