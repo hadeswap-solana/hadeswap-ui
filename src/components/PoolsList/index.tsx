@@ -13,7 +13,7 @@ export interface PoolsTableProps {
 
 const PoolsList: FC<PoolsTableProps> = ({ onRowClick, data }) => {
   const screenMode = useSelector(selectScreeMode);
-  const isMobile = screenMode === ScreenTypes.TABLET;
+  const isMobile = screenMode !== ScreenTypes.DESKTOP;
 
   return isMobile ? (
     <PoolsMobile data={data} onRowClick={onRowClick} />
