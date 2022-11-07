@@ -48,7 +48,7 @@
   width: 40px;
   height: 40px;
   border: var(--border-base);
-  border-radius: 100%;
+  border-radius: 50%;
 }
 
 .badgeButtonWrapper {
@@ -64,13 +64,15 @@
   align-items: center;
   top: -20%;
   right: -15%;
-  width: 20px;
+  min-width: 20px;
   height: 20px;
+  padding: 0 4px;
   background-color: var(--red-color);
   border: 1px solid var(--component-secondary-background);
-  border-radius: 100%;
+  border-radius: 10px;
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
   line-height: 20px;
+  font-feature-settings: 'tnum' on, 'lnum' on;
 }
