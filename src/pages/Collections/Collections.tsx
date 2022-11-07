@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Typography, Row, Col, Button, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
@@ -13,12 +13,9 @@ import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { COLLECTION_COLUMNS } from '../../utils/table/constants';
 import { SORT_ORDER } from '../../constants/common';
 import { filterCollections } from './helpers';
+import { MarketInfo } from '../../state/core/types';
+import { useFetchAllMarkets } from '../../requests';
 
-import { coreActions } from '../../state/core/actions';
-import {
-  selectAllMarkets,
-  selectAllMarketsLoading,
-} from '../../state/core/selectors';
 import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
 import { useDebounce } from '../../hooks';
@@ -31,7 +28,6 @@ export const Collections: FC = () => {
   const INITIAL_SORT_VALUE = 'offerTVL';
 
   const history = useHistory();
-  const dispatch = useDispatch();
   const [searchStr, setSearchStr] = useState<string>('');
   const [sortValue, setSortValue] = useState<string>(
     `${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`,
@@ -40,9 +36,6 @@ export const Collections: FC = () => {
   const [isSortingVisible, setIsSortingVisible] = useState<boolean>(false);
 
   const screenMode = useSelector(selectScreeMode);
-  const markets = useSelector(selectAllMarkets);
-  const collectionsLoading = useSelector(selectAllMarketsLoading);
-
   const isMobile = screenMode === ScreenTypes.TABLET;
 
   const setSearch = useDebounce((search: string): void => {
@@ -57,12 +50,13 @@ export const Collections: FC = () => {
     [history],
   );
 
-  useEffect(() => {
-    dispatch(coreActions.fetchAllMarkets());
-  }, [dispatch]);
+  const {
+    data: markets = [],
+    isLoading,
+  }: { data: MarketInfo[]; isLoading: boolean } = useFetchAllMarkets();
 
   useEffect(() => {
-    const collection = filterCollections(markets.slice(), searchStr);
+    const collection = filterCollections([...markets], searchStr);
     if (sortValue) {
       const [name, order] = sortValue.split('_');
       setCollections(sortCollection(collection, name, order));
@@ -86,7 +80,7 @@ export const Collections: FC = () => {
           <Title>collections</Title>
         </Col>
       </Row>
-      {collectionsLoading ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <>

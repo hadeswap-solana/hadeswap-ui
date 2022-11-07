@@ -24,12 +24,9 @@ export const Router = (): JSX.Element => {
           exact
         />
         {routes.map(({ exact, path, component: Component }, index) => (
-          <Route
-            key={index}
-            exact={exact}
-            path={path}
-            component={() => <Component />}
-          />
+          <Route key={index} exact={exact} path={path}>
+            <Component />
+          </Route>
         ))}
       </Switch>
     </BrowserRouter>

@@ -10,11 +10,6 @@ export const fetchTypes = {
     'core/FETCH_MARKET_WALLET_NFTS__FULFILLED',
   FETCH_MARKET_WALLET__FAILED: 'core/FETCH_MARKET_WALLET__FAILED',
 
-  FETCH_WALLET_PAIRS: 'core/FETCH_WALLET_PAIRS',
-  FETCH_WALLET_PAIRS__PENDING: 'core/FETCH_WALLET_PAIRS__PENDING',
-  FETCH_WALLET_PAIRS__FULFILLED: 'core/FETCH_WALLET_PAIRS__FULFILLED',
-  FETCH_WALLET_PAIRS__FAILED: 'core/FETCH_WALLET_PAIRS__FAILED',
-
   FETCH_ALL_MARKETS: 'core/FETCH_ALL_MARKETS',
   FETCH_ALL_MARKETS__PENDING: 'core/FETCH_ALL_MARKETS__PENDING',
   FETCH_ALL_MARKETS__FULFILLED: 'core/FETCH_ALL_MARKETS__FULFILLED',
@@ -54,24 +49,6 @@ export const fetchActions = {
   ),
   fetchMarketWalletNftsFailed: createCustomAction(
     fetchTypes.FETCH_MARKET_WALLET__FAILED,
-    (error: ServerError) => ({ payload: error }),
-  ),
-
-  //? fetchWalletPairs
-  fetchWalletPairs: createCustomAction(
-    fetchTypes.FETCH_WALLET_PAIRS,
-    () => null,
-  ),
-  fetchWalletPairsPending: createCustomAction(
-    fetchTypes.FETCH_WALLET_PAIRS__PENDING,
-    (walletAddress: string) => ({ payload: walletAddress }),
-  ),
-  fetchWalletPairsFulfilled: createCustomAction(
-    fetchTypes.FETCH_WALLET_PAIRS__FULFILLED,
-    (marketPairs: Pair[]) => ({ payload: marketPairs }),
-  ),
-  fetchWalletPairsFailed: createCustomAction(
-    fetchTypes.FETCH_WALLET_PAIRS__FAILED,
     (error: ServerError) => ({ payload: error }),
   ),
 
