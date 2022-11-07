@@ -1,7 +1,8 @@
+import { FC } from 'react';
 import { SearchIcon } from '../../icons/SearchIcon';
 import styles from './Search.module.scss';
 
-const Index = () => {
+const Index: FC = () => {
   return (
     <div className={styles.searchWrapper}>
       <SearchIcon className={styles.searchIcon} />

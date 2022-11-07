@@ -1,12 +1,13 @@
+import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../../state/core/selectors';
 import { BellIcon } from '../../icons/BellIcon';
 import { CartIcon } from '../../icons/CartIcon';
-
-import styles from './Header.module.scss';
 import { commonActions } from '../../state/common/actions';
 
-const CartBlock = () => {
+import styles from './Header.module.scss';
+
+const CartBlock: FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
   const itemsAmount = cartItems.buy.length + cartItems.sell.length;

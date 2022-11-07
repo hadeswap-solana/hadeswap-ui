@@ -1,6 +1,7 @@
+import { FC } from 'react';
 import styles from './Header.module.scss';
 
-const InfoBlock = () => {
+const InfoBlock: FC = () => {
   return <div className={styles.infoBlock}></div>;
 };
 
