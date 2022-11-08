@@ -7,6 +7,7 @@
   padding: 7px 10px;
   border-radius: var(--border-radius-base);
   background-color: var(--blue-color);
+  white-space: nowrap;
   transition: opacity .3s;
 
   span {
