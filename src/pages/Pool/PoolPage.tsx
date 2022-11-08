@@ -122,11 +122,7 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
   );
 
   return (
-    <div
-      className={`${styles.generalInfo} ${
-        isLiquidityProvisionPool ? styles.generalInfoFull : ''
-      }`}
-    >
+    <div className={styles.generalInfo}>
       <div className={styles.generalInfoBlockHeader}>
         <h4 className={styles.generalInfoTitle}>general Info</h4>
         {onEdit && (
