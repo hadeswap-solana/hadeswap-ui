@@ -53,7 +53,7 @@ export const useCartSider: UseCartSider = () => {
 };
 
 export const useSwap: UseSwap = () => {
-  const IX_PER_TXN = 2;
+  const IX_PER_TXN = 1;
 
   const connection = useConnection();
   const wallet = useWallet();

@@ -40,7 +40,7 @@ export const selectWallet = createSelector(
 );
 
 export const selectWalletPublicKey = createSelector(
-  [pathOr('', ['common', 'wallet', 'wallet', 'publicKey'])],
+  [pathOr(null, ['common', 'wallet', 'wallet', 'publicKey'])],
   identity,
 );
 

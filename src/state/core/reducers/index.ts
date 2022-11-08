@@ -4,17 +4,12 @@ import {
   fetchAllMarketsReducer,
   fetchCertainMarketReducer,
 } from './marketsReducers';
-import {
-  fetchMarketPairsReducer,
-  fetchPairReducer,
-  fetchWalletPairsReducer,
-} from './pairsReducers';
+import { fetchMarketPairsReducer, fetchPairReducer } from './pairsReducers';
 import { fetchMarketWalletNftsReducer } from './marketWalletNftsReducer';
 
 export default combineReducers({
   marketPairs: fetchMarketPairsReducer,
   pair: fetchPairReducer,
-  walletPairs: fetchWalletPairsReducer,
   markets: fetchAllMarketsReducer,
   market: fetchCertainMarketReducer,
   marketWalletNfts: fetchMarketWalletNftsReducer,
