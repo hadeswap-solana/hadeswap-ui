@@ -1,17 +1,13 @@
 import { combineReducers } from 'redux';
 import { cartReducer } from './cartReducer';
-import {
-  fetchAllMarketsReducer,
-  fetchCertainMarketReducer,
-} from './marketsReducers';
-import { fetchMarketPairsReducer, fetchPairReducer } from './pairsReducers';
-import { fetchMarketWalletNftsReducer } from './marketWalletNftsReducer';
+import { setCertainMarketReducer } from './marketsReducers';
+import { setMarketPairsReducer, fetchPairReducer } from './pairsReducers';
+import { setMarketWalletNftsReducer } from './marketWalletNftsReducer';
 
 export default combineReducers({
-  marketPairs: fetchMarketPairsReducer,
+  marketPairs: setMarketPairsReducer,
   pair: fetchPairReducer,
-  markets: fetchAllMarketsReducer,
-  market: fetchCertainMarketReducer,
-  marketWalletNfts: fetchMarketWalletNftsReducer,
+  market: setCertainMarketReducer,
+  marketWalletNfts: setMarketWalletNftsReducer,
   cart: cartReducer,
 });

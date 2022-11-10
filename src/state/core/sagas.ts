@@ -13,18 +13,6 @@ import {
 } from './selectors';
 import { commonActions } from '../common/actions';
 
-const fetchAllMarketsSaga = function* () {
-  yield put(coreActions.fetchAllMarketsPending());
-  try {
-    const data: MarketInfo[] = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/markets`,
-    });
-    yield put(coreActions.fetchAllMarketsFulfilled(data));
-  } catch (error) {
-    yield put(coreActions.fetchAllMarketsFailed(error));
-  }
-};
-
 const fetchMarketSaga = function* (
   action: ReturnType<typeof coreActions.fetchMarket>,
 ) {
@@ -150,7 +138,6 @@ const subscribeCartPairsSaga = function* (pairs) {
 };
 
 const coreSagas = function* (): Generator {
-  yield all([takeLatest(coreTypes.FETCH_ALL_MARKETS, fetchAllMarketsSaga)]);
   yield all([takeLatest(coreTypes.FETCH_MARKET, fetchMarketSaga)]);
   yield all([
     takeLatest(coreTypes.FETCH_MARKET_WALLET_NFTS, fetchMarketWalletNftsSaga),

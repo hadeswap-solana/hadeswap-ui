@@ -1,18 +1,13 @@
-import { useWallet } from '@solana/wallet-adapter-react';
 import { CloseOutlined } from '@ant-design/icons';
 import { Modal, Typography } from 'antd';
 import { FC, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { coreActions } from '../../state/core/actions';
-import {
-  selectMarketWalletNfts,
-  selectMarketWalletNftsLoading,
-} from '../../state/core/selectors';
+import { useFetchMarketWalletNfts } from '../../requests';
 import { Nft, PairSellOrder } from '../../state/core/types';
 import { NFTCard } from '../NFTCard/NFTCard';
-import styles from './SelectNftsModal.module.scss';
 import { Spinner } from '../Spinner/Spinner';
 import { FakeInfinityScroll } from '../FakeInfiinityScroll';
+
+import styles from './SelectNftsModal.module.scss';
 
 type UseSelectNftsModal = (
   collectionName: string,
@@ -36,19 +31,18 @@ export const useSelectNftsModal: UseSelectNftsModal = (
   marketPublicKey,
   preSelectedNfts,
 ) => {
-  const dispatch = useDispatch();
-  const { connected } = useWallet();
-
   const [visible, setVisible] = useState(false);
   const [selectedNfts, setSelectedNfts] = useState<Nft[]>([]);
-  const walletNfts = useSelector(selectMarketWalletNfts);
-  const loading = useSelector(selectMarketWalletNftsLoading);
 
-  useEffect(() => {
-    if (connected && marketPublicKey) {
-      dispatch(coreActions.fetchMarketWalletNfts(marketPublicKey));
-    }
-  }, [dispatch, connected, marketPublicKey]);
+  const {
+    data: walletNfts,
+    isLoading,
+    isFetching,
+  }: {
+    data: Nft[];
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useFetchMarketWalletNfts(marketPublicKey);
 
   useEffect(() => {
     if (preSelectedNfts) {
@@ -76,7 +70,7 @@ export const useSelectNftsModal: UseSelectNftsModal = (
     walletNfts,
     toggleNft,
     isNftSelected,
-    loading,
+    loading: isLoading || isFetching,
   };
 };
 

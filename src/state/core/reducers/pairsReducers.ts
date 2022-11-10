@@ -13,10 +13,12 @@ const initialMarketPairsState: AsyncState<Pair[]> = createInitialAsyncState<
 
 const initialPairState: AsyncState<Pair> = createInitialAsyncState<Pair>(null);
 
-export const fetchMarketPairsReducer = createReducer(
-  initialMarketPairsState,
-  createHandlers<Pair[]>(coreTypes.FETCH_MARKET_PAIRS),
-);
+export const setMarketPairsReducer = createReducer(initialMarketPairsState, {
+  [coreTypes.SET_MARKET_PAIRS]: (state, action) => ({
+    ...state,
+    data: action.payload,
+  }),
+});
 
 export const fetchPairReducer = createReducer(
   initialPairState,

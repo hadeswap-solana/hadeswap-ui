@@ -51,7 +51,7 @@ export const Collections: FC = () => {
   );
 
   const {
-    data: markets = [],
+    data: markets,
     isLoading,
   }: { data: MarketInfo[]; isLoading: boolean } = useFetchAllMarkets();
 

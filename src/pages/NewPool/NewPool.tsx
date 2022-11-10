@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import {
   Button,
@@ -25,11 +25,6 @@ import {
 import { useConnection } from '../../hooks';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { coreActions } from '../../state/core/actions';
-import {
-  selectAllMarkets,
-  selectAllMarketsLoading,
-} from '../../state/core/selectors';
 import { MarketInfo } from '../../state/core/types';
 import {
   SelectNftsModal,
@@ -56,6 +51,7 @@ import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 import { chunk } from 'lodash';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 import styles from './NewPool.module.scss';
+import { useFetchAllMarkets } from '../../requests';
 
 const { Step } = Steps;
 const { Title, Paragraph } = Typography;
@@ -71,8 +67,7 @@ export const NewPool: FC = () => {
     publicKey: string;
     type: string;
   }>();
-  const collectionsLoading = useSelector(selectAllMarketsLoading);
-  const markets = useSelector(selectAllMarkets) as MarketInfo[];
+
   const [step, setStep] = useState<number>(
     marketPubkeyParam ? (typeParam ? 2 : 1) : 0,
   );
@@ -82,11 +77,20 @@ export const NewPool: FC = () => {
   const spotPrice = Form.useWatch('spotPrice', form);
   const curve = Form.useWatch('curve', form);
   const delta = Form.useWatch('delta', form);
-  // const depositAmount = Form.useWatch('depositAmount', form);
+
   const nftAmount = Form.useWatch('nftAmount', form);
   const fee = Form.useWatch('fee', form);
-  // const buyUpTo = Form.useWatch('buyUpTo', form);
-  // const sellUpTo = Form.useWatch('sellUpTo', form);
+
+  const {
+    data: markets,
+    isLoading,
+    isFetching,
+  }: {
+    data: MarketInfo[];
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useFetchAllMarkets();
+
   const chosenMarket = markets.find((item) => item.marketPubkey === market);
   const collectionName = chosenMarket?.collectionName ?? 'nfts';
   const nftModal = useSelectNftsModal(
@@ -116,15 +120,11 @@ export const NewPool: FC = () => {
   };
 
   const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
-  // const deposit = (spotPrice - spotPrice * fee * 2) * buyUpTo;
+
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
     curve === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
   const rawFee = fee * 100;
-
-  useEffect(() => {
-    dispatch(coreActions.fetchAllMarkets());
-  }, [dispatch]);
 
   useEffect(() => {
     if (market) {
@@ -157,10 +157,6 @@ export const NewPool: FC = () => {
 
   const onSelectNftsClick = () => {
     nftModal.setVisible(true);
-  };
-
-  const onFormChange = () => {
-    //console.log(form.getFieldsValue(['market', 'type', 'spotPrice', 'curve']));
   };
 
   const onCreatePoolClick = async () => {
@@ -320,10 +316,6 @@ export const NewPool: FC = () => {
     }
   };
 
-  // console.log(
-  //   markets?.find(({ marketPubkey: pubkey }) => pubkey === marketPubkey),
-  // );
-
   return (
     <AppLayout>
       <Title>create pool</Title>
@@ -339,16 +331,11 @@ export const NewPool: FC = () => {
             <Step title="select pool type" />
             <Step title="pool settings" />
           </Steps>
-          <Form
-            layout="vertical"
-            form={form}
-            initialValues={initialValues}
-            onValuesChange={onFormChange}
-          >
+          <Form layout="vertical" form={form} initialValues={initialValues}>
             {step === 0 && (
               <div className={styles.stepsContent}>
                 <div className={styles.stepContent}>
-                  {collectionsLoading ? (
+                  {isLoading || isFetching ? (
                     <Spinner />
                   ) : (
                     <Row>

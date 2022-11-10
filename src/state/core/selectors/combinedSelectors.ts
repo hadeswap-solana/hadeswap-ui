@@ -25,16 +25,6 @@ export const selectPoolsTableInfo = createSelector(
     }),
 );
 
-export const selectMarketInfoAndPairs = createSelector(
-  [selectCertainMarket, selectMarketPairs],
-  (marketInfo, pairs) => {
-    return {
-      marketInfo,
-      pairs,
-    };
-  },
-);
-
 export const selectAllBuyOrdersForMarket = createSelector(
   [selectMarketPairs, selectCartPairs, selectCartPendingOrders],
   (marketPairs, cartPairs, cartOrders) => {

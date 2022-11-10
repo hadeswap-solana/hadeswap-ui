@@ -5,7 +5,6 @@ import { AsyncState, RequestStatus } from './types';
 export const asyncState: AsyncState<null> = {
   data: null,
   status: RequestStatus.IDLE,
-  messages: [],
 };
 
 export const createInitialAsyncState = <TData>(
@@ -13,7 +12,6 @@ export const createInitialAsyncState = <TData>(
 ): AsyncState<TData> => ({
   data: initialData,
   status: RequestStatus.IDLE,
-  messages: [],
 });
 
 export const createHandlers = <TData>(
@@ -22,7 +20,6 @@ export const createHandlers = <TData>(
   [`${request}__PENDING`]: (state: AsyncState<TData>) => ({
     ...state,
     status: RequestStatus.PENDING,
-    messages: asyncState.messages,
   }),
   [`${request}__CANCELLED`]: (state: AsyncState<TData>) => ({
     ...state,

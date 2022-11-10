@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { chunk, differenceBy } from 'lodash';
 import { hadeswap } from 'hadeswap-sdk';
@@ -12,17 +12,12 @@ import {
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
+import { useFetchPair, useFetchAllMarkets } from '../../requests';
+import { combineFetchingStatus } from '../../requests/utils';
 import { useConnection } from '../../hooks';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { coreActions } from '../../state/core/actions';
-import {
-  selectAllMarkets,
-  selectCertainMarketLoading,
-  selectCertainPair,
-  selectCertainPairLoading,
-} from '../../state/core/selectors';
-import { MarketInfo } from '../../state/core/types';
+import { MarketInfo, Pair } from '../../state/core/types';
 import {
   SelectNftsModal,
   useSelectNftsModal,
@@ -61,11 +56,53 @@ export const EditPool: FC = () => {
   const history = useHistory();
   const connection = useConnection();
   const wallet = useWallet();
+
   const { poolPubKey } = useParams<{ poolPubKey: string }>();
-  const pool = useSelector(selectCertainPair);
-  const markets = useSelector(selectAllMarkets) as MarketInfo[];
-  const poolLoading = useSelector(selectCertainPairLoading);
-  const marketLoading = useSelector(selectCertainMarketLoading);
+
+  const {
+    data: markets,
+    isLoading: marketLoading,
+    isFetching: marketFetching,
+  }: {
+    data: MarketInfo[];
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useFetchAllMarkets();
+
+  const {
+    data: pool,
+    isLoading: poolLoading,
+    isFetching: poolFetching,
+  }: {
+    data: Pair;
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useFetchPair(poolPubKey);
+
+  const {
+    isLoading,
+    isFetching,
+  }: {
+    isLoading: boolean;
+    isFetching: boolean;
+  } = combineFetchingStatus({
+    loadingA: poolLoading,
+    loadingB: marketLoading,
+    fetchingA: poolFetching,
+    fetchingB: marketFetching,
+  });
+
+  const chosenMarket = markets.find(
+    (item) => item.marketPubkey === pool?.market,
+  );
+  const collectionName = chosenMarket?.collectionName ?? 'nfts';
+
+  const nftModal = useSelectNftsModal(
+    collectionName,
+    chosenMarket?.marketPubkey,
+    pool?.sellOrders,
+  );
+
   const [form] = Form.useForm();
   const spotPrice = Form.useWatch('spotPrice', form);
   const curve = Form.useWatch('curve', form);
@@ -73,15 +110,6 @@ export const EditPool: FC = () => {
   const nftAmount = Form.useWatch('nftAmount', form);
   const buyOrdersAmount = Form.useWatch('buyOrdersAmount', form);
   const fee = Form.useWatch('fee', form);
-  const chosenMarket = markets.find(
-    (item) => item.marketPubkey === pool?.market,
-  );
-  const collectionName = chosenMarket?.collectionName ?? 'nfts';
-  const nftModal = useSelectNftsModal(
-    collectionName,
-    chosenMarket?.marketPubkey,
-    pool?.sellOrders,
-  );
 
   const type = pool?.type;
   const isLiquidityProvisionPool = type === PairType.LiquidityProvision;
@@ -105,7 +133,6 @@ export const EditPool: FC = () => {
     ),
   };
 
-  const loading = poolLoading || marketLoading;
   const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
@@ -171,11 +198,6 @@ export const EditPool: FC = () => {
     pool?.buyOrdersAmount > 20;
 
   useEffect(() => {
-    dispatch(coreActions.fetchAllMarkets());
-    dispatch(coreActions.fetchPair(poolPubKey));
-  }, [dispatch, poolPubKey]);
-
-  useEffect(() => {
     form.setFieldsValue({
       buyOrdersAmount: initialValues.buyOrdersAmount + nftsToAdd.length,
     });
@@ -190,10 +212,6 @@ export const EditPool: FC = () => {
 
   const onSelectNftsClick = () => {
     nftModal.setVisible(true);
-  };
-
-  const onFormChange = () => {
-    //console.log(form.getFieldsValue(['market', 'type', 'spotPrice', 'curve']));
   };
 
   const onSavePoolClick = async () => {
@@ -863,16 +881,11 @@ export const EditPool: FC = () => {
         </Typography.Title>
       )}
       {wallet.connected &&
-        (loading || !pool ? (
+        (isLoading || isFetching ? (
           <Spinner />
         ) : (
           <>
-            <Form
-              layout="vertical"
-              form={form}
-              initialValues={initialValues}
-              onValuesChange={onFormChange}
-            >
+            <Form layout="vertical" form={form} initialValues={initialValues}>
               <div className={styles.stepsContent}>
                 <div className={styles.stepContent}>
                   <div className={styles.pane}>

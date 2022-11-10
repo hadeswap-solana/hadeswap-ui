@@ -61,7 +61,7 @@ export const MyPools: FC = () => {
     !isLoading &&
       !isFetching &&
       setPools(combineMyPoolsPageTableInfo(markets, pairs));
-  }, [isLoading, isFetching]);
+  }, [isLoading, isFetching, markets, pairs]);
 
   useEffect(() => {
     const [name, order] = sortValue.split('_');

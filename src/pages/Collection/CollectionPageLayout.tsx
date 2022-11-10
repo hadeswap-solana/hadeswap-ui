@@ -1,18 +1,14 @@
-import { Button, Tabs, Layout } from 'antd';
-import { FC, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { FC, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { Button, Tabs, Layout } from 'antd';
+import { useFetchMarket } from '../../requests';
+import { MarketInfo } from '../../state/core/types';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import {
   COLLECTION_TABS,
   createCollectionLink,
   createCreatePoolPickSideLink,
 } from '../../constants';
-import { coreActions } from '../../state/core/actions';
-import {
-  selectCertainMarket,
-  selectCertainMarketLoading,
-} from '../../state/core/selectors';
 import { CollectionGeneralInfo } from './CollectionGeneralInfo';
 import { MakeOfferModal } from './MakeOfferModal';
 import { Spinner } from '../../components/Spinner/Spinner';
@@ -23,13 +19,19 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 export const CollectionPageLayout: FC = ({ children }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const history = useHistory();
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
-  const dispatch = useDispatch();
 
-  const marketLoading = useSelector(selectCertainMarketLoading);
-  const market = useSelector(selectCertainMarket);
+  const {
+    data: market,
+    isLoading,
+    isFetching,
+  }: {
+    data: MarketInfo;
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useFetchMarket(marketPublicKey);
 
   const activeTab = useMemo(
     () => history.location.pathname.split('/').at(-1) as COLLECTION_TABS,
@@ -50,15 +52,9 @@ export const CollectionPageLayout: FC = ({ children }) => {
     setIsModalVisible(false);
   };
 
-  useEffect(() => {
-    if (marketPublicKey && market?.marketPubkey !== marketPublicKey) {
-      dispatch(coreActions.fetchMarketInfoAndPairs(marketPublicKey));
-    }
-  }, [dispatch, marketPublicKey, market]);
-
   return (
     <AppLayout>
-      {marketLoading ? (
+      {isLoading || isFetching ? (
         <Spinner />
       ) : (
         <>

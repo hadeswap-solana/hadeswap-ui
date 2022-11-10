@@ -10,11 +10,6 @@ export const fetchTypes = {
     'core/FETCH_MARKET_WALLET_NFTS__FULFILLED',
   FETCH_MARKET_WALLET__FAILED: 'core/FETCH_MARKET_WALLET__FAILED',
 
-  FETCH_ALL_MARKETS: 'core/FETCH_ALL_MARKETS',
-  FETCH_ALL_MARKETS__PENDING: 'core/FETCH_ALL_MARKETS__PENDING',
-  FETCH_ALL_MARKETS__FULFILLED: 'core/FETCH_ALL_MARKETS__FULFILLED',
-  FETCH_ALL_MARKETS__FAILED: 'core/FETCH_ALL_MARKETS__FAILED',
-
   FETCH_MARKET: 'core/FETCH_MARKET',
   FETCH_MARKET__PENDING: 'core/FETCH_MARKET__PENDING',
   FETCH_MARKET__FULFILLED: 'core/FETCH_MARKET__FULFILLED',
@@ -49,21 +44,6 @@ export const fetchActions = {
   ),
   fetchMarketWalletNftsFailed: createCustomAction(
     fetchTypes.FETCH_MARKET_WALLET__FAILED,
-    (error: ServerError) => ({ payload: error }),
-  ),
-
-  //? fetchAllMarkets
-  fetchAllMarkets: createCustomAction(fetchTypes.FETCH_ALL_MARKETS, () => null),
-  fetchAllMarketsPending: createCustomAction(
-    fetchTypes.FETCH_ALL_MARKETS__PENDING,
-    () => null,
-  ),
-  fetchAllMarketsFulfilled: createCustomAction(
-    fetchTypes.FETCH_ALL_MARKETS__FULFILLED,
-    (markets: MarketInfo[]) => ({ payload: markets }),
-  ),
-  fetchAllMarketsFailed: createCustomAction(
-    fetchTypes.FETCH_ALL_MARKETS__FAILED,
     (error: ServerError) => ({ payload: error }),
   ),
 
