@@ -1041,7 +1041,7 @@ export const EditPool: FC = () => {
                     {isLiquidityProvisionPool && (
                       <>
                         <Card bordered={false}>
-                          <Title level={3}>assets TEST</Title>
+                          <Title level={3}>assets</Title>
                           <Form.Item
                             label="buy orders amount"
                             name="buyOrdersAmount"
