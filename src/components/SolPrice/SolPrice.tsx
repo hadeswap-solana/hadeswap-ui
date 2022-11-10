@@ -15,7 +15,9 @@ export const SolPrice: FC<SolPriceProps> = ({ price, raw, className }) => (
   <div className={classNames(styles.price, className)}>
     <SolanaLogo />
     <Typography.Text>
-      {price ? (raw ? (price / 1e9).toFixed(3) : price) : 0}
+      {!price && 0}
+      {!isNaN(price) && !raw && price}
+      {!isNaN(price) && raw && (price / 1e9).toFixed(3)}
     </Typography.Text>
   </div>
 );

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useDispatch } from 'react-redux';
 import withModal from '../../Modal/mobile/Modal';
 import { CartSiderProps } from '../index';
 import BadgeButton from '../../Buttons/BadgeButton';
@@ -9,10 +10,11 @@ import Button from '../../Buttons/Button';
 import styles from './styles.module.scss';
 
 const CartSiderMobile: FC<CartSiderProps> = (props) => {
+  const dispatch = useDispatch();
+
   const {
     createOnDeselectHandler,
     onDeselectBulkHandler,
-    dispatch,
     swap,
     setShowModal,
     cartItems,

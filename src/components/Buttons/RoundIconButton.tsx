@@ -11,7 +11,7 @@ interface ButtonProps {
 
 const RoundIconButton: FC<ButtonProps> = ({ className, onClick, children }) => (
   <button
-    className={classNames(styles.roundIconWrapper, { [className]: className })}
+    className={classNames(styles.roundIconWrapper, className)}
     onClick={onClick}
   >
     {children}

@@ -24,14 +24,27 @@ const allMarketsQuery: AllMarketsQuery = {
   staleTime: 5 * 60 * 1000,
 };
 
-export const useFetchAllMarkets = () => {
-  const { data, isLoading }: { data: MarketInfo[]; isLoading: boolean } =
-    useQuery(allMarketsQuery);
+export const useFetchAllMarkets = (): {
+  data: MarketInfo[];
+  isLoading: boolean;
+} => {
+  const {
+    data,
+    isLoading,
+  }: {
+    data: MarketInfo[];
+    isLoading: boolean;
+  } = useQuery(allMarketsQuery);
 
   return { data, isLoading };
 };
 
-export const useFetchAllMarketsAndPairs = () => {
+export const useFetchAllMarketsAndPairs = (): {
+  markets: MarketInfo[];
+  pairs: Pair[];
+  isLoading: boolean;
+  isFetching: boolean;
+} => {
   const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
 
   const walletPairsQuery: WalletPairsQuery = {

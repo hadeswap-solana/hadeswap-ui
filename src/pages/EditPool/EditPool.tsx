@@ -862,7 +862,7 @@ export const EditPool: FC = () => {
       history.push(`/my-pools`);
     }
   };
-  console.log('EDIT-pool');
+
   return (
     <AppLayout>
       <Title>Edit pool</Title>

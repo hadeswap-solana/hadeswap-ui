@@ -43,13 +43,14 @@
 
 .cartSection {
   width: calc(var(--cart-sider-width) - 64px);
+  margin-bottom: 32px;
 
   @media screen and (max-width: 1024px) {
     width: calc(100% - 16px);
   }
 
-  &:not(:last-child) {
-    margin-bottom: 32px;
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 

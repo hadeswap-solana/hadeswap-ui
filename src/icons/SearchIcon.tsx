@@ -1,4 +1,8 @@
-export const SearchIcon = ({ className }): JSX.Element => (
+export const SearchIcon = ({
+  className,
+}: {
+  className: string;
+}): JSX.Element => (
   <svg
     className={className || ''}
     width="15"

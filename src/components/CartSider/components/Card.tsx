@@ -19,7 +19,7 @@ const Card: FC<CardProps> = ({ name, price, imageUrl, onDeselect }) => (
       <Typography.Title level={5} className={styles.cardTitle}>
         {name}
       </Typography.Title>
-      <SolPrice className={styles.cardPrice} price={Number(price)} />
+      <SolPrice className={styles.cardPrice} price={parseFloat(price)} />
     </div>
     {onDeselect && (
       <DeleteButton className={styles.deleteButton} onClick={onDeselect} />

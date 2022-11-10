@@ -26,7 +26,7 @@ const Button: FC<ButtonProps> = ({
         { [styles.disabled]: isDisabled },
         { [className]: className },
       )}
-      onClick={!isDisabled ? onClick : undefined}
+      onClick={!isDisabled ? onClick : null}
     >
       {children}
     </button>

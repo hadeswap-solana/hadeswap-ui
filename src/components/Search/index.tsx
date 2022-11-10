@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { SearchIcon } from '../../icons/SearchIcon';
 import styles from './Search.module.scss';
 
-const Index: FC = () => {
+const Search: FC = () => {
   return (
     <div className={styles.searchWrapper}>
       <SearchIcon className={styles.searchIcon} />
@@ -11,4 +11,4 @@ const Index: FC = () => {
   );
 };
 
-export default Index;
+export default Search;

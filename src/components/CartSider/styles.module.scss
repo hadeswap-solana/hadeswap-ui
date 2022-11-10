@@ -1,9 +1,9 @@
 .cartSider {
   position: sticky;
-  top: 0;
+  top: var(--header-height-desktop);
   right: 0;
   width: 0;
-  height: 100vh;
+  height: calc(100vh - var(--header-height-desktop));
   border-left: var(--border-base);
   transform: translateX(1px);
   background: var(--component-secondary-background);

@@ -11,7 +11,7 @@ interface ButtonProps {
 
 const DeleteButton: FC<ButtonProps> = ({ className, onClick }) => (
   <button
-    className={classNames(styles.deleteButton, { [className]: className })}
+    className={classNames(styles.deleteButton, className)}
     onClick={onClick}
   >
     <MinusCircleIcon />

@@ -1,5 +1,9 @@
 .header {
+  position: sticky;
+  top: 0;
+  right: 0;
   border-bottom: var(--border-base);
+  z-index: 11;
 }
 
 .infoBlock,
