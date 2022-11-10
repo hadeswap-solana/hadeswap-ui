@@ -20,7 +20,7 @@ import {
 import { combineFetchingStatusResponse } from './utils';
 
 const BASE_STALE_TIME = 5 * 60 * 1000; // 5 min
-const SHORT_STALE_TIME = 1000; // 1 sec
+const SHORT_STALE_TIME = 10000; // 10 sec
 
 const allMarketsQuery: AllMarketsQuery = {
   queryKey: ['fetchAllMarkets'],
@@ -125,7 +125,7 @@ export const useFetchMarketPairs = (
   const marketPairsQuery: PairsQuery = {
     queryKey: ['fetchMarketPairs', `${marketPubKey}`],
     queryFn: () => fetchMarketPairs(marketPubKey),
-    staleTime: BASE_STALE_TIME,
+    staleTime: SHORT_STALE_TIME,
     enabled: !!marketPubKey,
   };
 

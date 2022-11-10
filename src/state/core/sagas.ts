@@ -1,10 +1,7 @@
 import { coreTypes, coreActions } from './actions';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
-import { web3 } from 'hadeswap-sdk';
 
-import { networkRequest } from '../../utils/state';
-import { MarketInfo, Nft, Pair } from './types';
-import { selectSocket, selectWalletPublicKey } from '../common/selectors';
+import { selectSocket } from '../common/selectors';
 import { Socket } from 'socket.io-client';
 import { eventChannel } from 'redux-saga';
 import {
@@ -12,90 +9,6 @@ import {
   selectCartPendingOrdersAmount,
 } from './selectors';
 import { commonActions } from '../common/actions';
-
-const fetchMarketSaga = function* (
-  action: ReturnType<typeof coreActions.fetchMarket>,
-) {
-  if (!action.payload) {
-    return;
-  }
-  yield put(coreActions.fetchMarketPending(action.payload));
-  try {
-    const data: MarketInfo = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/markets/${action.payload}`,
-    });
-    yield put(coreActions.fetchMarketFulfilled(data));
-  } catch (error) {
-    yield put(coreActions.fetchMarketFailed(error));
-  }
-};
-
-const fetchMarketPairsSaga = function* (
-  action: ReturnType<typeof coreActions.fetchMarketPairs>,
-) {
-  if (!action.payload) {
-    return;
-  }
-  yield put(coreActions.fetchMarketPairsPending(action.payload));
-  try {
-    const data: Pair[] = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/pairs/${action.payload}`,
-    });
-
-    yield put(coreActions.fetchMarketPairsFulfilled(data));
-  } catch (error) {
-    yield put(coreActions.fetchMarketPairsFailed(error));
-  }
-};
-
-const fetchMarketInfoAndPairsSaga = function* (
-  action: ReturnType<typeof coreActions.fetchMarketInfoAndPairs>,
-) {
-  if (!action.payload) {
-    return;
-  }
-  yield call(fetchMarketSaga, action);
-  yield call(fetchMarketPairsSaga, action);
-};
-
-const fetchMarketWalletNftsSaga = function* (
-  action: ReturnType<typeof coreActions.fetchMarketWalletNfts>,
-) {
-  const walletPubkey: web3.PublicKey = yield select(selectWalletPublicKey);
-
-  if (!walletPubkey) {
-    return;
-  }
-
-  yield put(coreActions.fetchMarketWalletNftsPending());
-  try {
-    const data: Nft[] = yield call(networkRequest, {
-      url: `https://${
-        process.env.BACKEND_DOMAIN
-      }/nfts/${walletPubkey.toBase58()}/${action.payload}`,
-    });
-    yield put(coreActions.fetchMarketWalletNftsFulfilled(data));
-  } catch (error) {
-    yield put(coreActions.fetchMarketWalletNftsFailed(error));
-  }
-};
-
-const fetchPairSaga = function* (
-  action: ReturnType<typeof coreActions.fetchPair>,
-) {
-  if (!action.payload) {
-    return;
-  }
-  yield put(coreActions.fetchPairPending(action.payload));
-  try {
-    const data: Pair = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/pair/${action.payload}`,
-    });
-    yield put(coreActions.fetchPairFulfilled(data));
-  } catch (error) {
-    yield put(coreActions.fetchPairFailed(error));
-  }
-};
 
 const updateCartSaga = function* (
   action:
@@ -137,22 +50,7 @@ const subscribeCartPairsSaga = function* (pairs) {
   yield put(coreActions.updatePairs(pairs));
 };
 
-const coreSagas = function* (): Generator {
-  yield all([takeLatest(coreTypes.FETCH_MARKET, fetchMarketSaga)]);
-  yield all([
-    takeLatest(coreTypes.FETCH_MARKET_WALLET_NFTS, fetchMarketWalletNftsSaga),
-  ]);
-  yield all([takeLatest(coreTypes.FETCH_MARKET_PAIRS, fetchMarketPairsSaga)]);
-  yield all([takeLatest(coreTypes.FETCH_PAIR, fetchPairSaga)]);
-  yield all([
-    takeLatest(
-      coreTypes.FETCH_MARKET_INFO_AND_PAIRS,
-      fetchMarketInfoAndPairsSaga,
-    ),
-  ]);
-};
-
-export const coreSocketSagas = (socket: Socket) =>
+const coreSocketSagas = (socket: Socket) =>
   function* (): Generator {
     const cartPairsStream: any = yield call(cartPairsChannel, socket);
     yield all([takeLatest(cartPairsStream, subscribeCartPairsSaga)]);
@@ -164,4 +62,4 @@ export const coreSocketSagas = (socket: Socket) =>
     ]);
   };
 
-export default coreSagas;
+export default coreSocketSagas;

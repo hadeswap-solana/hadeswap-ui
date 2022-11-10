@@ -1,5 +1,4 @@
 import { cartActions, cartTypes } from './cartActions';
-import { fetchActions, fetchTypes } from './fetchActions';
 import { pairsActions, pairsTypes } from './pairsActions';
 import { marketActions, marketTypes } from './marketActions';
 import {
@@ -8,7 +7,6 @@ import {
 } from './marketWalletNftsActions';
 
 export const coreTypes = {
-  ...fetchTypes,
   ...cartTypes,
   ...pairsTypes,
   ...marketTypes,
@@ -16,7 +14,6 @@ export const coreTypes = {
 };
 
 export const coreActions = {
-  ...fetchActions,
   ...cartActions,
   ...pairsActions,
   ...marketActions,
