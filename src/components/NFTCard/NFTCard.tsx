@@ -1,28 +1,38 @@
 import { FC } from 'react';
-import { Button, Typography } from 'antd';
 import classNames from 'classnames';
+import Button from '../Buttons/Button';
+import DeleteButton from '../Buttons/DeleteButton';
+import { PlusIcon } from '../../icons/PlusIcon';
+import { LoopIcon } from '../../icons/LoopIcon';
+import { SolPrice } from '../SolPrice/SolPrice';
+import { UNTITLED } from '../../constants/common';
 
 import styles from './NFTCard.module.scss';
-import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 
 interface NFTCardProps {
   className?: string;
   selected?: boolean;
   disabled?: boolean;
+  simpleCard?: boolean;
   imageUrl: string;
   name?: string;
   price?: string;
-  onBtnClick?: () => void;
+  onCardClick?: () => void;
+  onAddToCart?: () => void;
+  onExchange?: () => void;
 }
 
 export const NFTCard: FC<NFTCardProps> = ({
   className,
   selected = false,
   disabled = false,
+  simpleCard = false,
   imageUrl,
-  name,
+  name = UNTITLED,
   price,
-  onBtnClick,
+  onCardClick,
+  onAddToCart,
+  onExchange,
 }) => {
   return (
     <div
@@ -32,28 +42,32 @@ export const NFTCard: FC<NFTCardProps> = ({
         { [styles.cardDisabled]: disabled },
         className,
       )}
-      onClick={onBtnClick}
+      onClick={onCardClick && onCardClick}
     >
-      <img className={styles.cardImage} src={imageUrl} alt={name} />
-      {(name || price) && (
-        <div className={styles.cardContent}>
-          {name && (
-            <Typography.Title level={5} className={styles.cardTitle}>
-              {name}
-            </Typography.Title>
-          )}
-          {price && (
-            <Typography.Text className={styles.cardPrice}>
-              <img width={16} height={16} src={solanaLogo} alt="sol" /> {price}
-            </Typography.Text>
-          )}
-          {onBtnClick && (
-            <Button type="primary" block>
-              {!selected ? 'select' : 'deselect'}
+      <div className={styles.cardImageWrapper}>
+        {!simpleCard && !selected && (
+          <div className={styles.cardImageHover}>
+            <Button className={styles.cardButton} onClick={onAddToCart}>
+              <PlusIcon />
+              <span>add to cart</span>
             </Button>
-          )}
-        </div>
-      )}
+            <Button className={styles.cardButton} onClick={onExchange}>
+              <LoopIcon />
+              <span>exchange</span>
+            </Button>
+          </div>
+        )}
+        {!simpleCard && selected && (
+          <DeleteButton className={styles.deleteButton} onClick={onAddToCart} />
+        )}
+        <img className={styles.cardImage} src={imageUrl} alt={name} />
+      </div>
+      <div className={styles.cardContent}>
+        <h5 className={styles.cardTitle}>{name}</h5>
+        {!simpleCard && (
+          <SolPrice className={styles.cardPrice} price={parseFloat(price)} />
+        )}
+      </div>
     </div>
   );
 };

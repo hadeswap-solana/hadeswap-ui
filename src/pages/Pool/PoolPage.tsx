@@ -88,6 +88,7 @@ const NftList: FC<NftListProps> = ({ pool }) => {
             key={order.mint}
             imageUrl={order.imageUrl}
             name={order.name}
+            simpleCard
           />
         ))}
       </FakeInfinityScroll>

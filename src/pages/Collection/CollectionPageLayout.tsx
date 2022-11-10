@@ -19,7 +19,6 @@ import { MakeOfferModal } from './MakeOfferModal';
 
 import styles from './Collection.module.scss';
 
-const { Content } = Layout;
 const { TabPane } = Tabs;
 
 export const CollectionPageLayout: FC = ({ children }) => {
@@ -79,7 +78,7 @@ export const CollectionPageLayout: FC = ({ children }) => {
             <TabPane tab="activity" key={COLLECTION_TABS.ACTIVITY} />
             <TabPane tab="pools" key={COLLECTION_TABS.POOLS} />
           </Tabs>
-          <Content>{children}</Content>
+          {children}
         </>
       )}
 

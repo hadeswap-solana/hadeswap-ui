@@ -969,145 +969,155 @@ export const EditPool: FC = () => {
                             SOL.
                           </Paragraph>
                         )} */}
-                    {Boolean(isTokenForNFTPool || isLiquidityProvisionPool) && (
-                      <Paragraph>
-                        starting buying price {spotPrice} SOL.
-                      </Paragraph>
-                    )}
-                    {Boolean(isNftForTokenPool || isLiquidityProvisionPool) && (
-                      <Paragraph>
-                        starting selling price{' '}
-                        {helpers.calculateNextSpotPrice({
-                          orderType: OrderType.Buy,
-                          delta: delta,
-                          spotPrice: spotPrice,
-                          bondingCurveType: curve,
-                          counter: 0,
-                        })}{' '}
-                        SOL.
-                      </Paragraph>
-                    )}
-                    {Boolean(delta) && (
-                      <Paragraph>
-                        each time your pool {renamePairType(type)}s an NFT, your{' '}
-                        {renamePairType(type)} price will adjust up by {delta}{' '}
-                        {unit}.
-                      </Paragraph>
-                    )}
-                  </Card>
-                </div>
-                <div className={styles.pane}>
-                  {isTokenForNFTPool && (
-                    <Card bordered={false}>
-                      <Title level={3}>assets</Title>
-                      <Form.Item label="amount of NFTs" name="nftAmount">
-                        <InputNumber
-                          className={styles.input}
-                          min={0}
-                          addonAfter="NFTs"
-                        />
-                      </Form.Item>
+                      {Boolean(
+                        isTokenForNFTPool || isLiquidityProvisionPool,
+                      ) && (
+                        <Paragraph>
+                          starting buying price {spotPrice} SOL.
+                        </Paragraph>
+                      )}
+                      {Boolean(
+                        isNftForTokenPool || isLiquidityProvisionPool,
+                      ) && (
+                        <Paragraph>
+                          starting selling price{' '}
+                          {helpers.calculateNextSpotPrice({
+                            orderType: OrderType.Buy,
+                            delta: delta,
+                            spotPrice: spotPrice,
+                            bondingCurveType: curve,
+                            counter: 0,
+                          })}{' '}
+                          SOL.
+                        </Paragraph>
+                      )}
+                      {Boolean(delta) && (
+                        <Paragraph>
+                          each time your pool {renamePairType(type)}s an NFT,
+                          your {renamePairType(type)} price will adjust up by{' '}
+                          {delta} {unit}.
+                        </Paragraph>
+                      )}
                     </Card>
-                  )}
-                  {isNftForTokenPool && (
-                    <Card bordered={false}>
-                      <Title level={3}>assets</Title>
-                      <div className={styles.nftsWrapper}>
-                        {nftModal.selectedNfts.map((nft) => (
-                          <NFTCard
-                            // className={styles.nfts}
-                            key={nft.mint}
-                            imageUrl={nft.imageUrl}
-                          />
-                        ))}
-                      </div>
-                      <Button onClick={onSelectNftsClick}>+ select NFTs</Button>
-                    </Card>
-                  )}
-                  {isLiquidityProvisionPool && (
-                    <>
+                  </div>
+                  <div className={styles.pane}>
+                    {isTokenForNFTPool && (
                       <Card bordered={false}>
-                        <Title level={3}>assets TEST</Title>
-                        <Form.Item
-                          label="buy orders amount"
-                          name="buyOrdersAmount"
-                        >
+                        <Title level={3}>assets</Title>
+                        <Form.Item label="amount of NFTs" name="nftAmount">
                           <InputNumber
-                            disabled={Boolean(nftModal.selectedNfts.length)}
                             className={styles.input}
-                            max={
-                              isSelectedButtonDisabled
-                                ? pool?.buyOrdersAmount
-                                : buyOrdersAmount
-                            }
                             min={0}
-                            step={2}
                             addonAfter="NFTs"
                           />
                         </Form.Item>
+                      </Card>
+                    )}
+                    {isNftForTokenPool && (
+                      <Card bordered={false}>
+                        <Title level={3}>assets</Title>
                         <div className={styles.nftsWrapper}>
                           {nftModal.selectedNfts.map((nft) => (
-                            <NFTCard key={nft.mint} imageUrl={nft.imageUrl} />
+                            <NFTCard
+                              key={nft.mint}
+                              imageUrl={nft.imageUrl}
+                              simpleCard
+                            />
                           ))}
                         </div>
-                        <Button
-                          disabled={isSelectedButtonDisabled}
-                          onClick={onSelectNftsClick}
-                        >
+                        <Button onClick={onSelectNftsClick}>
                           + select NFTs
                         </Button>
                       </Card>
-                      <Card bordered={false} style={{ marginTop: '20px' }}>
-                        <Title level={3}>fees</Title>
-                        <InputNumber
-                          className={styles.input}
-                          disabled
-                          value={initialValues.accumulatedFees / 1e9}
-                          addonAfter="SOL"
-                        />
-                        <Button
-                          className={styles.button}
-                          type="primary"
-                          disabled={!initialValues.accumulatedFees}
-                          onClick={onWithdrawClick}
-                        >
-                          withdraw
-                        </Button>
-                      </Card>
-                    </>
-                  )}
+                    )}
+                    {isLiquidityProvisionPool && (
+                      <>
+                        <Card bordered={false}>
+                          <Title level={3}>assets</Title>
+                          <Form.Item
+                            label="buy orders amount"
+                            name="buyOrdersAmount"
+                          >
+                            <InputNumber
+                              disabled={Boolean(nftModal.selectedNfts.length)}
+                              className={styles.input}
+                              max={
+                                isSelectedButtonDisabled
+                                  ? pool?.buyOrdersAmount
+                                  : buyOrdersAmount
+                              }
+                              min={0}
+                              step={2}
+                              addonAfter="NFTs"
+                            />
+                          </Form.Item>
+                          <div className={styles.nftsWrapper}>
+                            {nftModal.selectedNfts.map((nft) => (
+                              <NFTCard
+                                key={nft.mint}
+                                imageUrl={nft.imageUrl}
+                                simpleCard
+                              />
+                            ))}
+                          </div>
+                          <Button
+                            disabled={isSelectedButtonDisabled}
+                            onClick={onSelectNftsClick}
+                          >
+                            + select NFTs
+                          </Button>
+                        </Card>
+                        <Card bordered={false} style={{ marginTop: '20px' }}>
+                          <Title level={3}>fees</Title>
+                          <InputNumber
+                            className={styles.input}
+                            disabled
+                            value={initialValues.accumulatedFees / 1e9}
+                            addonAfter="SOL"
+                          />
+                          <Button
+                            className={styles.button}
+                            type="primary"
+                            disabled={!initialValues.accumulatedFees}
+                            onClick={onWithdrawClick}
+                          >
+                            withdraw
+                          </Button>
+                        </Card>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={styles.editButtons}>
+                  <Button
+                    type="primary"
+                    onClick={onSavePoolClick}
+                    disabled={isSaveButtonDisabled}
+                  >
+                    save changes
+                  </Button>
+                  <Button
+                    danger
+                    type="primary"
+                    onClick={onWithdrawAllClick}
+                    disabled={isWithdrawButtonDisabled}
+                  >
+                    withdraw all liquidity
+                  </Button>
+                  <Button
+                    danger
+                    type="primary"
+                    onClick={onClosePoolClick}
+                    disabled={isClosePoolDisabled}
+                  >
+                    close pool
+                  </Button>
                 </div>
               </div>
-              <div className={styles.editButtons}>
-                <Button
-                  type="primary"
-                  onClick={onSavePoolClick}
-                  disabled={isSaveButtonDisabled}
-                >
-                  save changes
-                </Button>
-                <Button
-                  danger
-                  type="primary"
-                  onClick={onWithdrawAllClick}
-                  disabled={isWithdrawButtonDisabled}
-                >
-                  withdraw all liquidity
-                </Button>
-                <Button
-                  danger
-                  type="primary"
-                  onClick={onClosePoolClick}
-                  disabled={isClosePoolDisabled}
-                >
-                  close pool
-                </Button>
-              </div>
-            </div>
-          </Form>
-          <SelectNftsModal {...nftModal} walletNfts={walletNfts} />
-        </>
-      )}
+            </Form>
+            <SelectNftsModal {...nftModal} walletNfts={walletNfts} />
+          </>
+        ))}
     </AppLayout>
   );
 };

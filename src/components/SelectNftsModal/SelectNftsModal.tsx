@@ -104,8 +104,9 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
               key={nft.mint}
               imageUrl={nft.imageUrl}
               name={nft.name}
-              onBtnClick={() => toggleNft(nft)}
+              onCardClick={() => toggleNft(nft)}
               selected={isNftSelected(nft)}
+              simpleCard
             />
           ))}
         </FakeInfinityScroll>

@@ -53,7 +53,7 @@ export const CollectionBuyPage: FC = () => {
                 imageUrl={order.imageUrl}
                 name={order.name}
                 price={formatBNToString(new BN(order.price))}
-                onBtnClick={createOnBtnClick(order)}
+                onAddToCart={createOnBtnClick(order)}
                 selected={order?.selected}
               />
             );

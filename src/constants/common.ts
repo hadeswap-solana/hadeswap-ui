@@ -9,5 +9,6 @@ export const SORT_ORDER = {
 export const FETCHING = 'fetching';
 
 export const UNTITLED_COLLECTION = 'untitled collection';
+export const UNTITLED = 'untitled';
 
 export const COLLECTION = 'collection';
