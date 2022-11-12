@@ -48,13 +48,20 @@ const CollectionItem: FC<CollectionItemsProps> = ({
             }
 
             if (listItem.valueKey === TOTAL_ACCUMULATED_FEES) {
-              value = formatBNToString(new BN(value || '0'));
+              value =
+                item.type === 'liquidity provision'
+                  ? formatBNToString(new BN(value || '0'))
+                  : '--';
+            }
+
+            if (item.type == 'tokenForNft') {
+              value = '--';
             }
 
             return (
               <li key={listItem.valueKey} className={styles.listItem}>
                 <span>{listItem.title}</span>
-                {listItem.price ? (
+                {listItem.price && !isNaN(value) ? (
                   <PriceWithIcon price={value ? value : '0'} rightIcon />
                 ) : (
                   <span>

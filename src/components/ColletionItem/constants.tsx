@@ -77,7 +77,6 @@ export const POOL_ITEM: Item = {
     {
       title: 'accumulated fees',
       valueKey: TOTAL_ACCUMULATED_FEES,
-      price: true,
     },
     {
       title: 'delta',
