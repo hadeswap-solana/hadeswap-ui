@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import { BN } from 'hadeswap-sdk';
 import {
   COLLECTION_ITEM,
@@ -10,22 +9,10 @@ import { UNTITLED_COLLECTION, COLLECTION } from '../../../constants/common';
 import { formatBNToString } from '../../../utils';
 import { shortenAddress } from '../../../utils/solanaUtils';
 import { PriceWithIcon } from '../../PriceWithIcon';
-import { createPoolTableRow } from '../../../state/core/helpers';
-import { MarketInfo } from '../../../state/core/types';
 
 import styles from './CollectionItem.module.scss';
 
-interface CollectionItemsProps {
-  item: ReturnType<typeof createPoolTableRow> | MarketInfo;
-  onRowClick: (arg: string) => void;
-  listingType?: string;
-}
-
-const CollectionItem: FC<CollectionItemsProps> = ({
-  item,
-  onRowClick,
-  listingType,
-}) => {
+const CollectionItem = ({ item, onRowClick, listingType }) => {
   const itemMap = listingType === COLLECTION ? COLLECTION_ITEM : POOL_ITEM;
 
   return (
