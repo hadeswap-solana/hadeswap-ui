@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { BN } from 'hadeswap-sdk';
 import {
   COLLECTION_ITEM,
@@ -12,7 +13,17 @@ import { PriceWithIcon } from '../../PriceWithIcon';
 
 import styles from './CollectionItem.module.scss';
 
-const CollectionItem = ({ item, onRowClick, listingType }) => {
+interface CollectionItemsProps {
+  item: any;
+  onRowClick: (arg: string) => void;
+  listingType?: string;
+}
+
+const CollectionItem: FC<CollectionItemsProps> = ({
+  item,
+  onRowClick,
+  listingType,
+}): JSX.Element => {
   const itemMap = listingType === COLLECTION ? COLLECTION_ITEM : POOL_ITEM;
 
   return (
@@ -41,7 +52,7 @@ const CollectionItem = ({ item, onRowClick, listingType }) => {
                   : '--';
             }
 
-            if (item.type == 'tokenForNft') {
+            if (item.type === 'tokenForNft') {
               value = '--';
             }
 
