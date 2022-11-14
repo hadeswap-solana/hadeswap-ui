@@ -114,7 +114,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
     showSorterTooltip: false,
     render: (text = 0, record) => (
       <Typography.Text>
-        {record.type === 'liquidityProvision' ? (
+        {record.type === 'liquidity provision' ? (
           <PriceWithIcon price={formatBNToString(new BN(text || '0'))} />
         ) : (
           '--'
