@@ -1,17 +1,21 @@
 import { FC, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Button, Tabs, Layout } from 'antd';
 import { useFetchMarket } from '../../requests';
-import { MarketInfo } from '../../state/core/types';
 import { AppLayout } from '../../components/Layout/AppLayout';
+import { Spinner } from '../../components/Spinner/Spinner';
 import {
   COLLECTION_TABS,
   createCollectionLink,
   createCreatePoolPickSideLink,
 } from '../../constants';
+import {
+  selectCertainMarket,
+  selectCertainMarketLoading,
+} from '../../state/core/selectors';
 import { CollectionGeneralInfo } from './CollectionGeneralInfo';
 import { MakeOfferModal } from './MakeOfferModal';
-import { Spinner } from '../../components/Spinner/Spinner';
 
 import styles from './Collection.module.scss';
 
@@ -23,15 +27,9 @@ export const CollectionPageLayout: FC = ({ children }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-  const {
-    data: market,
-    isLoading,
-    isFetching,
-  }: {
-    data: MarketInfo;
-    isLoading: boolean;
-    isFetching: boolean;
-  } = useFetchMarket(marketPublicKey);
+  useFetchMarket();
+  const isLoading = useSelector(selectCertainMarketLoading);
+  const market = useSelector(selectCertainMarket);
 
   const activeTab = useMemo(
     () => history.location.pathname.split('/').at(-1) as COLLECTION_TABS,
@@ -54,7 +52,7 @@ export const CollectionPageLayout: FC = ({ children }) => {
 
   return (
     <AppLayout>
-      {isLoading || isFetching ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <>

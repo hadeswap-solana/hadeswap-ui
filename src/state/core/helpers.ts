@@ -138,7 +138,7 @@ export const computeNewCartStateAfterBuyOrderRemove = (
     mostExpensiveOrder.price = removableOrder.price;
   }
 
-  const nextState = {
+  return {
     ...state,
     pairs: {
       ...state.pairs,
@@ -149,8 +149,6 @@ export const computeNewCartStateAfterBuyOrderRemove = (
       [affectedPair.pairPubkey]: remainingOrdersForPair,
     },
   };
-
-  return nextState;
 };
 
 export const computeNewCartStateAfterSellOrderRemove = (

@@ -1,4 +1,5 @@
 export * from './marketPairsSelectors';
+export * from './pairSelectors';
 export * from './marketSelectors';
 export * from './cartSelectors';
 export * from './marketSelectors';

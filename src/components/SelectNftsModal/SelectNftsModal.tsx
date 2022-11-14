@@ -3,11 +3,16 @@ import { Modal, Typography } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import { useFetchMarketWalletNfts } from '../../requests';
 import { Nft, PairSellOrder } from '../../state/core/types';
+import {
+  selectMarketWalletNfts,
+  selectMarketWalletNftsLoading,
+} from '../../state/core/selectors';
 import { NFTCard } from '../NFTCard/NFTCard';
 import { Spinner } from '../Spinner/Spinner';
 import { FakeInfinityScroll } from '../FakeInfiinityScroll';
 
 import styles from './SelectNftsModal.module.scss';
+import { useSelector } from 'react-redux';
 
 type UseSelectNftsModal = (
   collectionName: string,
@@ -34,15 +39,10 @@ export const useSelectNftsModal: UseSelectNftsModal = (
   const [visible, setVisible] = useState(false);
   const [selectedNfts, setSelectedNfts] = useState<Nft[]>([]);
 
-  const {
-    data: walletNfts,
-    isLoading,
-    isFetching,
-  }: {
-    data: Nft[];
-    isLoading: boolean;
-    isFetching: boolean;
-  } = useFetchMarketWalletNfts(marketPublicKey);
+  useFetchMarketWalletNfts();
+
+  const walletNfts = useSelector(selectMarketWalletNfts);
+  const isLoading = useSelector(selectMarketWalletNftsLoading);
 
   useEffect(() => {
     if (preSelectedNfts) {
@@ -70,7 +70,7 @@ export const useSelectNftsModal: UseSelectNftsModal = (
     walletNfts,
     toggleNft,
     isNftSelected,
-    loading: isLoading || isFetching,
+    loading: isLoading,
   };
 };
 

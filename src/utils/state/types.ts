@@ -3,14 +3,7 @@ export interface ServerError {
   message: string;
 }
 
-export enum RequestStatus {
-  PENDING = 'PENDING',
-  IDLE = 'IDLE',
-  FULFILLED = 'FULFILLED',
-  FAILED = 'FAILED',
-}
-
 export interface AsyncState<TData> {
   data: TData | null;
-  status: RequestStatus;
+  isLoading: boolean;
 }

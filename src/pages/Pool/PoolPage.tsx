@@ -1,19 +1,25 @@
 import { FC } from 'react';
 import { Button, Row, Col, Typography, Avatar } from 'antd';
+import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { BN } from 'hadeswap-sdk';
 import { useFetchPair, useFetchMarket } from '../../requests';
-import { combineFetchingStatus } from '../../requests/utils';
+import { formatBNToString, PoolType } from '../../utils';
+import { createEditPollLink } from '../../constants';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Spinner } from '../../components/Spinner/Spinner';
-import { BN } from 'hadeswap-sdk';
-import { formatBNToString, PoolType } from '../../utils';
-import { MarketInfo, Pair } from '../../state/core/types';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
-import { createEditPollLink } from '../../constants';
-import { parseDelta } from '../../state/core/helpers';
 import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
+import { MarketInfo, Pair } from '../../state/core/types';
+import { parseDelta } from '../../state/core/helpers';
+import {
+  selectCertainMarket,
+  selectCertainMarketLoading,
+  selectCertainPair,
+  selectCertainPairLoading,
+} from '../../state/core/selectors';
 
 import styles from './PoolPage.module.scss';
 
@@ -25,38 +31,15 @@ export const PoolPage: FC = () => {
   const history = useHistory();
   const wallet = useWallet();
 
-  const {
-    data: pool,
-    isLoading: poolLoading,
-    isFetching: poolFetching,
-  }: {
-    data: Pair;
-    isLoading: boolean;
-    isFetching: boolean;
-  } = useFetchPair(poolPubkey);
+  useFetchMarket();
+  useFetchPair();
 
-  const {
-    data: market,
-    isLoading: marketLoading,
-    isFetching: marketFetching,
-  }: {
-    data: MarketInfo;
-    isLoading: boolean;
-    isFetching: boolean;
-  } = useFetchMarket(pool?.market);
+  const market = useSelector(selectCertainMarket);
+  const pool = useSelector(selectCertainPair);
+  const marketLoading = useSelector(selectCertainMarketLoading);
+  const poolLoading = useSelector(selectCertainPairLoading);
 
-  const {
-    isLoading,
-    isFetching,
-  }: {
-    isLoading: boolean;
-    isFetching: boolean;
-  } = combineFetchingStatus({
-    loadingA: poolLoading,
-    loadingB: marketLoading,
-    fetchingA: poolFetching,
-    fetchingB: marketFetching,
-  });
+  const isLoading = marketLoading || poolLoading;
 
   const isOwner =
     wallet.publicKey && wallet.publicKey?.toBase58() === pool?.assetReceiver;
@@ -71,7 +54,7 @@ export const PoolPage: FC = () => {
         <span>pool</span>
         <span>{poolPubkey}</span>
       </h2>
-      {isLoading || isFetching ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <div className={styles.content}>

@@ -9,11 +9,9 @@ export const fetchAllMarkets = async (): Promise<MarketInfo[]> => {
   return await response.json();
 };
 
-export const fetchMarket = async (
-  marketPubkey: string,
-): Promise<MarketInfo> => {
+export const fetchMarket = async (pubkey: string): Promise<MarketInfo> => {
   const response = await fetch(
-    `https://${process.env.BACKEND_DOMAIN}/markets/${marketPubkey}`,
+    `https://${process.env.BACKEND_DOMAIN}/markets/${pubkey}`,
   );
   if (!response.ok) {
     throw new Error('Network response was not ok');

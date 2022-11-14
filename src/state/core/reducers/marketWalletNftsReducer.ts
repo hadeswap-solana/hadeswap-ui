@@ -9,9 +9,10 @@ export const initialWalletNftsState: AsyncState<Nft[]> =
 export const setMarketWalletNftsReducer = createReducer(
   initialWalletNftsState,
   {
-    [coreTypes.SET_MARKET_WALLET_NFTS]: (state, action) => ({
+    [coreTypes.SET_MARKET_WALLET_NFTS]: (state, { payload }) => ({
       ...state,
-      data: action.payload,
+      data: payload.data,
+      isLoading: payload.isLoading,
     }),
   },
 );

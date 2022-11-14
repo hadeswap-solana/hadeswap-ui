@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import {
   Button,
@@ -25,7 +25,6 @@ import {
 import { useConnection } from '../../hooks';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { MarketInfo } from '../../state/core/types';
 import {
   SelectNftsModal,
   useSelectNftsModal,
@@ -39,6 +38,10 @@ import { createDepositLiquidityToPairTxns } from '../../utils/transactions/creat
 import { createCreatePollLink } from '../../constants';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
+import {
+  selectAllMarkets,
+  selectAllMarketsLoading,
+} from '../../state/core/selectors';
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { getArrayByNumber } from '../../utils/transactions';
@@ -81,15 +84,10 @@ export const NewPool: FC = () => {
   const nftAmount = Form.useWatch('nftAmount', form);
   const fee = Form.useWatch('fee', form);
 
-  const {
-    data: markets,
-    isLoading,
-    isFetching,
-  }: {
-    data: MarketInfo[];
-    isLoading: boolean;
-    isFetching: boolean;
-  } = useFetchAllMarkets();
+  useFetchAllMarkets();
+
+  const markets = useSelector(selectAllMarkets);
+  const isLoading = useSelector(selectAllMarketsLoading);
 
   const chosenMarket = markets.find((item) => item.marketPubkey === market);
   const collectionName = chosenMarket?.collectionName ?? 'nfts';
@@ -335,7 +333,7 @@ export const NewPool: FC = () => {
             {step === 0 && (
               <div className={styles.stepsContent}>
                 <div className={styles.stepContent}>
-                  {isLoading || isFetching ? (
+                  {isLoading ? (
                     <Spinner />
                   ) : (
                     <Row>

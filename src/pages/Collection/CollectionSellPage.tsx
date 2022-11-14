@@ -3,19 +3,18 @@ import BN from 'bn.js';
 import { CollectionPageLayout } from './CollectionPageLayout';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  useDispatchMarketPairs,
-  useDispatchMarketWalletNfts,
-} from '../../requests/hooks';
+import { useFetchMarketWalletNfts, useFetchMarketPairs } from '../../requests';
 import {
   selectAllSellOrdersForMarket,
+  selectMarketWalletNftsLoading,
   selectMarketPairs,
+  selectMarketPairsLoading,
 } from '../../state/core/selectors';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { coreActions } from '../../state/core/actions';
 import { useParams } from 'react-router-dom';
 import { formatBNToString } from '../../utils';
-import { MarketOrder, OrderType, Pair } from '../../state/core/types';
+import { MarketOrder, OrderType } from '../../state/core/types';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Typography } from 'antd';
 import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
@@ -27,10 +26,13 @@ export const CollectionSellPage: FC = () => {
   const { connected } = useWallet();
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-  const pairsLoading: boolean = useDispatchMarketPairs();
-  const nftsLoading: boolean = useDispatchMarketWalletNfts();
+  useFetchMarketPairs();
+  useFetchMarketWalletNfts();
 
-  const pairs: Pair[] = useSelector(selectMarketPairs);
+  const pairsLoading = useSelector(selectMarketPairsLoading);
+  const nftsLoading = useSelector(selectMarketWalletNftsLoading);
+
+  const pairs = useSelector(selectMarketPairs);
   const orders = useSelector((state: never) =>
     selectAllSellOrdersForMarket(state, marketPublicKey),
   );

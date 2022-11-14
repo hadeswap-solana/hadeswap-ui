@@ -1,56 +1,11 @@
 import { Reducer } from 'redux';
-
-import { AsyncState, RequestStatus } from './types';
-
-export const asyncState: AsyncState<null> = {
-  data: null,
-  status: RequestStatus.IDLE,
-};
+import { AsyncState } from './types';
 
 export const createInitialAsyncState = <TData>(
   initialData: TData = null,
 ): AsyncState<TData> => ({
   data: initialData,
-  status: RequestStatus.IDLE,
-});
-
-export const createHandlers = <TData>(
-  request: string,
-): { [key: string]: Reducer<AsyncState<TData>> } => ({
-  [`${request}__PENDING`]: (state: AsyncState<TData>) => ({
-    ...state,
-    status: RequestStatus.PENDING,
-  }),
-  [`${request}__CANCELLED`]: (state: AsyncState<TData>) => ({
-    ...state,
-    status: RequestStatus.IDLE,
-  }),
-  [`${request}__RESET`]: (state: AsyncState<TData>) => ({
-    ...state,
-    data: asyncState.data,
-  }),
-  [`${request}__FULFILLED`]: (
-    state: AsyncState<TData>,
-    action: {
-      type: string;
-      payload: TData;
-    },
-  ) => ({
-    ...state,
-    status: RequestStatus.FULFILLED,
-    data: action.payload,
-  }),
-  [`${request}__FAILED`]: (
-    state: AsyncState<TData>,
-    action: {
-      type: string;
-      payload: string[];
-    },
-  ) => ({
-    ...state,
-    status: RequestStatus.FAILED,
-    messages: action.payload,
-  }),
+  isLoading: true,
 });
 
 export const composeReducers = (...funcs: Reducer[]): Reducer => {
