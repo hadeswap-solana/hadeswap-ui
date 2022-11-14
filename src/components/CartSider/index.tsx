@@ -1,4 +1,10 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, {
+  FC,
+  useEffect,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectScreeMode } from '../../state/common/selectors';
 import CartSiderDesktop from './CartSider';
@@ -14,7 +20,7 @@ export interface CartSiderProps {
   createOnDeselectHandler?: (arg: CartOrder) => () => void;
   onDeselectBulkHandler?: (arg: CartOrder[]) => void;
   swap?: () => Promise<void>;
-  setShowModal?: (func: React.Dispatch<React.SetStateAction<boolean>>) => void;
+  setShowModal?: (func: Dispatch<SetStateAction<boolean>>) => void;
   itemsAmount: number;
   isSwapButtonDisabled?: boolean;
   isCartEmpty: boolean;
