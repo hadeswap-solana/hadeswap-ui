@@ -1,15 +1,6 @@
 import { FC } from 'react';
-import { BN } from 'hadeswap-sdk';
-import {
-  COLLECTION_ITEM,
-  POOL_ITEM,
-  OWNER_PUBLIC_KEY,
-  TOTAL_ACCUMULATED_FEES,
-} from '../constants';
+import { COLLECTION_ITEM, POOL_ITEM } from '../constants';
 import { UNTITLED_COLLECTION, COLLECTION } from '../../../constants/common';
-import { formatBNToString } from '../../../utils';
-import { shortenAddress } from '../../../utils/solanaUtils';
-import { PriceWithIcon } from '../../PriceWithIcon';
 import { createPoolTableRow } from '../../../state/core/helpers';
 import { MarketInfo } from '../../../state/core/types';
 
@@ -25,7 +16,7 @@ const CollectionItem: FC<CollectionItemsProps> = ({
   item,
   onRowClick,
   listingType,
-}) => {
+}): JSX.Element => {
   const itemMap = listingType === COLLECTION ? COLLECTION_ITEM : POOL_ITEM;
 
   return (
@@ -40,31 +31,12 @@ const CollectionItem: FC<CollectionItemsProps> = ({
       </div>
       <div className={styles.cardBody}>
         <ul>
-          {itemMap.list.map((listItem) => {
-            let value = item[listItem.valueKey];
-
-            if (listItem.valueKey === OWNER_PUBLIC_KEY) {
-              value = shortenAddress(value);
-            }
-
-            if (listItem.valueKey === TOTAL_ACCUMULATED_FEES) {
-              value = formatBNToString(new BN(value || '0'));
-            }
-
-            return (
-              <li key={listItem.valueKey} className={styles.listItem}>
-                <span>{listItem.title}</span>
-                {listItem.price ? (
-                  <PriceWithIcon price={value ? value : '0'} rightIcon />
-                ) : (
-                  <span>
-                    {value}
-                    {listItem.percent && '%'}
-                  </span>
-                )}
-              </li>
-            );
-          })}
+          {itemMap.list.map((listItem) => (
+            <li key={listItem.valueKey} className={styles.listItem}>
+              <span>{listItem.title}</span>
+              {listItem.render(item[listItem.valueKey], item)}
+            </li>
+          ))}
         </ul>
       </div>
     </div>
