@@ -160,12 +160,7 @@ const ActivityCard: FC<ActivityCardProps> = ({ data }) => {
         pool
       </p>
       <p className={styles.activityPrice}>
-        for{' '}
-        <SolPrice
-          price={data.solAmount}
-          className={styles.solPrice}
-          logoClassName={styles.solLogo}
-        />{' '}
+        for <SolPrice price={data.solAmount} />{' '}
       </p>
       <a
         href={`https://solscan.io/tx/${data.signature}`}
