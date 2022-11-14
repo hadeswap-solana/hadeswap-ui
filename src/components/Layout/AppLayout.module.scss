@@ -1,3 +1,8 @@
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .mainWrapper {
   display: flex;
   overflow-x: clip;
@@ -11,7 +16,7 @@
 .content {
   position: relative;
   min-height: 280px;
-  padding: 24px 50px;
+  padding: 24px var(--body-horizontal-padding);
 
   @media screen and (max-width: 768px) {
     padding: 12px 12px;

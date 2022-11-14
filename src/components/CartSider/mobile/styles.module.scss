@@ -3,16 +3,21 @@
   border-width: 1px 1px 0 1px;
 }
 
-.modalInner {
+.cartInner {
   display: flex;
   flex-direction: column;
   min-height: 100%;
+  overflow-x: clip;
 }
 
-.main {
+.cartBody {
   flex-grow: 1;
   height: 1px;
   overflow-y: scroll;
+
+  @media screen and (max-width: 1024px) {
+    width: calc(100% + 16px);
+  }
 }
 
 .showModalToHeader {
@@ -75,44 +80,15 @@
   margin-bottom: 16px;
 }
 
-.section {
-  &:not(:last-child) {
-    margin-bottom: 32px;
-  }
+.badgeButton {
+  background-color: var(--blue-color);
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 24px;
-  line-height: 32px;
-}
-
-.headerTitle {
-  font-weight: 500;
-}
-
-.headerSubTitle {
-  text-align: left;
-}
-
-.headerPrice {
-  margin: 0;
-  font-weight: 400;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  row-gap: 8px;
+.submitWrapper {
   margin-top: 16px;
 
-  &.invalid {
-    opacity: .6;
+  button {
+    margin-bottom: 16px;
   }
-}
-
-.swapButton {
-  margin-top: 16px;
 }
 

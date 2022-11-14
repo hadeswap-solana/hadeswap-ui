@@ -12,7 +12,7 @@ import DiscordIcon from '../../icons/DiscordIcon';
 import TwitterIcon from '../../icons/TwitterIcon';
 import styles from './AppLayout.module.scss';
 
-const { Content, Footer } = AntdLayout;
+const { Footer } = AntdLayout;
 
 interface LayoutProps {
   customHeader?: JSX.Element;
@@ -32,8 +32,7 @@ const SOCIALS_LIST = [
 
 export const AppLayout: FC<LayoutProps> = ({
   children,
-  className = '',
-  hideFooter = false,
+  hideFooter = true,
   contentClassName = '',
 }) => {
   const dispatch = useDispatch();
@@ -44,52 +43,54 @@ export const AppLayout: FC<LayoutProps> = ({
   }, [location]);
 
   return (
-    <AntdLayout className={className}>
-      <div className={styles.mainWrapper}>
-        <div className={styles.main}>
-          <Header />
-          <Content className={classNames(styles.content, contentClassName)}>
-            {children}
-          </Content>
-          {!hideFooter && (
-            <Footer>
-              <div className={styles.footerSocial}>
-                <div className={styles.footerSocialBlock}>
-                  <Typography.Text>documentation</Typography.Text>
-                  <ul className={styles.socialNavs}>
-                    {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
-                      <li className={styles.socialItem} key={idx}>
-                        <a href={to} target="_blank" rel="noreferrer">
-                          <Icon />
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+    <>
+      <div className={styles.layoutWrapper}>
+        <Header />
+        <div className={styles.mainWrapper}>
+          <div className={styles.main}>
+            <main className={classNames(styles.content, contentClassName)}>
+              {children}
+            </main>
+            {!hideFooter && (
+              <Footer>
+                <div className={styles.footerSocial}>
+                  <div className={styles.footerSocialBlock}>
+                    <Typography.Text>documentation</Typography.Text>
+                    <ul className={styles.socialNavs}>
+                      {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
+                        <li className={styles.socialItem} key={idx}>
+                          <a href={to} target="_blank" rel="noreferrer">
+                            <Icon />
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className={styles.footerSocialBlock}>
+                    <Typography.Text>contact us</Typography.Text>
+                    <ul className={styles.socialNavs}>
+                      {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
+                        <li className={styles.socialItem} key={idx}>
+                          <a href={to} target="_blank" rel="noreferrer">
+                            <Icon />
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                <div className={styles.footerSocialBlock}>
-                  <Typography.Text>contact us</Typography.Text>
-                  <ul className={styles.socialNavs}>
-                    {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
-                      <li className={styles.socialItem} key={idx}>
-                        <a href={to} target="_blank" rel="noreferrer">
-                          <Icon />
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+                <div className={styles.footerDisclaimer}>
+                  hadeswap is currently not audited and will be open sourced
+                  soon after the audit is conducted. use at your own risk.
                 </div>
-              </div>
-              <div className={styles.footerDisclaimer}>
-                hadeswap is currently not audited and will be open sourced soon
-                after the audit is conducted. use at your own risk.
-              </div>
-            </Footer>
-          )}
+              </Footer>
+            )}
+          </div>
+          <CartSider />
         </div>
-        <CartSider />
       </div>
       <SelectWalletModal />
       <TransactionsLoadingModal />
-    </AntdLayout>
+    </>
   );
 };

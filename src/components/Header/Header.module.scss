@@ -1,41 +1,69 @@
 .header {
+  position: sticky;
+  top: 0;
+  right: 0;
+  border-bottom: var(--border-base);
+  z-index: 11;
+}
+
+.infoBlock,
+.main {
   display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border-color-base);
+  align-items: center;
+  padding: 0 var(--body-horizontal-padding);
+}
+
+.infoBlock {
+  height: 32px;
+  background: var(--component-base-background);
+}
+
+.main {
+  height: 64px;
+  background: var(--component-secondary-background);
+}
+
+.logoSearchWrapper {
+  display: flex;
+  flex-grow: 1;
+  margin-right: 24px;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  margin-right: 16px;
+  width: 180px;
 }
 
 .buttonsWrapper {
   display: flex;
   align-items: center;
+  height: 100%;
 }
 
 .nav {
   display: flex;
+  height: 100%;
 }
 
 .navLink {
-  padding: 0 12px;
-  transition: background var(--ease-base-out) var(--animation-duration-slow),
-  color var(--ease-base-out) var(--animation-duration-slow);
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 20px;
   font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+  white-space: nowrap;
+  transition: opacity .3s;
 
   &:hover {
-    background: var(--primary-color);
-    color: var(--body-background);
+    opacity: .7;
   }
 }
 
-.navLinkActive {
-  background: var(--primary-color);
-  color: var(--body-background);
-}
-
-.connectBtn {
-  margin-left: 16px;
+.cartBlock {
+  display: flex;
+  margin: 0 16px 0 32px;
+  column-gap: 16px;
 }
