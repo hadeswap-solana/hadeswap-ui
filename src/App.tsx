@@ -11,6 +11,8 @@ import {
   TorusWalletAdapter,
   MathWalletAdapter,
   SolletWalletAdapter,
+  BackpackWalletAdapter,
+  StrikeWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import {
   ConnectionProvider,
@@ -36,6 +38,8 @@ const wallets = [
   new CoinbaseWalletAdapter(),
   new TorusWalletAdapter(),
   new MathWalletAdapter(),
+  new BackpackWalletAdapter(),
+  new StrikeWalletAdapter(),
   new SolletWalletAdapter({ network: WalletAdapterNetwork.Mainnet }),
 ];
 
