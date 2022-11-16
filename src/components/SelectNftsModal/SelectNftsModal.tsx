@@ -39,7 +39,7 @@ export const useSelectNftsModal: UseSelectNftsModal = (
   const [visible, setVisible] = useState(false);
   const [selectedNfts, setSelectedNfts] = useState<Nft[]>([]);
 
-  useFetchMarketWalletNfts();
+  useFetchMarketWalletNfts(marketPublicKey);
 
   const walletNfts = useSelector(selectMarketWalletNfts);
   const isLoading = useSelector(selectMarketWalletNftsLoading);

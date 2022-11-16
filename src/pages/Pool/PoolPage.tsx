@@ -27,17 +27,16 @@ const { Title, Text } = Typography;
 
 export const PoolPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
-
   const history = useHistory();
   const wallet = useWallet();
-
-  useFetchMarket();
-  useFetchPair();
 
   const market = useSelector(selectCertainMarket);
   const pool = useSelector(selectCertainPair);
   const marketLoading = useSelector(selectCertainMarketLoading);
   const poolLoading = useSelector(selectCertainPairLoading);
+
+  useFetchPair();
+  useFetchMarket(pool?.market);
 
   const isLoading = marketLoading || poolLoading;
 

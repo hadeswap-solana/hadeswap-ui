@@ -27,9 +27,10 @@ export const CollectionPageLayout: FC = ({ children }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-  useFetchMarket();
-  const isLoading = useSelector(selectCertainMarketLoading);
+  useFetchMarket(marketPublicKey);
+
   const market = useSelector(selectCertainMarket);
+  const isLoading = useSelector(selectCertainMarketLoading);
 
   const activeTab = useMemo(
     () => history.location.pathname.split('/').at(-1) as COLLECTION_TABS,

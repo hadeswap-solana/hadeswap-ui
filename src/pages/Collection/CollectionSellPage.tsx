@@ -27,7 +27,7 @@ export const CollectionSellPage: FC = () => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
   useFetchMarketPairs();
-  useFetchMarketWalletNfts();
+  useFetchMarketWalletNfts(marketPublicKey);
 
   const pairsLoading = useSelector(selectMarketPairsLoading);
   const nftsLoading = useSelector(selectMarketWalletNftsLoading);

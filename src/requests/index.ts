@@ -18,10 +18,10 @@ import { useParams } from 'react-router-dom';
 const BASE_STALE_TIME = 5 * 60 * 1000; // 5 min
 const SHORT_STALE_TIME = 10000; // 10 sec
 
-export const useFetchMarketWalletNfts = (): void => {
+export const useFetchMarketWalletNfts = (marketPubkey: string): void => {
   const dispatch = useDispatch();
   const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
-  const { publicKey: marketPubkey } = useParams<{ publicKey: string }>();
+  const walletPubkey: string = publicKey?.toBase58();
 
   const {
     data,
@@ -32,15 +32,15 @@ export const useFetchMarketWalletNfts = (): void => {
     isLoading: boolean;
     isFetching: boolean;
   } = useQuery(
-    ['fetchMarketWalletNfts', `${marketPubkey}`, `${publicKey}`],
+    ['fetchMarketWalletNfts', `${marketPubkey}`, `${walletPubkey}`],
     () =>
       fetchMarketWalletNfts({
+        walletPubkey,
         marketPubkey,
-        walletPubkey: publicKey.toBase58(),
       }),
     {
       staleTime: SHORT_STALE_TIME,
-      enabled: !!publicKey && !!marketPubkey,
+      enabled: !!walletPubkey && !!marketPubkey,
     },
   );
 
@@ -51,13 +51,8 @@ export const useFetchMarketWalletNfts = (): void => {
   }, [data, nftsLoading, dispatch]);
 };
 
-export const useFetchMarket = (): void => {
+export const useFetchMarket = (publicKey: string): void => {
   const dispatch = useDispatch();
-  const { publicKey: marketPubkey, poolPubkey } = useParams<{
-    publicKey: string;
-    poolPubkey: string;
-  }>();
-  const pubkey = marketPubkey || poolPubkey;
 
   const {
     data,
@@ -67,9 +62,9 @@ export const useFetchMarket = (): void => {
     data: MarketInfo;
     isLoading: boolean;
     isFetching: boolean;
-  } = useQuery(['fetchMarket', `${pubkey}`], () => fetchMarket(pubkey), {
+  } = useQuery(['fetchMarket', `${publicKey}`], () => fetchMarket(publicKey), {
     staleTime: BASE_STALE_TIME,
-    enabled: !!pubkey,
+    enabled: !!publicKey,
   });
 
   const marketLoading = isLoading || isFetching;

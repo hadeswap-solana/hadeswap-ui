@@ -74,6 +74,7 @@ export const EditPool: FC = () => {
   const chosenMarket = markets.find(
     (item) => item.marketPubkey === pool?.market,
   );
+
   const collectionName = chosenMarket?.collectionName ?? 'nfts';
 
   const nftModal = useSelectNftsModal(

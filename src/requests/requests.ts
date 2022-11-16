@@ -9,9 +9,9 @@ export const fetchAllMarkets = async (): Promise<MarketInfo[]> => {
   return await response.json();
 };
 
-export const fetchMarket = async (pubkey: string): Promise<MarketInfo> => {
+export const fetchMarket = async (publicKey: string): Promise<MarketInfo> => {
   const response = await fetch(
-    `https://${process.env.BACKEND_DOMAIN}/markets/${pubkey}`,
+    `https://${process.env.BACKEND_DOMAIN}/markets/${publicKey}`,
   );
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -32,9 +32,9 @@ export const fetchWalletPairs = async (
   return await response.json();
 };
 
-export const fetchPair = async (poolPubKey: string): Promise<Pair> => {
+export const fetchPair = async (poolPubkey: string): Promise<Pair> => {
   const response = await fetch(
-    `https://${process.env.BACKEND_DOMAIN}/pair/${poolPubKey}`,
+    `https://${process.env.BACKEND_DOMAIN}/pair/${poolPubkey}`,
   );
 
   if (!response.ok) {
@@ -57,11 +57,11 @@ export const fetchMarketPairs = async (
 };
 
 export const fetchMarketWalletNfts = async ({
-  marketPubkey,
   walletPubkey,
+  marketPubkey,
 }: {
-  marketPubkey: string;
   walletPubkey: string;
+  marketPubkey: string;
 }): Promise<Nft[]> => {
   const response = await fetch(
     `https://${process.env.BACKEND_DOMAIN}/nfts/${walletPubkey}/${marketPubkey}`,

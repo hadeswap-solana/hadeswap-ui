@@ -80,7 +80,6 @@ export const NewPool: FC = () => {
   const spotPrice = Form.useWatch('spotPrice', form);
   const curve = Form.useWatch('curve', form);
   const delta = Form.useWatch('delta', form);
-
   const nftAmount = Form.useWatch('nftAmount', form);
   const fee = Form.useWatch('fee', form);
 
@@ -91,6 +90,7 @@ export const NewPool: FC = () => {
 
   const chosenMarket = markets.find((item) => item.marketPubkey === market);
   const collectionName = chosenMarket?.collectionName ?? 'nfts';
+
   const nftModal = useSelectNftsModal(
     collectionName,
     chosenMarket?.marketPubkey,

@@ -19,8 +19,8 @@ export const createCreatePoolPickSideLink = (
   publicKey = ':publicKey?',
 ): string => `/create-pool/${publicKey}`;
 
-export const createEditPollLink = (poolPubKey = ':poolPubKey?'): string =>
-  `/pools/${poolPubKey}/edit`;
+export const createEditPollLink = (poolPubkey = ':poolPubkey?'): string =>
+  `/pools/${poolPubkey}/edit`;
 
 export const PATHS = {
   ROOT: '/', //? Main page with common bullshit texts
