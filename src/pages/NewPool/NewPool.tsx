@@ -55,6 +55,7 @@ import { chunk } from 'lodash';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 import styles from './NewPool.module.scss';
 import { useFetchAllMarkets } from '../../requests';
+import ChartLine from '../../components/ChartLine/ChartLine';
 
 const { Step } = Steps;
 const { Title, Paragraph } = Typography;
@@ -77,7 +78,7 @@ export const NewPool: FC = () => {
   const [form] = Form.useForm();
   const market = form.getFieldValue('market');
   const type = form.getFieldValue('type') ?? typeParam;
-  const spotPrice = Form.useWatch('spotPrice', form);
+  const spotPrice = Form.useWatch('spotPrice', form) ?? 0;
   const curve = Form.useWatch('curve', form);
   const delta = Form.useWatch('delta', form);
   const nftAmount = Form.useWatch('nftAmount', form);
@@ -586,6 +587,16 @@ export const NewPool: FC = () => {
                     create pool
                   </Button>
                 </div>
+                <ChartLine
+                  create
+                  baseSpotPrice={spotPrice * 1e9}
+                  delta={rawDelta}
+                  fee={fee}
+                  type={type}
+                  bondingCurve={curve}
+                  buyOrdersAmount={nftAmount}
+                  nftsCount={nftModal?.selectedNfts?.length}
+                />
               </div>
             )}
           </Form>

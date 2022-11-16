@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 import { BN } from 'hadeswap-sdk';
 import {
   Chart as ChartJS,
@@ -16,7 +16,6 @@ import {
   BondingCurveType,
   OrderType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
-import { Pair } from '../../state/core/types';
 import { formatBNToString } from '../../utils';
 
 ChartJS.register(
@@ -30,28 +29,35 @@ ChartJS.register(
 );
 
 interface ChartLineProps {
-  pool: Pair;
+  create?: boolean;
+  baseSpotPrice: number;
+  delta: number;
+  fee: number;
+  bondingCurve: string;
+  buyOrdersAmount: number;
+  nftsCount: number;
+  mathCounter?: number;
+  type: string;
 }
 
-const ChartLine: FC<ChartLineProps> = ({ pool }) => {
-  const {
-    baseSpotPrice,
-    delta,
-    fee,
-    buyOrdersAmount,
-    sellOrders,
-    bondingCurve,
-    nftsCount,
-    mathCounter,
-    type,
-  } = pool;
-
+const ChartLine: FC<ChartLineProps> = ({
+  create,
+  baseSpotPrice,
+  delta,
+  fee = 0,
+  bondingCurve,
+  buyOrdersAmount = 0,
+  nftsCount = 0,
+  mathCounter = 0,
+  type,
+}) => {
   const CHART_COLORS = {
     white: 'rgb(244, 239, 239)',
     whiteOpacity: 'rgba(244, 239, 239, 0.5)',
     red: 'rgba(246, 71, 71, 0.2)',
     green: 'rgba(102, 204, 153, 0.2)',
   };
+  const ref = useRef(null);
 
   const spotPrice = +formatBNToString(new BN(baseSpotPrice));
 
@@ -85,7 +91,7 @@ const ChartLine: FC<ChartLineProps> = ({ pool }) => {
     counter: mathCounter,
   });
 
-  const amountOrder = buyOrdersAmount + sellOrders.length;
+  const amountOrder = buyOrdersAmount + nftsCount;
 
   const labelsBuy = Array(priceArrayBuy.array.length)
     .fill(0)
@@ -108,7 +114,7 @@ const ChartLine: FC<ChartLineProps> = ({ pool }) => {
       return { mid: labelsBuy.length, arr: [...labelsBuy, 0] };
     }
     if (type === 'nftForToken') {
-      return { mid: 0, arr: [0, ...labelsSell] };
+      return { mid: 0, arr: [0, ...labelsSell, labelsSell.length + 1] };
     }
     if (type === 'liquidityProvision') {
       return {
@@ -128,7 +134,7 @@ const ChartLine: FC<ChartLineProps> = ({ pool }) => {
           chartArea: { left, top, right, bottom },
           scales: { x, y },
         } = chart;
-        const midX = x.getPixelForValue(newType?.mid ?? 0);
+        const midX = x.getPixelForValue(newType.mid);
         const midY = y.getPixelForValue(1);
 
         ctx.save();
@@ -158,7 +164,28 @@ const ChartLine: FC<ChartLineProps> = ({ pool }) => {
     };
   });
 
+  const priceArrayBuyLiq = helpers.calculatePricesArray({
+    starting_spot_price: baseSpotPrice,
+    delta: delta,
+    amount: amountOrder,
+    bondingCurveType:
+      bondingCurve === 'linear'
+        ? BondingCurveType.Linear
+        : BondingCurveType.Exponential,
+    orderType: OrderType.Sell,
+    counter: mathCounter + 1,
+  });
+
+  const arrCordBuyLiq = priceArrayBuyLiq.array.map(
+    (price: number, i: number) => {
+      const newPrice = price / 1e9;
+      return { x: -i + mathCounter, y: newPrice - newPrice * (fee / 10000) };
+    },
+  );
+
   const dataArr = [...arrCordBuy.reverse(), ...arrCordSell];
+
+  const dataArrLiq = [...arrCordBuyLiq.reverse(), ...arrCordSell];
 
   const options: any = {
     responsive: true,
@@ -200,7 +227,7 @@ const ChartLine: FC<ChartLineProps> = ({ pool }) => {
     datasets: [
       {
         label: 'Dataset',
-        data: dataArr,
+        data: create ? dataArrLiq : dataArr,
         borderColor: CHART_COLORS.white,
         backgroundColor: CHART_COLORS.whiteOpacity,
         pointStyle: 'circle',
@@ -209,7 +236,7 @@ const ChartLine: FC<ChartLineProps> = ({ pool }) => {
       },
     ],
   };
-  return <Line options={options} data={data} plugins={quadrants} />;
+  return <Line ref={ref} options={options} data={data} plugins={quadrants} />;
 };
 
 export default ChartLine;

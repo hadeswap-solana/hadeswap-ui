@@ -173,7 +173,16 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
           </div>
         )}
       </div>
-      <Chart pool={pool} />
+      <ChartLine
+        baseSpotPrice={pool.baseSpotPrice}
+        delta={pool.delta}
+        fee={pool.fee}
+        type={pool.type}
+        bondingCurve={pool.bondingCurve}
+        buyOrdersAmount={pool.buyOrdersAmount}
+        nftsCount={pool.nftsCount}
+        mathCounter={pool.mathCounter}
+      />
     </div>
   );
 };
