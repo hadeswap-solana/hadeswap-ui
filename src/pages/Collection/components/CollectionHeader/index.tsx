@@ -13,11 +13,11 @@ import {
   selectCertainMarket,
   selectCertainMarketLoading,
 } from '../../../../state/core/selectors';
-import { marketStatList } from './CollectionInfo.constants';
+import { marketStatList } from './CollectionHeader.constants';
 
 import styles from './styles.module.scss';
 
-export const GeneralInfo = (): JSX.Element => {
+export const CollectionHeader = (): JSX.Element => {
   const market = useSelector(selectCertainMarket);
   const isLoading = useSelector(selectCertainMarketLoading);
 

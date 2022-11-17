@@ -7,7 +7,7 @@ import {
 } from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { CollectionTabs } from './components/CollectionTabs';
-import { GeneralInfo } from './components/CollectionInfo';
+import { CollectionHeader } from './components/CollectionHeader';
 import { MakeOfferModal } from './components/MakeOfferModal';
 
 export const CollectionPage: FC = () => {
@@ -24,7 +24,7 @@ export const CollectionPage: FC = () => {
 
   return (
     <AppLayout>
-      <GeneralInfo />
+      <CollectionHeader />
       <CollectionTabs />
       <MakeOfferModal isVisible={isModalVisible} onCancel={handleCancel} />
     </AppLayout>
