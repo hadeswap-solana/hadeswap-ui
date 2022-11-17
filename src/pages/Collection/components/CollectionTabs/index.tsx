@@ -1,14 +1,14 @@
-import { FC, useMemo, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import { Tabs } from 'antd';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {
-  COLLECTION_TABS,
-  createCollectionLink,
-  createCreatePoolPickSideLink,
-} from '../../../../constants';
+import { createCreatePoolPickSideLink } from '../../../../constants';
 import Button from '../../../../components/Buttons/Button';
 import { TabButton } from './TabButton';
+import { CollectionBuyTab } from './CollectionBuyTab';
+import { CollectionSellTab } from './CollectionSellTab';
+import { CollectionActivityTab } from './CollectionActivityTab';
+import { CollectionPoolsTab } from './CollectionPoolsTab';
 import {
   selectAllBuyOrdersForMarket,
   selectAllSellOrdersForMarket,
@@ -29,44 +29,36 @@ export const CollectionTabs: FC = () => {
     selectAllSellOrdersForMarket(state, marketPublicKey),
   );
 
-  const activeTab = useMemo(
-    () => history.location.pathname.split('/').at(-1) as COLLECTION_TABS,
-    [history],
-  );
-
-  const onTabChangeHandler = useCallback(
-    (activeKey: string) => {
-      if (activeKey !== 'null') {
-        history.push(
-          createCollectionLink(activeKey as COLLECTION_TABS, marketPublicKey),
-        );
-      }
-    },
-    [history, marketPublicKey],
-  );
-
   const onCreatePoolClick = useCallback(() => {
     history.push(createCreatePoolPickSideLink(marketPublicKey));
   }, [history, marketPublicKey]);
 
   return (
     <div className={styles.collectionTabsWrapper}>
-      <Tabs defaultActiveKey={activeTab} centered onChange={onTabChangeHandler}>
+      <Tabs defaultActiveKey="buy" centered>
         <TabPane
+          key="buy"
           tab={<TabButton title="buy" data={buyOrders.length} />}
-          key={COLLECTION_TABS.BUY}
-        />
+        >
+          <CollectionBuyTab />
+        </TabPane>
         <TabPane
+          key="sell"
           tab={<TabButton title="sell" data={sellOrders.length} />}
-          key={COLLECTION_TABS.SELL}
-        />
-        <TabPane tab="activity" key={COLLECTION_TABS.ACTIVITY} />
+        >
+          <CollectionSellTab />
+        </TabPane>
+        <TabPane key="activity" tab="activity">
+          <CollectionActivityTab />
+        </TabPane>
         <TabPane
+          key="pools"
           tab={<TabButton title="pools" data={poolsTableInfo.length} />}
-          key={COLLECTION_TABS.POOLS}
-        />
+        >
+          <CollectionPoolsTab />
+        </TabPane>
         <TabPane
-          key={'null'}
+          key="button"
           tab={
             <Button className={styles.poolButton} onClick={onCreatePoolClick}>
               <span>create pool</span>

@@ -22,7 +22,7 @@ import {
 } from '../../state/core/selectors';
 import { ScreenTypes } from '../../state/common/types';
 import { useDebounce } from '../../hooks';
-import { COLLECTION_TABS, createCollectionLink } from '../../constants';
+import { createCollectionLink } from '../../constants';
 import styles from './Collections.module.scss';
 
 const { Title } = Typography;
@@ -47,7 +47,7 @@ export const Collections: FC = () => {
 
   const onRowClick = useCallback(
     (data: string): void => {
-      history.push(createCollectionLink(COLLECTION_TABS.BUY, data));
+      history.push(createCollectionLink(data));
       window.scrollTo(0, 0);
     },
     [history],

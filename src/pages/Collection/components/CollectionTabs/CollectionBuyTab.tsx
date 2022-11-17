@@ -1,23 +1,22 @@
 import { FC, useCallback } from 'react';
 import BN from 'bn.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { CollectionPageLayout } from './CollectionPageLayout';
-import { SweepButton } from './components/SweepButton';
-import { NFTCard } from '../../components/NFTCard/NFTCard';
-import { Spinner } from '../../components/Spinner/Spinner';
-import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
+import { SweepButton } from '../SweepButton';
+import { NFTCard } from '../../../../components/NFTCard/NFTCard';
+import { Spinner } from '../../../../components/Spinner/Spinner';
+import { FakeInfinityScroll } from '../../../../components/FakeInfiinityScroll';
 import {
   selectAllBuyOrdersForMarket,
   selectMarketPairs,
   selectMarketPairsLoading,
-} from '../../state/core/selectors';
-import { coreActions } from '../../state/core/actions';
-import { formatBNToString } from '../../utils';
-import { MarketOrder, OrderType } from '../../state/core/types';
+} from '../../../../state/core/selectors';
+import { coreActions } from '../../../../state/core/actions';
+import { formatBNToString } from '../../../../utils';
+import { MarketOrder, OrderType } from '../../../../state/core/types';
 
-import styles from './Collection.module.scss';
+import styles from './styles.module.scss';
 
-export const CollectionBuyPage: FC = () => {
+export const CollectionBuyTab: FC = () => {
   const dispatch = useDispatch();
 
   const marketPairsLoading = useSelector(selectMarketPairsLoading);
@@ -42,28 +41,26 @@ export const CollectionBuyPage: FC = () => {
   );
 
   return (
-    <CollectionPageLayout>
+    <div className={styles.tabContentWrapper}>
       {marketPairsLoading ? (
         <Spinner />
       ) : (
         <>
           <SweepButton />
           <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
-            {buyOrders.map((order) => {
-              return (
-                <NFTCard
-                  key={order.mint}
-                  imageUrl={order.imageUrl}
-                  name={order.name}
-                  price={formatBNToString(new BN(order.price))}
-                  onAddToCart={createOnBtnClick(order)}
-                  selected={order?.selected}
-                />
-              );
-            })}
+            {buyOrders.map((order) => (
+              <NFTCard
+                key={order.mint}
+                imageUrl={order.imageUrl}
+                name={order.name}
+                price={formatBNToString(new BN(order.price))}
+                onAddToCart={createOnBtnClick(order)}
+                selected={order?.selected}
+              />
+            ))}
           </FakeInfinityScroll>
         </>
       )}
-    </CollectionPageLayout>
+    </div>
   );
 };

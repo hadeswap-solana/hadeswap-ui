@@ -4,24 +4,23 @@ import { useParams } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import BN from 'bn.js';
 import { Typography } from 'antd';
-import { CollectionPageLayout } from './CollectionPageLayout';
-import { SweepButton } from './components/SweepButton';
-import { NFTCard } from '../../components/NFTCard/NFTCard';
-import { Spinner } from '../../components/Spinner/Spinner';
-import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
-import { formatBNToString } from '../../utils';
+import { SweepButton } from '../SweepButton';
+import { NFTCard } from '../../../../components/NFTCard/NFTCard';
+import { Spinner } from '../../../../components/Spinner/Spinner';
+import { FakeInfinityScroll } from '../../../../components/FakeInfiinityScroll';
+import { formatBNToString } from '../../../../utils';
 import {
   selectAllSellOrdersForMarket,
   selectMarketWalletNftsLoading,
   selectMarketPairs,
   selectMarketPairsLoading,
-} from '../../state/core/selectors';
-import { coreActions } from '../../state/core/actions';
-import { MarketOrder, OrderType } from '../../state/core/types';
+} from '../../../../state/core/selectors';
+import { coreActions } from '../../../../state/core/actions';
+import { MarketOrder, OrderType } from '../../../../state/core/types';
 
-import styles from './Collection.module.scss';
+import styles from './styles.module.scss';
 
-export const CollectionSellPage: FC = () => {
+export const CollectionSellTab: FC = () => {
   const dispatch = useDispatch();
   const { connected } = useWallet();
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
@@ -54,7 +53,7 @@ export const CollectionSellPage: FC = () => {
   );
 
   return (
-    <CollectionPageLayout>
+    <div className={styles.tabContentWrapper}>
       {!connected && (
         <Typography.Title level={3}>
           connect your wallet to see your nfts
@@ -84,6 +83,6 @@ export const CollectionSellPage: FC = () => {
           </FakeInfinityScroll>
         </>
       )}
-    </CollectionPageLayout>
+    </div>
   );
 };

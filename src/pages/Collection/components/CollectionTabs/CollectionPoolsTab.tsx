@@ -1,16 +1,16 @@
 import { FC } from 'react';
-import { CollectionPageLayout } from './CollectionPageLayout';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import PoolsList from '../../components/PoolsList';
+import { Spinner } from '../../../../components/Spinner/Spinner';
+import PoolsList from '../../../../components/PoolsList';
 import {
   selectMarketPairsLoading,
   selectCertainMarketLoading,
   selectPoolsTableInfo,
-} from '../../state/core/selectors';
-import { Spinner } from '../../components/Spinner/Spinner';
+} from '../../../../state/core/selectors';
+import styles from './styles.module.scss';
 
-export const CollectionPoolsPage: FC = () => {
+export const CollectionPoolsTab: FC = () => {
   const history = useHistory();
 
   const poolsTableInfo = useSelector(selectPoolsTableInfo);
@@ -25,12 +25,12 @@ export const CollectionPoolsPage: FC = () => {
   };
 
   return (
-    <CollectionPageLayout>
+    <div className={styles.tabContentWrapper}>
       {isLoading ? (
         <Spinner />
       ) : (
         <PoolsList onRowClick={onRowClick} data={poolsTableInfo} />
       )}
-    </CollectionPageLayout>
+    </div>
   );
 };

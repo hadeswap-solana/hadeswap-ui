@@ -1,19 +1,16 @@
 import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import {
   useFetchMarket,
   useFetchMarketPairs,
   useFetchMarketWalletNfts,
 } from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { Spinner } from '../../components/Spinner/Spinner';
 import { CollectionTabs } from './components/CollectionTabs';
-import { GeneralInfo } from './components/GeneralInfo';
-import { selectCertainMarketLoading } from '../../state/core/selectors';
-import { MakeOfferModal } from './MakeOfferModal';
+import { GeneralInfo } from './components/CollectionInfo';
+import { MakeOfferModal } from './components/MakeOfferModal';
 
-export const CollectionPageLayout: FC = ({ children }) => {
+export const CollectionPage: FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
@@ -21,23 +18,14 @@ export const CollectionPageLayout: FC = ({ children }) => {
   useFetchMarketPairs();
   useFetchMarketWalletNfts(marketPublicKey);
 
-  const isLoading = useSelector(selectCertainMarketLoading);
-
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
   return (
     <AppLayout>
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <>
-          <GeneralInfo />
-          <CollectionTabs />
-          {children}
-        </>
-      )}
+      <GeneralInfo />
+      <CollectionTabs />
       <MakeOfferModal isVisible={isModalVisible} onCancel={handleCancel} />
     </AppLayout>
   );

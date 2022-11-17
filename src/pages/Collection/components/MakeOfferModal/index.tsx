@@ -1,7 +1,8 @@
 import { FC } from 'react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { Button, Descriptions, Form, InputNumber, Modal } from 'antd';
-import styles from './Collection.module.scss';
+
+import styles from './styles.module.scss';
 
 interface IMakeOfferModal {
   isVisible: boolean;

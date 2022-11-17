@@ -1,8 +1,8 @@
-.generalWrapper {
+.headerWrapper {
   height: var(--collection-page-header-height);;
 }
 
-.generalInner {
+.headerInner {
   position: absolute;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@
   background-position: 50% 50%;
 }
 
-.general {
+.infoWrapper {
   display: flex;
   height: 100%;
   padding: 56px 32px 23px;

@@ -1,14 +1,14 @@
 import { memo, FC, useEffect, Fragment, useState } from 'react';
-import { CollectionPageLayout } from './CollectionPageLayout';
-import styles from './Collection.module.scss';
 import { NavLink, useParams } from 'react-router-dom';
-import { Spinner } from '../../components/Spinner/Spinner';
-import { shortenAddress } from '../../utils/solanaUtils';
-import { SolPrice } from '../../components/SolPrice/SolPrice';
+import { Spinner } from '../../../../components/Spinner/Spinner';
+import { shortenAddress } from '../../../../utils/solanaUtils';
+import { SolPrice } from '../../../../components/SolPrice/SolPrice';
 import moment from 'moment';
 import classNames from 'classnames';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useIntersection } from '../../hooks';
+import { useIntersection } from '../../../../hooks';
+
+import styles from './styles.module.scss';
 
 interface ActivityData {
   nftImageUrl: string;
@@ -95,7 +95,7 @@ const CollectionActivityPageBase: FC = () => {
   }, [inView, fetchNextPage, isFetchingNextPage, isListEnded]);
 
   return (
-    <CollectionPageLayout>
+    <div className={styles.tabContentWrapper}>
       <div className={styles.activityCards}>
         {data?.pages?.map((page, idx) => (
           <Fragment key={idx}>
@@ -112,11 +112,11 @@ const CollectionActivityPageBase: FC = () => {
         {!!isFetchingNextPage && <Spinner />}
         <div ref={ref} />
       </div>
-    </CollectionPageLayout>
+    </div>
   );
 };
 
-export const CollectionActivityPage = memo(CollectionActivityPageBase);
+export const CollectionActivityTab = memo(CollectionActivityPageBase);
 
 interface ActivityCardProps {
   data: ActivityData;
