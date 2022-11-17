@@ -5,14 +5,19 @@ import { useSelector } from 'react-redux';
 import PoolsList from '../../components/PoolsList';
 import {
   selectMarketPairsLoading,
+  selectCertainMarketLoading,
   selectPoolsTableInfo,
 } from '../../state/core/selectors';
 import { Spinner } from '../../components/Spinner/Spinner';
 
 export const CollectionPoolsPage: FC = () => {
   const history = useHistory();
+
   const poolsTableInfo = useSelector(selectPoolsTableInfo);
-  const loading = useSelector(selectMarketPairsLoading);
+  const marketPairsLoading = useSelector(selectMarketPairsLoading);
+  const marketLoading = useSelector(selectCertainMarketLoading);
+
+  const isLoading = marketPairsLoading || marketLoading;
 
   const onRowClick = (value) => {
     history.push(`/pools/${value}`);
@@ -21,7 +26,7 @@ export const CollectionPoolsPage: FC = () => {
 
   return (
     <CollectionPageLayout>
-      {loading ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <PoolsList onRowClick={onRowClick} data={poolsTableInfo} />

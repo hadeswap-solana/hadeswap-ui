@@ -1,0 +1,142 @@
+.generalWrapper {
+  height: var(--collection-page-header-height);;
+}
+
+.generalInner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: var(--collection-page-header-height);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+
+.general {
+  display: flex;
+  height: 100%;
+  padding: 56px 32px 23px;
+  background: linear-gradient(360deg, #0a0e11 0%, rgba(10, 14, 17, 0.8) 100%)
+}
+
+.imageHolder {
+  width: 210px;
+  height: 210px;
+  border-radius: 20px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  overflow: hidden;
+}
+
+.collectionInfo {
+  margin-left: 24px;
+}
+
+.collectionTitle {
+  margin-bottom: 16px;
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 38px;
+  line-height: 46px;
+}
+
+.collectionDescriptionWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.collectionDescription {
+  max-width: 464px;
+  margin-right: 32px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 120%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.collectionDescriptionSocial {
+  display: flex;
+  gap: 16px;
+}
+
+.plate {
+  display: flex;
+  height: 50px;
+  padding: 8px;
+  border: var(--border-base);
+  border-radius: 10px;
+  background: var(--component-secondary-background);
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 34px;
+  transition: var(--button-transition);
+
+  &:hover {
+    opacity: var(--button-hover-opacity);
+  }
+}
+
+.collectionSubscribe {
+  cursor: pointer;
+}
+
+.collectionSubscribeInner {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  transition: var(--button-transition);
+
+  &:hover {
+    opacity: var(--button-hover-opacity);
+  }
+
+  svg {
+    margin-right: 8px;
+  }
+
+  span {
+    font-family: var(--font-family-rubik);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 46px;
+  }
+}
+
+.collectionStatWrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.collectionStatItem {
+  flex-direction: column;
+  flex-grow: 1;
+  height: 80px;
+  padding: 16px;
+}
+
+.collectionStatTitle {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--font-grey-color);
+}
+
+.collectionStatValue {
+  margin-top: 4px;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+}

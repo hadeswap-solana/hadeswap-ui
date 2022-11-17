@@ -60,8 +60,13 @@ const Icon = (
   </>
 );
 
-export const SolanaLogo = (): JSX.Element => (
+export const SolanaLogo = ({
+  className,
+}: {
+  className?: string;
+}): JSX.Element => (
   <svg
+    className={className}
     width="24"
     height="24"
     viewBox="0 0 24 24"

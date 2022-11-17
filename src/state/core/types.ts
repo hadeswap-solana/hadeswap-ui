@@ -4,7 +4,6 @@ export type MarketInfo = {
   marketPubkey: string;
   collectionName: string;
   collectionImage: string;
-
   listingsAmount: number;
   floorPrice: string;
   bestoffer: string;

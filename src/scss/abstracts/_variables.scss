@@ -17,6 +17,7 @@
   --dark-grey-color: #535b5f;
   --blue-color: #257cff;
   --red-color: #ff3225;
+  --font-grey-color: #535b5f;
 
   --primary-color: #9dcaff;
   --primary-background-color: #282f37;
@@ -38,6 +39,7 @@
   --font-size-base: 14px; // major text font size
   --header-height-mobile: 56px;
   --header-height-desktop: 97px;
+  --collection-page-header-height: 289px;
 
   // other
   --border-base: 1px solid var(--border-color-base);
@@ -50,6 +52,9 @@
   --cart-sider-pocket-mode-height: calc(100% - 68px);
 
   // Animation
+  --button-transition: opacity .3s;
+  --button-hover-opacity: .7;
+
   --ease-base-out: cubic-bezier(0.7, 0.3, 0.1, 1);
   --ease-base-in: cubic-bezier(0.9, 0, 0.3, 0.7);
   --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
