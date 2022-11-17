@@ -35,7 +35,6 @@ export const GeneralInfo = (): JSX.Element => {
             <h2 className={styles.collectionTitle}>{market.collectionName}</h2>
             <div className={styles.collectionDescriptionWrapper}>
               <p className={styles.collectionDescription}>
-                blalallalal
                 {mockData.collectionDescription}
               </p>
               <div className={styles.collectionDescriptionSocial}>
@@ -69,8 +68,8 @@ export const GeneralInfo = (): JSX.Element => {
               </div>
             </div>
             <div className={styles.collectionStatWrapper}>
-              {marketStatList.map((item) => (
-                <Plate key={item.key} className={styles.collectionStatItem}>
+              {marketStatList.map((item, index) => (
+                <Plate key={index} className={styles.collectionStatItem}>
                   <span className={styles.collectionStatTitle}>
                     {item.title}
                   </span>

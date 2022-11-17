@@ -23,6 +23,16 @@
       width: 105px;
       justify-content: center;
 
+      &:not(.ant-tabs-tab-active) {
+        span {
+          transition: var(--button-transition);
+        }
+
+        &:hover {
+          opacity: var(--button-hover-opacity);
+        }
+      }
+
       & + .ant-tabs-tab {
         margin: 0;
       }
