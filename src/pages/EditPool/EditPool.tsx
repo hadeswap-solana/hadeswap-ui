@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { chunk, differenceBy } from 'lodash';
 import { hadeswap } from 'hadeswap-sdk';
 import { Button, Card, Form, InputNumber, Radio, Typography } from 'antd';
@@ -12,17 +12,16 @@ import {
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
+import { useFetchPair, useFetchAllMarkets } from '../../requests';
 import { useConnection } from '../../hooks';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { coreActions } from '../../state/core/actions';
 import {
-  selectAllMarkets,
-  selectCertainMarketLoading,
-  selectCertainPair,
   selectCertainPairLoading,
+  selectCertainPair,
+  selectAllMarketsLoading,
+  selectAllMarkets,
 } from '../../state/core/selectors';
-import { MarketInfo } from '../../state/core/types';
 import {
   SelectNftsModal,
   useSelectNftsModal,
@@ -61,11 +60,29 @@ export const EditPool: FC = () => {
   const history = useHistory();
   const connection = useConnection();
   const wallet = useWallet();
-  const { poolPubKey } = useParams<{ poolPubKey: string }>();
+
+  useFetchAllMarkets();
+  useFetchPair();
+
+  const markets = useSelector(selectAllMarkets);
   const pool = useSelector(selectCertainPair);
-  const markets = useSelector(selectAllMarkets) as MarketInfo[];
+  const marketLoading = useSelector(selectAllMarketsLoading);
   const poolLoading = useSelector(selectCertainPairLoading);
-  const marketLoading = useSelector(selectCertainMarketLoading);
+
+  const isLoading = marketLoading || poolLoading;
+
+  const chosenMarket = markets.find(
+    (item) => item.marketPubkey === pool?.market,
+  );
+
+  const collectionName = chosenMarket?.collectionName ?? 'nfts';
+
+  const nftModal = useSelectNftsModal(
+    collectionName,
+    chosenMarket?.marketPubkey,
+    pool?.sellOrders,
+  );
+
   const [form] = Form.useForm();
   const spotPrice = Form.useWatch('spotPrice', form);
   const curve = Form.useWatch('curve', form);
@@ -73,15 +90,6 @@ export const EditPool: FC = () => {
   const nftAmount = Form.useWatch('nftAmount', form);
   const buyOrdersAmount = Form.useWatch('buyOrdersAmount', form);
   const fee = Form.useWatch('fee', form);
-  const chosenMarket = markets.find(
-    (item) => item.marketPubkey === pool?.market,
-  );
-  const collectionName = chosenMarket?.collectionName ?? 'nfts';
-  const nftModal = useSelectNftsModal(
-    collectionName,
-    chosenMarket?.marketPubkey,
-    pool?.sellOrders,
-  );
 
   const type = pool?.type;
   const isLiquidityProvisionPool = type === PairType.LiquidityProvision;
@@ -105,7 +113,6 @@ export const EditPool: FC = () => {
     ),
   };
 
-  const loading = poolLoading || marketLoading;
   const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
@@ -171,11 +178,6 @@ export const EditPool: FC = () => {
     pool?.buyOrdersAmount > 20;
 
   useEffect(() => {
-    dispatch(coreActions.fetchAllMarkets());
-    dispatch(coreActions.fetchPair(poolPubKey));
-  }, [dispatch, poolPubKey]);
-
-  useEffect(() => {
     form.setFieldsValue({
       buyOrdersAmount: initialValues.buyOrdersAmount + nftsToAdd.length,
     });
@@ -190,10 +192,6 @@ export const EditPool: FC = () => {
 
   const onSelectNftsClick = () => {
     nftModal.setVisible(true);
-  };
-
-  const onFormChange = () => {
-    //console.log(form.getFieldsValue(['market', 'type', 'spotPrice', 'curve']));
   };
 
   const onSavePoolClick = async () => {
@@ -862,103 +860,27 @@ export const EditPool: FC = () => {
           Connect your wallet to edit pool
         </Typography.Title>
       )}
-      {wallet.connected &&
-        (loading || !pool ? (
-          <Spinner />
-        ) : (
-          <>
-            <Form
-              layout="vertical"
-              form={form}
-              initialValues={initialValues}
-              onValuesChange={onFormChange}
-            >
-              <div className={styles.stepsContent}>
-                <div className={styles.stepContent}>
-                  <div className={styles.pane}>
-                    <Card bordered={false}>
-                      {isDisableFields && (
-                        <Paragraph>
-                          {
-                            'you can edit "spot price" and "delta" only if you have less than 20 buy orders.'
-                          }
-                        </Paragraph>
-                      )}
-                      <Title level={3}>pricing</Title>
-                      {isLiquidityProvisionPool && (
-                        <Form.Item
-                          name="fee"
-                          label="fee"
-                          tooltip={{
-                            title: '',
-                            icon: <InfoCircleOutlined />,
-                          }}
-                        >
-                          <InputNumber
-                            className={styles.input}
-                            min="0"
-                            addonAfter="%"
-                          />
-                        </Form.Item>
-                      )}
+      {wallet.connected && isLoading ? (
+        <Spinner />
+      ) : (
+        <>
+          <Form layout="vertical" form={form} initialValues={initialValues}>
+            <div className={styles.stepsContent}>
+              <div className={styles.stepContent}>
+                <div className={styles.pane}>
+                  <Card bordered={false}>
+                    {isDisableFields && (
+                      <Paragraph>
+                        {
+                          'you can edit "spot price" and "delta" only if you have less than 20 buy orders.'
+                        }
+                      </Paragraph>
+                    )}
+                    <Title level={3}>pricing</Title>
+                    {isLiquidityProvisionPool && (
                       <Form.Item
-                        name="spotPrice"
-                        label={`spot price ${
-                          chosenMarket
-                            ? `(current best offer: ${chosenMarket?.bestoffer} SOL, current floor price: ${chosenMarket?.floorPrice} SOL)`
-                            : ''
-                        }`}
-                        tooltip={{
-                          title: '',
-                          icon: <InfoCircleOutlined />,
-                        }}
-                      >
-                        <InputNumber
-                          disabled={isDisableFields}
-                          className={styles.input}
-                          min={
-                            type === PairType.NftForToken ||
-                            type === PairType.LiquidityProvision
-                              ? chosenMarket?.bestoffer === '0.000'
-                                ? 0
-                                : chosenMarket?.bestoffer
-                              : 0
-                          }
-                          max={
-                            type === PairType.TokenForNFT ||
-                            type === PairType.LiquidityProvision
-                              ? chosenMarket?.floorPrice === '0.000'
-                                ? 100000000
-                                : chosenMarket?.floorPrice
-                              : 100000000
-                          }
-                          addonAfter="SOL"
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        name="curve"
-                        label="bonding Curve"
-                        tooltip={{
-                          title: '',
-                          icon: <InfoCircleOutlined />,
-                        }}
-                      >
-                        <Radio.Group
-                          disabled
-                          className={styles.input}
-                          value={curve}
-                        >
-                          <Radio.Button value={BondingCurveType.Linear}>
-                            linear curve
-                          </Radio.Button>
-                          <Radio.Button value={BondingCurveType.Exponential}>
-                            exponential curve
-                          </Radio.Button>
-                        </Radio.Group>
-                      </Form.Item>
-                      <Form.Item
-                        name="delta"
-                        label="delta"
+                        name="fee"
+                        label="fee"
                         tooltip={{
                           title: '',
                           icon: <InfoCircleOutlined />,
@@ -966,162 +888,226 @@ export const EditPool: FC = () => {
                       >
                         <InputNumber
                           className={styles.input}
-                          addonAfter={unit}
-                          disabled={isDisableFields}
                           min="0"
+                          addonAfter="%"
                         />
                       </Form.Item>
-                      {/* {Boolean(spotPrice) && (
+                    )}
+                    <Form.Item
+                      name="spotPrice"
+                      label={`spot price ${
+                        chosenMarket
+                          ? `(current best offer: ${chosenMarket?.bestoffer} SOL, current floor price: ${chosenMarket?.floorPrice} SOL)`
+                          : ''
+                      }`}
+                      tooltip={{
+                        title: '',
+                        icon: <InfoCircleOutlined />,
+                      }}
+                    >
+                      <InputNumber
+                        disabled={isDisableFields}
+                        className={styles.input}
+                        min={
+                          type === PairType.NftForToken ||
+                          type === PairType.LiquidityProvision
+                            ? chosenMarket?.bestoffer === '0.000'
+                              ? 0
+                              : chosenMarket?.bestoffer
+                            : 0
+                        }
+                        max={
+                          type === PairType.TokenForNFT ||
+                          type === PairType.LiquidityProvision
+                            ? chosenMarket?.floorPrice === '0.000'
+                              ? 100000000
+                              : chosenMarket?.floorPrice
+                            : 100000000
+                        }
+                        addonAfter="SOL"
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="curve"
+                      label="bonding Curve"
+                      tooltip={{
+                        title: '',
+                        icon: <InfoCircleOutlined />,
+                      }}
+                    >
+                      <Radio.Group
+                        disabled
+                        className={styles.input}
+                        value={curve}
+                      >
+                        <Radio.Button value={BondingCurveType.Linear}>
+                          linear curve
+                        </Radio.Button>
+                        <Radio.Button value={BondingCurveType.Exponential}>
+                          exponential curve
+                        </Radio.Button>
+                      </Radio.Group>
+                    </Form.Item>
+                    <Form.Item
+                      name="delta"
+                      label="delta"
+                      tooltip={{
+                        title: '',
+                        icon: <InfoCircleOutlined />,
+                      }}
+                    >
+                      <InputNumber
+                        className={styles.input}
+                        addonAfter={unit}
+                        disabled={isDisableFields}
+                        min="0"
+                      />
+                    </Form.Item>
+                    {/* {Boolean(spotPrice) && (
                           <Paragraph>
                             you have selected a starting price of {spotPrice}{' '}
                             SOL.
                           </Paragraph>
                         )} */}
-                      {Boolean(
-                        isTokenForNFTPool || isLiquidityProvisionPool,
-                      ) && (
-                        <Paragraph>
-                          starting buying price {spotPrice} SOL.
-                        </Paragraph>
-                      )}
-                      {Boolean(
-                        isNftForTokenPool || isLiquidityProvisionPool,
-                      ) && (
-                        <Paragraph>
-                          starting selling price{' '}
-                          {helpers.calculateNextSpotPrice({
-                            orderType: OrderType.Buy,
-                            delta: delta,
-                            spotPrice: spotPrice,
-                            bondingCurveType: curve,
-                            counter: 0,
-                          })}{' '}
-                          SOL.
-                        </Paragraph>
-                      )}
-                      {Boolean(delta) && (
-                        <Paragraph>
-                          each time your pool {renamePairType(type)}s an NFT,
-                          your {renamePairType(type)} price will adjust up by{' '}
-                          {delta} {unit}.
-                        </Paragraph>
-                      )}
+                    {Boolean(isTokenForNFTPool || isLiquidityProvisionPool) && (
+                      <Paragraph>
+                        starting buying price {spotPrice} SOL.
+                      </Paragraph>
+                    )}
+                    {Boolean(isNftForTokenPool || isLiquidityProvisionPool) && (
+                      <Paragraph>
+                        starting selling price{' '}
+                        {helpers.calculateNextSpotPrice({
+                          orderType: OrderType.Buy,
+                          delta: delta,
+                          spotPrice: spotPrice,
+                          bondingCurveType: curve,
+                          counter: 0,
+                        })}{' '}
+                        SOL.
+                      </Paragraph>
+                    )}
+                    {Boolean(delta) && (
+                      <Paragraph>
+                        each time your pool {renamePairType(type)}s an NFT, your{' '}
+                        {renamePairType(type)} price will adjust up by {delta}{' '}
+                        {unit}.
+                      </Paragraph>
+                    )}
+                  </Card>
+                </div>
+                <div className={styles.pane}>
+                  {isTokenForNFTPool && (
+                    <Card bordered={false}>
+                      <Title level={3}>assets</Title>
+                      <Form.Item label="amount of NFTs" name="nftAmount">
+                        <InputNumber
+                          className={styles.input}
+                          min={0}
+                          addonAfter="NFTs"
+                        />
+                      </Form.Item>
                     </Card>
-                  </div>
-                  <div className={styles.pane}>
-                    {isTokenForNFTPool && (
+                  )}
+                  {isNftForTokenPool && (
+                    <Card bordered={false}>
+                      <Title level={3}>assets</Title>
+                      <div className={styles.nftsWrapper}>
+                        {nftModal.selectedNfts.map((nft) => (
+                          <NFTCard
+                            // className={styles.nfts}
+                            key={nft.mint}
+                            imageUrl={nft.imageUrl}
+                          />
+                        ))}
+                      </div>
+                      <Button onClick={onSelectNftsClick}>+ select NFTs</Button>
+                    </Card>
+                  )}
+                  {isLiquidityProvisionPool && (
+                    <>
                       <Card bordered={false}>
-                        <Title level={3}>assets</Title>
-                        <Form.Item label="amount of NFTs" name="nftAmount">
+                        <Title level={3}>assets TEST</Title>
+                        <Form.Item
+                          label="buy orders amount"
+                          name="buyOrdersAmount"
+                        >
                           <InputNumber
+                            disabled={Boolean(nftModal.selectedNfts.length)}
                             className={styles.input}
+                            max={
+                              isSelectedButtonDisabled
+                                ? pool?.buyOrdersAmount
+                                : buyOrdersAmount
+                            }
                             min={0}
+                            step={2}
                             addonAfter="NFTs"
                           />
                         </Form.Item>
-                      </Card>
-                    )}
-                    {isNftForTokenPool && (
-                      <Card bordered={false}>
-                        <Title level={3}>assets</Title>
                         <div className={styles.nftsWrapper}>
                           {nftModal.selectedNfts.map((nft) => (
-                            <NFTCard
-                              // className={styles.nfts}
-                              key={nft.mint}
-                              imageUrl={nft.imageUrl}
-                            />
+                            <NFTCard key={nft.mint} imageUrl={nft.imageUrl} />
                           ))}
                         </div>
-                        <Button onClick={onSelectNftsClick}>
+                        <Button
+                          disabled={isSelectedButtonDisabled}
+                          onClick={onSelectNftsClick}
+                        >
                           + select NFTs
                         </Button>
                       </Card>
-                    )}
-                    {isLiquidityProvisionPool && (
-                      <>
-                        <Card bordered={false}>
-                          <Title level={3}>assets</Title>
-                          <Form.Item
-                            label="buy orders amount"
-                            name="buyOrdersAmount"
-                          >
-                            <InputNumber
-                              disabled={Boolean(nftModal.selectedNfts.length)}
-                              className={styles.input}
-                              max={
-                                isSelectedButtonDisabled
-                                  ? pool?.buyOrdersAmount
-                                  : buyOrdersAmount
-                              }
-                              min={0}
-                              step={2}
-                              addonAfter="NFTs"
-                            />
-                          </Form.Item>
-                          <div className={styles.nftsWrapper}>
-                            {nftModal.selectedNfts.map((nft) => (
-                              <NFTCard key={nft.mint} imageUrl={nft.imageUrl} />
-                            ))}
-                          </div>
-                          <Button
-                            disabled={isSelectedButtonDisabled}
-                            onClick={onSelectNftsClick}
-                          >
-                            + select NFTs
-                          </Button>
-                        </Card>
-                        <Card bordered={false} style={{ marginTop: '20px' }}>
-                          <Title level={3}>fees</Title>
-                          <InputNumber
-                            className={styles.input}
-                            disabled
-                            value={initialValues.accumulatedFees / 1e9}
-                            addonAfter="SOL"
-                          />
-                          <Button
-                            className={styles.button}
-                            type="primary"
-                            disabled={!initialValues.accumulatedFees}
-                            onClick={onWithdrawClick}
-                          >
-                            withdraw
-                          </Button>
-                        </Card>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.editButtons}>
-                  <Button
-                    type="primary"
-                    onClick={onSavePoolClick}
-                    disabled={isSaveButtonDisabled}
-                  >
-                    save changes
-                  </Button>
-                  <Button
-                    danger
-                    type="primary"
-                    onClick={onWithdrawAllClick}
-                    disabled={isWithdrawButtonDisabled}
-                  >
-                    withdraw all liquidity
-                  </Button>
-                  <Button
-                    danger
-                    type="primary"
-                    onClick={onClosePoolClick}
-                    disabled={isClosePoolDisabled}
-                  >
-                    close pool
-                  </Button>
+                      <Card bordered={false} style={{ marginTop: '20px' }}>
+                        <Title level={3}>fees</Title>
+                        <InputNumber
+                          className={styles.input}
+                          disabled
+                          value={initialValues.accumulatedFees / 1e9}
+                          addonAfter="SOL"
+                        />
+                        <Button
+                          className={styles.button}
+                          type="primary"
+                          disabled={!initialValues.accumulatedFees}
+                          onClick={onWithdrawClick}
+                        >
+                          withdraw
+                        </Button>
+                      </Card>
+                    </>
+                  )}
                 </div>
               </div>
-            </Form>
-            <SelectNftsModal {...nftModal} walletNfts={walletNfts} />
-          </>
-        ))}
+              <div className={styles.editButtons}>
+                <Button
+                  type="primary"
+                  onClick={onSavePoolClick}
+                  disabled={isSaveButtonDisabled}
+                >
+                  save changes
+                </Button>
+                <Button
+                  danger
+                  type="primary"
+                  onClick={onWithdrawAllClick}
+                  disabled={isWithdrawButtonDisabled}
+                >
+                  withdraw all liquidity
+                </Button>
+                <Button
+                  danger
+                  type="primary"
+                  onClick={onClosePoolClick}
+                  disabled={isClosePoolDisabled}
+                >
+                  close pool
+                </Button>
+              </div>
+            </div>
+          </Form>
+          <SelectNftsModal {...nftModal} walletNfts={walletNfts} />
+        </>
+      )}
     </AppLayout>
   );
 };

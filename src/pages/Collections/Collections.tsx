@@ -13,10 +13,13 @@ import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { COLLECTION_COLUMNS } from '../../utils/table/constants';
 import { SORT_ORDER } from '../../constants/common';
 import { filterCollections } from './helpers';
-import { MarketInfo } from '../../state/core/types';
 import { useFetchAllMarkets } from '../../requests';
 
 import { selectScreeMode } from '../../state/common/selectors';
+import {
+  selectAllMarkets,
+  selectAllMarketsLoading,
+} from '../../state/core/selectors';
 import { ScreenTypes } from '../../state/common/types';
 import { useDebounce } from '../../hooks';
 import { COLLECTION_TABS, createCollectionLink } from '../../constants';
@@ -50,10 +53,10 @@ export const Collections: FC = () => {
     [history],
   );
 
-  const {
-    data: markets = [],
-    isLoading,
-  }: { data: MarketInfo[]; isLoading: boolean } = useFetchAllMarkets();
+  useFetchAllMarkets();
+
+  const markets = useSelector(selectAllMarkets);
+  const isLoading = useSelector(selectAllMarketsLoading);
 
   useEffect(() => {
     const collection = filterCollections([...markets], searchStr);

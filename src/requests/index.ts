@@ -1,56 +1,179 @@
-import { useQuery, useQueries } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { MarketInfo, Pair } from '../state/core/types';
+import { MarketInfo, Pair, Nft } from '../state/core/types';
 import { web3 } from 'hadeswap-sdk';
-import { fetchAllMarkets, fetchWalletPairs } from './requests';
-import { FETCHING } from '../constants/common';
+import {
+  fetchAllMarkets,
+  fetchWalletPairs,
+  fetchPair,
+  fetchMarketPairs,
+  fetchMarket,
+  fetchMarketWalletNfts,
+} from './requests';
+import { coreActions } from '../state/core/actions';
+import { useParams } from 'react-router-dom';
 
-interface AllMarketsQuery {
-  queryKey: string[];
-  queryFn: () => Promise<MarketInfo[]>;
-  staleTime: number;
-}
+const BASE_STALE_TIME = 5 * 60 * 1000; // 5 min
+const SHORT_STALE_TIME = 10000; // 10 sec
 
-interface WalletPairsQuery {
-  queryKey: string[];
-  queryFn: () => Promise<Pair[]>;
-  staleTime: number;
-  enabled: boolean;
-}
-
-const allMarketsQuery: AllMarketsQuery = {
-  queryKey: ['fetchAllMarkets'],
-  queryFn: fetchAllMarkets,
-  staleTime: 5 * 60 * 1000,
-};
-
-export const useFetchAllMarkets = () => {
-  const { data, isLoading }: { data: MarketInfo[]; isLoading: boolean } =
-    useQuery(allMarketsQuery);
-
-  return { data, isLoading };
-};
-
-export const useFetchAllMarketsAndPairs = () => {
+export const useFetchMarketWalletNfts = (marketPubkey: string): void => {
+  const dispatch = useDispatch();
   const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
+  const walletPubkey: string = publicKey?.toBase58();
 
-  const walletPairsQuery: WalletPairsQuery = {
-    queryKey: ['fetchWalletPairs', `${publicKey}`],
-    queryFn: () => fetchWalletPairs(publicKey),
-    staleTime: 10,
-    enabled: !!publicKey,
-  };
-
-  const response = useQueries({
-    queries: [allMarketsQuery, walletPairsQuery],
-  });
-
-  const markets: MarketInfo[] = response[0].data;
-  const pairs: Pair[] = response[1].data;
-  const isLoading: boolean = response.some((item) => item.isLoading);
-  const isFetching: boolean = response.some(
-    (item) => item.fetchStatus === FETCHING,
+  const {
+    data,
+    isLoading,
+    isFetching,
+  }: {
+    data: Nft[];
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useQuery(
+    ['fetchMarketWalletNfts', `${marketPubkey}`, `${walletPubkey}`],
+    () =>
+      fetchMarketWalletNfts({
+        walletPubkey,
+        marketPubkey,
+      }),
+    {
+      staleTime: SHORT_STALE_TIME,
+      enabled: !!walletPubkey && !!marketPubkey,
+    },
   );
 
-  return { markets, pairs, isLoading, isFetching };
+  const nftsLoading = isLoading || isFetching;
+
+  useEffect(() => {
+    dispatch(coreActions.setMarketWalletNfts({ data, isLoading: nftsLoading }));
+  }, [data, nftsLoading, dispatch]);
+};
+
+export const useFetchMarket = (publicKey: string): void => {
+  const dispatch = useDispatch();
+
+  const {
+    data,
+    isLoading,
+    isFetching,
+  }: {
+    data: MarketInfo;
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useQuery(['fetchMarket', `${publicKey}`], () => fetchMarket(publicKey), {
+    staleTime: BASE_STALE_TIME,
+    enabled: !!publicKey,
+  });
+
+  const marketLoading = isLoading || isFetching;
+
+  useEffect(() => {
+    dispatch(coreActions.setMarket({ data, isLoading: marketLoading }));
+  }, [dispatch, data, marketLoading]);
+};
+
+export const useFetchPair = (): void => {
+  const dispatch = useDispatch();
+  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+
+  const {
+    data,
+    isLoading,
+    isFetching,
+  }: {
+    data: Pair;
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useQuery(['fetchPair', `${poolPubkey}`], () => fetchPair(poolPubkey), {
+    staleTime: BASE_STALE_TIME,
+    enabled: !!poolPubkey,
+  });
+
+  const pairLoading = isLoading || isFetching;
+
+  useEffect(() => {
+    dispatch(coreActions.setPair({ data, isLoading: pairLoading }));
+  }, [dispatch, pairLoading, data]);
+};
+
+export const useFetchMarketPairs = (): void => {
+  const dispatch = useDispatch();
+  const { publicKey: marketPubkey } = useParams<{ publicKey: string }>();
+
+  const {
+    data,
+    isLoading,
+    isFetching,
+  }: {
+    data: Pair[];
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useQuery(
+    ['fetchMarketPairs', `${marketPubkey}`],
+    () => fetchMarketPairs(marketPubkey),
+    {
+      staleTime: SHORT_STALE_TIME,
+      enabled: !!marketPubkey,
+    },
+  );
+
+  const pairsLoading = isLoading || isFetching;
+
+  useEffect(() => {
+    dispatch(coreActions.setMarketPairs({ data, isLoading: pairsLoading }));
+  }, [data, pairsLoading, dispatch]);
+};
+
+export const useFetchAllMarkets = (): void => {
+  const dispatch = useDispatch();
+
+  const {
+    data,
+    isLoading,
+    isFetching,
+  }: {
+    data: MarketInfo[];
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useQuery(['fetchAllMarkets'], fetchAllMarkets, {
+    staleTime: BASE_STALE_TIME,
+  });
+
+  const marketsLoading = isLoading || isFetching;
+
+  useEffect(() => {
+    dispatch(coreActions.setAllMarkets({ data, isLoading: marketsLoading }));
+  }, [dispatch, data, marketsLoading]);
+};
+
+export const useFetchWalletPairs = (): void => {
+  const dispatch = useDispatch();
+  const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
+
+  const {
+    data,
+    isLoading,
+    isFetching,
+  }: {
+    data: Pair[];
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useQuery(
+    ['fetchWalletPairs', `${publicKey}`],
+    () => fetchWalletPairs(publicKey),
+    {
+      staleTime: 10,
+      enabled: !!publicKey,
+    },
+  );
+
+  const walletPairsLoading = isLoading || isFetching;
+
+  useEffect(() => {
+    dispatch(
+      coreActions.setWalletPairs({ data, isLoading: walletPairsLoading }),
+    );
+  }, [dispatch, data, walletPairsLoading]);
 };

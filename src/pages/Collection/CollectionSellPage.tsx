@@ -1,14 +1,14 @@
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback } from 'react';
 import BN from 'bn.js';
 import { CollectionPageLayout } from './CollectionPageLayout';
-import styles from './Collection.module.scss';
 import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { useDispatch, useSelector } from 'react-redux';
+import { useFetchMarketWalletNfts, useFetchMarketPairs } from '../../requests';
 import {
   selectAllSellOrdersForMarket,
+  selectMarketWalletNftsLoading,
   selectMarketPairs,
   selectMarketPairsLoading,
-  selectMarketWalletNftsLoading,
 } from '../../state/core/selectors';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { coreActions } from '../../state/core/actions';
@@ -19,27 +19,25 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { Typography } from 'antd';
 import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
 
+import styles from './Collection.module.scss';
+
 export const CollectionSellPage: FC = () => {
+  const dispatch = useDispatch();
+  const { connected } = useWallet();
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-  const { connected } = useWallet();
-  const dispatch = useDispatch();
+  useFetchMarketPairs();
+  useFetchMarketWalletNfts(marketPublicKey);
 
-  useEffect(() => {
-    connected &&
-      marketPublicKey &&
-      dispatch(coreActions.fetchMarketWalletNfts(marketPublicKey));
-  }, [dispatch, connected, marketPublicKey]);
+  const pairsLoading = useSelector(selectMarketPairsLoading);
+  const nftsLoading = useSelector(selectMarketWalletNftsLoading);
 
+  const pairs = useSelector(selectMarketPairs);
   const orders = useSelector((state: never) =>
     selectAllSellOrdersForMarket(state, marketPublicKey),
   );
-  const pairs = useSelector(selectMarketPairs);
 
-  const marketPairsLoading = useSelector(selectMarketPairsLoading);
-  const walletNftsLoading = useSelector(selectMarketWalletNftsLoading);
-
-  const loading = marketPairsLoading || walletNftsLoading;
+  const isLoading = nftsLoading || pairsLoading;
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
@@ -63,11 +61,11 @@ export const CollectionSellPage: FC = () => {
           connect your wallet to see your nfts
         </Typography.Title>
       )}
-      {connected && loading && <Spinner />}
-      {!loading && connected && !orders.length && (
+      {connected && isLoading && <Spinner />}
+      {!isLoading && connected && !orders.length && (
         <Typography.Title level={3}>no suitable nfts found</Typography.Title>
       )}
-      {!loading && connected && !!orders.length && (
+      {!isLoading && connected && !!orders.length && (
         <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
           {orders.map((order) => (
             <NFTCard

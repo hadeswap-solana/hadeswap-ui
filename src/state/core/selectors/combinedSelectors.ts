@@ -5,7 +5,8 @@ import {
   calcPriceWithFee,
   createPoolTableRow,
 } from '../helpers';
-import { selectCertainMarket } from './marketSelectors';
+import { selectCertainMarket, selectAllMarkets } from './marketSelectors';
+import { selectWalletPairs } from './pairSelectors';
 import {
   selectMarketPairs,
   selectRawMarketPairs,
@@ -16,6 +17,7 @@ import {
   selectCartPendingOrders,
 } from './cartSelectors';
 import { selectMarketWalletNfts } from './marketWalletNftsSelectors';
+import { keyBy } from 'lodash';
 
 export const selectPoolsTableInfo = createSelector(
   [selectCertainMarket, selectRawMarketPairs],
@@ -25,20 +27,10 @@ export const selectPoolsTableInfo = createSelector(
     }),
 );
 
-export const selectMarketInfoAndPairs = createSelector(
-  [selectCertainMarket, selectMarketPairs],
-  (marketInfo, pairs) => {
-    return {
-      marketInfo,
-      pairs,
-    };
-  },
-);
-
 export const selectAllBuyOrdersForMarket = createSelector(
   [selectMarketPairs, selectCartPairs, selectCartPendingOrders],
   (marketPairs, cartPairs, cartOrders) => {
-    const buyOrders = marketPairs
+    return marketPairs
       .reduce((orders: MarketOrder[], pair) => {
         const selectedPairOrders: MarketOrder[] =
           cartOrders[pair.pairPubkey]
@@ -70,8 +62,6 @@ export const selectAllBuyOrdersForMarket = createSelector(
         (a: MarketOrder, b: MarketOrder) =>
           a.price - b.price || a?.name?.localeCompare(b?.name),
       ) as MarketOrder[];
-
-    return buyOrders;
   },
 );
 
@@ -104,7 +94,10 @@ export const selectAllSellOrdersForMarket = createSelector(
     const cartSellOrders: MarketOrder[] = Object.values(cartOrders)
       .flat()
       .filter(({ type }) => type === OrderType.SELL)
-      .map((order) => ({ ...order, selected: true }))
+      .map((order) => ({
+        ...order,
+        selected: true,
+      }))
       .filter(({ market }) => market === marketPublicKey);
 
     const sellOrders: MarketOrder[] =
@@ -135,5 +128,16 @@ export const selectAllSellOrdersForMarket = createSelector(
       (a: MarketOrder, b: MarketOrder) =>
         b.price - a.price || a?.name?.localeCompare(b?.name),
     ) as MarketOrder[];
+  },
+);
+
+export const selectMyPoolsPageTableInfo = createSelector(
+  [selectAllMarkets, selectWalletPairs],
+  (markets, pairs) => {
+    const marketByPubkey = keyBy(markets, 'marketPubkey');
+
+    return pairs.map((pair) => {
+      return createPoolTableRow(pair, marketByPubkey[pair.market]);
+    });
   },
 );

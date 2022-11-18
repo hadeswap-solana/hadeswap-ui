@@ -1,21 +1,21 @@
-import { Button, Tabs, Layout } from 'antd';
-import { FC, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { FC, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Button, Tabs, Layout } from 'antd';
+import { useFetchMarket } from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
+import { Spinner } from '../../components/Spinner/Spinner';
 import {
   COLLECTION_TABS,
   createCollectionLink,
   createCreatePoolPickSideLink,
 } from '../../constants';
-import { coreActions } from '../../state/core/actions';
 import {
   selectCertainMarket,
   selectCertainMarketLoading,
 } from '../../state/core/selectors';
 import { CollectionGeneralInfo } from './CollectionGeneralInfo';
 import { MakeOfferModal } from './MakeOfferModal';
-import { Spinner } from '../../components/Spinner/Spinner';
 
 import styles from './Collection.module.scss';
 
@@ -23,13 +23,14 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 export const CollectionPageLayout: FC = ({ children }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const history = useHistory();
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
-  const dispatch = useDispatch();
 
-  const marketLoading = useSelector(selectCertainMarketLoading);
+  useFetchMarket(marketPublicKey);
+
   const market = useSelector(selectCertainMarket);
+  const isLoading = useSelector(selectCertainMarketLoading);
 
   const activeTab = useMemo(
     () => history.location.pathname.split('/').at(-1) as COLLECTION_TABS,
@@ -50,15 +51,9 @@ export const CollectionPageLayout: FC = ({ children }) => {
     setIsModalVisible(false);
   };
 
-  useEffect(() => {
-    if (marketPublicKey && market?.marketPubkey !== marketPublicKey) {
-      dispatch(coreActions.fetchMarketInfoAndPairs(marketPublicKey));
-    }
-  }, [dispatch, marketPublicKey, market]);
-
   return (
     <AppLayout>
-      {marketLoading ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <>
