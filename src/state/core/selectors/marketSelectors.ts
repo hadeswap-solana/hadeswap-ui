@@ -1,7 +1,6 @@
 import { identity } from 'ramda';
 import { createSelector } from 'reselect';
 import { MarketInfo } from '../types';
-import { RequestStatus } from '../../../utils/state';
 
 export const selectCertainMarket = createSelector(
   (store: any) => (store?.core?.market?.data as MarketInfo) || null,
@@ -9,6 +8,16 @@ export const selectCertainMarket = createSelector(
 );
 
 export const selectCertainMarketLoading = createSelector(
-  (store: any) => (store?.core?.market?.status as RequestStatus) || '',
-  (status: RequestStatus) => status === RequestStatus.PENDING,
+  (store: any) => store?.core?.market?.isLoading,
+  identity<boolean>,
+);
+
+export const selectAllMarkets = createSelector(
+  (store: any) => (store?.core?.allMarkets?.data as MarketInfo[]) || [],
+  identity<MarketInfo[]>,
+);
+
+export const selectAllMarketsLoading = createSelector(
+  (store: any) => store?.core?.allMarkets?.isLoading,
+  identity<boolean>,
 );
