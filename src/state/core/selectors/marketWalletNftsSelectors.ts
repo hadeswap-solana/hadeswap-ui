@@ -1,7 +1,6 @@
 import { identity } from 'ramda';
 import { createSelector } from 'reselect';
 import { Nft } from '../types';
-import { RequestStatus } from '../../../utils/state';
 
 export const selectMarketWalletNfts = createSelector(
   (store: any) => (store?.core?.marketWalletNfts?.data as Nft[]) || [],
@@ -9,7 +8,6 @@ export const selectMarketWalletNfts = createSelector(
 );
 
 export const selectMarketWalletNftsLoading = createSelector(
-  (store: any) =>
-    (store?.core?.marketWalletNfts?.status as RequestStatus) || '',
-  (status: RequestStatus) => status === RequestStatus.PENDING,
+  (store: any) => store?.core?.marketWalletNfts?.isLoading,
+  identity<boolean>,
 );

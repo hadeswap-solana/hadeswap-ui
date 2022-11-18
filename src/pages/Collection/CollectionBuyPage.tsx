@@ -1,9 +1,11 @@
 import { FC, useCallback } from 'react';
 import BN from 'bn.js';
-import { CollectionPageLayout } from './CollectionPageLayout';
-import styles from './Collection.module.scss';
-import { NFTCard } from '../../components/NFTCard/NFTCard';
 import { useDispatch, useSelector } from 'react-redux';
+import { useFetchMarketPairs } from '../../requests';
+import { CollectionPageLayout } from './CollectionPageLayout';
+import { NFTCard } from '../../components/NFTCard/NFTCard';
+import { Spinner } from '../../components/Spinner/Spinner';
+import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
 import {
   selectAllBuyOrdersForMarket,
   selectMarketPairs,
@@ -12,14 +14,16 @@ import {
 import { coreActions } from '../../state/core/actions';
 import { formatBNToString } from '../../utils';
 import { MarketOrder, OrderType } from '../../state/core/types';
-import { Spinner } from '../../components/Spinner/Spinner';
-import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
+
+import styles from './Collection.module.scss';
 
 export const CollectionBuyPage: FC = () => {
-  const orders = useSelector(selectAllBuyOrdersForMarket);
-  const loading = useSelector(selectMarketPairsLoading);
-  const pairs = useSelector(selectMarketPairs);
   const dispatch = useDispatch();
+
+  useFetchMarketPairs();
+  const isLoading = useSelector(selectMarketPairsLoading);
+  const pairs = useSelector(selectMarketPairs);
+  const orders = useSelector(selectAllBuyOrdersForMarket);
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
@@ -38,7 +42,7 @@ export const CollectionBuyPage: FC = () => {
 
   return (
     <CollectionPageLayout>
-      {loading ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>

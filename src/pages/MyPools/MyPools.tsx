@@ -4,8 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Typography, Button } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { useFetchAllMarketsAndPairs } from '../../requests';
-import { combineMyPoolsPageTableInfo } from './helpers';
+import { useFetchWalletPairs, useFetchAllMarkets } from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Spinner } from '../../components/Spinner/Spinner';
 import PoolsList from '../../components/PoolsList';
@@ -14,9 +13,13 @@ import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
 import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
 import { SORT_ORDER } from '../../constants/common';
+import {
+  selectAllMarketsLoading,
+  selectWalletPairsLoading,
+  selectMyPoolsPageTableInfo,
+} from '../../state/core/selectors';
 import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
-import { MarketInfo, Pair } from '../../state/core/types';
 import { createPoolTableRow } from '../../state/core/helpers';
 
 import styles from './MyPools.module.scss';
@@ -45,23 +48,18 @@ export const MyPools: FC = () => {
     window.scrollTo(0, 0);
   };
 
-  const {
-    markets,
-    pairs,
-    isLoading,
-    isFetching,
-  }: {
-    markets: MarketInfo[];
-    pairs: Pair[];
-    isLoading: boolean;
-    isFetching: boolean;
-  } = useFetchAllMarketsAndPairs();
+  useFetchAllMarkets();
+  useFetchWalletPairs();
+
+  const walletPairs = useSelector(selectMyPoolsPageTableInfo);
+
+  const marketsLoading = useSelector(selectAllMarketsLoading);
+  const pairsLoading = useSelector(selectWalletPairsLoading);
+  const isLoading = marketsLoading || pairsLoading;
 
   useEffect(() => {
-    !isLoading &&
-      !isFetching &&
-      setPools(combineMyPoolsPageTableInfo(markets, pairs));
-  }, [isLoading, isFetching]);
+    !isLoading && setPools(walletPairs);
+  }, [isLoading, walletPairs]);
 
   useEffect(() => {
     const [name, order] = sortValue.split('_');
@@ -90,12 +88,11 @@ export const MyPools: FC = () => {
           connect your wallet to see your pools
         </Typography.Title>
       )}
-      {connected && (isLoading || isFetching) && <Spinner />}
-      {connected && !isLoading && !isFetching && !pairs.length && (
+      {connected && isLoading && <Spinner />}
+      {connected && !isLoading && !walletPairs.length && (
         <Typography.Title level={3}>no pools found</Typography.Title>
       )}
-
-      {connected && !isLoading && !isFetching && !!pools.length && (
+      {connected && !isLoading && !!pools.length && (
         <>
           <PoolsList data={pools} onRowClick={onRowClick} />
           {isMobile && isSortingVisible && (
