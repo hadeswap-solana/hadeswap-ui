@@ -1,10 +1,23 @@
-import { PriceWithIcon } from '../PriceWithIcon';
-import { Typography } from 'antd';
-import { formatBNToString } from '../../utils';
 import { BN } from 'hadeswap-sdk';
+import { Typography } from 'antd';
+import { formatBNToString } from '../index';
+import { PubKeys } from '../../constants/common';
+import { shortenAddress } from '../solanaUtils';
+import { PriceWithIcon } from '../../components/PriceWithIcon';
+import {
+  ColoredTextCell,
+  LinkCell,
+  PriceCell,
+} from '../../components/UI/table';
+import { MarketInfo, NftActivityData } from '../../state/core/types';
 import { createPoolTableRow } from '../../state/core/helpers';
-import { MarketInfo } from '../../state/core/types';
-import { shortenAddress } from '../../utils/solanaUtils';
+import moment from 'moment';
+
+interface BaseItem {
+  itemKey: string;
+  nameKey: string;
+  imageKey: string;
+}
 
 interface BaseList {
   title: string;
@@ -22,10 +35,8 @@ interface CollectionList extends BaseList {
   render: (value: number | string, item: MarketInfo) => JSX.Element;
 }
 
-interface BaseItem {
-  itemKey: string;
-  nameKey: string;
-  imageKey: string;
+interface ActivityList extends BaseList {
+  render: (value: number | string, item: NftActivityData) => JSX.Element;
 }
 
 interface PoolItem extends BaseItem {
@@ -36,10 +47,14 @@ interface CollectionItem extends BaseItem {
   list: CollectionList[];
 }
 
+interface ActivityItem extends BaseItem {
+  list: ActivityList[];
+}
+
 const { Text } = Typography;
 
 export const COLLECTION_ITEM: CollectionItem = {
-  itemKey: 'marketPubkey',
+  itemKey: PubKeys.MARKET_PUBKEY,
   nameKey: 'collectionName',
   imageKey: 'collectionImage',
   list: [
@@ -67,7 +82,7 @@ export const COLLECTION_ITEM: CollectionItem = {
 };
 
 export const POOL_ITEM: PoolItem = {
-  itemKey: 'pairPubkey',
+  itemKey: PubKeys.PAIR_PUBKEY,
   nameKey: 'collectionName',
   imageKey: 'collectionImage',
   list: [
@@ -135,6 +150,53 @@ export const POOL_ITEM: PoolItem = {
       title: 'owner',
       valueKey: 'ownerPublicKey',
       render: (value: string) => <Text>{shortenAddress(value)}</Text>,
+    },
+  ],
+};
+
+export const ACTIVITY_ITEM: ActivityItem = {
+  itemKey: PubKeys.NFT_MINT,
+  nameKey: 'nftName',
+  imageKey: 'nftImageUrl',
+  list: [
+    {
+      title: 'action',
+      valueKey: 'orderType',
+      render: (value: string) => (
+        <ColoredTextCell cellValue={value} defaultValue="buy" />
+      ),
+    },
+    {
+      title: 'user',
+      valueKey: 'userTaker',
+      render: (value: string, item) => (
+        <LinkCell link={`https://solscan.io/account/${item.userTaker}`}>
+          <Text>{shortenAddress(value)}</Text>
+        </LinkCell>
+      ),
+    },
+    {
+      title: 'pool',
+      valueKey: 'pair',
+      render: (value: string, item) => (
+        <LinkCell link={`/pools/${item.pair}`} internal>
+          <Text>{shortenAddress(value)}</Text>
+        </LinkCell>
+      ),
+    },
+    {
+      title: 'price',
+      valueKey: 'solAmount',
+      render: (value: number) => <PriceCell value={String(value)} />,
+    },
+    {
+      title: 'when',
+      valueKey: 'timestamp',
+      render: (value: string, item) => (
+        <LinkCell link={`https://solscan.io/tx/${item.signature}`}>
+          <Text>{moment(value).fromNow()}</Text>
+        </LinkCell>
+      ),
     },
   ],
 };

@@ -1,31 +1,16 @@
-import { memo, FC, useEffect, Fragment, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
-import { Spinner } from '../../../../components/Spinner/Spinner';
-import { shortenAddress } from '../../../../utils/solanaUtils';
-import { SolPrice } from '../../../../components/SolPrice/SolPrice';
-import moment from 'moment';
-import classNames from 'classnames';
+import { FC, useEffect, useState, memo } from 'react';
+import { useParams } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import ItemsList from '../../../../components/ItemsList';
+import { Spinner } from '../../../../components/Spinner/Spinner';
 import { useIntersection } from '../../../../hooks';
+import { ACTIVITY, PubKeys } from '../../../../constants/common';
+import { NftActivityData } from '../../../../state/core/types';
 
 import styles from './styles.module.scss';
 
-interface ActivityData {
-  nftImageUrl: string;
-  nftMint: string;
-  nftName: string;
-  orderType: 'sell' | 'buy';
-  pair: string;
-  pairType: string;
-  signature: string;
-  solAmount: number;
-  timestamp: string;
-  userMaker?: string;
-  userTaker: string;
-}
-
 const useActivityData = (marketPublicKey: string) => {
-  const LIMIT = 30;
+  const LIMIT = 3;
 
   const [isListEnded, setIsListEnded] = useState<boolean>(false);
 
@@ -36,7 +21,7 @@ const useActivityData = (marketPublicKey: string) => {
     pageParam: number;
     marketPublicKey: string;
   }) => {
-    const data: ActivityData[] = await (
+    const data: NftActivityData[] = await (
       await fetch(
         `https://${
           process.env.BACKEND_DOMAIN
@@ -80,7 +65,7 @@ const useActivityData = (marketPublicKey: string) => {
   };
 };
 
-const CollectionActivityPageBase: FC = () => {
+export const CollectionActivityTab: FC = memo(() => {
   const { ref, inView } = useIntersection();
 
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
@@ -94,82 +79,27 @@ const CollectionActivityPageBase: FC = () => {
     }
   }, [inView, fetchNextPage, isFetchingNextPage, isListEnded]);
 
+  const activityData = data?.pages
+    ?.map((page) => {
+      return page.data.filter(
+        (activity) => activity.solAmount > 0 && activity.solAmount !== 0,
+      );
+    })
+    .flat();
+
   return (
     <div className={styles.tabContentWrapper}>
-      <div className={styles.activityCards}>
-        {data?.pages?.map((page, idx) => (
-          <Fragment key={idx}>
-            {page.data
-              .filter(
-                (activity) =>
-                  activity.solAmount > 0 && activity.solAmount !== 0,
-              )
-              .map((activity, idx) => (
-                <ActivityCard data={activity} key={idx} />
-              ))}
-          </Fragment>
-        ))}
-        {!!isFetchingNextPage && <Spinner />}
-        <div ref={ref} />
-      </div>
-    </div>
-  );
-};
-
-export const CollectionActivityTab = memo(CollectionActivityPageBase);
-
-interface ActivityCardProps {
-  data: ActivityData;
-}
-
-const ActivityCard: FC<ActivityCardProps> = ({ data }) => {
-  const isBuy = data.orderType === 'buy';
-
-  return (
-    <div className={styles.activityCard}>
-      <img
-        src={data.nftImageUrl}
-        alt={data.nftName}
-        className={styles.activityNftImage}
+      <ItemsList
+        data={activityData}
+        mapType={ACTIVITY}
+        pubKey={PubKeys.NFT_MINT}
+        onRowClick={() => null}
+        tableClassName={styles.activityTable}
       />
-      <a
-        href={`https://solscan.io/token/${data.nftMint}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={classNames(styles.activityNftName, styles.activityLink)}
-      >
-        {data.nftName}
-      </a>
-      <p className={styles.activityTaker}>
-        {isBuy ? 'was bought by ' : 'was sold by '}
-        <a
-          href={`https://solscan.io/account/${data.userTaker}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.activityLink}
-        >
-          {shortenAddress(data.userTaker)}
-        </a>{' '}
-      </p>
-
-      <p className={styles.activityPool}>
-        {isBuy ? 'from ' : 'to '}
-        <NavLink to={`/pools/${data.pair}`} className={styles.activityLink}>
-          {shortenAddress(data.pair)}
-        </NavLink>{' '}
-        pool
-      </p>
-      <p className={styles.activityPrice}>
-        for <SolPrice price={data.solAmount} />{' '}
-      </p>
-      <a
-        href={`https://solscan.io/tx/${data.signature}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={classNames(styles.activityDate, styles.activityLink)}
-      >
-        {moment(data.timestamp).fromNow()}
-      </a>
+      {!!isFetchingNextPage && <Spinner />}
+      <div ref={ref} />
     </div>
   );
-};
+});
+
+CollectionActivityTab.displayName = 'CollectionActivityTab';

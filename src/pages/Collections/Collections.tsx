@@ -6,12 +6,12 @@ import { SearchOutlined } from '@ant-design/icons';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Spinner } from '../../components/Spinner/Spinner';
-import CollectionList from '../../components/CollectionsList';
+import ItemsList from '../../components/ItemsList';
 import Sorting from '../../components/Sorting/mobile/Sorting';
 import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
 import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { COLLECTION_COLUMNS } from '../../utils/table/constants';
-import { SORT_ORDER } from '../../constants/common';
+import { SORT_ORDER, PubKeys, COLLECTION } from '../../constants/common';
 import { filterCollections } from './helpers';
 import { useFetchAllMarkets } from '../../requests';
 
@@ -116,7 +116,12 @@ export const Collections: FC = () => {
                     <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
                   )}
                 </div>
-                <CollectionList onRowClick={onRowClick} data={collections} />
+                <ItemsList
+                  onRowClick={onRowClick}
+                  data={collections}
+                  mapType={COLLECTION}
+                  pubKey={PubKeys.MARKET_PUBKEY}
+                />
               </div>
             </Col>
           </Row>

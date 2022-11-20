@@ -17,7 +17,9 @@
   --dark-grey-color: #535b5f;
   --blue-color: #257cff;
   --red-color: #ff3225;
+  --green-color: #25ff6f;
   --font-grey-color: #535b5f;
+  --table-active-element: #9dcaff14;
 
   --primary-color: #9dcaff;
   --primary-background-color: #282f37;
@@ -32,7 +34,7 @@
   --disabled-color: rgba(0, 0, 0, 0.25); // disable state color
   --border-color-base: #23303d; // major border color
   --box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
+  0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
 
   // sizes
   --body-horizontal-padding: 32px;

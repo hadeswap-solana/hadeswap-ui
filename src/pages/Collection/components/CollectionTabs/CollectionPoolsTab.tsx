@@ -2,7 +2,8 @@ import { FC } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Spinner } from '../../../../components/Spinner/Spinner';
-import PoolsList from '../../../../components/PoolsList';
+import ItemsList from '../../../../components/ItemsList';
+import { POOL, PubKeys } from '../../../../constants/common';
 import {
   selectMarketPairsLoading,
   selectCertainMarketLoading,
@@ -29,7 +30,12 @@ export const CollectionPoolsTab: FC = () => {
       {isLoading ? (
         <Spinner />
       ) : (
-        <PoolsList onRowClick={onRowClick} data={poolsTableInfo} />
+        <ItemsList
+          onRowClick={onRowClick}
+          data={poolsTableInfo}
+          mapType={POOL}
+          pubKey={PubKeys.PAIR_PUBKEY}
+        />
       )}
     </div>
   );
