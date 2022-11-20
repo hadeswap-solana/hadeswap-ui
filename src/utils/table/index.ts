@@ -3,7 +3,7 @@ import {
   COLLECTION_COLUMNS,
   ACTIVITY_COLUMNS,
 } from './constants';
-import { POOL_ITEM, COLLECTION_ITEM, ACTIVITY_ITEM } from './constantsMobile';
+import { POOL_ITEM, COLLECTION_ITEM, ACTIVITY_ITEM } from './mobile/constants';
 import { COLLECTION, POOL, ACTIVITY } from '../../constants/common';
 
 export const columnsType = {

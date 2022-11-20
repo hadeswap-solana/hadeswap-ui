@@ -1,16 +1,16 @@
 import { BN } from 'hadeswap-sdk';
 import { Typography } from 'antd';
-import { formatBNToString } from '../index';
-import { PubKeys } from '../../constants/common';
-import { shortenAddress } from '../solanaUtils';
-import { PriceWithIcon } from '../../components/PriceWithIcon';
+import { formatBNToString } from '../../index';
+import { PubKeys } from '../../../constants/common';
+import { shortenAddress } from '../../solanaUtils';
+import { PriceWithIcon } from '../../../components/PriceWithIcon';
 import {
   ColoredTextCell,
   LinkCell,
   PriceCell,
-} from '../../components/UI/table';
-import { MarketInfo, NftActivityData } from '../../state/core/types';
-import { createPoolTableRow } from '../../state/core/helpers';
+} from '../../../components/UI/TableComponents';
+import { MarketInfo, NftActivityData } from '../../../state/core/types';
+import { createPoolTableRow } from '../../../state/core/helpers';
 import moment from 'moment';
 
 interface BaseItem {

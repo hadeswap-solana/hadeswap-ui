@@ -34,6 +34,38 @@
   background: @layout-header-background;
 }
 
+// INPUT
+.ant-input-affix-wrapper {
+  border: var(--border-base);
+  border-radius: 10px;
+  font-weight: 400;
+  background: var(--primary-background-color);
+
+  input {
+    border-radius: 0;
+    color: var(--primary-white-color);
+  }
+
+  &:focus,
+  &:focus-visible {
+    color: var(--white-color);
+  }
+}
+
+.ant-input-affix-wrapper:focus {
+  box-shadow: unset;
+}
+
+.ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
+  box-shadow: unset;
+}
+
+.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+  border-color: var(--transparent-color);
+}
+
+// TABLE
+
 .ant-table {
   overflow: auto;
   border: 1px solid @border-color-base;

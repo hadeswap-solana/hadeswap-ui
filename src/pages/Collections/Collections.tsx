@@ -1,11 +1,11 @@
 import React, { FC, useEffect, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Typography, Row, Col, Button, Input } from 'antd';
+import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { Spinner } from '../../components/Spinner/Spinner';
+import PageContentLayout from '../../components/Layout/PageContentLayout';
 import ItemsList from '../../components/ItemsList';
 import Sorting from '../../components/Sorting/mobile/Sorting';
 import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
@@ -23,9 +23,8 @@ import {
 import { ScreenTypes } from '../../state/common/types';
 import { useDebounce } from '../../hooks';
 import { createCollectionLink } from '../../constants';
-import styles from './Collections.module.scss';
 
-const { Title } = Typography;
+import styles from './Collections.module.scss';
 
 export const Collections: FC = () => {
   const INITIAL_SORT_VALUE = 'offerTVL';
@@ -39,7 +38,7 @@ export const Collections: FC = () => {
   const [isSortingVisible, setIsSortingVisible] = useState<boolean>(false);
 
   const screenMode = useSelector(selectScreeMode);
-  const isMobile = screenMode === ScreenTypes.TABLET;
+  const isMobile = screenMode !== ScreenTypes.DESKTOP;
 
   const setSearch = useDebounce((search: string): void => {
     setSearchStr(search.toUpperCase());
@@ -70,63 +69,35 @@ export const Collections: FC = () => {
 
   return (
     <AppLayout>
-      {isMobile && isSortingVisible && (
-        <Sorting
-          setIsSortingVisible={setIsSortingVisible}
-          sortValue={sortValue}
-          setSortValue={setSortValue}
-          data={COLLECTION_COLUMNS}
-        />
-      )}
-      <Row justify="center">
-        <Col>
-          <Title>collections</Title>
-        </Col>
-      </Row>
-      {isLoading ? (
-        <Spinner />
-      ) : (
+      <PageContentLayout title="collections" isLoading={isLoading}>
         <>
-          <Row justify="center">
-            <Col>
-              <Button
-                style={{ marginBottom: '20px' }}
-                type="primary"
+          {isMobile && (
+            <div className={styles.controlsWrapper}>
+              <Input
                 size="large"
-                onClick={() => {
-                  history.push('/create-pool');
-                }}
-              >
-                + create pool
-              </Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={24}>
-              <div className={styles.tableWrapper}>
-                <div className={styles.controlsWrapper}>
-                  <Input
-                    size="large"
-                    placeholder="search by collection name"
-                    prefix={<SearchOutlined />}
-                    className={styles.searchInput}
-                    onChange={(event) => setSearch(event.target.value || '')}
-                  />
-                  {isMobile && (
-                    <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
-                  )}
-                </div>
-                <ItemsList
-                  onRowClick={onRowClick}
-                  data={collections}
-                  mapType={COLLECTION}
-                  pubKey={PubKeys.MARKET_PUBKEY}
-                />
-              </div>
-            </Col>
-          </Row>
+                placeholder="search by collection name"
+                prefix={<SearchOutlined />}
+                onChange={(event) => setSearch(event.target.value || '')}
+              />
+              <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
+            </div>
+          )}
+          <ItemsList
+            onRowClick={onRowClick}
+            data={collections}
+            mapType={COLLECTION}
+            pubKey={PubKeys.MARKET_PUBKEY}
+          />
         </>
-      )}
+        {isMobile && isSortingVisible && (
+          <Sorting
+            setIsSortingVisible={setIsSortingVisible}
+            sortValue={sortValue}
+            setSortValue={setSortValue}
+            data={COLLECTION_COLUMNS}
+          />
+        )}
+      </PageContentLayout>
     </AppLayout>
   );
 };

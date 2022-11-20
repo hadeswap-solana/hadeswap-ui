@@ -10,7 +10,7 @@ import {
   ColoredTextCell,
   PriceCell,
   LinkCell,
-} from '../../components/UI/table';
+} from '../../components/UI/TableComponents';
 import { shortenAddress } from '../solanaUtils';
 import { MarketInfo, OrderType, NftActivityData } from '../../state/core/types';
 import { createPoolTableRow } from '../../state/core/helpers';
