@@ -17,20 +17,19 @@ const Button: FC<ButtonProps> = ({
   isDisabled = false,
   onClick,
   children,
-}): JSX.Element => {
-  return (
-    <button
-      className={classNames(
-        styles.button,
-        { [styles.outlined]: outlined },
-        { [styles.disabled]: isDisabled },
-        { [className]: className },
-      )}
-      onClick={!isDisabled ? onClick : null}
-    >
-      {children}
-    </button>
-  );
-};
+}): JSX.Element => (
+  <button
+    className={classNames(
+      styles.rootButton,
+      styles.button,
+      { [styles.outlined]: outlined },
+      { [styles.disabled]: isDisabled },
+      className,
+    )}
+    onClick={!isDisabled ? onClick : null}
+  >
+    {children}
+  </button>
+);
 
 export default Button;

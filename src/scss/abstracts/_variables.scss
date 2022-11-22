@@ -1,6 +1,6 @@
 :root {
-  --black-color: #000000;
-  --white-color: #ffffff;
+  --black-color: #000;
+  --white-color: #fff;
   --ant-gray: #9dcaff1c;
 
   --font-family-montserrat: 'Montserrat', sans-serif;
@@ -12,10 +12,14 @@
   --body-background: #0a0e11;
   --component-base-background: #0f1720;
   --component-secondary-background: #0e1318;
+  --component-third-background: #111b26;
   --primary-white-color: #e3e2e5;
   --dark-grey-color: #535b5f;
   --blue-color: #257cff;
   --red-color: #ff3225;
+  --green-color: #25ff6f;
+  --font-grey-color: #535b5f;
+  --table-active-element: #9dcaff14;
 
   --primary-color: #9dcaff;
   --primary-background-color: #282f37;
@@ -30,13 +34,14 @@
   --disabled-color: rgba(0, 0, 0, 0.25); // disable state color
   --border-color-base: #23303d; // major border color
   --box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
+  0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
 
   // sizes
   --body-horizontal-padding: 32px;
   --font-size-base: 14px; // major text font size
   --header-height-mobile: 56px;
   --header-height-desktop: 97px;
+  --collection-page-header-height: 289px;
 
   // other
   --border-base: 1px solid var(--border-color-base);
@@ -49,6 +54,9 @@
   --cart-sider-pocket-mode-height: calc(100% - 68px);
 
   // Animation
+  --button-transition: opacity .3s;
+  --button-hover-opacity: .7;
+
   --ease-base-out: cubic-bezier(0.7, 0.3, 0.1, 1);
   --ease-base-in: cubic-bezier(0.9, 0, 0.3, 0.7);
   --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
