@@ -1015,9 +1015,9 @@ export const EditPool: FC = () => {
                       <div className={styles.nftsWrapper}>
                         {nftModal.selectedNfts.map((nft) => (
                           <NFTCard
-                            // className={styles.nfts}
                             key={nft.mint}
                             imageUrl={nft.imageUrl}
+                            simpleCard
                           />
                         ))}
                       </div>
@@ -1047,7 +1047,11 @@ export const EditPool: FC = () => {
                         </Form.Item>
                         <div className={styles.nftsWrapper}>
                           {nftModal.selectedNfts.map((nft) => (
-                            <NFTCard key={nft.mint} imageUrl={nft.imageUrl} />
+                            <NFTCard
+                              key={nft.mint}
+                              imageUrl={nft.imageUrl}
+                              simpleCard
+                            />
                           ))}
                         </div>
                         <Button

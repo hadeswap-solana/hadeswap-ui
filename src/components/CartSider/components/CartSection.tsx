@@ -30,7 +30,7 @@ const CartSection: FC<CartSectionProps> = ({
           <div className={styles.cartTitle}>
             <h4>{title}</h4>
             <button
-              className={styles.trashButton}
+              className={styles.trashAllButton}
               onClick={() => onDeselectBulkHandler(cartItems)}
             >
               <TrashIcon />

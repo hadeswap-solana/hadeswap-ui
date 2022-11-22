@@ -1,5 +1,4 @@
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import { COLLECTION_TABS, PATHS } from './constants';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { routes } from './constants/routes';
 import {
@@ -18,11 +17,6 @@ export const Router = (): JSX.Element => {
   return (
     <BrowserRouter>
       <Switch>
-        <Redirect
-          from={`${PATHS.COLLECTION}/:slug`}
-          to={`${PATHS.COLLECTION}/:slug/${COLLECTION_TABS.BUY}`}
-          exact
-        />
         {routes.map(({ exact, path, component: Component }, index) => (
           <Route key={index} exact={exact} path={path}>
             <Component />
