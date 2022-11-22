@@ -7,12 +7,12 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useFetchWalletPairs, useFetchAllMarkets } from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Spinner } from '../../components/Spinner/Spinner';
-import PoolsList from '../../components/PoolsList';
+import ItemsList from '../../components/ItemsList';
 import Sorting from '../../components/Sorting/mobile/Sorting';
 import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
 import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
-import { SORT_ORDER } from '../../constants/common';
+import { SORT_ORDER, PubKeys, POOL } from '../../constants/common';
 import {
   selectAllMarketsLoading,
   selectWalletPairsLoading,
@@ -94,7 +94,14 @@ export const MyPools: FC = () => {
       )}
       {connected && !isLoading && !!pools.length && (
         <>
-          <PoolsList data={pools} onRowClick={onRowClick} />
+          {
+            <ItemsList
+              data={pools}
+              onRowClick={onRowClick}
+              mapType={POOL}
+              pubKey={PubKeys.PAIR_PUBKEY}
+            />
+          }
           {isMobile && isSortingVisible && (
             <Sorting
               setIsSortingVisible={setIsSortingVisible}

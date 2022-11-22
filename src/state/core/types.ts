@@ -4,7 +4,6 @@ export type MarketInfo = {
   marketPubkey: string;
   collectionName: string;
   collectionImage: string;
-
   listingsAmount: number;
   floorPrice: string;
   bestoffer: string;
@@ -90,6 +89,20 @@ export interface Nft {
   vaultTokenAccount?: string; //? Exists for Buy orders
   nftValidationAdapter?: string; //? Exists for Sell orders
   disabled?: boolean;
+}
+
+export interface NftActivityData {
+  nftImageUrl: string;
+  nftMint: string;
+  nftName: string;
+  orderType: OrderType.BUY | OrderType.SELL;
+  pair: string;
+  pairType: string;
+  signature: string;
+  solAmount: number;
+  timestamp: string;
+  userMaker?: string;
+  userTaker: string;
 }
 
 export interface CartOrder extends Nft {

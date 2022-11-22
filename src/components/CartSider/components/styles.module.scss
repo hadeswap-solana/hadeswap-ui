@@ -74,10 +74,15 @@
   margin-right: 8px;
 }
 
-.trashButton {
+.trashAllButton {
   display: flex;
   align-items: center;
   margin-left: 4px;
+  transition: var(--button-transition);
+
+  &:hover {
+    opacity: var(--button-hover-opacity);
+  }
 }
 
 .cartItems {

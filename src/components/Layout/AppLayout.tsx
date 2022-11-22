@@ -8,8 +8,8 @@ import Header from '../Header';
 import CartSider from '../CartSider';
 import { TransactionsLoadingModal } from '../TransactionsLoadingModal';
 import DocsIcon from '../../icons/DocsIcon';
-import DiscordIcon from '../../icons/DiscordIcon';
-import TwitterIcon from '../../icons/TwitterIcon';
+import DiscordSquareIcon from '../../icons/DiscordSquareIcon';
+import TwitterSquareIcon from '../../icons/TwitterSquareIcon';
 import styles from './AppLayout.module.scss';
 
 const { Footer } = AntdLayout;
@@ -25,8 +25,8 @@ interface LayoutProps {
 const DOCS_LIST = [{ to: 'https://docs.hadeswap.com/', icon: DocsIcon }];
 
 const SOCIALS_LIST = [
-  { to: 'https://discord.gg/hadeswap', icon: DiscordIcon },
-  { to: 'https://twitter.com/hadeswap', icon: TwitterIcon },
+  { to: 'https://discord.gg/hadeswap', icon: DiscordSquareIcon },
+  { to: 'https://twitter.com/hadeswap', icon: TwitterSquareIcon },
   // { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
 ];
 
@@ -46,9 +46,9 @@ export const AppLayout: FC<LayoutProps> = ({
     <>
       <div className={styles.layoutWrapper}>
         <Header />
-        <div className={styles.mainWrapper}>
-          <div className={styles.main}>
-            <main className={classNames(styles.content, contentClassName)}>
+        <div className={styles.content}>
+          <div className={styles.mainWrapper}>
+            <main className={classNames(styles.main, contentClassName)}>
               {children}
             </main>
             {!hideFooter && (

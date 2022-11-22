@@ -6,8 +6,15 @@ export const SORT_ORDER = {
   DESC: 'desc',
 };
 
-export const FETCHING = 'fetching';
-
 export const UNTITLED_COLLECTION = 'untitled collection';
+export const UNTITLED = 'untitled';
 
 export const COLLECTION = 'collection';
+export const POOL = 'pool';
+export const ACTIVITY = 'activity';
+
+export enum PubKeys {
+  MARKET_PUBKEY = 'marketPubkey',
+  PAIR_PUBKEY = 'pairPubkey',
+  NFT_MINT = 'nftMint',
+}

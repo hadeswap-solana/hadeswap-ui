@@ -1,0 +1,32 @@
+.linkCell {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.titleCellImg {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  border-radius: 4px;
+}
+
+.coloredTextCellGreen {
+  color: var(--green-color);
+}
+
+.coloredTextCellRed {
+  color: var(--red-color);
+}
+
+.priceCell {
+  span {
+    font-size: 14px;
+  }
+
+  svg {
+    width: 18px;
+    margin: 0;
+  }
+}

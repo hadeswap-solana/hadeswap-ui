@@ -55,10 +55,10 @@
   font-weight: 500;
   line-height: 22px;
   white-space: nowrap;
-  transition: opacity .3s;
+  transition: var(--button-transition);
 
   &:hover {
-    opacity: .7;
+    opacity: var(--button-hover-opacity);
   }
 }
 

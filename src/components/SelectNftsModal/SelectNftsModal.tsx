@@ -1,6 +1,7 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Modal, Typography } from 'antd';
 import { FC, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Modal, Typography } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import { useFetchMarketWalletNfts } from '../../requests';
 import { Nft, PairSellOrder } from '../../state/core/types';
 import {
@@ -12,7 +13,6 @@ import { Spinner } from '../Spinner/Spinner';
 import { FakeInfinityScroll } from '../FakeInfiinityScroll';
 
 import styles from './SelectNftsModal.module.scss';
-import { useSelector } from 'react-redux';
 
 type UseSelectNftsModal = (
   collectionName: string,
@@ -104,8 +104,9 @@ export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
               key={nft.mint}
               imageUrl={nft.imageUrl}
               name={nft.name}
-              onBtnClick={() => toggleNft(nft)}
+              onCardClick={() => toggleNft(nft)}
               selected={isNftSelected(nft)}
+              simpleCard
             />
           ))}
         </FakeInfinityScroll>
