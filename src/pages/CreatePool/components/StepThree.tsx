@@ -1,23 +1,22 @@
-import { FC, useState } from 'react';
+import { FC, useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BondingCurveType,
   PairType,
   OrderType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import classNames from 'classnames';
 import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
-import { Form, InputNumber } from 'antd';
+import { Form, InputNumber, Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import { Card } from '../../../components/Card';
 import { PairButtons } from '../../../components/Buttons/PairButtons';
 import Button from '../../../components/Buttons/Button';
 import { NFTCard } from '../../../components/NFTCard/NFTCard';
-import {
-  SelectNftsModal,
-  useSelectNftsModal,
-} from '../../../components/SelectNftsModal/SelectNftsModal';
 import ChartLine from '../../../components/ChartLine/ChartLine';
 import { useOnCreatePoolClick } from '../hooks';
+import { useNftsPool } from '../../../hooks/useNftsPool';
 import { useFetchAllMarkets } from '../../../requests';
 import {
   selectAllMarkets,
@@ -36,12 +35,12 @@ export const StepThree: FC<StepThreeProps> = ({
   chosenMarketKey,
 }) => {
   const [curveType, setCurveType] = useState<BondingCurveType>(
-    BondingCurveType.Linear,
+    BondingCurveType.Exponential,
   );
 
   useFetchAllMarkets();
   const markets = useSelector(selectAllMarkets);
-  const isLoading = useSelector(selectAllMarketsLoading);
+  const marketsLoading = useSelector(selectAllMarketsLoading);
 
   const chosenMarket = markets.find(
     (market) => market.marketPubkey === chosenMarketKey,
@@ -55,7 +54,8 @@ export const StepThree: FC<StepThreeProps> = ({
   const delta = Form.useWatch('delta', formPrice);
   const nftAmount = Form.useWatch('nftAmount', formAssets);
 
-  const nftModal = useSelectNftsModal(chosenMarketKey);
+  const { nfts, selectedNfts, selectedNftsByMint, toggleNft, nftsLoading } =
+    useNftsPool({ marketPublicKey: chosenMarketKey });
 
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
@@ -63,37 +63,45 @@ export const StepThree: FC<StepThreeProps> = ({
   const rawFee = fee * 100;
 
   const isCreateButtonDisabled =
-    (pairType !== PairType.TokenForNFT && !nftModal.selectedNfts.length) ||
+    (pairType !== PairType.TokenForNFT && !selectedNfts.length) ||
     (pairType === PairType.TokenForNFT && !nftAmount) ||
     !spotPrice;
 
+  const initialValuesAssets = { nftAmount: 0 };
   const initialValuesPrice = {
     fee: 0,
     spotPrice: 0,
     delta: 0,
   };
 
-  const initialValuesAssets = { nftAmount: 0 };
-
   const onCreatePoolClick = useOnCreatePoolClick({
     pairType,
     nftAmount,
     chosenMarketKey,
-    nftModal,
+    selectedNfts,
     curveType,
     rawSpotPrice,
     rawDelta,
     rawFee,
   });
 
+  const settingsBlockRef = useRef();
+  const priceBlockRef = useRef();
+
+  useEffect(() => {
+    if (settingsBlockRef.current && priceBlockRef.current) {
+      settingsBlockRef.current.style.height = `${priceBlockRef.current.offsetHeight}px`;
+    }
+  });
+
   return (
-    <>
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <div className={styles.settingsBlockWrapper}>
-          <div className={styles.settingsBlock}>
-            <div className={styles.settingsBlockCardWrapper}>
+    <div className={styles.settingsBlockWrapper}>
+      <div ref={settingsBlockRef} className={styles.settingsBlock}>
+        <div className={styles.settingsBlockPriceWrapper}>
+          {marketsLoading ? (
+            <Spinner />
+          ) : (
+            <div ref={priceBlockRef}>
               <Card className={styles.settingsBlockCard}>
                 <Form form={formPrice} initialValues={initialValuesPrice}>
                   <h2 className={styles.settingsBlockTitle}>pricing</h2>
@@ -111,6 +119,12 @@ export const StepThree: FC<StepThreeProps> = ({
                         ? `(current best offer: ${chosenMarket?.bestoffer} SOL, current floor price: ${chosenMarket?.floorPrice} SOL)`
                         : ''
                     }`}
+                    <Tooltip
+                      placement="top"
+                      title="the starting price of your pool"
+                    >
+                      <InfoCircleOutlined />
+                    </Tooltip>
                   </h3>
                   <Form.Item name="spotPrice">
                     <InputNumber
@@ -133,6 +147,12 @@ export const StepThree: FC<StepThreeProps> = ({
                   </Form.Item>
                   <h3 className={styles.settingsBlockSubTitle}>
                     bonding curve
+                    <Tooltip
+                      placement="top"
+                      title="controls how your pool\'s price will change"
+                    >
+                      <InfoCircleOutlined />
+                    </Tooltip>
                   </h3>
                   <PairButtons
                     className={styles.pairButtonsWrapper}
@@ -145,7 +165,15 @@ export const StepThree: FC<StepThreeProps> = ({
                     isActiveLeft={curveType === BondingCurveType.Linear}
                     isActiveRight={curveType === BondingCurveType.Exponential}
                   />
-                  <h3 className={styles.settingsBlockSubTitle}>delta</h3>
+                  <h3 className={styles.settingsBlockSubTitle}>
+                    delta
+                    <Tooltip
+                      placement="top"
+                      title="how much your pool price changes with each sell/buy"
+                    >
+                      <InfoCircleOutlined />
+                    </Tooltip>
+                  </h3>
                   <Form.Item name="delta">
                     <InputNumber addonAfter={deltaType} min="0" />
                   </Form.Item>
@@ -170,72 +198,87 @@ export const StepThree: FC<StepThreeProps> = ({
                 )}
               </Card>
             </div>
-            <div className={styles.settingsBlockCardWrapper}>
-              <Card className={styles.settingsBlockCard}>
-                <Form form={formAssets} initialValues={initialValuesAssets}>
-                  <h2>assets</h2>
-                  {pairType === PairType.TokenForNFT && (
-                    <>
-                      <h3 className={styles.settingsBlockSubTitle}>
-                        amount of NFTs
-                      </h3>
-                      <Form.Item name="nftAmount">
-                        <InputNumber min="0" addonAfter="NFTs" />
-                      </Form.Item>
-                    </>
-                  )}
-                  {pairType === PairType.NftForToken && (
-                    <div>
-                      {nftModal.selectedNfts?.map((nft) => (
-                        <NFTCard
-                          key={nft.mint}
-                          imageUrl={nft.imageUrl}
-                          simpleCard
-                        />
-                      ))}
-                    </div>
-                  )}
-                  {pairType === PairType.LiquidityProvision && (
-                    <div>
-                      {nftModal.selectedNfts?.map((nft) => (
-                        <NFTCard
-                          key={nft.mint}
-                          imageUrl={nft.imageUrl}
-                          simpleCard
-                        />
-                      ))}
-                    </div>
-                  )}
-                </Form>
-              </Card>
-              <div className={styles.createPoolButtonWrapper}>
-                <Button
-                  isDisabled={isCreateButtonDisabled}
-                  onClick={onCreatePoolClick}
-                >
-                  <span>create pool</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className={styles.chartWrapper}>
-            <ChartLine
-              create
-              baseSpotPrice={spotPrice * 1e9}
-              delta={rawDelta}
-              fee={fee}
-              type={pairType}
-              bondingCurve={curveType}
-              buyOrdersAmount={nftAmount}
-              nftsCount={nftModal?.selectedNfts?.length}
-            />
-          </div>
-          <SelectNftsModal
-            {...nftModal}
-            collectionName={chosenMarket?.collectionName}
-          />
+          )}
         </div>
-      )}
-    </>
+        <div className={styles.settingsBlockAssetsWrapper}>
+          {nftsLoading ? (
+            <Spinner />
+          ) : (
+            <Card
+              className={classNames(
+                styles.settingsBlockCard,
+                styles.settingsBlockAssets,
+              )}
+            >
+              <Form form={formAssets} initialValues={initialValuesAssets}>
+                <h2>assets</h2>
+                {pairType === PairType.TokenForNFT && (
+                  <>
+                    <h3 className={styles.settingsBlockSubTitle}>
+                      amount of NFTs
+                    </h3>
+                    <Form.Item name="nftAmount">
+                      <InputNumber min="0" addonAfter="NFTs" />
+                    </Form.Item>
+                  </>
+                )}
+                {pairType === PairType.NftForToken && (
+                  <div className={styles.settingBlockNftsWrapper}>
+                    {nfts.map((nft) => (
+                      <NFTCard
+                        key={nft.mint}
+                        className={styles.nftCard}
+                        imageUrl={nft.imageUrl}
+                        name={nft.name}
+                        selected={!!selectedNftsByMint[nft.mint]}
+                        onCardClick={() => toggleNft(nft)}
+                        wholeAreaSelect
+                        simpleCard
+                      />
+                    ))}
+                  </div>
+                )}
+                {pairType === PairType.LiquidityProvision && (
+                  <div className={styles.settingBlockNftsWrapper}>
+                    {nfts.map((nft) => (
+                      <NFTCard
+                        key={nft.mint}
+                        className={styles.nftCard}
+                        imageUrl={nft.imageUrl}
+                        name={nft.name}
+                        selected={!!selectedNftsByMint[nft.mint]}
+                        onCardClick={() => toggleNft(nft)}
+                        wholeAreaSelect
+                        simpleCard
+                      />
+                    ))}
+                  </div>
+                )}
+              </Form>
+            </Card>
+          )}
+          <div className={styles.createPoolButtonWrapper}>
+            <Button
+              isDisabled={isCreateButtonDisabled}
+              onClick={onCreatePoolClick}
+            >
+              <span>create pool</span>
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div className={styles.chartWrapper}>
+        <ChartLine
+          create
+          baseSpotPrice={spotPrice * 1e9}
+          delta={rawDelta}
+          fee={fee}
+          type={pairType}
+          bondingCurve={curveType}
+          buyOrdersAmount={nftAmount}
+          nftsCount={selectedNfts.length}
+        />
+      </div>
+    </div>
   );
 };

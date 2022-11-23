@@ -5,7 +5,6 @@ import {
   PairType,
   BondingCurveType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
-import { NftsModal } from '../../components/SelectNftsModal/SelectNftsModal';
 import {
   createIxCardFuncs,
   IX_TYPE,
@@ -25,12 +24,13 @@ import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { useDispatch } from 'react-redux';
 import { useConnection } from '../../hooks';
+import { Nft } from '../../state/core/types';
 
 interface UseOnCreatePoolClickProps {
   pairType: PairType;
   nftAmount: number;
   chosenMarketKey: string;
-  nftModal: NftsModal;
+  selectedNfts: Nft[];
   curveType: BondingCurveType;
   rawSpotPrice: number;
   rawDelta: number;
@@ -41,7 +41,7 @@ export const useOnCreatePoolClick = ({
   pairType,
   nftAmount,
   chosenMarketKey,
-  nftModal,
+  selectedNfts,
   curveType,
   rawSpotPrice,
   rawDelta,
@@ -126,10 +126,10 @@ export const useOnCreatePoolClick = ({
           wallet,
           pairPubkey: pairTxn.pairPubkey,
           authorityAdapter: pairTxn.authorityAdapterPubkey,
-          nfts: nftModal.selectedNfts,
+          nfts: selectedNfts,
         });
 
-        const nftCards = nftModal.selectedNfts.map((nft) =>
+        const nftCards = selectedNfts.map((nft) =>
           createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft),
         );
 
@@ -143,19 +143,19 @@ export const useOnCreatePoolClick = ({
           wallet,
           pairPubkey: pairTxn.pairPubkey,
           authorityAdapter: pairTxn.authorityAdapterPubkey,
-          nfts: nftModal.selectedNfts,
+          nfts: selectedNfts,
         });
 
         const sellAmounts = hadeswap.helpers.calculatePricesArray({
           starting_spot_price: rawSpotPrice,
           delta: rawDelta,
-          amount: nftModal.selectedNfts.length,
+          amount: selectedNfts.length,
           bondingCurveType: curveType,
           orderType: OrderType.Sell,
           counter: 1,
         });
 
-        const nftCards = nftModal.selectedNfts.map((nft, index) =>
+        const nftCards = selectedNfts.map((nft, index) =>
           createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
             nft,
             sellAmounts.array[index],

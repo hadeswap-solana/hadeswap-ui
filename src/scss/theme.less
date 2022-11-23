@@ -1,6 +1,7 @@
 @import 'antd/dist/antd.dark.less';
 
 @body-background: #0a0e11;
+@primary-white-color: #e3e2e5;
 @component-base-background: #0f1720;
 @component-secondary-background: #0e1318;
 @component-third-background: #111b26;
@@ -48,6 +49,10 @@
 
 .ant-input-number {
   border: 0;
+}
+
+.ant-input-number-out-of-range input {
+  color: @primary-white-color;
 }
 
 .ant-input-number-focused {

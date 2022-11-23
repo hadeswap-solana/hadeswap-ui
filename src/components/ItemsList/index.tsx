@@ -7,7 +7,7 @@ import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
 
 export interface ItemsListProps {
-  onRowClick?: (arg: string) => void;
+  onRowClick?: (pubKey: string, source?: any) => void;
   data: any[];
   mapType: any;
   pubKey?: string;

@@ -18,6 +18,6 @@ export const ItemsList: FC<ItemsListProps> = ({
     dataSource={data}
     pagination={false}
     rowKey={(record) => record[pubKey]}
-    onRow={(source) => ({ onClick: () => onRowClick(source[pubKey]) })}
+    onRow={(source) => ({ onClick: () => onRowClick(source[pubKey], source) })}
   />
 );
