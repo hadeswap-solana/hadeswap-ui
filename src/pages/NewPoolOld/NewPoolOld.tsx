@@ -35,7 +35,7 @@ import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenFo
 import { signAndSendTransactionsInSeries } from '../../components/Layout/helpers';
 import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepositNftsToPairTxns';
 import { createDepositLiquidityToPairTxns } from '../../utils/transactions/createDepositLiquidityToPairTxns';
-import { createCreatePollLink } from '../../constants';
+// import { createCreatePollLink } from '../../constants';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import {
@@ -120,7 +120,7 @@ export const NewPoolOld: FC = () => {
     curve === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
   const rawFee = fee * 100;
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (market) {
       const url = type
         ? createCreatePollLink(market, type)
@@ -132,6 +132,7 @@ export const NewPoolOld: FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [market, type]);
+   */
 
   const onSelectChange = useCallback(() => {
     setStep(1);

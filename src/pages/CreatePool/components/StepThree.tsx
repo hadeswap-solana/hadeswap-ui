@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 import {
   BondingCurveType,
   PairType,
+  OrderType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 import { Form, InputNumber } from 'antd';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import { Card } from '../../../components/Card';
@@ -148,6 +150,24 @@ export const StepThree: FC<StepThreeProps> = ({
                     <InputNumber addonAfter={deltaType} min="0" />
                   </Form.Item>
                 </Form>
+                {pairType !== PairType.NftForToken && (
+                  <p className={styles.settingsBlockText}>
+                    starting buying price {spotPrice} SOL
+                  </p>
+                )}
+                {pairType !== PairType.TokenForNFT && (
+                  <p className={styles.settingsBlockText}>
+                    starting selling price{' '}
+                    {helpers.calculateNextSpotPrice({
+                      orderType: OrderType.Buy,
+                      delta: delta,
+                      spotPrice: spotPrice,
+                      bondingCurveType: curveType,
+                      counter: 0,
+                    })}{' '}
+                    SOL
+                  </p>
+                )}
               </Card>
             </div>
             <div className={styles.settingsBlockCardWrapper}>
