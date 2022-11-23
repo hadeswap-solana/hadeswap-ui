@@ -1,0 +1,85 @@
+.poolTypeWidget {
+  min-width: 318px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.poolTypeBadges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-top: 16px;
+}
+
+.combineBadges {
+  position: relative;
+  width: 100px;
+
+  .nftBadge {
+    position: absolute;
+    top: 0;
+    left: 44px;
+  }
+}
+
+.poolTypeTitle {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.settingsBlockWrapper {
+  width: 100%;
+}
+
+.settingsBlock {
+  display: flex;
+  flex-grow: 1;
+  flex-flow: row wrap;
+  gap: 16px;
+}
+
+.settingsBlockCardWrapper {
+  flex-grow: 1;
+}
+
+.settingsBlockCard {
+  padding: 24px;
+  border-radius: 20px;
+}
+
+.settingsBlockTitle {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.settingsBlockSubTitle {
+  margin: 16px 0 8px 0;
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.pairButtonsWrapper {
+  button {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.createPoolButtonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.chartWrapper {
+  margin-top: 16px;
+}

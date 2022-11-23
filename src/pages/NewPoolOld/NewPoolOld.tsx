@@ -49,18 +49,17 @@ import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../components/TransactionsLoadingModal';
-import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
-
+import { useFetchAllMarkets } from '../../requests';
 import { chunk } from 'lodash';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
+
 import styles from './NewPool.module.scss';
-import { useFetchAllMarkets } from '../../requests';
 
 const { Step } = Steps;
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 const { Option } = Select;
 
-export const NewPool: FC = () => {
+export const NewPoolOld: FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const connection = useConnection();
@@ -77,7 +76,7 @@ export const NewPool: FC = () => {
   const [form] = Form.useForm();
   const market = form.getFieldValue('market');
   const type = form.getFieldValue('type') ?? typeParam;
-  const spotPrice = Form.useWatch('spotPrice', form);
+  const spotPrice = Form.useWatch('spotPrice', form) ?? 0;
   const curve = Form.useWatch('curve', form);
   const delta = Form.useWatch('delta', form);
   const nftAmount = Form.useWatch('nftAmount', form);
@@ -91,10 +90,7 @@ export const NewPool: FC = () => {
   const chosenMarket = markets.find((item) => item.marketPubkey === market);
   const collectionName = chosenMarket?.collectionName ?? 'nfts';
 
-  const nftModal = useSelectNftsModal(
-    collectionName,
-    chosenMarket?.marketPubkey,
-  );
+  const nftModal = useSelectNftsModal(chosenMarket?.marketPubkey);
 
   // buy createTokenForNftPairTxn
   // sell createPairTxn createDepositNftsToPairTxns
@@ -492,30 +488,6 @@ export const NewPool: FC = () => {
                             you have selected a starting price of {spotPrice}{' '}
                             SOL.
                           </Paragraph>
-                        )} */}
-                        {Boolean(
-                          type === PairType.TokenForNFT ||
-                            type === PairType.LiquidityProvision,
-                        ) && (
-                          <Paragraph>
-                            starting buying price {spotPrice} SOL.
-                          </Paragraph>
-                        )}
-                        {Boolean(
-                          type === PairType.NftForToken ||
-                            type === PairType.LiquidityProvision,
-                        ) && (
-                          <Paragraph>
-                            starting selling price{' '}
-                            {helpers.calculateNextSpotPrice({
-                              orderType: OrderType.Buy,
-                              delta: delta,
-                              spotPrice: spotPrice,
-                              bondingCurveType: curve,
-                              counter: 0,
-                            })}{' '}
-                            SOL.
-                          </Paragraph>
                         )}
 
                         {/*Boolean(delta) && (
@@ -589,7 +561,7 @@ export const NewPool: FC = () => {
               </div>
             )}
           </Form>
-          <SelectNftsModal {...nftModal} />
+          <SelectNftsModal {...nftModal} collectionName={collectionName} />
         </>
       )}
     </AppLayout>

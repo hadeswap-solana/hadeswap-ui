@@ -14,25 +14,24 @@ import { FakeInfinityScroll } from '../FakeInfiinityScroll';
 
 import styles from './SelectNftsModal.module.scss';
 
-type UseSelectNftsModal = (
-  collectionName: string,
-  marketPublicKey: string,
-  preSelectedNfts?: PairSellOrder[],
-) => {
+export interface NftsModal {
   visible: boolean;
   setVisible: (nextState: boolean) => void;
-  collectionName: string;
   selectedNfts: Nft[];
   walletNfts: Nft[];
   toggleNft: (nft: Nft) => void;
   isNftSelected: (nft: Nft) => boolean;
   loading: boolean;
-};
+}
+
+type UseSelectNftsModal = (
+  marketPublicKey: string,
+  preSelectedNfts?: PairSellOrder[],
+) => NftsModal;
 
 const { Title } = Typography;
 
 export const useSelectNftsModal: UseSelectNftsModal = (
-  collectionName,
   marketPublicKey,
   preSelectedNfts,
 ) => {
@@ -65,7 +64,6 @@ export const useSelectNftsModal: UseSelectNftsModal = (
   return {
     visible,
     setVisible,
-    collectionName,
     selectedNfts,
     walletNfts,
     toggleNft,
@@ -74,7 +72,11 @@ export const useSelectNftsModal: UseSelectNftsModal = (
   };
 };
 
-export const SelectNftsModal: FC<ReturnType<UseSelectNftsModal>> = ({
+interface SelectNftsModalProps extends NftsModal {
+  collectionName: string;
+}
+
+export const SelectNftsModal: FC<SelectNftsModalProps> = ({
   visible,
   setVisible,
   collectionName = '',

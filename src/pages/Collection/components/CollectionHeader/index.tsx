@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { mockData } from '../../mockData';
 import { Plate } from './Plate';
@@ -17,7 +18,7 @@ import { marketStatList } from './CollectionHeader.constants';
 
 import styles from './styles.module.scss';
 
-export const CollectionHeader = (): JSX.Element => {
+export const CollectionHeader: FC = () => {
   const market = useSelector(selectCertainMarket);
   const isLoading = useSelector(selectCertainMarketLoading);
 

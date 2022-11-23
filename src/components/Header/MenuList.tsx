@@ -12,7 +12,7 @@ interface MenuListProps {
 
 const MenuList: FC<MenuListProps> = ({
   classNames: { nav = null, navLink = null, navLinkActive = null },
-}): JSX.Element => (
+}) => (
   <nav className={nav}>
     <NavLink
       to={PATHS.COLLECTIONS}
