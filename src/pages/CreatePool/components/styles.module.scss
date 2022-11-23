@@ -58,12 +58,17 @@
   line-height: 28px;
 }
 
-.settingsBlockSubTitle {
+.settingsBlockSubTitle,
+.settingsBlockText {
   margin: 16px 0 8px 0;
   font-family: var(--font-family-rubik);
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
+}
+
+.settingsBlockText {
+  font-weight: 400;
 }
 
 .pairButtonsWrapper {
