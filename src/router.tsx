@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { routes } from './constants/routes';
@@ -8,7 +9,7 @@ import {
   useDesktopMode,
 } from './hooks';
 
-export const Router = (): JSX.Element => {
+export const Router: FC = () => {
   useAppInit();
   useConnectionInit();
   useWalletInit();
