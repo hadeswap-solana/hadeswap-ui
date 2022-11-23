@@ -1,17 +1,15 @@
-import { UNTITLED_COLLECTION } from '../../constants/common';
-import styles from './styles.module.scss';
-import { SolPrice } from '../SolPrice/SolPrice';
+import { FC } from 'react';
+import { UNTITLED_COLLECTION } from '../../../constants/common';
+import { SolPrice } from '../../SolPrice/SolPrice';
 import { NavLink } from 'react-router-dom';
 
-export const LinkCell = ({
-  internal,
-  link,
-  children,
-}: {
+import styles from './styles.module.scss';
+
+export const LinkCell: FC<{
   internal?: boolean;
   link: string;
   children: JSX.Element | JSX.Element[];
-}): JSX.Element => (
+}> = ({ internal, link, children }) => (
   <>
     {internal ? (
       <NavLink className={styles.linkCell} to={link}>
@@ -30,13 +28,10 @@ export const LinkCell = ({
   </>
 );
 
-export const TitleCell = ({
-  imgSrc,
-  title,
-}: {
+export const TitleCell: FC<{
   imgSrc: string;
   title: string;
-}): JSX.Element => (
+}> = ({ imgSrc, title }) => (
   <>
     <img
       className={styles.titleCellImg}
@@ -47,13 +42,10 @@ export const TitleCell = ({
   </>
 );
 
-export const ColoredTextCell = ({
-  cellValue,
-  defaultValue,
-}: {
+export const ColoredTextCell: FC<{
   cellValue: string;
   defaultValue: string;
-}): JSX.Element => (
+}> = ({ cellValue, defaultValue }) => (
   <span
     className={
       cellValue === defaultValue
@@ -65,6 +57,6 @@ export const ColoredTextCell = ({
   </span>
 );
 
-export const PriceCell = ({ value }: { value: string }): JSX.Element => (
+export const PriceCell: FC<{ value: string }> = ({ value }) => (
   <SolPrice price={parseFloat(value)} rightIcon className={styles.priceCell} />
 );

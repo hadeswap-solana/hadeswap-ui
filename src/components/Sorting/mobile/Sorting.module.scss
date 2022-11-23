@@ -26,29 +26,7 @@
 .sortTitle {
   display: flex;
   justify-content: center;
-}
-
-.sortButtonsWrapper {
-  display: flex;
-  margin: 8px 0 16px;
-}
-
-.sortButton {
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  border: var(--border-base);
-  border-radius: 0 20px 20px 0;
-
-  &.active {
-    border-color: var(--primary-color);
-
-    .arrowIcon path {
-      fill: var(--primary-color);
-    }
-  }
+  margin: 16px 0 8px;
 }
 
 .arrowIcon {
@@ -61,17 +39,8 @@
   }
 }
 
-.leftSortBtn {
-  transform: rotateY(180deg);
-  border-left: 0;
-
-  &.active {
-    border-left: 1px solid var(--primary-color);
-  }
-
-  svg {
-    transform: rotate(-90deg);
-  }
+.arrowIconLeft {
+  transform: rotate(-90deg);
 }
 
 .sortingBtn {
