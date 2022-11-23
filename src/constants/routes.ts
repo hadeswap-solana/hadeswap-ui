@@ -8,7 +8,7 @@ import { CollectionPage } from '../pages/Collection/CollectionPage';
 import { MyNfts } from '../pages/MyNfts/MyNfts';
 import { MyPools } from '../pages/MyPools/MyPools';
 import { PoolPage } from '../pages/Pool/PoolPage';
-import { NewPool } from '../pages/NewPool/NewPool';
+import { CreatePool } from '../pages/CreatePool';
 import { EditPool } from '../pages/EditPool/EditPool';
 
 interface Route {
@@ -51,7 +51,7 @@ export const routes: Route[] = [
   {
     exact: true,
     path: PATHS.CREATE_POOL,
-    component: NewPool,
+    component: CreatePool,
   },
   {
     exact: true,

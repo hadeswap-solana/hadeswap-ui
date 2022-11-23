@@ -20,8 +20,9 @@
   --green-color: #25ff6f;
   --font-grey-color: #535b5f;
   --table-active-element: #9dcaff14;
+  --primary-color: var(--blue-color);
+  --border-color-base: #23303d; // major border color
 
-  --primary-color: #9dcaff;
   --primary-background-color: #282f37;
   --secondary-background-color: #242a30;
   --inactive-color: #8e9197;
@@ -32,7 +33,6 @@
   --text-color: rgba(0, 0, 0, 0.65); // major text color
   --text-color-secondary: rgba(0, 0, 0, 0.45); // secondary text color
   --disabled-color: rgba(0, 0, 0, 0.25); // disable state color
-  --border-color-base: #23303d; // major border color
   --box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
   0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
 

@@ -78,7 +78,6 @@ export const EditPool: FC = () => {
   const collectionName = chosenMarket?.collectionName ?? 'nfts';
 
   const nftModal = useSelectNftsModal(
-    collectionName,
     chosenMarket?.marketPubkey,
     pool?.sellOrders,
   );
@@ -1112,7 +1111,11 @@ export const EditPool: FC = () => {
               </div>
             </div>
           </Form>
-          <SelectNftsModal {...nftModal} walletNfts={walletNfts} />
+          <SelectNftsModal
+            {...nftModal}
+            walletNfts={walletNfts}
+            collectionName={collectionName}
+          />
         </>
       )}
     </AppLayout>
