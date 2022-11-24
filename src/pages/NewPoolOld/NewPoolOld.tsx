@@ -1,6 +1,6 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -64,7 +64,6 @@ export const NewPoolOld: FC = () => {
   const history = useHistory();
   const connection = useConnection();
   const wallet = useWallet();
-  const location = useLocation();
   const { publicKey: marketPubkeyParam, type: typeParam } = useParams<{
     publicKey: string;
     type: string;
@@ -344,9 +343,7 @@ export const NewPoolOld: FC = () => {
                             style={{ width: '100%' }}
                             onChange={onSelectChange}
                             filterOption={(input, option) =>
-                              (option?.children as unknown as string)
-                                .toLowerCase()
-                                .includes(input.toLowerCase())
+                              (option?.children as unknown as string).toLowerCase().includes(input.toLowerCase())
                             }
                           >
                             {markets?.map((market, index) => (
@@ -519,6 +516,7 @@ export const NewPoolOld: FC = () => {
                             {nftModal.selectedNfts?.map((nft) => (
                               <NFTCard
                                 key={nft.mint}
+                                name={nft.name}
                                 imageUrl={nft.imageUrl}
                                 simpleCard
                               />
@@ -536,6 +534,7 @@ export const NewPoolOld: FC = () => {
                             {nftModal.selectedNfts?.map((nft) => (
                               <NFTCard
                                 key={nft.mint}
+                                name={nft.name}
                                 imageUrl={nft.imageUrl}
                                 simpleCard
                               />
