@@ -25,7 +25,7 @@ export const CreatePool: FC = () => {
       <PageContentLayout title="create pool">
         <>
           {!connected && (
-            <h3 className={styles.h3}>connect your wallet for pool creation</h3>
+            <h2 className={styles.h2}>connect your wallet for pool creation</h2>
           )}
           {connected && (
             <>
