@@ -40,8 +40,12 @@ import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepo
 import { createDepositLiquidityToPairTxns } from '../../utils/transactions/createDepositLiquidityToPairTxns';
 import { createWithdrawLiquidityFromPairTxns } from '../../utils/transactions/createWithdrawLiquidityFromPairTxns';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
-import { createWithdrawLiquidityFromBuyOrdersPair } from '../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
-import { createWithdrawLiquidityFromSellOrdersPair } from '../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
+import {
+  createWithdrawLiquidityFromBuyOrdersPair
+} from '../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
+import {
+  createWithdrawLiquidityFromSellOrdersPair
+} from '../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
 import { createWithdrawLiquidityFeesTxns } from '../../utils/transactions/createWithdrawLiquidityFeesTxns';
 import { createClosePairTxn } from '../../utils/transactions/createClosePairTxn';
 import {
@@ -55,7 +59,7 @@ import { renamePairType } from '../../state/core/helpers';
 
 const { Title, Paragraph } = Typography;
 
-export const EditPool: FC = () => {
+export const EditPoolOld: FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const connection = useConnection();
@@ -166,8 +170,8 @@ export const EditPool: FC = () => {
   const isWithdrawButtonDisabled = isTokenForNFTPool
     ? !pool?.buyOrdersAmount
     : isNftForTokenPool
-    ? !pool?.sellOrders.length
-    : !(pool?.nftsCount || pool?.buyOrdersAmount);
+      ? !pool?.sellOrders.length
+      : !(pool?.nftsCount || pool?.buyOrdersAmount);
   const isClosePoolDisabled = !(
     pool?.nftsCount === 0 && pool?.buyOrdersAmount === 0
   );
@@ -1015,6 +1019,7 @@ export const EditPool: FC = () => {
                         {nftModal.selectedNfts.map((nft) => (
                           <NFTCard
                             key={nft.mint}
+                            name={nft.name}
                             imageUrl={nft.imageUrl}
                             simpleCard
                           />
@@ -1048,6 +1053,7 @@ export const EditPool: FC = () => {
                           {nftModal.selectedNfts.map((nft) => (
                             <NFTCard
                               key={nft.mint}
+                              name={nft.name}
                               imageUrl={nft.imageUrl}
                               simpleCard
                             />

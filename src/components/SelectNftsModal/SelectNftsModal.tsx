@@ -76,6 +76,8 @@ interface SelectNftsModalProps extends NftsModal {
   collectionName: string;
 }
 
+// TODO: delete this folder
+
 export const SelectNftsModal: FC<SelectNftsModalProps> = ({
   visible,
   setVisible,

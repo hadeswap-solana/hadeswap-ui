@@ -9,7 +9,8 @@ import { MyNfts } from '../pages/MyNfts/MyNfts';
 import { MyPools } from '../pages/MyPools/MyPools';
 import { PoolPage } from '../pages/Pool/PoolPage';
 import { CreatePool } from '../pages/CreatePool';
-import { EditPool } from '../pages/EditPool/EditPool';
+import { EditPool } from '../pages/EditPool';
+//import { EditPoolOld } from '../pages/EditPoolOld/EditPoolOld';
 
 interface Route {
   path: string;

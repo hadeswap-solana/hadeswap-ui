@@ -1,3 +1,4 @@
+import {BondingCurveType} from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Dictionary } from 'lodash';
 
 export type MarketInfo = {
@@ -46,7 +47,7 @@ export interface BasePair {
   fundsSolOrTokenBalance: number | null;
   nftsCount: number; // Sell orders
   // solOrTokenFeeAmount: number; //? Rewards
-  bondingCurve: string;
+  bondingCurve: BondingCurveType;
   delta: number;
   assetReceiver: string;
   pairState: string;
