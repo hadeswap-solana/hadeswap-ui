@@ -13,6 +13,8 @@ import { Spinner } from '../../../components/Spinner/Spinner';
 import { Card } from '../../../components/Card';
 import { PairButtons } from '../../../components/Buttons/PairButtons';
 import Button from '../../../components/Buttons/Button';
+import { BigPlusIcon } from '../../../icons/BigPlusIcon';
+import { MinusIcon } from '../../../icons/MinusIcon';
 import { NFTCard } from '../../../components/NFTCard/NFTCard';
 import ChartLine from '../../../components/ChartLine/ChartLine';
 import { useOnCreatePoolClick } from '../hooks';
@@ -54,8 +56,22 @@ export const StepThree: FC<StepThreeProps> = ({
   const delta = Form.useWatch('delta', formPrice);
   const nftAmount = Form.useWatch('nftAmount', formAssets);
 
-  const { nfts, selectedNfts, selectedNftsByMint, toggleNft, nftsLoading } =
-    useNftsPool({ marketPublicKey: chosenMarketKey });
+  const initialValuesAssets = { nftAmount: 0 };
+  const initialValuesPrice = {
+    fee: 0,
+    spotPrice: 0,
+    delta: 0,
+  };
+
+  const {
+    nfts,
+    selectedNfts,
+    selectedNftsByMint,
+    toggleNft,
+    selectAll,
+    deselectAll,
+    nftsLoading
+  } = useNftsPool({ marketPublicKey: chosenMarketKey });
 
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
@@ -66,13 +82,6 @@ export const StepThree: FC<StepThreeProps> = ({
     (pairType !== PairType.TokenForNFT && !selectedNfts.length) ||
     (pairType === PairType.TokenForNFT && !nftAmount) ||
     !spotPrice;
-
-  const initialValuesAssets = { nftAmount: 0 };
-  const initialValuesPrice = {
-    fee: 0,
-    spotPrice: 0,
-    delta: 0,
-  };
 
   const onCreatePoolClick = useOnCreatePoolClick({
     pairType,
@@ -85,13 +94,13 @@ export const StepThree: FC<StepThreeProps> = ({
     rawFee,
   });
 
-  const settingsBlockRef = useRef();
+  const assetsBlockRef = useRef();
   const priceBlockRef = useRef();
 
   useEffect(() => {
-    if (settingsBlockRef.current && priceBlockRef.current) {
+    if (assetsBlockRef.current && priceBlockRef.current && pairType !== PairType.TokenForNFT) {
       // @ts-ignore
-      settingsBlockRef.current.style.height = `${priceBlockRef.current['offsetHeight']}px`;
+      assetsBlockRef.current.style.height = `${priceBlockRef.current.offsetHeight}px`;
     }
   });
 
@@ -102,7 +111,7 @@ export const StepThree: FC<StepThreeProps> = ({
       {isLoading ? (<Spinner />
       ) : (
         <>
-          <div ref={settingsBlockRef} className={styles.settingsBlock}>
+          <div className={styles.settingsBlock}>
             <div className={styles.settingsBlockPriceWrapper}>
               <div ref={priceBlockRef}>
                 <Card className={styles.settingsBlockCard}>
@@ -179,35 +188,52 @@ export const StepThree: FC<StepThreeProps> = ({
                       <InputNumber addonAfter={deltaType} min="0" />
                     </Form.Item>
                   </Form>
-                  {pairType !== PairType.NftForToken && (
-                    <p className={styles.settingsBlockText}>
-                      starting buying price {spotPrice} SOL
-                    </p>
-                  )}
-                  {pairType !== PairType.TokenForNFT && (
-                    <p className={styles.settingsBlockText}>
-                      starting selling price{' '}
-                      {helpers.calculateNextSpotPrice({
-                        orderType: OrderType.Buy,
-                        delta: delta,
-                        spotPrice: spotPrice,
-                        bondingCurveType: curveType,
-                        counter: 0,
-                      })}{' '}
-                      SOL
-                    </p>
-                  )}
+                  <div className={styles.settingsBlockPriceNotice}>
+                    {pairType !== PairType.NftForToken && (
+                      <div className={styles.noticeRow}>
+                        <span className={styles.noticeTitle}>starting buying price</span>
+                        <span className={styles.noticeValue}>{spotPrice} SOL</span>
+                      </div>
+                    )}
+                    {pairType !== PairType.TokenForNFT && (
+                      <div className={styles.noticeRow}>
+                        <span className={styles.noticeTitle}>
+                          starting selling price
+                        </span>
+                        <span className={styles.noticeValue}>
+                          {helpers.calculateNextSpotPrice({
+                            orderType: OrderType.Buy,
+                            delta: delta,
+                            spotPrice: spotPrice,
+                            bondingCurveType: curveType,
+                            counter: 0,
+                          })} SOL
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </Card>
               </div>
             </div>
-            <div className={styles.settingsBlockAssetsWrapper}>
+            <div
+              ref={assetsBlockRef}
+              className={styles.settingsBlockAssetsWrapper}
+            >
               <Card
                 className={classNames(
                   styles.settingsBlockCard,
-                  styles.settingsBlockAssets,
-                )}
-              >
-                <h2>assets</h2>
+                  { [styles.height100]: pairType !== PairType.TokenForNFT }
+                )}>
+                <div className={styles.settingsBlockHeader}>
+                  <h2>assets</h2>
+                  <button
+                    className={styles.selectButton}
+                    onClick={selectedNfts.length ? deselectAll : selectAll}
+                  >
+                    {!selectedNfts.length && <span><BigPlusIcon />select all</span>}
+                    {!!selectedNfts.length && <span><MinusIcon />deselect all</span>}
+                  </button>
+                </div>
                 <Form form={formAssets} initialValues={initialValuesAssets}>
                   {pairType === PairType.TokenForNFT && (
                     <>
@@ -219,6 +245,8 @@ export const StepThree: FC<StepThreeProps> = ({
                       </Form.Item>
                     </>
                   )}
+                </Form>
+                <div className={styles.nftScrollBlockWrapper}>
                   {pairType === PairType.NftForToken && (
                     <div className={styles.settingBlockNftsWrapper}>
                       {nfts.map((nft) => (
@@ -251,16 +279,8 @@ export const StepThree: FC<StepThreeProps> = ({
                       ))}
                     </div>
                   )}
-                </Form>
+                </div>
               </Card>
-              <div className={styles.createPoolButtonWrapper}>
-                <Button
-                  isDisabled={isCreateButtonDisabled}
-                  onClick={onCreatePoolClick}
-                >
-                  <span>create pool</span>
-                </Button>
-              </div>
             </div>
           </div>
           <div className={styles.chartWrapper}>
@@ -274,6 +294,14 @@ export const StepThree: FC<StepThreeProps> = ({
               buyOrdersAmount={nftAmount}
               nftsCount={selectedNfts.length}
             />
+          </div>
+          <div className={styles.settingsButtonsWrapper}>
+            <Button
+              isDisabled={isCreateButtonDisabled}
+              onClick={onCreatePoolClick}
+            >
+              <span>create pool</span>
+            </Button>
           </div>
         </>
       )}

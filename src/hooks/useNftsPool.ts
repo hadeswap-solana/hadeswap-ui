@@ -16,6 +16,8 @@ export interface NftsData {
   selectedNfts: Nft[];
   selectedNftsByMint: SelectedNftsByMint;
   toggleNft: (nft: Nft) => void;
+  selectAll: () => void;
+  deselectAll: () => void;
   nftsLoading: boolean;
 }
 
@@ -63,11 +65,23 @@ export const useNftsPool: UseNftsPool = ({
     setSelectedNftsByMint(newState);
   };
 
+  const selectAll = () => {
+    const newState = {};
+    nfts.forEach(nft => {
+      newState[nft.mint] = nft;
+    });
+    setSelectedNftsByMint(newState);
+  };
+
+  const deselectAll = () => setSelectedNftsByMint({});
+
   return {
     nfts,
     selectedNfts,
     selectedNftsByMint,
     toggleNft,
+    selectAll,
+    deselectAll,
     nftsLoading: isLoading,
   };
 };
