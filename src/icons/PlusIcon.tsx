@@ -1,4 +1,6 @@
-export const PlusIcon = (): JSX.Element => (
+import { FC } from 'react';
+
+export const PlusIcon: FC = () => (
   <svg
     width="18"
     height="18"
