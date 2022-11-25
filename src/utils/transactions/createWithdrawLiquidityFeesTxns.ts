@@ -2,7 +2,7 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 import { chunk } from 'lodash';
 
-const { withdrawLiquidityOrderVirtualFees } =
+const { withdrawLiquidityOrderVirtualFees, withdrawVirtualFees } =
   hadeswap.functions.marketFactory.pair.virtual.withdrawals;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
@@ -51,7 +51,20 @@ export const createWithdrawLiquidityFeesTxns: CreateWithdrawLiquidityFeesTxns =
             }),
           ),
       )
-    ).map(({ instructions, signers }) => ({ instructions, signers }));
+    )
+      .concat([
+        await withdrawVirtualFees({
+          programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
+          connection,
+          sendTxn: sendTxnPlaceHolder,
+          accounts: {
+            pair: new web3.PublicKey(pairPubkey),
+            authorityAdapter: new web3.PublicKey(authorityAdapter),
+            userPubkey: wallet.publicKey,
+          },
+        }),
+      ])
+      .map(({ instructions, signers }) => ({ instructions, signers }));
 
     const ixsAndSignersChunks = chunk(ixsAndSigners, IXNS_PER_CHUNK);
 
