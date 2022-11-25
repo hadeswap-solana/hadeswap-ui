@@ -42,28 +42,25 @@ const createBuyNftFromPairIx: CreateIx = async ({
   pair,
   order,
 }) => {
-  let provisionOrder;
-  const isLiquidityProvision = pair.type === 'liquidityProvision';
-
-  if (isLiquidityProvision) {
-    provisionOrder = pair.liquidityProvisionOrders.find((provisionOrder) => {
-      const sellMathCounter = order.mathCounter + 1;
-
-      return (
-        provisionOrder.orderACounter === sellMathCounter ||
-        provisionOrder.orderBCounter === sellMathCounter
-      );
-    });
-  }
+  // let provisionOrder;
+  // const isLiquidityProvision = pair.type === 'liquidityProvision';
+  //
+  // if (isLiquidityProvision) {
+  //   provisionOrder = pair.liquidityProvisionOrders.find((provisionOrder) => {
+  //     const sellMathCounter = order.mathCounter + 1;
+  //
+  //     return (
+  //       provisionOrder.orderACounter === sellMathCounter ||
+  //       provisionOrder.orderBCounter === sellMathCounter
+  //     );
+  //   });
+  // }
 
   const { instructions, signers } = await createBuyNftFromPairIxLib({
     programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
     connection,
     sendTxn: sendTxnPlaceHolder,
     accounts: {
-      ...(isLiquidityProvision && {
-        liquidityProvisionOrder: provisionOrder.liquidityProvisionOrder,
-      }),
       assetReceiver: new web3.PublicKey(pair.assetReceiver),
       nftMint: new web3.PublicKey(order.mint),
       nftPairBox: new web3.PublicKey(order.nftPairBox),
@@ -96,23 +93,20 @@ const createSellNftFromPairIx: CreateIx = async ({
   const isLiquidityProvision = pair.type === 'liquidityProvision';
 
   if (isLiquidityProvision) {
-    const provisionOrder = pair.liquidityProvisionOrders.find(
-      (provisionOrder) => {
-        return (
-          provisionOrder.orderACounter === order.mathCounter ||
-          provisionOrder.orderBCounter === order.mathCounter
-        );
-      },
-    );
+    // const provisionOrder = pair.liquidityProvisionOrders.find(
+    //   (provisionOrder) => {
+    //     return (
+    //       provisionOrder.orderACounter === order.mathCounter ||
+    //       provisionOrder.orderBCounter === order.mathCounter
+    //     );
+    //   },
+    // );
 
     ix = await createSellNftToLiquidityPairIxLib({
       programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
       connection,
       sendTxn: sendTxnPlaceHolder,
       accounts: {
-        liquidityProvisionOrder: new web3.PublicKey(
-          provisionOrder.liquidityProvisionOrder,
-        ),
         assetReceiver: new web3.PublicKey(pair.assetReceiver),
         nftMint: new web3.PublicKey(order.mint),
         nftValidationAdapter: new web3.PublicKey(order.nftValidationAdapter),
