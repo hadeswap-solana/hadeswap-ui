@@ -8,6 +8,7 @@ import { PATHS } from '../../constants';
 import { useQuery } from '@tanstack/react-query';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 import { formatPriceNumber } from '../../utils/solanaUtils';
+import { Chart } from '../../components/Chart';
 
 const useStats = () => {
   return useQuery(
@@ -52,6 +53,7 @@ export const Home: FC = () => {
   return (
     <AppLayout hideFooter contentClassName={styles.content}>
       <div className={styles.root}>
+        <Chart />
         <img src={logoImg} alt="Logo" className={styles.logo} />
         <Stats />
         <Typography.Title level={1} className={styles.title}>

@@ -1,0 +1,49 @@
+.root {
+  width: 100%;
+
+  :global {
+    .xAxis {
+      .tick {
+        text {
+          fill: #535b5f;
+          font-size: 14px;
+        }
+      }
+    }
+    .yAxis {
+      .tick {
+        line {
+          stroke: #23303d;
+        }
+        text {
+          fill: #535b5f;
+          font-size: 14px;
+        }
+      }
+    }
+    .chart-path {
+      stroke: #257cff;
+      stroke-width: 2;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    .linear-gradient {
+      stop:first-child {
+        stop-color: rgba(37, 124, 255, 0.4);
+        offset: 0%;
+      }
+      stop:last-child {
+        stop-color: rgba(37, 124, 255, 0);
+        offset: 100%;
+      }
+    }
+    .point-buy {
+      fill: #25ff6f;
+      stroke: #257cff;
+    }
+    .point-sell {
+      fill: #ff3225;
+      stroke: #257cff;
+    }
+  }
+}
