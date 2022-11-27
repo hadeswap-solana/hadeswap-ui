@@ -20,7 +20,7 @@ import {
   selectCertainPair,
   selectCertainPairLoading,
 } from '../../state/core/selectors';
-import Chart from '../../components/ChartLine/ChartLine';
+import ChartLine from '../../components/ChartLine/ChartLine';
 
 import styles from './PoolPage.module.scss';
 
