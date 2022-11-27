@@ -344,7 +344,9 @@ export const NewPoolOld: FC = () => {
                             style={{ width: '100%' }}
                             onChange={onSelectChange}
                             filterOption={(input, option) =>
-                              (option?.children as unknown as string).toLowerCase().includes(input.toLowerCase())
+                              (option?.children as unknown as string)
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
                             }
                           >
                             {markets?.map((market, index) => (
