@@ -4,7 +4,7 @@ import styles from './styles.module.scss';
 
 interface CardProps {
   children: JSX.Element | JSX.Element[];
-  className: string;
+  className?: string;
   onClick?: (arg: any) => void;
 }
 

@@ -1,4 +1,7 @@
-import {BondingCurveType} from 'hadeswap-sdk/lib/hadeswap-core/types';
+import {
+  BondingCurveType,
+  PairType,
+} from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Dictionary } from 'lodash';
 
 export type MarketInfo = {
@@ -11,16 +14,6 @@ export type MarketInfo = {
   offerTVL: string;
   nftValidationAdapter: string;
 };
-
-export interface PairSellOrder {
-  disabled?: boolean;
-  mint: string;
-  imageUrl: string;
-  nftPairBox: string;
-  vaultTokenAccount: string;
-  name: string;
-  traits: [string, string];
-}
 
 export enum LpOrderState {
   virtual = 'virtual',
@@ -43,7 +36,7 @@ export interface ProvisionOrders {
 
 export interface BasePair {
   pairPubkey: string;
-  type: string;
+  type: PairType;
   fundsSolOrTokenBalance: number | null;
   nftsCount: number; // Sell orders
   // solOrTokenFeeAmount: number; //? Rewards
@@ -62,7 +55,7 @@ export interface BasePair {
 
 export interface Pair extends BasePair {
   totalAccumulatedFees: number;
-  sellOrders?: PairSellOrder[];
+  sellOrders?: Nft[];
   liquidityProvisionOrders: ProvisionOrders[];
 }
 
@@ -77,6 +70,16 @@ export interface CartPair extends Pair {
 export enum OrderType {
   BUY = 'buy',
   SELL = 'sell',
+}
+
+export interface PairSellOrder {
+  disabled?: boolean;
+  mint: string;
+  imageUrl: string;
+  nftPairBox: string;
+  vaultTokenAccount: string;
+  name: string;
+  traits: [string, string];
 }
 
 export interface Nft {

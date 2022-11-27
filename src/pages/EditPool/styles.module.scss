@@ -6,6 +6,37 @@
   width: 100%;
 }
 
+.withdrawCard {
+  display: flex;
+  justify-content: space-between;
+  max-width: 320px;
+  margin: 0 auto 16px;
+}
+
+.withdrawInfoWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
+}
+
+.withdrawTitle {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 120%;
+  color: var(--dark-grey-color);
+}
+
+.withdrawValue {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.withdrawButton {
+  width: 128px;
+}
+
 .settingsBlock {
   display: flex;
   flex-grow: 1;
@@ -13,83 +44,17 @@
   gap: 16px;
 }
 
-.settingsBlockPriceWrapper {
-  flex-grow: 1;
-  height: 100%;
-}
-
-.settingsBlockAssetsWrapper {
-  max-width: 682px;
-  min-width: 520px;
-  height: 100%;
-}
-
-.settingsBlockCard {
-  padding: 24px;
-  border-radius: 20px;
-}
-
-.settingsBlockAssets {
-  //height: calc(100% - 56px);
-
-  :global {
-    .ant-form {
-      height: 100%;
-      overflow: hidden;
-    }
-  }
-}
-
-.settingsBlockTitle {
-  font-family: var(--font-family-rubik);
-  font-weight: 500;
-  font-size: 24px;
-  line-height: 28px;
-}
-
-.settingsBlockSubTitle {
-  :global {
-    .anticon {
-      margin-left: 5px;
-
-      svg {
-        width: 12px;
-      }
-    }
-  }
-}
-
-.settingsBlockSubTitle,
-.settingsBlockText {
-  margin: 16px 0 8px 0;
-  font-family: var(--font-family-rubik);
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
-}
-
-.pairButtonsWrapper {
-  button {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-  }
-}
-
-.settingBlockNftsWrapper {
-  display: flex;
-  flex-flow: row wrap;
-  gap: 16px;
-  width: calc(100% + 16px);
-  height: calc(100% - 50px);
-  margin-top: 16px;
-  overflow-y: scroll;
-}
-
-.nftCard {
-  max-width: 146px;
-}
-
 .chartWrapper {
   margin-top: 16px;
+}
+
+.buttonsWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+
+  button {
+    width: 186px;
+  }
 }
