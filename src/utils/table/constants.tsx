@@ -149,6 +149,7 @@ export const COLLECTION_COLUMNS: ColumnsType<MarketInfo> = [
     render: (text: string, record: MarketInfo): JSX.Element => (
       <TitleCell imgSrc={record?.collectionImage} title={text} />
     ),
+    fixed: true,
   },
   {
     key: 'listingsAmount',
