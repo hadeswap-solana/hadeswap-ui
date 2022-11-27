@@ -1,11 +1,13 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Typography, Button } from 'antd';
+import { Typography } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { useFetchWalletPairs, useFetchAllMarkets } from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
+import PageContentLayout from '../../components/Layout/PageContentLayout';
+import Button from '../../components/Buttons/Button';
 import { Spinner } from '../../components/Spinner/Spinner';
 import ItemsList from '../../components/ItemsList';
 import Sorting from '../../components/Sorting/mobile/Sorting';
@@ -24,8 +26,6 @@ import { createPoolTableRow } from '../../state/core/helpers';
 
 import styles from './MyPools.module.scss';
 
-const { Title } = Typography;
-
 export const MyPools: FC = () => {
   const history = useHistory();
   const { connected } = useWallet();
@@ -41,7 +41,7 @@ export const MyPools: FC = () => {
   >([]);
 
   const screenMode = useSelector(selectScreeMode);
-  const isMobile = screenMode === ScreenTypes.TABLET;
+  const isMobile = screenMode !== ScreenTypes.DESKTOP;
 
   const onRowClick = (value: string) => {
     history.push(`/pools/${value}`);
@@ -68,50 +68,46 @@ export const MyPools: FC = () => {
 
   return (
     <AppLayout>
-      <Title>my pools</Title>
-      {connected && (
-        <div className={styles.buttonsWrapper}>
-          <Button
-            onClick={() => {
-              history.push('/create-pool');
-            }}
-          >
-            + create pool
-          </Button>
-          {isMobile && !!pools.length && (
-            <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
-          )}
-        </div>
-      )}
-      {!connected && (
-        <Typography.Title level={3}>
-          connect your wallet to see your pools
-        </Typography.Title>
-      )}
-      {connected && isLoading && <Spinner />}
-      {connected && !isLoading && !walletPairs.length && (
-        <Typography.Title level={3}>no pools found</Typography.Title>
-      )}
-      {connected && !isLoading && !!pools.length && (
-        <>
-          {
+      <PageContentLayout title="my pools">
+        {!connected && (
+          <Typography.Title level={3}>
+            connect your wallet to see your pools
+          </Typography.Title>
+        )}
+        {connected && isLoading && <Spinner />}
+        {connected && !isLoading && !walletPairs.length && (
+          <Typography.Title level={3}>no pools found</Typography.Title>
+        )}
+        {connected && !isLoading && !!pools.length && (
+          <>
+            <div className={styles.buttonWrapper}>
+              <Button
+                onClick={() => history.push('/create-pool')}
+                className={styles.mainButton}
+              >
+                <span>create pool</span>
+              </Button>
+              {isMobile && !!pools.length && (
+                <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
+              )}
+            </div>
             <ItemsList
               data={pools}
               onRowClick={onRowClick}
               mapType={POOL}
               pubKey={PubKeys.PAIR_PUBKEY}
             />
-          }
-          {isMobile && isSortingVisible && (
-            <Sorting
-              setIsSortingVisible={setIsSortingVisible}
-              sortValue={sortValue}
-              setSortValue={setSortValue}
-              data={POOL_TABLE_COLUMNS}
-            />
-          )}
-        </>
-      )}
+            {isMobile && isSortingVisible && (
+              <Sorting
+                setIsSortingVisible={setIsSortingVisible}
+                sortValue={sortValue}
+                setSortValue={setSortValue}
+                data={POOL_TABLE_COLUMNS}
+              />
+            )}
+          </>
+        )}
+      </PageContentLayout>
     </AppLayout>
   );
 };
