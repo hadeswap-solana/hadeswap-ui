@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { BN } from 'hadeswap-sdk';
 import {
   Chart as ChartJS,
@@ -9,6 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
@@ -17,6 +18,7 @@ import {
   OrderType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { formatBNToString } from '../../utils';
+import styles from './Chart.module.scss';
 
 ChartJS.register(
   CategoryScale,
@@ -26,6 +28,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  Filler,
 );
 
 interface ChartLineProps {
@@ -40,7 +43,7 @@ interface ChartLineProps {
   type: string;
 }
 
-const ChartLine: FC<ChartLineProps> = ({
+const NewChart: FC<ChartLineProps> = ({
   create,
   baseSpotPrice,
   delta,
@@ -51,6 +54,34 @@ const ChartLine: FC<ChartLineProps> = ({
   mathCounter = 0,
   type,
 }) => {
+  ChartJS.register(Filler);
+  const colors = {
+    purple: {
+      default: 'rgba(149, 76, 233, 1)',
+      half: 'rgba(149, 76, 233, 0.5)',
+      quarter: 'rgba(149, 76, 233, 0.25)',
+      zero: 'rgba(149, 76, 233, 0)',
+    },
+    indigo: {
+      default: 'rgba(80, 102, 120, 1)',
+      quarter: 'rgba(80, 102, 120, 0.25)',
+    },
+  };
+  const [grad, setGrad] = useState<any>();
+
+  useEffect(() => {
+    const canvas = document.getElementById('myChart') as HTMLCanvasElement;
+
+    const ctx = canvas.getContext('2d');
+    ctx.canvas.height = 100;
+
+    const gradient = ctx.createLinearGradient(0, 25, 0, 300);
+    gradient.addColorStop(0, colors.purple.half);
+    gradient.addColorStop(0.35, colors.purple.quarter);
+    gradient.addColorStop(1, colors.purple.zero);
+    setGrad(gradient);
+  }, [colors.purple.half, colors.purple.quarter, colors.purple.zero]);
+
   const CHART_COLORS = {
     white: 'rgb(244, 239, 239)',
     whiteOpacity: 'rgba(244, 239, 239, 0.5)',
@@ -95,7 +126,8 @@ const ChartLine: FC<ChartLineProps> = ({
 
   const labelsBuy = Array(priceArrayBuy.array.length)
     .fill(0)
-    .map((_, i) => i - priceArrayBuy.array.length);
+    .map((_, i) => i - priceArrayBuy.array.length)
+    .splice(1, 1);
 
   const labelsSell = Array(priceArraySell.array.length)
     .fill(0)
@@ -111,7 +143,7 @@ const ChartLine: FC<ChartLineProps> = ({
 
   const typeCheck = (type: string) => {
     if (type === 'tokenForNft') {
-      return { mid: labelsBuy.length, arr: [...labelsBuy, 0] };
+      return { mid: labelsBuy.length, arr: [-4, -3, -2, -1, 0] };
     }
     if (type === 'nftForToken') {
       return { mid: 0, arr: [0, ...labelsSell, labelsSell.length + 1] };
@@ -128,24 +160,13 @@ const ChartLine: FC<ChartLineProps> = ({
 
   const quadrants: any[] = [
     {
-      beforeDraw: function (chart) {
-        const {
-          ctx,
-          chartArea: { left, top, right, bottom },
-          scales: { x, y },
-        } = chart;
-        const midX = x.getPixelForValue(newType.mid);
-        const midY = y.getPixelForValue(1);
-
+      id: 'customCanvasBackgroundColor',
+      beforeDraw: (chart, args, options) => {
+        const { ctx } = chart;
         ctx.save();
-        ctx.fillStyle = CHART_COLORS.green;
-        ctx.fillRect(left, top, midX - left, midY - top);
-        ctx.fillStyle = CHART_COLORS.red;
-        ctx.fillRect(midX, top, right - midX, midY - top);
-        ctx.fillStyle = CHART_COLORS.red;
-        ctx.fillRect(midX, midY, right - midX, bottom - midY);
-        ctx.fillStyle = CHART_COLORS.green;
-        ctx.fillRect(left, midY, midX - left, bottom - midY);
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = options.color || '#0F1720';
+        ctx.fillRect(0, 0, chart.width, chart.height);
         ctx.restore();
       },
     },
@@ -189,15 +210,38 @@ const ChartLine: FC<ChartLineProps> = ({
 
   const options: any = {
     responsive: true,
-    // maintainAspectRatio: false,
-
+    layout: {
+      padding: 24,
+      borderRadius: 25,
+    },
     scales: {
       x: {
         ticks: {
           stepSize: 1,
         },
+        border: {
+          display: true,
+        },
+        grid: {
+          display: false,
+          drawOnChartArea: false,
+          drawTicks: false,
+        },
       },
       y: {
+        // stacked: true,
+        beginAtZero: true,
+        grid: {
+          color: function (context) {
+            if (context.tick.value > 0) {
+              return '#23303D';
+            } else if (context.tick.value < 0) {
+              return 'red';
+            }
+
+            return '#23303D';
+          },
+        },
         suggestedMin: 0,
         suggestedMax: spotPrice + 1,
         ticks: {
@@ -208,7 +252,27 @@ const ChartLine: FC<ChartLineProps> = ({
     tooltips: {
       enabled: false,
     },
+    // interaction: {
+    //   intersect: false,
+    // },
     plugins: {
+      filler: {
+        propagate: false,
+      },
+      'samples-filler-analyser': {
+        target: 'chart-analyser',
+      },
+
+      title: {
+        display: true,
+        text: 'price graph',
+        color: '#E3E2E5',
+        font: {
+          family: 'Rubik',
+          size: 24,
+          weight: 'bold',
+        },
+      },
       tooltip: {
         interaction: {
           displayColors: false,
@@ -229,16 +293,27 @@ const ChartLine: FC<ChartLineProps> = ({
     datasets: [
       {
         label: 'Dataset',
-        data: create ? dataArrLiq : dataArr,
-        borderColor: CHART_COLORS.white,
-        backgroundColor: CHART_COLORS.whiteOpacity,
+        data: [1, 2, 3, 4, 5],
+        borderColor: grad,
+        backgroundColor: '#25FF6F',
         pointStyle: 'circle',
-        pointRadius: 10,
-        pointHoverRadius: 15,
+        pointRadius: 9,
+        pointHoverRadius: 13,
+        tension: 0.4,
+        fill: true,
       },
     ],
   };
-  return <Line ref={ref} options={options} data={data} plugins={quadrants} />;
+  return (
+    <Line
+      ref={ref}
+      options={options}
+      data={data}
+      plugins={quadrants}
+      height="80"
+      className={styles.canvas}
+    />
+  );
 };
 
-export default ChartLine;
+export default NewChart;

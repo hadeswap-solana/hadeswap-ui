@@ -22,6 +22,7 @@ import { createEditPollLink } from '../../constants';
 import { parseDelta } from '../../state/core/helpers';
 import { FakeInfinityScroll } from '../../components/FakeInfiinityScroll';
 import ChartLine from '../../components/ChartLine/ChartLine';
+import NewChart from '../../components/ChartLine/NewChart';
 
 const { Title, Text } = Typography;
 
@@ -193,7 +194,7 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
           </div>
         )}
       </div>
-      <ChartLine
+      <NewChart
         baseSpotPrice={pool.baseSpotPrice}
         delta={pool.delta}
         fee={pool.fee}

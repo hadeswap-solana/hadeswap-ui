@@ -56,6 +56,8 @@ import styles from './NewPool.module.scss';
 import { chunk } from 'lodash';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 import ChartLine from '../../components/ChartLine/ChartLine';
+import NewChart from '../../components/ChartLine/NewChart';
+import Test from '../../components/ChartLine/Test';
 
 const { Step } = Steps;
 const { Title, Paragraph } = Typography;
@@ -577,7 +579,8 @@ export const NewPool: FC = () => {
                     create pool
                   </Button>
                 </div>
-                <ChartLine
+                <Test></Test>
+                <NewChart
                   create
                   baseSpotPrice={spotPrice * 1e9}
                   delta={rawDelta}
