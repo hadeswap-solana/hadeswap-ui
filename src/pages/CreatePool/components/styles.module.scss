@@ -36,6 +36,15 @@
   &.active {
     border-color: var(--blue-color);
   }
+
+  @media (max-width: 1080px) {
+    min-width: 229px;
+  }
+
+  @media (max-width: 767px) {
+    min-width: unset;
+    width: 100%;
+  }
 }
 
 .poolTypeBadges {
@@ -63,6 +72,10 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 28px;
+
+  @media (max-width: 1080px) {
+    font-size: 18px;
+  }
 }
 
 .settingsBlockWrapper {
@@ -84,4 +97,14 @@
 
 .chartWrapper {
   margin-top: 16px;
+}
+
+.cards {
+  display: flex;
+  gap: 16px;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    width: 100%;
+  }
 }
