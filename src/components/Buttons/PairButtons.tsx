@@ -5,8 +5,8 @@ import styles from './styles.module.scss';
 
 interface PairButtonsProps {
   className?: string;
-  onClickLeft?: (arg: any) => void;
-  onClickRight?: (arg: any) => void;
+  onClickLeft: (arg: any) => void;
+  onClickRight: (arg: any) => void;
   valueButtonLeft: string | JSX.Element;
   valueButtonRight: string | JSX.Element;
   isActiveRight: boolean;
@@ -24,10 +24,7 @@ export const PairButtons: FC<PairButtonsProps> = ({
   isActiveRight,
   isDisabled = false,
 }) => (
-  <div className={classNames(
-    styles.pairButtonsWrapper,
-    className
-  )}>
+  <div className={classNames(styles.pairButtonsWrapper, className)}>
     <button
       className={classNames(
         styles.rootButton,
