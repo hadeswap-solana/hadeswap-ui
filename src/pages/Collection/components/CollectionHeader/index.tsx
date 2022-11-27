@@ -1,5 +1,7 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
 import { mockData } from '../../mockData';
 import { Plate } from './Plate';
 import { SocialLink } from './SocialLink';
@@ -17,10 +19,12 @@ import {
 import { marketStatList } from './CollectionHeader.constants';
 
 import styles from './styles.module.scss';
+import CreatePoolButton from '../CreatePoolButton/CreatePoolButton';
 
 export const CollectionHeader: FC = () => {
   const market = useSelector(selectCertainMarket);
   const isLoading = useSelector(selectCertainMarketLoading);
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
   return (
     <div className={styles.headerWrapper}>
@@ -98,6 +102,10 @@ export const CollectionHeader: FC = () => {
                   </Plate>
                 ))}
               </div>
+              <CreatePoolButton
+                className={styles.poolButton}
+                marketPublicKey={marketPublicKey}
+              />
             </div>
           </div>
         </div>

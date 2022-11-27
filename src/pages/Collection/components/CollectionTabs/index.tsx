@@ -1,9 +1,8 @@
-import { FC, useCallback } from 'react';
+import { FC } from 'react';
 import { Tabs } from 'antd';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { createCreatePoolPickSideLink } from '../../../../constants';
-import Button from '../../../../components/Buttons/Button';
+import CreatePoolButton from '../CreatePoolButton/CreatePoolButton';
 import { TabButton } from './TabButton';
 import { CollectionBuyTab } from './CollectionBuyTab';
 import { CollectionSellTab } from './CollectionSellTab';
@@ -20,7 +19,6 @@ import styles from './styles.module.scss';
 const { TabPane } = Tabs;
 
 export const CollectionTabs: FC = () => {
-  const history = useHistory();
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
   const poolsTableInfo = useSelector(selectPoolsTableInfo);
@@ -28,10 +26,6 @@ export const CollectionTabs: FC = () => {
   const sellOrders = useSelector((state: never) =>
     selectAllSellOrdersForMarket(state, marketPublicKey),
   );
-
-  const onCreatePoolClick = useCallback(() => {
-    history.push(createCreatePoolPickSideLink(marketPublicKey));
-  }, [history, marketPublicKey]);
 
   return (
     <div className={styles.collectionTabsWrapper}>
@@ -59,11 +53,7 @@ export const CollectionTabs: FC = () => {
         </TabPane>
         <TabPane
           key="button"
-          tab={
-            <Button className={styles.poolButton} onClick={onCreatePoolClick}>
-              <span>create pool</span>
-            </Button>
-          }
+          tab={<CreatePoolButton marketPublicKey={marketPublicKey} />}
         />
       </Tabs>
     </div>

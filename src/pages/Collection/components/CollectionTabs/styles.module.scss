@@ -1,6 +1,14 @@
 .collectionTabsWrapper {
   margin-top: 16px;
 
+  @media (max-width: 1024px) {
+    margin-top: 135px;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 195px;
+  }
+
   :global {
     .ant-tabs-nav {
       height: 67px;
@@ -11,6 +19,10 @@
 
       &::before {
         border: 0 !important;
+      }
+
+      @media screen and (max-width: 1024px) {
+        height: 59px;
       }
     }
 
@@ -35,6 +47,15 @@
       & + .ant-tabs-tab {
         margin: 0;
       }
+
+      @media screen and (max-width: 1024px) {
+        width: 72px;
+        font-size: 12px;
+
+        &:nth-child(5) {
+          display: none !important;
+        }
+      }
     }
 
     .ant-tabs-tab-btn {
@@ -55,10 +76,6 @@
   }
 }
 
-.poolButton {
-  padding: 8px 16px;
-}
-
 .tabButton {
   display: flex;
   align-items: center;
@@ -73,6 +90,12 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 120%;
+
+  @media screen and (max-width: 1024px) {
+    height: 20px;
+    padding: 4px;
+    font-size: 10px;
+  }
 }
 
 .tabInfo {
@@ -80,6 +103,10 @@
   align-items: center;
   justify-content: center;
   min-width: 38px;
+
+  @media screen and (max-width: 1024px) {
+    min-width: 31px;
+  }
 }
 
 .tabContentWrapper {
