@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { chunk, differenceBy } from 'lodash';
@@ -96,19 +96,25 @@ export const EditPool: FC = () => {
   const isNftForTokenPool = type === PairType.NftForToken;
   const isTokenForNFTPool = type === PairType.TokenForNFT;
 
-  const initialValues = {
-    curve: pool?.bondingCurve,
-    fee: pool?.fee / 100,
-    spotPrice: pool?.currentSpotPrice / 1e9,
-    delta:
-      pool?.bondingCurve === BondingCurveType.Exponential
-        ? pool?.delta / 100
-        : pool?.delta / 1e9,
-    nftAmount: pool?.buyOrdersAmount,
-    buyOrdersAmount: pool?.buyOrdersAmount,
-    depositAmount: 0,
-    accumulatedFees: pool?.totalAccumulatedFees || 0,
-  };
+  const initialValues = useMemo(() => {
+    return {
+      curve: pool?.bondingCurve,
+      fee: pool?.fee / 100,
+      spotPrice: pool?.currentSpotPrice / 1e9,
+      delta:
+        pool?.bondingCurve === BondingCurveType.Exponential
+          ? pool?.delta / 100
+          : pool?.delta / 1e9,
+      nftAmount: pool?.buyOrdersAmount,
+      buyOrdersAmount: pool?.buyOrdersAmount,
+      depositAmount: 0,
+      accumulatedFees: pool?.totalAccumulatedFees || 0,
+    };
+  }, [pool]);
+
+  useEffect(() => {
+    form.setFieldsValue(initialValues);
+  }, [form, initialValues]);
 
   const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';
   const rawSpotPrice = spotPrice * 1e9;
