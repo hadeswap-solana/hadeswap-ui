@@ -107,10 +107,7 @@ export const EditPool: FC = () => {
     nftAmount: pool?.buyOrdersAmount,
     buyOrdersAmount: pool?.buyOrdersAmount,
     depositAmount: 0,
-    accumulatedFees: pool?.liquidityProvisionOrders.reduce(
-      (acc, order) => acc + order.accumulatedFee,
-      0,
-    ),
+    accumulatedFees: pool?.totalAccumulatedFees || 0,
   };
 
   const unit = curve === BondingCurveType.Exponential ? '%' : 'SOL';

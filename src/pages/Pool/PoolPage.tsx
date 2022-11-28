@@ -107,10 +107,8 @@ const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({
   onEdit = () => {},
 }) => {
   const isLiquidityProvisionPool = pool?.type === PairType.LiquidityProvision;
-  const accumulatedFees = pool?.liquidityProvisionOrders.reduce(
-    (acc, order) => acc + order.accumulatedFee,
-    0,
-  );
+
+  const accumulatedFees = pool?.totalAccumulatedFees || 0;
 
   return (
     <div className={styles.generalInfo}>
