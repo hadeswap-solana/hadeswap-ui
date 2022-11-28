@@ -9,6 +9,7 @@
 .priceBlockWrapper,
 .assetsBlockWrapper {
   flex-grow: 1;
+  min-width: 352px;
 }
 
 .card {
@@ -29,6 +30,10 @@
   font-weight: 500;
   font-size: 24px;
   line-height: 28px;
+
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
 }
 
 .cardSubTitle {
@@ -46,6 +51,10 @@
         width: 12px;
       }
     }
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 14px;
   }
 }
 

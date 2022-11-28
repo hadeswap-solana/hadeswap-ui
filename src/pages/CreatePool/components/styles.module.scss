@@ -85,8 +85,12 @@
 .settingsBlock {
   display: flex;
   flex-grow: 1;
-  flex-flow: row wrap;
   gap: 16px;
+  width: 100%;
+
+  @media (max-width: 767px) {
+    flex-wrap: wrap;
+  }
 }
 
 .settingsButtonsWrapper {

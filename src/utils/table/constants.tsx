@@ -32,6 +32,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
     ): JSX.Element => (
       <TitleCell imgSrc={record?.collectionImage} title={text} />
     ),
+    fixed: true,
   },
   {
     key: 'type',
@@ -214,6 +215,7 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
         <TitleCell title={value} imgSrc={item.nftImageUrl} />
       </LinkCell>
     ),
+    fixed: true,
   },
   {
     key: 'orderType',
