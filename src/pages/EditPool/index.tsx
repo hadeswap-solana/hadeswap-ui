@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BondingCurveType,
@@ -63,19 +63,30 @@ export const EditPool: FC = () => {
   const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
     usePoolServicePrice({ pool });
 
-  const initialValuesPrice = {
-    fee: pool?.fee / 100,
-    spotPrice: pool?.currentSpotPrice / 1e9,
-    delta:
-      curveType === BondingCurveType.Exponential
-        ? pool?.delta / 100
-        : pool?.delta / 1e9,
-  };
+  const initialValuesPrice = useMemo(
+    () => ({
+      fee: pool?.fee / 100,
+      spotPrice: pool?.currentSpotPrice / 1e9,
+      delta:
+        curveType === BondingCurveType.Exponential
+          ? pool?.delta / 100
+          : pool?.delta / 1e9,
+    }),
+    [pool],
+  );
 
-  const initialValuesAssets = {
-    nftAmount: pool?.buyOrdersAmount,
-    buyOrdersAmount: pool?.buyOrdersAmount,
-  };
+  const initialValuesAssets = useMemo(
+    () => ({
+      nftAmount: pool?.buyOrdersAmount,
+      buyOrdersAmount: pool?.buyOrdersAmount,
+    }),
+    [pool],
+  );
+
+  useEffect(() => {
+    formAssets.setFieldsValue(initialValuesAssets);
+    formPrice.setFieldsValue(initialValuesPrice);
+  }, [formAssets, formPrice, initialValuesPrice, initialValuesAssets]);
 
   const accumulatedFees = pool?.liquidityProvisionOrders.reduce(
     (acc, order) => acc + order.accumulatedFee,
