@@ -24,7 +24,7 @@ const ListItemMobile: FC<ListItemMobileProps> = ({
   item,
   onRowClick,
   itemMap,
-}): JSX.Element => (
+}) => (
   <div
     key={item[itemMap.itemKey]}
     className={styles.cardWrapper}

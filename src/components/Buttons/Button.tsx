@@ -17,7 +17,7 @@ const Button: FC<ButtonProps> = ({
   isDisabled = false,
   onClick,
   children,
-}): JSX.Element => (
+}) => (
   <button
     className={classNames(
       styles.rootButton,

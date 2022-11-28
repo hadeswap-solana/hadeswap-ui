@@ -1,8 +1,10 @@
 @import 'antd/dist/antd.dark.less';
 
 @body-background: #0a0e11;
+@primary-white-color: #e3e2e5;
 @component-base-background: #0f1720;
 @component-secondary-background: #0e1318;
+@component-third-background: #111b26;
 @border-color-base: #23303d;
 @border-radius-base: 20px;
 @table-border-color: @border-color-base;
@@ -10,9 +12,7 @@
 @table-header-bg: @component-base-background;
 @table-active-element: #9dcaff14;
 //
-@primary-color: #9dcaff;
-@primary-color-hover: #D1E4FF;
-@primary-color-active: #D1E4FF;
+@primary-color: #257cff;
 @btn-primary-color: #1a1c1e;
 
 
@@ -32,6 +32,67 @@
 
 .ant-modal-header, .ant-modal-content {
   background: @layout-header-background;
+}
+
+// INPUT NUMBER
+.ant-input-number-group-wrapper {
+  width: 100%;
+  height: 40px;
+  border: 1px solid @border-color-base;
+  border-radius: 100px;
+  background: @component-third-background;
+
+  div, input {
+    height: 100%;
+  }
+}
+
+.ant-input-number {
+  border: 0;
+}
+
+.ant-input-number-out-of-range input {
+  color: @primary-white-color;
+}
+
+.ant-input-number-focused {
+  border: 0;
+  box-shadow: unset;
+}
+
+.ant-input-number-handler-wrap {
+  opacity: 1;
+  background: @component-third-background;
+  border-width: 0 1px 0 1px;
+  border-style: solid;
+  border-color: @border-color-base;
+}
+
+.ant-input-number-handler-up {
+  border-bottom: 1px solid @border-color-base;
+}
+
+.ant-input-number-group-addon {
+  padding: 0 16px;
+}
+
+// STEPS
+.ant-steps-item-wait .ant-steps-item-icon {
+  border: 1px solid #535b5f;
+}
+
+.ant-steps-item-title::after,
+.ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title::after {
+  background: #535b5f;
+}
+
+.ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+  color: #535b5f;
+}
+
+// FORM
+.ant-form-item {
+  margin: 0;
 }
 
 // INPUT
