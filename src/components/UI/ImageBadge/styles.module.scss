@@ -4,4 +4,13 @@
   height: 56px;
   border: 1px solid var(--primary-white-color);
   border-radius: 12px;
+
+  @media (max-width: 1080px) {
+    width: 40px;
+    height: 40px;
+
+    span {
+      font-size: 14px;
+    }
+  }
 }
