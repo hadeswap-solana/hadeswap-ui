@@ -29,6 +29,7 @@ import {
 import { useCloseClick } from './hooks/useCloseClick';
 
 import styles from './styles.module.scss';
+import { Chart, usePriceGraph } from '../../components/Chart';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
@@ -127,6 +128,16 @@ export const EditPool: FC = () => {
     }
   });
 
+  const chartData = usePriceGraph({
+    isCreate: true,
+    baseSpotPrice: spotPrice * 1e9,
+    delta: rawDelta,
+    fee: fee || 0,
+    bondingCurve: curveType,
+    buyOrdersAmount: nftAmount,
+    nftsCount: selectedNfts.length,
+  });
+
   return (
     <AppLayout>
       <PageContentLayout title="edit pool">
@@ -170,6 +181,14 @@ export const EditPool: FC = () => {
                 buyOrdersAmount={buyOrdersAmount}
               />
             </div>
+
+            {!!chartData && !!chartData?.length && (
+              <Chart
+                title="price graph"
+                data={chartData}
+                className={styles.chart}
+              />
+            )}
             <div className={styles.buttonsWrapper}>
               <Button onClick={onSaveClick}>
                 <span>save changes</span>

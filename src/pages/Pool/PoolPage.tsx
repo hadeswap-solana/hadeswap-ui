@@ -15,7 +15,6 @@ import {
 } from '../../state/core/selectors';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSwapHistory } from '../../requests/requests';
-import SwapHistoryChart from '../../components/Chart/SwapHistoryChart';
 import { Chart, usePriceGraph } from '../../components/Chart';
 import styles from './PoolPage.module.scss';
 
@@ -59,14 +58,6 @@ export const PoolPage: FC = () => {
                 title="price graph"
                 data={chartData}
                 className={styles.chart}
-                // baseSpotPrice={pool.baseSpotPrice}
-                // delta={pool.delta}
-                // fee={pool.fee}
-                // type={pool.type}
-                // bondingCurve={pool.bondingCurve}
-                // buyOrdersAmount={pool.buyOrdersAmount}
-                // nftsCount={pool.nftsCount}
-                // mathCounter={pool.mathCounter}
               />
             )}
           </>
