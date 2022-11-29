@@ -48,7 +48,7 @@ export const CollectionHeader: FC = () => {
               <h2 className={styles.collectionTitle}>
                 {market.collectionName}
               </h2>
-              <div className={styles.collectionDescriptionWrapper}>
+              {/* <div className={styles.collectionDescriptionWrapper}>
                 <p className={styles.collectionDescription}>
                   {mockData.collectionDescription}
                 </p>
@@ -81,7 +81,7 @@ export const CollectionHeader: FC = () => {
                     </div>
                   </Plate>
                 </div>
-              </div>
+              </div> */}
               <div className={styles.collectionStatWrapper}>
                 {marketStatList.map((item, index) => (
                   <Plate key={index} className={styles.collectionStatItem}>

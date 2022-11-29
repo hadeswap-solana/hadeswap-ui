@@ -46,7 +46,7 @@ export const CollectionBuyTab: FC = () => {
         <Spinner />
       ) : (
         <>
-          <SweepButton />
+          {/* <SweepButton /> */}
           <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
             {buyOrders.map((order) => (
               <NFTCard

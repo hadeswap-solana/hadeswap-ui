@@ -18,9 +18,9 @@ export const marketStatList = [
     key: 'listingsAmount',
     title: 'listed',
   },
-  {
-    key: 'offerTVL', // TODO: replace the mock
-    title: '1d volume',
-    price: true,
-  },
+  // {
+  //   key: 'offerTVL', // TODO: replace the mock
+  //   title: '1d volume',
+  //   price: true,
+  // },
 ];

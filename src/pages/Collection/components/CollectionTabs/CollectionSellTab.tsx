@@ -65,7 +65,7 @@ export const CollectionSellTab: FC = () => {
       )}
       {!isLoading && connected && !!sellOrders.length && (
         <>
-          <SweepButton />
+          {/* <SweepButton /> */}
           <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
             {sellOrders.map((order) => (
               <NFTCard

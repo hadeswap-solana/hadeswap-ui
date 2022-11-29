@@ -15,9 +15,9 @@ const CartBlock: FC = () => {
 
   return (
     <div className={styles.cartBlock}>
-      <RoundIconButton onClick={() => null}>
+      {/* <RoundIconButton onClick={() => null}>
         <BellIcon />
-      </RoundIconButton>
+      </RoundIconButton> */}
       <BadgeButton
         itemsAmount={itemsAmount}
         onClick={() => dispatch(commonActions.toggleCartSider())}

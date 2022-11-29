@@ -54,10 +54,12 @@ export const NFTCard: FC<NFTCardProps> = ({
               <PlusIcon />
               <span>add to cart</span>
             </Button>
-            <Button className={styles.cardButton} onClick={onExchange}>
-              <LoopIcon />
-              <span>exchange</span>
-            </Button>
+            {onExchange && (
+              <Button className={styles.cardButton} onClick={onExchange}>
+                <LoopIcon />
+                <span>exchange</span>
+              </Button>
+            )}
           </div>
         )}
         {selected && (
