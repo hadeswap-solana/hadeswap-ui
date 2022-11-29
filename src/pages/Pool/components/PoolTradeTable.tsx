@@ -1,5 +1,6 @@
 import { FC, useEffect, useState, memo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
 
 import styles from './styles.module.scss';
 import { NftActivityData } from '../../../state/core/types';
@@ -8,7 +9,6 @@ import { PubKeys, TRADE } from '../../../constants/common';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import ItemsList from '../../../components/ItemsList';
 import { selectCertainPair } from '../../../state/core/selectors';
-import { useSelector } from 'react-redux';
 
 const useTradeData = (pairPubkey: string) => {
   const LIMIT = 3;
