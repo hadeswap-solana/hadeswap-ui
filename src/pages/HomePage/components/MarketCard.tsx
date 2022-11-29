@@ -4,6 +4,7 @@ import { TopMarket } from '../../../requests/types';
 import { UNTITLED } from '../../../constants/common';
 
 import styles from './styles.module.scss';
+import { formatPriceNumber } from '../../../utils/solanaUtils';
 
 interface MarketCardProps {
   market: TopMarket;
@@ -22,7 +23,7 @@ export const MarketCard: FC<MarketCardProps> = ({ market }) => (
       </span>
       <SolPrice
         className={styles.marketInfoPrice}
-        price={parseFloat(market.volume24)}
+        price={Number(formatPriceNumber.format(parseFloat(market.volume24)))}
       />
     </div>
   </li>
