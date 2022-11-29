@@ -2,39 +2,8 @@
   text-align: center;
 }
 
-.settingsBlockWrapper {
-  width: 100%;
-}
-
-.withdrawCard {
-  display: flex;
-  justify-content: space-between;
-  max-width: 320px;
+.withdrawBlock {
   margin: 0 auto 16px;
-}
-
-.withdrawInfoWrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between
-}
-
-.withdrawTitle {
-  font-family: var(--font-family-rubik);
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 120%;
-  color: var(--dark-grey-color);
-}
-
-.withdrawValue {
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 22px;
-}
-
-.withdrawButton {
-  width: 128px;
 }
 
 .settingsBlock {

@@ -19,13 +19,13 @@ import { AssetsBlock } from '../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { Spinner } from '../../components/Spinner/Spinner';
-import { Card } from '../../components/Card';
+import { WithdrawFees } from '../../components/WithdrawFees';
 import Button from '../../components/Buttons/Button';
 import { useSaveClick } from './hooks/useSaveClick';
 import {
   useWithdrawAllClick,
-  useWithdrawClick,
-} from './hooks/useWithdrawClick';
+  useWithdrawFees,
+} from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
 
 import styles from './styles.module.scss';
@@ -72,7 +72,7 @@ export const EditPool: FC = () => {
           ? pool?.delta / 100
           : pool?.delta / 1e9,
     }),
-    [pool],
+    [pool, curveType],
   );
 
   const initialValuesAssets = useMemo(
@@ -81,16 +81,6 @@ export const EditPool: FC = () => {
       buyOrdersAmount: pool?.buyOrdersAmount,
     }),
     [pool],
-  );
-
-  useEffect(() => {
-    formAssets.setFieldsValue(initialValuesAssets);
-    formPrice.setFieldsValue(initialValuesPrice);
-  }, [formAssets, formPrice, initialValuesPrice, initialValuesAssets]);
-
-  const accumulatedFees = pool?.liquidityProvisionOrders.reduce(
-    (acc, order) => acc + order.accumulatedFee,
-    0,
   );
 
   const pairType = pool?.type;
@@ -111,7 +101,7 @@ export const EditPool: FC = () => {
     rawDelta,
   });
 
-  const onWithdrawClick = useWithdrawClick({ pool });
+  const { accumulatedFees, onWithdrawClick } = useWithdrawFees({ pool });
   const onWithdrawAllClick = useWithdrawAllClick({
     pool,
     pairType,
@@ -146,19 +136,11 @@ export const EditPool: FC = () => {
           <Spinner />
         ) : (
           <>
-            <Card className={styles.withdrawCard}>
-              <div className={styles.withdrawInfoWrapper}>
-                <span className={styles.withdrawTitle}>fees</span>
-                <span className={styles.withdrawValue}>{accumulatedFees}</span>
-              </div>
-              <Button
-                outlined
-                className={styles.withdrawButton}
-                onClick={onWithdrawClick}
-              >
-                <span>withdraw</span>
-              </Button>
-            </Card>
+            <WithdrawFees
+              className={styles.withdrawBlock}
+              accumulatedFees={accumulatedFees}
+              onClick={onWithdrawClick}
+            />
             <div className={styles.settingsBlock}>
               <PriceBlock
                 ref={priceBlockRef}
@@ -199,18 +181,6 @@ export const EditPool: FC = () => {
                 <span>close pool</span>
               </Button>
             </div>
-            {/*<div className={styles.chartWrapper}>*/}
-            {/*  <ChartLine*/}
-            {/*    create*/}
-            {/*    baseSpotPrice={spotPrice * 1e9}*/}
-            {/*    delta={rawDelta}*/}
-            {/*    fee={fee}*/}
-            {/*    type={pairType}*/}
-            {/*    bondingCurve={curveType}*/}
-            {/*    buyOrdersAmount={nftAmount}*/}
-            {/*    nftsCount={selectedNfts.length}*/}
-            {/*  />*/}
-            {/*</div>*/}
           </>
         )}
       </PageContentLayout>
