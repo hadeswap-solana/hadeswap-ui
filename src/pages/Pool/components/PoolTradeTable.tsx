@@ -95,7 +95,7 @@ export const PoolTradeTable: FC = memo(() => {
         mapType={TRADE}
         pubKey={PubKeys.NFT_MINT}
         onRowClick={() => null}
-        tableClassName={styles.activityTable}
+        tableClassName={styles.tradeTable}
       />
       {!!isFetchingNextPage && <Spinner />}
       <div ref={ref} />
