@@ -134,11 +134,13 @@ export const StepThree: FC<StepThreeProps> = ({
               formInitialValues={initialValuesAssets}
             />
           </div>
-          <div className={styles.chartWrapper}>
-            {!!chartData && !!chartData?.length && (
-              <Chart title="price graph" data={chartData} />
-            )}
-          </div>
+          {!!chartData && !!chartData?.length && (
+            <Chart
+              title="price graph"
+              data={chartData}
+              className={styles.chart}
+            />
+          )}
           <div className={styles.settingsButtonsWrapper}>
             <Button
               isDisabled={isCreateButtonDisabled}
