@@ -10,10 +10,10 @@ export const getTableWidth = (): number => {
 
   const desktopIndentWidth = 64;
   const tabletIndentWidth = 24;
-  const cardSiderWidth = 375;
+  const cartSiderWidth = 375;
 
   if (cartSiderVisible && windowWidth > SMALL_SCREEN_SIZE) {
-    return windowWidth - cardSiderWidth;
+    return windowWidth - cartSiderWidth;
   }
 
   if (windowWidth < TABLET_SIZE) return windowWidth - tabletIndentWidth;
