@@ -1,6 +1,10 @@
 import { FC } from 'react';
-import { SolPrice } from '../../../components/SolPrice/SolPrice';
+import { useHistory } from 'react-router-dom';
+import { createCollectionLink } from '../../../constants';
+import { SolanaLogo } from '../../../icons/SolanaLogo';
 import { TopMarket } from '../../../requests/types';
+import { UNTITLED } from '../../../constants/common';
+import { formatPriceNumber } from '../../../utils/solanaUtils';
 
 import styles from './styles.module.scss';
 
@@ -8,19 +12,35 @@ interface MarketCardProps {
   market: TopMarket;
 }
 
-export const MarketCard: FC<MarketCardProps> = ({ market }) => (
-  <li className={styles.marketCardWrapper}>
-    <img
-      className={styles.marketImage}
-      src={market.collectionImage}
-      alt={market.collectionName}
-    />
-    <div className={styles.marketInfo}>
-      <span className={styles.marketInfoTitle}>{market.collectionName}</span>
-      <SolPrice
-        className={styles.marketInfoPrice}
-        price={parseFloat(market.volume24)}
-      />
-    </div>
-  </li>
-);
+export const MarketCard: FC<MarketCardProps> = ({ market }) => {
+  const history = useHistory();
+  const onMarketClick = () => {
+    history.push(createCollectionLink(market.collectionPublicKey));
+  };
+  return (
+    <li className={styles.marketCardWrapper} onClick={onMarketClick}>
+      <div className={styles.marketImageWrapper}>
+        {market.collectionImage && (
+          <img
+            className={styles.marketImage}
+            src={market.collectionImage}
+            alt={market.collectionName}
+          />
+        )}
+      </div>
+      <div className={styles.marketInfo}>
+        <span className={styles.marketInfoTitle}>
+          {market.collectionName || UNTITLED}
+        </span>
+        <div className={styles.marketInfoPriceWrapper}>
+          <SolanaLogo className={styles.marketInfoPriceLogo} />
+          <span className={styles.marketInfoPrice}>
+            {formatPriceNumber.format(
+              Number((market.volume24 / 1e9).toFixed(3)),
+            )}
+          </span>
+        </div>
+      </div>
+    </li>
+  );
+};

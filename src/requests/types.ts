@@ -14,5 +14,5 @@ export interface TopMarket {
   collectionPublicKey: string;
   collectionImage: string;
   collectionName: string;
-  volume24: string;
+  volume24: number;
 }

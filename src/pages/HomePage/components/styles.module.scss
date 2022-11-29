@@ -95,15 +95,21 @@
 }
 
 .marketCardWrapper {
-  min-width: 262px;
+  display: flex;
+  flex-direction: column;
+  width: 254px;
   border: var(--border-base);
   border-radius: 16px;
   background: var(--component-base-background);
   overflow: hidden;
+  cursor: pointer;
+}
+
+.marketImageWrapper {
+  flex-grow: 1;
 }
 
 .marketImage {
-  display: block;
   width: 100%;
 }
 
@@ -118,14 +124,18 @@
   line-height: 28px;
 }
 
-.marketInfoPrice {
-  span {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 22px;
-  }
+.marketInfoPriceWrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
 
-  svg {
-    width: 16px;
-  }
+.marketInfoPriceLogo {
+  width: 16px;
+}
+
+.marketInfoPrice {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
 }
