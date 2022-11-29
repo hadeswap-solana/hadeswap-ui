@@ -156,6 +156,13 @@
   }
 }
 
+.collapsedStatWrapper {
+  @media (max-width: 1160px) {
+    flex-wrap: wrap;
+    max-width: 400px;
+  }
+}
+
 .collectionStatWrapper {
   display: flex;
   justify-content: space-between;
@@ -163,7 +170,7 @@
 
   @media (max-width: 1024px) {
     flex-wrap: nowrap;
-    max-width: 100% !important;
+    max-width: 100%;
   }
 
   @media (max-width: 767px) {
@@ -171,13 +178,6 @@
     justify-content: center;
     gap: 8px;
     max-width: 300px;
-  }
-}
-
-.collapsedStatWrapper {
-  @media (max-width: 1160px) {
-    flex-wrap: wrap;
-    max-width: 400px;
   }
 }
 
