@@ -66,13 +66,11 @@ export const PoolHeader: FC<PoolHeaderProps> = ({ market, pool }) => {
         />
       </div>
       <div className={styles.headerButtonsWrapper}>
-        <Button
-          outlined
-          onClick={isOwner ? onEdit : null}
-          className={styles.editPoolButton}
-        >
-          <span>edit pool</span>
-        </Button>
+        {isOwner && (
+          <Button outlined onClick={onEdit} className={styles.editPoolButton}>
+            <span>edit pool</span>
+          </Button>
+        )}
       </div>
     </div>
   );
