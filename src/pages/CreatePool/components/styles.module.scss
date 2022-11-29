@@ -5,29 +5,6 @@
   margin: 24px 0;
 }
 
-.stepButton {
-  padding: 8px 16px;
-  border: var(--border-base);
-  border-radius: var(--border-radius-base);
-  background: var(--component-base-background);
-
-  span {
-    font-family: var(--font-family-rubik);
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-  }
-}
-
-.stepButtonDisabled {
-  opacity: .7;
-  cursor: not-allowed;
-}
-
-.stepButtonInvisible {
-  visibility: hidden;
-}
-
 .poolTypeWidget {
   min-width: 318px;
   text-align: center;
@@ -45,17 +22,6 @@
   gap: 16px;
   margin-bottom: 16px;
   padding-top: 16px;
-}
-
-.combineBadges {
-  position: relative;
-  width: 100px;
-
-  .nftBadge {
-    position: absolute;
-    top: 0;
-    left: 44px;
-  }
 }
 
 .poolTypeTitle {

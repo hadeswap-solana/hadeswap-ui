@@ -31,6 +31,10 @@
   cursor: not-allowed;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .outlined {
   border: 1px solid;
   border-color: var(--blue-color);
@@ -109,5 +113,20 @@
 
   &.active {
     background: var(--blue-color);
+  }
+}
+
+.blackButton {
+  height: 40px;
+  padding: 8px 16px;
+  border: var(--border-base);
+  border-radius: var(--border-radius-base);
+  background: var(--component-base-background);
+
+  span {
+    font-family: var(--font-family-rubik);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
   }
 }

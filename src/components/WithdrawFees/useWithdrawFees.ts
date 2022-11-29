@@ -1,43 +1,46 @@
 import { useDispatch } from 'react-redux';
-import { createWithdrawLiquidityFeesTxns } from '../../../utils/transactions/createWithdrawLiquidityFeesTxns';
-import {
-  createIxCardFuncs,
-  IX_TYPE,
-} from '../../../components/TransactionsLoadingModal';
-import { signAndSendTransactionsInSeries } from '../../../components/Layout/helpers';
-import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
-import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
-import { notify } from '../../../utils';
-import { NotifyType } from '../../../utils/solanaUtils';
-import { getArrayByNumber } from '../../../utils/transactions';
-import { createWithdrawSolFromPairTxn } from '../../../utils/transactions/createWithdrawSolFromPairTxn';
+import { createWithdrawLiquidityFeesTxns } from '../../utils/transactions/createWithdrawLiquidityFeesTxns';
+import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
+import { signAndSendTransactionsInSeries } from '../Layout/helpers';
+import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
+import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
+import { notify } from '../../utils';
+import { NotifyType } from '../../utils/solanaUtils';
+import { getArrayByNumber } from '../../utils/transactions';
+import { createWithdrawSolFromPairTxn } from '../../utils/transactions/createWithdrawSolFromPairTxn';
 import { hadeswap } from 'hadeswap-sdk';
 import {
   BondingCurveType,
   OrderType,
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
-import { createWithdrawNftsFromPairTxns } from '../../../utils/transactions/createWithdrawNftsFromPairTxns';
+import { createWithdrawNftsFromPairTxns } from '../../utils/transactions/createWithdrawNftsFromPairTxns';
 import { chunk } from 'lodash';
-import { createWithdrawLiquidityFromPairTxns } from '../../../utils/transactions/createWithdrawLiquidityFromPairTxns';
-import { createWithdrawLiquidityFromBuyOrdersPair } from '../../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
-import { createWithdrawLiquidityFromSellOrdersPair } from '../../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
-import { useConnection } from '../../../hooks';
+import { createWithdrawLiquidityFromPairTxns } from '../../utils/transactions/createWithdrawLiquidityFromPairTxns';
+import { createWithdrawLiquidityFromBuyOrdersPair } from '../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
+import { createWithdrawLiquidityFromSellOrdersPair } from '../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
+import { useConnection } from '../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Pair } from '../../../state/core/types';
+import { Pair } from '../../state/core/types';
 import { useHistory } from 'react-router-dom';
 
-export const useWithdrawClick = ({
-  pool,
-}: {
-  pool: Pair;
-}): (() => Promise<void>) => {
+type UseWithdrawFees = ({ pool: Pair }) => {
+  accumulatedFees: number;
+  onWithdrawClick: () => Promise<void>;
+};
+
+export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const connection = useConnection();
   const wallet = useWallet();
 
-  return async () => {
+  const accumulatedFees = pool?.liquidityProvisionOrders.reduce(
+    (acc, order) => acc + order.accumulatedFee,
+    0,
+  );
+
+  const onWithdrawClick = async () => {
     const transactions = [];
     const cards = [];
 
@@ -93,6 +96,11 @@ export const useWithdrawClick = ({
     if (isSuccess) {
       history.push(`/pools/${pool?.pairPubkey}`);
     }
+  };
+
+  return {
+    accumulatedFees,
+    onWithdrawClick,
   };
 };
 

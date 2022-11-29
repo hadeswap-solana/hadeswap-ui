@@ -5,7 +5,7 @@ export const createCreatePoolPickSideLink = (
   publicKey = ':publicKey?',
 ): string => `/create-pool/${publicKey}`;
 
-export const createEditPollLink = (poolPubkey = ':poolPubkey?'): string =>
+export const createEditPoollLink = (poolPubkey = ':poolPubkey?'): string =>
   `/pools/${poolPubkey}/edit`;
 
 export const PATHS = {
@@ -13,7 +13,7 @@ export const PATHS = {
   COLLECTIONS: '/collections', //? Collections table|list
   COLLECTION: createCollectionLink(), //? Collections table|list
   POOL_PAGE: '/pools/:poolPubkey', //? Specific pool page.
-  POOL_EDIT: createEditPollLink(), //? Page to create pool.
+  POOL_EDIT: createEditPoollLink(), //? Page to create pool.
   CREATE_POOL: '/create-pool/:publicKey?/:type?',
   MY_NFTS: '/my-nfts', //? Show all user nfts
   MY_POOLS: '/my-pools', //? Show all user pools

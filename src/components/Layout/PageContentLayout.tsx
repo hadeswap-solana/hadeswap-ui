@@ -4,7 +4,7 @@ import { Spinner } from '../Spinner/Spinner';
 import styles from './PageContentLayout.module.scss';
 
 interface PageContentLayoutProps {
-  title: string;
+  title?: string;
   children: JSX.Element | JSX.Element[];
   isLoading?: boolean;
 }
@@ -15,7 +15,7 @@ const PageContentLayout: FC<PageContentLayoutProps> = ({
   isLoading,
 }) => (
   <div className={styles.contentWrapper}>
-    <h1 className={styles.pageTitle}>{title}</h1>
+    {title && <h1 className={styles.pageTitle}>{title}</h1>}
     {isLoading ? <Spinner /> : children}
   </div>
 );

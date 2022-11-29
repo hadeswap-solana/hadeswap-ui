@@ -5,8 +5,8 @@ import styles from './styles.module.scss';
 
 interface PairButtonsProps {
   className?: string;
-  onClickLeft: (arg: any) => void;
-  onClickRight: (arg: any) => void;
+  onClickLeft?: (arg: any) => void;
+  onClickRight?: (arg: any) => void;
   valueButtonLeft: string | JSX.Element;
   valueButtonRight: string | JSX.Element;
   isActiveRight: boolean;
