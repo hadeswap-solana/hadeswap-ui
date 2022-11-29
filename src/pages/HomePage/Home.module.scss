@@ -9,10 +9,18 @@
   font-weight: 500;
   font-size: 104px;
   line-height: 100%;
+
+  @media (max-width: 1024px) {
+    font-size: 48px;
+  }
+
+  @media (max-width: 767px) {
+    font-size: 32px;
+  }
 }
 
 .emphasis {
-  background: -webkit-linear-gradient(0.5turn, #00FFA3, #DC1FFF);
+  background: -webkit-linear-gradient(0.5turn, #00ffa3, #dc1fff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
