@@ -13,7 +13,11 @@
   background-position: 50% 50%;
 
   @media (max-width: 1024px) {
-    height: 375px;
+    height: 426px;
+  }
+
+  @media (max-width: 767px) {
+    height: 426px;
   }
 }
 
@@ -161,7 +165,14 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
-    max-width: 343px;
+    max-width: 300px;
+  }
+}
+
+.collapsedStatWrapper {
+  @media (max-width: 1160px) {
+    flex-wrap: wrap;
+    max-width: 400px;
   }
 }
 
@@ -173,13 +184,9 @@
 
   @media (max-width: 767px) {
     svg {
-      width: 10px;
-      height: 10px;
+      width: 15px;
+      height: 15px;
     }
-    &:nth-child(-n + 3) {
-      max-width: 109px;
-    }
-    padding: 12px;
     height: 72px;
   }
 }
