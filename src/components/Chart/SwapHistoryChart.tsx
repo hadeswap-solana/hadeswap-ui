@@ -23,7 +23,7 @@ const SwapHistoryChart: FC<ChartProps> = ({ className, history }) => {
     };
   });
 
-  console.log(data, 'datadatadatadatadata');
+  // console.log(data, 'datadatadatadatadata');
 
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);

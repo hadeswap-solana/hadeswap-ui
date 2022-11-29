@@ -94,6 +94,8 @@ export const usePriceGraph: UsePriceGraph = ({
     })
     .reverse() as Point[];
 
+  // console.log(pointsBuy, 'pointsBuy');
+
   const pointsSell: Point[] = priceArraySell.map((price, i) => {
     const newPrice = price / 1e9;
     return {
@@ -103,18 +105,22 @@ export const usePriceGraph: UsePriceGraph = ({
     };
   });
 
-  const pointsLiquidityProvision: Point[] = priceArrayBuyLiquidityProvision.map(
-    (price, i) => {
+  const pointsLiquidityProvision: Point[] = priceArrayBuyLiquidityProvision
+    .map((price, i) => {
       const newPrice = price / 1e9;
       return {
         order: 1 + i + mathCounter,
         price: newPrice - newPrice * (fee / 10000),
         type: 'buy',
       };
-    },
-  );
+    })
+    .reverse() as Point[];
+
+  console.log(pointsSell, 'pointsSell');
+
+  console.log(pointsLiquidityProvision, 'pointsLiquidityProvision');
 
   return isCreate
-    ? [...pointsBuy, ...pointsSell]
-    : [...pointsLiquidityProvision, ...pointsSell];
+    ? [...pointsLiquidityProvision, ...pointsSell]
+    : [...pointsBuy, ...pointsSell];
 };

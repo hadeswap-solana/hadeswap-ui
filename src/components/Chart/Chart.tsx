@@ -6,6 +6,7 @@ import { useD3 } from './hooks';
 import { Point } from './types';
 
 interface ChartProps {
+  isCreate?: boolean;
   title?: string;
   className?: string;
   data: Point[] | null;

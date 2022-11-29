@@ -16,7 +16,8 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { fetchSwapHistory } from '../../requests/requests';
 import SwapHistoryChart from '../../components/Chart/SwapHistoryChart';
-import { Chart } from '../../components/Chart';
+import { Chart, usePriceGraph } from '../../components/Chart';
+import styles from './PoolPage.module.scss';
 
 export const PoolPage: FC = () => {
   const market = useSelector(selectCertainMarket);
@@ -24,16 +25,24 @@ export const PoolPage: FC = () => {
   const marketLoading = useSelector(selectCertainMarketLoading);
   const poolLoading = useSelector(selectCertainPairLoading);
 
-  const { data } = useQuery(['top20', `${pool?.pairPubkey}`], () =>
+  const { data } = useQuery(['swapHistory', `${pool?.pairPubkey}`], () =>
     fetchSwapHistory(pool?.pairPubkey),
   );
-
-  console.log(data, 'data');
 
   useFetchPair();
   useFetchMarket(pool?.market);
 
   const isLoading = marketLoading || poolLoading;
+
+  const chartData = usePriceGraph({
+    baseSpotPrice: pool?.baseSpotPrice,
+    delta: pool?.delta,
+    fee: pool?.fee,
+    bondingCurve: pool?.bondingCurve,
+    buyOrdersAmount: pool?.buyOrdersAmount,
+    nftsCount: pool?.nftsCount,
+    mathCounter: pool?.mathCounter,
+  });
 
   return (
     <AppLayout>
@@ -45,17 +54,21 @@ export const PoolPage: FC = () => {
             <PoolHeader market={market} pool={pool} />
             <PoolGeneralInfo pool={pool} />
             <NftList pool={pool} />
-            <Chart
-              baseSpotPrice={pool.baseSpotPrice}
-              delta={pool.delta}
-              fee={pool.fee}
-              type={pool.type}
-              bondingCurve={pool.bondingCurve}
-              buyOrdersAmount={pool.buyOrdersAmount}
-              nftsCount={pool.nftsCount}
-              mathCounter={pool.mathCounter}
-            />
-            {!isLoading && <SwapHistoryChart history={data} />}
+            {!!chartData && !!chartData?.length && (
+              <Chart
+                title="price graph"
+                data={chartData}
+                className={styles.chart}
+                // baseSpotPrice={pool.baseSpotPrice}
+                // delta={pool.delta}
+                // fee={pool.fee}
+                // type={pool.type}
+                // bondingCurve={pool.bondingCurve}
+                // buyOrdersAmount={pool.buyOrdersAmount}
+                // nftsCount={pool.nftsCount}
+                // mathCounter={pool.mathCounter}
+              />
+            )}
           </>
         )}
       </PageContentLayout>
