@@ -60,10 +60,12 @@ export const PoolHeader: FC<PoolHeaderProps> = ({ market, pool }) => {
       <div className={styles.widgetsWrapper}>
         <HeaderWidgetCard title="pool" pairPubkey={pool.pairPubkey} />
         <HeaderWidgetCard title="owner" pairPubkey={market.marketPubkey} />
-        <WithdrawFees
-          accumulatedFees={accumulatedFees}
-          onClick={onWithdrawClick}
-        />
+        {isOwner && (
+          <WithdrawFees
+            accumulatedFees={accumulatedFees}
+            onClick={onWithdrawClick}
+          />
+        )}
       </div>
       <div className={styles.headerButtonsWrapper}>
         {isOwner && (

@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import styles from './styles.module.scss';
 
 interface WithdrawFeesProps {
-  accumulatedFees: number;
+  accumulatedFees: string;
   onClick: () => Promise<void>;
   className?: string;
 }
