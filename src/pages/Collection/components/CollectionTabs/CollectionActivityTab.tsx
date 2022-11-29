@@ -47,8 +47,12 @@ export const CollectionActivityTab: FC = memo(() => {
         onRowClick={() => null}
         tableClassName={styles.activityTable}
       />
-      {!!isFetchingNextPage && <Spinner />}
       <div ref={ref} />
+      {!!isFetchingNextPage && (
+        <div className={styles.spinnerWrapper}>
+          <Spinner />
+        </div>
+      )}
     </div>
   );
 });
