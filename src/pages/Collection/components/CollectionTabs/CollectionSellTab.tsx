@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import BN from 'bn.js';
 import { Typography } from 'antd';
-import { SweepButton } from '../SweepButton';
+// import { SweepButton } from '../SweepButton';
 import { NFTCard } from '../../../../components/NFTCard/NFTCard';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { FakeInfinityScroll } from '../../../../components/FakeInfiinityScroll';

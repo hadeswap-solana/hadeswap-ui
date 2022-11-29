@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BondingCurveType,
@@ -19,13 +19,13 @@ import { AssetsBlock } from '../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { Spinner } from '../../components/Spinner/Spinner';
-import { Card } from '../../components/Card';
+import { WithdrawFees } from '../../components/WithdrawFees';
 import Button from '../../components/Buttons/Button';
 import { useSaveClick } from './hooks/useSaveClick';
 import {
   useWithdrawAllClick,
-  useWithdrawClick,
-} from './hooks/useWithdrawClick';
+  useWithdrawFees,
+} from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
 
 import styles from './styles.module.scss';
@@ -63,23 +63,24 @@ export const EditPool: FC = () => {
   const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
     usePoolServicePrice({ pool });
 
-  const initialValuesPrice = {
-    fee: pool?.fee / 100,
-    spotPrice: pool?.currentSpotPrice / 1e9,
-    delta:
-      curveType === BondingCurveType.Exponential
-        ? pool?.delta / 100
-        : pool?.delta / 1e9,
-  };
+  const initialValuesPrice = useMemo(
+    () => ({
+      fee: pool?.fee / 100,
+      spotPrice: pool?.currentSpotPrice / 1e9,
+      delta:
+        curveType === BondingCurveType.Exponential
+          ? pool?.delta / 100
+          : pool?.delta / 1e9,
+    }),
+    [pool, curveType],
+  );
 
-  const initialValuesAssets = {
-    nftAmount: pool?.buyOrdersAmount,
-    buyOrdersAmount: pool?.buyOrdersAmount,
-  };
-
-  const accumulatedFees = pool?.liquidityProvisionOrders.reduce(
-    (acc, order) => acc + order.accumulatedFee,
-    0,
+  const initialValuesAssets = useMemo(
+    () => ({
+      nftAmount: pool?.buyOrdersAmount,
+      buyOrdersAmount: pool?.buyOrdersAmount,
+    }),
+    [pool],
   );
 
   const pairType = pool?.type;
@@ -100,7 +101,7 @@ export const EditPool: FC = () => {
     rawDelta,
   });
 
-  const onWithdrawClick = useWithdrawClick({ pool });
+  const { accumulatedFees, onWithdrawClick } = useWithdrawFees({ pool });
   const onWithdrawAllClick = useWithdrawAllClick({
     pool,
     pairType,
@@ -135,19 +136,11 @@ export const EditPool: FC = () => {
           <Spinner />
         ) : (
           <>
-            <Card className={styles.withdrawCard}>
-              <div className={styles.withdrawInfoWrapper}>
-                <span className={styles.withdrawTitle}>fees</span>
-                <span className={styles.withdrawValue}>{accumulatedFees}</span>
-              </div>
-              <Button
-                outlined
-                className={styles.withdrawButton}
-                onClick={onWithdrawClick}
-              >
-                <span>withdraw</span>
-              </Button>
-            </Card>
+            <WithdrawFees
+              className={styles.withdrawBlock}
+              accumulatedFees={accumulatedFees}
+              onClick={onWithdrawClick}
+            />
             <div className={styles.settingsBlock}>
               <PriceBlock
                 ref={priceBlockRef}
@@ -188,18 +181,6 @@ export const EditPool: FC = () => {
                 <span>close pool</span>
               </Button>
             </div>
-            {/*<div className={styles.chartWrapper}>*/}
-            {/*  <ChartLine*/}
-            {/*    create*/}
-            {/*    baseSpotPrice={spotPrice * 1e9}*/}
-            {/*    delta={rawDelta}*/}
-            {/*    fee={fee}*/}
-            {/*    type={pairType}*/}
-            {/*    bondingCurve={curveType}*/}
-            {/*    buyOrdersAmount={nftAmount}*/}
-            {/*    nftsCount={selectedNfts.length}*/}
-            {/*  />*/}
-            {/*</div>*/}
           </>
         )}
       </PageContentLayout>

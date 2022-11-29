@@ -2,8 +2,8 @@ import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../../state/core/selectors';
 import { commonActions } from '../../state/common/actions';
-import { BellIcon } from '../../icons/BellIcon';
-import RoundIconButton from '../Buttons/RoundIconButton';
+// import { BellIcon } from '../../icons/BellIcon';
+// import RoundIconButton from '../Buttons/RoundIconButton';
 import BadgeButton from '../Buttons/BadgeButton';
 
 import styles from './Header.module.scss';

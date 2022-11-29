@@ -5,6 +5,7 @@ import { SolRoundElement } from '../../../components/UI/SolanaBadge';
 import { ArrowsLeftRightIcon } from '../../../icons/ArrowsLeftRightIcon';
 import { NFTBadge } from '../../../components/UI/NFTBadge';
 import { TradingBadge } from '../../../components/UI/TradingBadge';
+import { CombinedBadges } from '../../../components/UI/CombinedBadges';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
 import styles from './styles.module.scss';
@@ -60,10 +61,10 @@ export const StepTwo: FC<StepTwoProps> = ({
         onClick={() => onCardClick(PairType.LiquidityProvision)}
       >
         <div className={styles.poolTypeBadges}>
-          <div className={styles.combineBadges}>
-            <SolRoundElement />
-            <NFTBadge className={styles.nftBadge} />
-          </div>
+          <CombinedBadges
+            BaseBadge={<SolRoundElement />}
+            ShiftedBadge={<NFTBadge />}
+          />
           <ArrowsLeftRightIcon />
           <TradingBadge />
         </div>

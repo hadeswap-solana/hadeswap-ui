@@ -1,10 +1,4 @@
 .table {
-  cursor: pointer;
   width: 100%;
-
-  :global {
-    .ant-table-thead th.ant-table-column-has-sorters {
-      min-width: 135px;
-    }
-  }
+  cursor: pointer;
 }

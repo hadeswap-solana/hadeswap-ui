@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
-import classNames from 'classnames';
+import { BlackButton } from '../../../components/Buttons/BlackButton';
 
 import styles from './styles.module.scss';
 
@@ -28,24 +28,18 @@ export const StepsButtons: FC<StepsButtonsProps> = ({
 
   return (
     <div className={styles.stepsButtonsWrapper}>
-      <button
-        onClick={() => onClick(false)}
-        className={classNames(styles.stepButton, {
-          [styles.stepButtonInvisible]: !step,
-        })}
-      >
-        {'<'}&nbsp;&nbsp;back
-      </button>
+      <BlackButton onClick={() => onClick(false)} isInvisible={!step}>
+        <span>{'<'}&nbsp;&nbsp;back</span>
+      </BlackButton>
       {step !== 2 && (
-        <button
+        <BlackButton
           onClick={() => onClick(true)}
-          className={classNames(styles.stepButton, {
-            [styles.stepButtonDisabled]:
-              (step === 0 && !chosenMarketKey) || (step === 1 && !pairType),
-          })}
+          isDisabled={
+            (step === 0 && !chosenMarketKey) || (step === 1 && !pairType)
+          }
         >
-          next&nbsp;&nbsp;{'>'}
-        </button>
+          <span>next&nbsp;&nbsp;{'>'}</span>
+        </BlackButton>
       )}
     </div>
   );
