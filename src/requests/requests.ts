@@ -72,3 +72,14 @@ export const fetchMarketWalletNfts = async ({
   }
   return await response.json();
 };
+
+export const fetchSwapHistory = async (pairPubkey: string) => {
+  const response = await fetch(
+    `https://${process.env.BACKEND_DOMAIN}/trades/pair/${pairPubkey}`,
+  );
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return await response.json();
+};

@@ -19,6 +19,7 @@ import {
 } from '../../../state/core/selectors';
 
 import styles from './styles.module.scss';
+import { Chart } from '../../../components/Chart';
 
 interface StepThreeProps {
   pairType: PairType;
@@ -126,6 +127,16 @@ export const StepThree: FC<StepThreeProps> = ({
             />
           </div>
           <div className={styles.chartWrapper}>
+            <Chart
+              create
+              baseSpotPrice={spotPrice * 1e9}
+              delta={rawDelta}
+              fee={rawFee || 0}
+              type={pairType}
+              bondingCurve={curveType}
+              buyOrdersAmount={nftAmount}
+              nftsCount={selectedNfts.length}
+            />
             {/*<ChartLine*/}
             {/*  create*/}
             {/*  baseSpotPrice={spotPrice * 1e9}*/}
