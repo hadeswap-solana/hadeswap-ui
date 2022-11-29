@@ -52,9 +52,9 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
         <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
           <span>swap</span>
         </Button>
-        <Button outlined isDisabled={isSwapButtonDisabled} onClick={() => null}>
+        {/* <Button outlined isDisabled={isSwapButtonDisabled} onClick={() => null}>
           <span>swap by credit card</span>
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

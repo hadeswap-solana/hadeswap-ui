@@ -1,7 +1,7 @@
 import { FC, useCallback } from 'react';
 import BN from 'bn.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { SweepButton } from '../SweepButton';
+// import { SweepButton } from '../SweepButton';
 import { NFTCard } from '../../../../components/NFTCard/NFTCard';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { FakeInfinityScroll } from '../../../../components/FakeInfiinityScroll';
@@ -46,7 +46,7 @@ export const CollectionBuyTab: FC = () => {
         <Spinner />
       ) : (
         <>
-          <SweepButton />
+          {/* <SweepButton /> */}
           <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
             {buyOrders.map((order) => (
               <NFTCard

@@ -27,7 +27,7 @@ export const StepTwo: FC<StepTwoProps> = ({
   };
 
   return (
-    <>
+    <div className={styles.cards}>
       <Card
         className={classNames(styles.poolTypeWidget, {
           [styles.active]: pairType === PairType.TokenForNFT,
@@ -72,6 +72,6 @@ export const StepTwo: FC<StepTwoProps> = ({
           Do both and earn trading fees
         </span>
       </Card>
-    </>
+    </div>
   );
 };

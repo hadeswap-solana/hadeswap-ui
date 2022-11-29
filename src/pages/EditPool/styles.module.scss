@@ -26,4 +26,8 @@
   button {
     width: 186px;
   }
+
+  @media (max-width: 767px) {
+    flex-wrap: wrap;
+  }
 }

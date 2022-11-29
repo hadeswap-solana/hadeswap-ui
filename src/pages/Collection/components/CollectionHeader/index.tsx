@@ -1,13 +1,15 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { mockData } from '../../mockData';
+import { useParams } from 'react-router-dom';
+
+// import { mockData } from '../../mockData';
 import { Plate } from './Plate';
-import { SocialLink } from './SocialLink';
-import { GlobeIcon } from '../../../../icons/GlobeIcon';
-import { DiscordIcon } from '../../../../icons/DiscordIcon';
-import { TwitterIcon } from '../../../../icons/TwitterIcon';
-import { ShareIcon } from '../../../../icons/ShareIcon';
-import { BellThinIcon } from '../../../../icons/BellThinIcon';
+// import { SocialLink } from './SocialLink';
+// import { GlobeIcon } from '../../../../icons/GlobeIcon';
+// import { DiscordIcon } from '../../../../icons/DiscordIcon';
+// import { TwitterIcon } from '../../../../icons/TwitterIcon';
+// import { ShareIcon } from '../../../../icons/ShareIcon';
+// import { BellThinIcon } from '../../../../icons/BellThinIcon';
 import { SolPrice } from '../../../../components/SolPrice/SolPrice';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import {
@@ -17,10 +19,15 @@ import {
 import { marketStatList } from './CollectionHeader.constants';
 
 import styles from './styles.module.scss';
+import CreatePoolButton from '../CreatePoolButton/CreatePoolButton';
+import { selectCartSiderVisible } from '../../../../state/common/selectors';
+import classNames from 'classnames';
 
 export const CollectionHeader: FC = () => {
   const market = useSelector(selectCertainMarket);
   const isLoading = useSelector(selectCertainMarketLoading);
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
+  const cartSiderVisible = useSelector(selectCartSiderVisible);
 
   return (
     <div className={styles.headerWrapper}>
@@ -44,7 +51,7 @@ export const CollectionHeader: FC = () => {
               <h2 className={styles.collectionTitle}>
                 {market.collectionName}
               </h2>
-              <div className={styles.collectionDescriptionWrapper}>
+              {/* <div className={styles.collectionDescriptionWrapper}>
                 <p className={styles.collectionDescription}>
                   {mockData.collectionDescription}
                 </p>
@@ -77,8 +84,13 @@ export const CollectionHeader: FC = () => {
                     </div>
                   </Plate>
                 </div>
-              </div>
-              <div className={styles.collectionStatWrapper}>
+              </div> */}
+              <div
+                className={classNames(
+                  styles.collectionStatWrapper,
+                  cartSiderVisible && styles.collapsedStatWrapper,
+                )}
+              >
                 {marketStatList.map((item, index) => (
                   <Plate key={index} className={styles.collectionStatItem}>
                     <span className={styles.collectionStatTitle}>
@@ -98,6 +110,10 @@ export const CollectionHeader: FC = () => {
                   </Plate>
                 ))}
               </div>
+              <CreatePoolButton
+                className={styles.poolButton}
+                marketPublicKey={marketPublicKey}
+              />
             </div>
           </div>
         </div>
