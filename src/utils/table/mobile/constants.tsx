@@ -51,6 +51,10 @@ interface ActivityItem extends BaseItem {
   list: ActivityList[];
 }
 
+interface TradeItem extends BaseItem {
+  list: ActivityList[];
+}
+
 const { Text } = Typography;
 
 export const COLLECTION_ITEM: CollectionItem = {
@@ -180,6 +184,44 @@ export const ACTIVITY_ITEM: ActivityItem = {
       valueKey: 'pair',
       render: (value: string, item) => (
         <LinkCell link={`/pools/${item.pair}`} internal>
+          <Text>{shortenAddress(value)}</Text>
+        </LinkCell>
+      ),
+    },
+    {
+      title: 'price',
+      valueKey: 'solAmount',
+      render: (value: number) => <PriceCell value={String(value)} />,
+    },
+    {
+      title: 'when',
+      valueKey: 'timestamp',
+      render: (value: string, item) => (
+        <LinkCell link={`https://solscan.io/tx/${item.signature}`}>
+          <Text>{moment(value).fromNow()}</Text>
+        </LinkCell>
+      ),
+    },
+  ],
+};
+
+export const TRADE_ITEM: TradeItem = {
+  itemKey: PubKeys.NFT_MINT,
+  nameKey: 'nftName',
+  imageKey: 'nftImageUrl',
+  list: [
+    {
+      title: 'action',
+      valueKey: 'orderType',
+      render: (value: string) => (
+        <ColoredTextCell cellValue={value} defaultValue="buy" />
+      ),
+    },
+    {
+      title: 'user',
+      valueKey: 'userTaker',
+      render: (value: string, item) => (
+        <LinkCell link={`https://solscan.io/account/${item.userTaker}`}>
           <Text>{shortenAddress(value)}</Text>
         </LinkCell>
       ),

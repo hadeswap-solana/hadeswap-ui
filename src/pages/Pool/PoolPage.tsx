@@ -13,6 +13,7 @@ import {
   selectCertainPair,
   selectCertainPairLoading,
 } from '../../state/core/selectors';
+import { PoolTradeTable } from './components/PoolTradeTable';
 
 export const PoolPage: FC = () => {
   const market = useSelector(selectCertainMarket);
@@ -35,6 +36,7 @@ export const PoolPage: FC = () => {
             <PoolHeader market={market} pool={pool} />
             <PoolGeneralInfo pool={pool} />
             <NftList pool={pool} />
+            <PoolTradeTable />
           </>
         )}
       </PageContentLayout>

@@ -109,6 +109,20 @@ export interface NftActivityData {
   userTaker: string;
 }
 
+export interface NftTradeData {
+  signature: string;
+  orderType: string;
+  pairType: string;
+  nftMint: string;
+  nftName: string;
+  nftImageUrl: string;
+  solAmount: number;
+  userMaker: string;
+  userTaker: string;
+  market: string;
+  timestamp: string;
+}
+
 export interface CartOrder extends Nft {
   type: OrderType;
   targetPairPukey: string;
