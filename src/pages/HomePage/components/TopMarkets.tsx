@@ -7,6 +7,7 @@ import styles from './styles.module.scss';
 
 export const TopMarkets: FC = () => {
   const { topMarkets, topMarketsLoading } = useTopMarkets();
+  topMarkets.length = 5;
   return (
     <>
       {topMarketsLoading ? (

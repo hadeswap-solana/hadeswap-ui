@@ -95,7 +95,9 @@
 }
 
 .marketCardWrapper {
-  min-width: 262px;
+  display: flex;
+  flex-direction: column;
+  width: 254px;
   border: var(--border-base);
   border-radius: 16px;
   background: var(--component-base-background);
@@ -103,8 +105,8 @@
 }
 
 .marketImage {
-  display: block;
   width: 100%;
+  flex-grow: 1;
 }
 
 .marketInfo {
