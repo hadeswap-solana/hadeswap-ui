@@ -9,6 +9,7 @@
   background: var(--blue-color);
 
   span {
+    text-align: center;
     font-family: var(--font-family-rubik);
     font-weight: 500;
     font-size: 12px;
@@ -20,7 +21,6 @@
     height: 40px;
 
     span {
-      text-align: center;
       font-size: 9px;
     }
   }
