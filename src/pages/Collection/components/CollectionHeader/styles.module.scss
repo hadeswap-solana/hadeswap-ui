@@ -161,6 +161,11 @@
   justify-content: space-between;
   gap: 16px;
 
+  @media (max-width: 1024px) {
+    flex-wrap: nowrap;
+    max-width: 100% !important;
+  }
+
   @media (max-width: 767px) {
     flex-wrap: wrap;
     justify-content: center;
