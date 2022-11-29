@@ -1,4 +1,6 @@
 import { FC } from 'react';
+import { useHistory } from 'react-router-dom';
+import { createCollectionLink } from '../../../constants';
 import { SolanaLogo } from '../../../icons/SolanaLogo';
 import { TopMarket } from '../../../requests/types';
 import { UNTITLED } from '../../../constants/common';
@@ -10,27 +12,35 @@ interface MarketCardProps {
   market: TopMarket;
 }
 
-export const MarketCard: FC<MarketCardProps> = ({ market }) => (
-  <li className={styles.marketCardWrapper}>
-    <div className={styles.marketImageWrapper}>
-      {market.collectionImage && (
-        <img
-          className={styles.marketImage}
-          src={market.collectionImage}
-          alt={market.collectionName}
-        />
-      )}
-    </div>
-    <div className={styles.marketInfo}>
-      <span className={styles.marketInfoTitle}>
-        {market.collectionName || UNTITLED}
-      </span>
-      <div className={styles.marketInfoPriceWrapper}>
-        <SolanaLogo className={styles.marketInfoPriceLogo} />
-        <span className={styles.marketInfoPrice}>
-          {formatPriceNumber.format(Number((market.volume24 / 1e9).toFixed(3)))}
-        </span>
+export const MarketCard: FC<MarketCardProps> = ({ market }) => {
+  const history = useHistory();
+  const onMarketClick = () => {
+    history.push(createCollectionLink(market.collectionPublicKey));
+  };
+  return (
+    <li className={styles.marketCardWrapper} onClick={onMarketClick}>
+      <div className={styles.marketImageWrapper}>
+        {market.collectionImage && (
+          <img
+            className={styles.marketImage}
+            src={market.collectionImage}
+            alt={market.collectionName}
+          />
+        )}
       </div>
-    </div>
-  </li>
-);
+      <div className={styles.marketInfo}>
+        <span className={styles.marketInfoTitle}>
+          {market.collectionName || UNTITLED}
+        </span>
+        <div className={styles.marketInfoPriceWrapper}>
+          <SolanaLogo className={styles.marketInfoPriceLogo} />
+          <span className={styles.marketInfoPrice}>
+            {formatPriceNumber.format(
+              Number((market.volume24 / 1e9).toFixed(3)),
+            )}
+          </span>
+        </div>
+      </div>
+    </li>
+  );
+};
