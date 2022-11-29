@@ -1,11 +1,10 @@
-import { max, min, scaleLinear, select } from 'd3';
+import { max, scaleLinear, select } from 'd3';
 
 import { Point } from '../types';
 import { MARGIN } from '../constants';
 import { drawAxes } from './drawAxes';
 import { drawPoints } from './drawPoints';
 import { drawLinePath } from './drawLinePath';
-import styles from '../Chart.module.scss';
 
 type RenderChart = (
   points: Point[],
@@ -20,8 +19,8 @@ type RenderChart = (
 export const renderChart: RenderChart =
   (points, { canvasSize }) =>
   (selection) => {
-    const INNER_WIDTH = canvasSize.x - MARGIN.LEFT - MARGIN.RIGHT - 20;
-    const INNER_HEIGHT = canvasSize.y - MARGIN.TOP - MARGIN.BOTTOM - 20;
+    const INNER_WIDTH = canvasSize.x - MARGIN.LEFT - MARGIN.RIGHT;
+    const INNER_HEIGHT = canvasSize.y - MARGIN.TOP - MARGIN.BOTTOM;
 
     const xScale = scaleLinear()
       .domain([0, points.length - 1])
@@ -29,9 +28,6 @@ export const renderChart: RenderChart =
 
     const yScale = scaleLinear()
       .domain([
-        // min(points, ({ price }) =>
-        //   Math.ceil(price) % 2 ? Math.floor(price) : Math.floor(price) + 1,
-        // ),
         0,
         max(points, ({ price }) =>
           Math.ceil(price) % 2 ? Math.ceil(price) + 1 : Math.ceil(price),
@@ -53,10 +49,5 @@ export const renderChart: RenderChart =
         drawAxes(g, { xScale, yScale, points });
         drawLinePath(g, { xScale, yScale, points });
         drawPoints(g, { points, xScale, yScale });
-      })
-      .append('text')
-      .attr('x', INNER_WIDTH / 2)
-      .attr('y', 0 - MARGIN.TOP / 2)
-      .attr('text-anchor', 'middle')
-      .text('price graph');
+      });
   };

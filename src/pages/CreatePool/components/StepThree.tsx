@@ -10,7 +10,6 @@ import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/usePoolServiceAssets';
 import Button from '../../../components/Buttons/Button';
-//import ChartLine from '../../../components/ChartLine/ChartLine';
 import { useOnCreatePoolClick } from '../hooks';
 import { useFetchAllMarkets } from '../../../requests';
 import {
@@ -19,7 +18,7 @@ import {
 } from '../../../state/core/selectors';
 
 import styles from './styles.module.scss';
-import { Chart } from '../../../components/Chart';
+import { Chart, usePriceGraph } from '../../../components/Chart';
 
 interface StepThreeProps {
   pairType: PairType;
@@ -96,6 +95,15 @@ export const StepThree: FC<StepThreeProps> = ({
 
   const isLoading = marketsLoading || nftsLoading;
 
+  const chartData = usePriceGraph({
+    baseSpotPrice: spotPrice * 1e9,
+    delta: rawDelta,
+    fee: rawFee || 0,
+    bondingCurve: curveType,
+    buyOrdersAmount: nftAmount,
+    nftsCount: selectedNfts.length,
+  });
+
   return (
     <div className={styles.settingsBlockWrapper}>
       {isLoading ? (
@@ -127,26 +135,9 @@ export const StepThree: FC<StepThreeProps> = ({
             />
           </div>
           <div className={styles.chartWrapper}>
-            <Chart
-              create
-              baseSpotPrice={spotPrice * 1e9}
-              delta={rawDelta}
-              fee={rawFee || 0}
-              type={pairType}
-              bondingCurve={curveType}
-              buyOrdersAmount={nftAmount}
-              nftsCount={selectedNfts.length}
-            />
-            {/*<ChartLine*/}
-            {/*  create*/}
-            {/*  baseSpotPrice={spotPrice * 1e9}*/}
-            {/*  delta={rawDelta}*/}
-            {/*  fee={fee}*/}
-            {/*  type={pairType}*/}
-            {/*  bondingCurve={curveType}*/}
-            {/*  buyOrdersAmount={nftAmount}*/}
-            {/*  nftsCount={selectedNfts.length}*/}
-            {/*/>*/}
+            {!!chartData && !!chartData?.length && (
+              <Chart title="price graph" data={chartData} />
+            )}
           </div>
           <div className={styles.settingsButtonsWrapper}>
             <Button

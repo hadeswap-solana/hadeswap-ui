@@ -1,6 +1,6 @@
 export const MARGIN = {
-  TOP: 28,
-  RIGHT: 28,
-  LEFT: 72,
-  BOTTOM: 30,
+  TOP: 10,
+  RIGHT: 10,
+  LEFT: 64,
+  BOTTOM: 8,
 };

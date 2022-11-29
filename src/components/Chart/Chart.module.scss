@@ -5,15 +5,15 @@
   border-radius: 20px;
   padding-top: 30px;
   margin-top: 16px;
+  padding: 25px 15px 25px 0;
 
-  & svg g {
-    & + text {
-      fill: #fff;
-      font-family: 'Rubik';
-      font-weight: 500;
-      font-size: 24px;
-    }
+  .title {
+    text-align: center;
+    color: var(--white-color);
+    font: 500 24px var(--font-family-rubik);
+    margin-bottom: 16px;
   }
+
   :global {
     .xAxis {
       .tick {

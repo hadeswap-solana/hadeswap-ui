@@ -1,4 +1,4 @@
-import { area, line, curveNatural, select, ScaleLinear, min } from 'd3';
+import { area, line, curveNatural, select, ScaleLinear } from 'd3';
 import { Point } from '../types';
 
 const GRADIENT_ID = 'svg-gradient';
@@ -26,7 +26,7 @@ export const drawLinePath: DrawLinePath = (
     .curve(curveNatural)
     .x((_, idx) => xScale(idx))
     .y((point) => yScale(point.price))
-    .y1(yScale(min(points, (p) => p.price)));
+    .y1(yScale(0));
 
   selection
     .append('path')
