@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Typography } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { useFetchWalletPairs, useFetchAllMarkets } from '../../requests';
@@ -70,13 +69,11 @@ export const MyPools: FC = () => {
     <AppLayout>
       <PageContentLayout title="my pools">
         {!connected && (
-          <Typography.Title level={3}>
-            connect your wallet to see your pools
-          </Typography.Title>
+          <h2 className={styles.h2}>connect your wallet to see your pools</h2>
         )}
         {connected && isLoading && <Spinner />}
         {connected && !isLoading && !walletPairs.length && (
-          <Typography.Title level={3}>no pools found</Typography.Title>
+          <h2 className={styles.h2}>no pools found</h2>
         )}
         {connected && !isLoading && !!pools.length && (
           <>
