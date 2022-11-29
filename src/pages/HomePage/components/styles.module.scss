@@ -104,9 +104,12 @@
   overflow: hidden;
 }
 
+.marketImageWrapper {
+  flex-grow: 1;
+}
+
 .marketImage {
   width: 100%;
-  flex-grow: 1;
 }
 
 .marketInfo {
