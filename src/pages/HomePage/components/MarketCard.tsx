@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import { SolPrice } from '../../../components/SolPrice/SolPrice';
+import { SolanaLogo } from '../../../icons/SolanaLogo';
 import { TopMarket } from '../../../requests/types';
 import { UNTITLED } from '../../../constants/common';
+import { formatPriceNumber } from '../../../utils/solanaUtils';
 
 import styles from './styles.module.scss';
 
@@ -24,10 +25,12 @@ export const MarketCard: FC<MarketCardProps> = ({ market }) => (
       <span className={styles.marketInfoTitle}>
         {market.collectionName || UNTITLED}
       </span>
-      <SolPrice
-        className={styles.marketInfoPrice}
-        price={parseFloat(market.volume24)}
-      />
+      <div className={styles.marketInfoPriceWrapper}>
+        <SolanaLogo className={styles.marketInfoPriceLogo} />
+        <span className={styles.marketInfoPrice}>
+          {formatPriceNumber.format(Number((market.volume24 / 1e9).toFixed(3)))}
+        </span>
+      </div>
     </div>
   </li>
 );

@@ -123,14 +123,18 @@
   line-height: 28px;
 }
 
-.marketInfoPrice {
-  span {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 22px;
-  }
+.marketInfoPriceWrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
 
-  svg {
-    width: 16px;
-  }
+.marketInfoPriceLogo {
+  width: 16px;
+}
+
+.marketInfoPrice {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
 }
