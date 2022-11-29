@@ -6,9 +6,12 @@
   height: 100%;
 }
 
-.priceBlockWrapper,
-.assetsBlockWrapper {
+.assetsBlockWrapper,
+.priceBlockWrapper {
   flex-grow: 1;
+}
+
+.priceBlockWrapper {
   min-width: 352px;
 }
 
@@ -84,7 +87,7 @@
 
 .scrollBlockWrapper {
   max-width: 632px;
-  min-width: 470px;
+  min-width: 288px;
   flex-grow: 1;
   margin-top: 16px;
   overflow: hidden;

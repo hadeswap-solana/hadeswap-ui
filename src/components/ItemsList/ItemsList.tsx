@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { ItemsListProps } from './index';
 
 import styles from './styles.module.scss';
-import { useWindowSize } from '../../hooks/useWindowSize';
+import { getTableWidth } from './helpers';
 
 export const ItemsList: FC<ItemsListProps> = ({
   data,
@@ -13,11 +13,9 @@ export const ItemsList: FC<ItemsListProps> = ({
   pubKey,
   tableClassName,
 }) => {
-  const { width } = useWindowSize();
-
   return (
     <Table
-      style={{ maxWidth: width }}
+      style={{ maxWidth: getTableWidth() }}
       scroll={{ x: true, scrollToFirstRowOnChange: false }}
       className={classNames(styles.table, tableClassName)}
       columns={mapType}
