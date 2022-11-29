@@ -1,0 +1,43 @@
+.statsWrapper {
+  display: flex;
+  justify-content: center;
+  column-gap: 32px;
+  margin-bottom: 80px;
+}
+
+.statsBlock {
+  position: relative;
+  min-width: 240px;
+  text-align: center;
+
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -16px;
+    width: 1px;
+    height: 100%;
+    background: var(--border-color-base);
+  }
+}
+
+.statsLabel {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 24px;
+  color: var(--dark-grey-color);
+}
+
+.statsPriceBlock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.statsNumber {
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 32px;
+}
