@@ -24,6 +24,7 @@ export const drawPoints: DrawPoints = (
     .append('circle')
     .classed('point-buy', ({ type }) => type === 'buy')
     .classed('point-sell', ({ type }) => type === 'sell')
+    .classed('point-empty', ({ type }) => type === 'empty')
     .attr('cx', (_, idx) => xScale(idx))
     .attr('cy', (d) => yScale(d.price))
     .attr('r', 6);

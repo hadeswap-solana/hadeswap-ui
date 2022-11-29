@@ -1,5 +1,5 @@
 export interface Point {
   price: number;
-  type: 'sell' | 'buy';
+  type: 'sell' | 'buy' | 'empty';
   order: number;
 }
