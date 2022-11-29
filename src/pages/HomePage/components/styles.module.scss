@@ -77,3 +77,55 @@
     font-size: 14px;
   }
 }
+
+.topMarketsTitle {
+  text-align: center;
+  font-family: var(--font-family-rubik);
+  font-weight: 600;
+  font-size: 38px;
+  line-height: 120%;
+}
+
+.topMarkets {
+  margin-top: 32px;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.marketCardWrapper {
+  min-width: 262px;
+  border: var(--border-base);
+  border-radius: 16px;
+  background: var(--component-base-background);
+  overflow: hidden;
+}
+
+.marketImage {
+  display: block;
+  width: 100%;
+}
+
+.marketInfo {
+  padding: 16px;
+}
+
+.marketInfoTitle {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.marketInfoPrice {
+  span {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  svg {
+    width: 16px;
+  }
+}

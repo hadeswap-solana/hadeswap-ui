@@ -1,47 +1,76 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchAllStats, fetchVolume24 } from './requests';
+import {
+  fetchAllStats,
+  fetchTVLandVolumeStats,
+  fetchTopMarkets,
+} from '../../requests/requests';
+import { AllStats, TVLandVolumeStats, TopMarket } from '../../requests/types';
 
-const createData = ({
-  TVL = null,
-  volume = null,
-  volume24 = null,
-}: {
-  TVL?: string;
-  volume?: string;
-  volume24?: string;
-}) => {
-  return {
-    '24h volume': volume24,
-    'all time volume': volume,
-    'total value locked': TVL,
-  };
-};
-
-export const useStats = (): {
-  data: ReturnType<typeof createData>;
-  isLoading: boolean;
+export const useFetchAllStats = (): {
+  allStats: AllStats;
+  allStatsLoading: boolean;
 } => {
   const { data, isLoading, isFetching } = useQuery(
-    ['stats'],
-    async () => {
-      const [allStats, volume24] = await Promise.all([
-        fetchAllStats(),
-        fetchVolume24(),
-      ]);
-      return createData({
-        volume24,
-        volume: allStats.volume,
-        TVL: allStats.TVL,
-      });
-    },
+    ['allStats'],
+    () => fetchAllStats(),
     {
       networkMode: 'offlineFirst',
-      initialData: createData({}),
+      initialData: {
+        volume24h: null,
+        volumeAll: null,
+        solanaTPS: null,
+        solanaPrice: null,
+      },
     },
   );
 
   return {
+    allStats: data,
+    allStatsLoading: isLoading || isFetching,
+  };
+};
+
+export const useFetchTVL = (): {
+  TVLstat: string;
+  TVLStatLoading: boolean;
+} => {
+  const {
     data,
-    isLoading: isLoading || isFetching,
+    isLoading,
+    isFetching,
+  }: {
+    data: TVLandVolumeStats;
+    isLoading: boolean;
+    isFetching: boolean;
+  } = useQuery(['TVL'], () => fetchTVLandVolumeStats(), {
+    networkMode: 'offlineFirst',
+    initialData: {
+      TVL: '',
+      volume: '',
+    },
+  });
+
+  return {
+    TVLstat: data.TVL,
+    TVLStatLoading: isLoading || isFetching,
+  };
+};
+
+export const useTopMarkets = (): {
+  topMarkets: TopMarket[];
+  topMarketsLoading: boolean;
+} => {
+  const { data, isLoading, isFetching } = useQuery(
+    ['topMarkets'],
+    () => fetchTopMarkets(),
+    {
+      networkMode: 'offlineFirst',
+      initialData: [],
+    },
+  );
+
+  return {
+    topMarkets: data,
+    topMarketsLoading: isLoading || isFetching,
   };
 };
