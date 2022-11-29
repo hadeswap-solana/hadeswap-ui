@@ -7,19 +7,16 @@ import styles from './styles.module.scss';
 
 interface WidgetCardProps {
   title: string;
-  pairPubkey: string;
+  value: string;
 }
 
-export const HeaderWidgetCard: FC<WidgetCardProps> = ({
-  pairPubkey,
-  title,
-}) => (
+export const HeaderWidgetCard: FC<WidgetCardProps> = ({ value, title }) => (
   <Card className={styles.headerWidgetCard}>
     <h5 className={styles.widgetTitle}>{title}</h5>
     <div className={styles.widgetValueWrapper}>
-      <span className={styles.widgetValue}>{shortenAddress(pairPubkey)}</span>
+      <span className={styles.widgetValue}>{shortenAddress(value)}</span>
       <button
-        onClick={() => navigator.clipboard.writeText(pairPubkey)}
+        onClick={() => navigator.clipboard.writeText(value)}
         className={styles.cloneButton}
       >
         <CloneIcon />
