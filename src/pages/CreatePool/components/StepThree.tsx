@@ -9,8 +9,8 @@ import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/usePoolServiceAssets';
+import { Chart, usePriceGraph } from '../../../components/Chart';
 import Button from '../../../components/Buttons/Button';
-//import ChartLine from '../../../components/ChartLine/ChartLine';
 import { useOnCreatePoolClick } from '../hooks';
 import { useFetchAllMarkets } from '../../../requests';
 import {
@@ -95,6 +95,16 @@ export const StepThree: FC<StepThreeProps> = ({
 
   const isLoading = marketsLoading || nftsLoading;
 
+  const chartData = usePriceGraph({
+    baseSpotPrice: spotPrice * 1e9,
+    delta: rawDelta,
+    fee: rawFee || 0,
+    bondingCurve: curveType,
+    buyOrdersAmount: nftAmount,
+    nftsCount: selectedNfts.length,
+    type: pairType,
+  });
+
   return (
     <div className={styles.settingsBlockWrapper}>
       {isLoading ? (
@@ -125,18 +135,13 @@ export const StepThree: FC<StepThreeProps> = ({
               formInitialValues={initialValuesAssets}
             />
           </div>
-          <div className={styles.chartWrapper}>
-            {/*<ChartLine*/}
-            {/*  create*/}
-            {/*  baseSpotPrice={spotPrice * 1e9}*/}
-            {/*  delta={rawDelta}*/}
-            {/*  fee={fee}*/}
-            {/*  type={pairType}*/}
-            {/*  bondingCurve={curveType}*/}
-            {/*  buyOrdersAmount={nftAmount}*/}
-            {/*  nftsCount={selectedNfts.length}*/}
-            {/*/>*/}
-          </div>
+          {!!chartData && !!chartData?.length && (
+            <Chart
+              title="price graph"
+              data={chartData}
+              className={styles.chart}
+            />
+          )}
           <div className={styles.settingsButtonsWrapper}>
             <Button
               isDisabled={isCreateButtonDisabled}

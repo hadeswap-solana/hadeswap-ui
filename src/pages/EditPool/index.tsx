@@ -20,6 +20,7 @@ import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePool
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WithdrawFees } from '../../components/WithdrawFees';
+import { Chart, usePriceGraph } from '../../components/Chart';
 import Button from '../../components/Buttons/Button';
 import { useSaveClick } from './hooks/useSaveClick';
 import {
@@ -127,6 +128,16 @@ export const EditPool: FC = () => {
     }
   });
 
+  const chartData = usePriceGraph({
+    baseSpotPrice: spotPrice * 1e9,
+    delta: rawDelta,
+    fee: fee || 0,
+    bondingCurve: curveType,
+    buyOrdersAmount: nftAmount,
+    nftsCount: selectedNfts.length,
+    type: pairType,
+  });
+
   return (
     <AppLayout>
       <PageContentLayout title="edit pool">
@@ -170,6 +181,14 @@ export const EditPool: FC = () => {
                 buyOrdersAmount={buyOrdersAmount}
               />
             </div>
+
+            {!!chartData && !!chartData?.length && (
+              <Chart
+                title="price graph"
+                data={chartData}
+                className={styles.chart}
+              />
+            )}
             <div className={styles.buttonsWrapper}>
               <Button onClick={onSaveClick}>
                 <span>save changes</span>
