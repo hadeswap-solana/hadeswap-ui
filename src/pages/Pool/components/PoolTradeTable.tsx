@@ -7,7 +7,7 @@ import { PubKeys, TRADE } from '../../../constants/common';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import ItemsList from '../../../components/ItemsList';
 import { selectCertainPair } from '../../../state/core/selectors';
-import { useTableData } from '../../Collection/components/CollectionTabs/CollectionActivityTab';
+import { useTableData } from '../../../requests';
 
 const url = `https://${process.env.BACKEND_DOMAIN}/trades/pair`;
 
