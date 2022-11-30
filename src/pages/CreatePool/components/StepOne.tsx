@@ -46,12 +46,14 @@ export const StepOne: FC<StepOneProps> = ({ setStep, setChosenMarketKey }) => {
       ) : (
         <>
           <Search onChange={handleSearch} className={styles.searchWrapper} />
-          <ItemsList
-            data={filteredMarkets}
-            mapType={COLLECTION}
-            onRowClick={onRowClick}
-            pubKey={PubKeys.MARKET_PUBKEY}
-          />
+          {markets?.length && (
+            <ItemsList
+              data={filteredMarkets}
+              mapType={COLLECTION}
+              onRowClick={onRowClick}
+              pubKey={PubKeys.MARKET_PUBKEY}
+            />
+          )}
         </>
       )}
     </>
