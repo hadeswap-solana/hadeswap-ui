@@ -75,7 +75,8 @@ export const CollectionSellTab: FC = () => {
                 price={
                   order.price > 0 ? formatBNToString(new BN(order.price)) : ''
                 }
-                onAddToCart={createOnBtnClick(order)}
+                //onAddToCart={createOnBtnClick(order)}
+                onCardClick={createOnBtnClick(order)}
                 selected={order?.selected}
                 disabled={order.price <= 0}
                 rarity={order.rarity}

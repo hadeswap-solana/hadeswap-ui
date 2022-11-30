@@ -4,8 +4,11 @@
   border: var(--border-base);
   border-radius: 16px;
   background: var(--component-base-background);
+  cursor: pointer;
 
   &:hover {
+    border-color: var(--blue-color);
+
     .cardImageHover {
       top: 0;
     }
