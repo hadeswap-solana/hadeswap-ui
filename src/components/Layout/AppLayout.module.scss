@@ -1,17 +1,25 @@
-.mainWrapper {
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
   display: flex;
   overflow-x: clip;
 }
 
-.main {
+.mainWrapper {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
-  width: 100%;
+  overflow-x: hidden;
 }
 
-.content {
+.main {
   position: relative;
   min-height: 280px;
-  padding: 24px 50px;
+  padding: 0 var(--body-horizontal-padding);
+  margin-bottom: 32px;
 
   @media screen and (max-width: 768px) {
     padding: 12px 12px;

@@ -1,25 +1,30 @@
 import { FC } from 'react';
 import { Typography } from 'antd';
-
-import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
-import styles from './SolPrice.module.scss';
 import classNames from 'classnames';
+import { SolanaLogo } from '../../icons/SolanaLogo';
+
+import styles from './SolPrice.module.scss';
 
 interface SolPriceProps {
   price: number;
   raw?: boolean;
   className?: string;
-  logoClassName?: string;
+  rightIcon?: boolean;
 }
 
 export const SolPrice: FC<SolPriceProps> = ({
   price,
-  raw,
-  logoClassName,
+  raw = false,
   className,
+  rightIcon,
 }) => (
-  <Typography.Text className={classNames(styles.price, className)}>
-    <img src={solanaLogo} className={classNames(styles.logo, logoClassName)} />{' '}
-    {price ? (raw ? (price / 1e9).toFixed(3) : price) : 0}
-  </Typography.Text>
+  <div className={classNames(styles.price, className)}>
+    {!rightIcon && <SolanaLogo />}
+    <Typography.Text>
+      {!price && 0}
+      {!isNaN(price) && !raw && price}
+      {!isNaN(price) && raw && (price / 1e9).toFixed(3)}
+    </Typography.Text>
+    {rightIcon && <SolanaLogo className={styles.rightIcon} />}
+  </div>
 );
