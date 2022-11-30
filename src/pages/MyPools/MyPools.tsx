@@ -77,14 +77,18 @@ export const MyPools: FC = () => {
         )}
         {connected && !isLoading && (
           <div className={styles.buttonWrapper}>
-            <Button
-              onClick={() => history.push('/create-pool')}
-              className={styles.mainButton}
-            >
-              <span>create pool</span>
-            </Button>
+            <div className={styles.poolButtonWrapper}>
+              <Button
+                onClick={() => history.push('/create-pool')}
+                className={styles.mainButton}
+              >
+                <span>create pool</span>
+              </Button>
+            </div>
             {isMobile && !!pools.length && (
-              <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
+              <div className={styles.sortButtonWrapper}>
+                <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
+              </div>
             )}
           </div>
         )}
