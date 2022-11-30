@@ -70,6 +70,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
       parseFloat(a?.fundsSolOrTokenBalance) -
       parseFloat(b?.fundsSolOrTokenBalance),
     showSorterTooltip: false,
+    defaultSortOrder: 'descend',
     render: (text, record) =>
       record.type === 'nftForToken' ? (
         <Text>--</Text>
