@@ -46,7 +46,7 @@ export const renderChart: RenderChart =
       .classed('chart-group', true)
       .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
       .call((g) => {
-        drawAxes(g, { xScale, yScale, points });
+        drawAxes(g, { xScale, yScale });
         drawLinePath(g, { xScale, yScale, points });
         drawPoints(g, { points, xScale, yScale });
       });
