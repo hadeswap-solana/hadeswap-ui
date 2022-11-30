@@ -9,24 +9,23 @@ import { NftActivityData } from '../../../../state/core/types';
 
 import styles from './styles.module.scss';
 
-const useActivityData = (marketPublicKey: string) => {
-  const LIMIT = 3;
+export const useTableData = (params) => {
+  const LIMIT = 20;
 
+  const { publicKey, url: baseUrl, id } = params;
   const [isListEnded, setIsListEnded] = useState<boolean>(false);
 
   const fetchData = async ({
     pageParam,
-    marketPublicKey,
+    publicKey,
   }: {
     pageParam: number;
-    marketPublicKey: string;
+    publicKey: string;
   }) => {
     const data: NftActivityData[] = await (
       await fetch(
-        `https://${
-          process.env.BACKEND_DOMAIN
-        }/trades/${marketPublicKey}?sortBy=timestamp&sort=desc&limit=${LIMIT}&skip=${
-          LIMIT * pageParam
+        `${baseUrl}/${publicKey}?sortBy=timestamp&sort=desc&limit=${LIMIT}&skip=${
+          LIMIT * 0
         }`,
       )
     ).json();
@@ -42,10 +41,10 @@ const useActivityData = (marketPublicKey: string) => {
   };
 
   const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
-    ['marketActivity', marketPublicKey],
-    ({ pageParam = 0 }) => fetchData({ marketPublicKey, pageParam }),
+    [id, publicKey],
+    ({ pageParam = 0 }) => fetchData({ pageParam, publicKey }),
     {
-      enabled: !!marketPublicKey,
+      enabled: !!publicKey,
       getPreviousPageParam: (firstPage) => {
         return firstPage.pageParam - 1 ?? undefined;
       },
@@ -65,13 +64,21 @@ const useActivityData = (marketPublicKey: string) => {
   };
 };
 
+const url = `https://${process.env.BACKEND_DOMAIN}/trades`;
+
 export const CollectionActivityTab: FC = memo(() => {
   const { ref, inView } = useIntersection();
 
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
+  const params = {
+    url,
+    publicKey: marketPublicKey,
+    id: 'marketActivity',
+  };
+
   const { data, fetchNextPage, isFetchingNextPage, isListEnded } =
-    useActivityData(marketPublicKey);
+    useTableData(params);
 
   useEffect(() => {
     if (inView && !isFetchingNextPage && !isListEnded) {

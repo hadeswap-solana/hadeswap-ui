@@ -1,78 +1,28 @@
-import { FC, useEffect, useState, memo } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { FC, useEffect, memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import styles from './styles.module.scss';
-import { NftActivityData } from '../../../state/core/types';
 import { useIntersection } from '../../../hooks';
 import { PubKeys, TRADE } from '../../../constants/common';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import ItemsList from '../../../components/ItemsList';
 import { selectCertainPair } from '../../../state/core/selectors';
+import { useTableData } from '../../Collection/components/CollectionTabs/CollectionActivityTab';
 
-const useTradeData = (pairPubkey: string) => {
-  const LIMIT = 3;
-
-  const [isListEnded, setIsListEnded] = useState<boolean>(false);
-
-  const fetchData = async ({
-    pageParam,
-    pairPubkey,
-  }: {
-    pageParam: number;
-    pairPubkey: string;
-  }) => {
-    const data: NftActivityData[] = await (
-      await fetch(
-        `https://${
-          process.env.BACKEND_DOMAIN
-        }/trades/pair/${pairPubkey}?sortBy=timestamp&sort=desc&limit=${LIMIT}&skip=${
-          LIMIT * pageParam
-        }`,
-      )
-    ).json();
-
-    if (!data?.length) {
-      setIsListEnded(true);
-    }
-
-    return {
-      pageParam,
-      data,
-    };
-  };
-
-  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
-    ['pairPubkey', pairPubkey],
-    ({ pageParam = 0 }) => fetchData({ pairPubkey, pageParam }),
-    {
-      enabled: !!pairPubkey,
-      getPreviousPageParam: (firstPage) => {
-        return firstPage.pageParam - 1 ?? undefined;
-      },
-      getNextPageParam: (lastPage) => {
-        return lastPage.data?.length ? lastPage.pageParam + 1 : undefined;
-      },
-      cacheTime: 100_000,
-      networkMode: 'offlineFirst',
-    },
-  );
-
-  return {
-    data,
-    fetchNextPage,
-    isFetchingNextPage,
-    isListEnded,
-  };
-};
+const url = `https://${process.env.BACKEND_DOMAIN}/trades/pair`;
 
 export const PoolTradeTable: FC = memo(() => {
   const { ref, inView } = useIntersection();
   const pool = useSelector(selectCertainPair);
 
-  const { data, fetchNextPage, isFetchingNextPage, isListEnded } = useTradeData(
-    pool?.pairPubkey,
-  );
+  const params = {
+    url,
+    publicKey: pool?.pairPubkey,
+    id: 'marketActivity',
+  };
+
+  const { data, fetchNextPage, isFetchingNextPage, isListEnded } =
+    useTableData(params);
 
   useEffect(() => {
     if (inView && !isFetchingNextPage && !isListEnded) {
