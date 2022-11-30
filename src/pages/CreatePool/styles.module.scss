@@ -1,7 +1,9 @@
 .contentWrapper {
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   justify-content: center;
+  align-items: center;
   gap: 16px;
   margin-top: 24px;
 }
