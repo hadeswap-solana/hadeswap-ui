@@ -7,7 +7,7 @@ interface ButtonProps {
   className?: string;
   outlined?: boolean;
   isDisabled?: boolean;
-  onClick?: () => void;
+  onClick?: (args?: any) => void;
   children: JSX.Element[] | JSX.Element;
 }
 

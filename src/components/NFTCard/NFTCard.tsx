@@ -55,10 +55,16 @@ export const NFTCard: FC<NFTCardProps> = ({
       onClick={onCardClick && onCardClick}
     >
       <div className={styles.cardImageWrapper}>
-        {!selected && (
+        {!selected && !withoutHover && (
           <div className={styles.cardImageHover}>
             {onExchange && (
-              <Button className={styles.cardButton} onClick={onExchange}>
+              <Button
+                className={styles.cardButton}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onExchange();
+                }}
+              >
                 <LoopIcon />
                 <span>exchange</span>
               </Button>
