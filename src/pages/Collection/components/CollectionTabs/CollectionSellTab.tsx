@@ -78,6 +78,7 @@ export const CollectionSellTab: FC = () => {
                 onAddToCart={createOnBtnClick(order)}
                 selected={order?.selected}
                 disabled={order.price <= 0}
+                rarity={order.rarity}
               />
             ))}
           </FakeInfinityScroll>
