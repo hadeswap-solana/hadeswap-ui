@@ -151,6 +151,7 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
       name: payloadOrder.name,
       traits: payloadOrder.traits,
       collectionName: payloadOrder.collectionName,
+      rarity: payloadOrder.rarity || null,
       market: payloadOrder.market,
       mathCounter: payloadOrder.mathCounter,
       nftPairBox: isBuyOrder ? payloadOrder.nftPairBox : null,

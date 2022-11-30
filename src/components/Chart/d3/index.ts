@@ -1,0 +1,1 @@
+export { renderChart } from './renderChart';

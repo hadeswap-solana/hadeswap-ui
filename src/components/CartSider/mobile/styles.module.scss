@@ -1,0 +1,94 @@
+.pocketModal {
+  top: var(--cart-sider-pocket-mode-height);
+  border-width: 1px 1px 0 1px;
+}
+
+.cartInner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  overflow-x: clip;
+}
+
+.cartBody {
+  flex-grow: 1;
+  height: 1px;
+  overflow-y: scroll;
+
+  @media screen and (max-width: 1024px) {
+    width: calc(100% + 16px);
+  }
+}
+
+.showModalToHeader {
+  top: var(--header-height-mobile);
+  animation: showToHeader var(--base-animation-time);
+}
+
+.showModalToTop {
+  top: 0;
+  height: 100vh;
+  animation: showToTop var(--base-animation-time);
+}
+
+.hideModalfromHeader {
+  animation: hideFromHeader var(--base-animation-time);
+}
+
+.hideModalfromTop {
+  height: 100vh;
+  animation: hideFromTop var(--base-animation-time);
+}
+
+@keyframes showToHeader {
+  0% {
+    top: var(--cart-sider-pocket-mode-height);
+  }
+  100% {
+    top: var(--header-height-mobile);
+  }
+}
+
+@keyframes showToTop {
+  0% {
+    top: var(--cart-sider-pocket-mode-height);
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@keyframes hideFromHeader {
+  0% {
+    top: var(--header-height-mobile);
+  }
+  100% {
+    top: var(--cart-sider-pocket-mode-height);
+  }
+}
+
+@keyframes hideFromTop {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: var(--cart-sider-pocket-mode-height);
+  }
+}
+
+.badgeButtonWrapper {
+  margin-bottom: 16px;
+}
+
+.badgeButton {
+  background-color: var(--blue-color);
+}
+
+.submitWrapper {
+  margin-top: 16px;
+
+  button {
+    margin-bottom: 16px;
+  }
+}
+

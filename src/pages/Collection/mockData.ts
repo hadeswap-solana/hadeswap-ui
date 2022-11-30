@@ -1,11 +1,4 @@
-import deGodsLogo from '../../assets/mockImages/deGodsLogo.jpg';
-
 export const mockData = {
-  slug: 'DeGods',
-  name: 'DeGods',
-  imageUrl: deGodsLogo,
-  floorPrice: '350.25',
-  bestOffer: '340.01',
-  offerTVL: '12345.67',
-  volume: '4321.09',
+  collectionDescription:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ante justo, aliquam vitae justo nec, tincidunt commodo quam. Proin dignissim non est a suscipit. Morbi fermentum elit nec orci fringilla tristique. Mauris lobortis euismod facilisis. Sed at felis sed metus condimentum ullamcorper.',
 };

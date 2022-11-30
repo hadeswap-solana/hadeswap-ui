@@ -1,0 +1,41 @@
+.h2 {
+  text-align: center;
+}
+
+.withdrawBlock {
+  margin: 0 auto 16px;
+}
+
+.settingsBlock {
+  display: flex;
+  flex-grow: 1;
+  flex-flow: row wrap;
+  gap: 16px;
+}
+
+.chartWrapper {
+  margin-top: 16px;
+}
+
+.buttonsWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+
+  button {
+    width: 186px;
+  }
+
+  @media (max-width: 767px) {
+    flex-wrap: wrap;
+  }
+}
+
+.chartWrapper {
+  margin-top: 16px;
+  background: var(--component-base-background);
+  border: var(--border-base);
+  border-radius: var(--border-radius-base);
+  padding: 25px 15px 25px 0;
+}

@@ -1,0 +1,13 @@
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  column-gap: 16px;
+  margin-top: 24px;
+}
+
+.h2 {
+  text-align: center;
+}

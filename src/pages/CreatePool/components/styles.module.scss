@@ -1,0 +1,88 @@
+.searchWrapper {
+  margin-bottom: 24px;
+}
+
+.stepsButtonsWrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 24px 0;
+}
+
+.poolTypeWidget {
+  min-width: 318px;
+  text-align: center;
+  cursor: pointer;
+
+  &.active {
+    border-color: var(--blue-color);
+  }
+
+  @media (max-width: 1080px) {
+    min-width: 229px;
+  }
+
+  @media (max-width: 767px) {
+    min-width: unset;
+    width: 100%;
+  }
+}
+
+.poolTypeBadges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-top: 16px;
+}
+
+.poolTypeTitle {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+
+  @media (max-width: 1080px) {
+    font-size: 18px;
+  }
+}
+
+.settingsBlockWrapper {
+  width: 100%;
+}
+
+.settingsBlock {
+  display: flex;
+  flex-grow: 1;
+  gap: 16px;
+  width: 100%;
+
+  @media (max-width: 767px) {
+    flex-wrap: wrap;
+  }
+}
+
+.settingsButtonsWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.chartWrapper {
+  margin-top: 16px;
+  background: var(--component-base-background);
+  border: var(--border-base);
+  border-radius: var(--border-radius-base);
+  padding: 25px 15px 25px 0;
+}
+
+.cards {
+  display: flex;
+  gap: 16px;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
