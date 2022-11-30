@@ -1,0 +1,27 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--primary-white-color);
+  background: var(--blue-color);
+
+  span {
+    text-align: center;
+    font-family: var(--font-family-rubik);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 100%;
+  }
+
+  @media (max-width: 1080px) {
+    width: 40px;
+    height: 40px;
+
+    span {
+      font-size: 9px;
+    }
+  }
+}
