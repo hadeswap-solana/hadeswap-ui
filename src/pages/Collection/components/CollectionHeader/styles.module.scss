@@ -1,5 +1,5 @@
 .headerWrapper {
-  height: var(--collection-page-header-height);;
+  height: var(--collection-page-header-height);
 }
 
 .headerInner {
@@ -11,27 +11,55 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
+
+  @media (max-width: 1024px) {
+    height: 426px;
+  }
+
+  @media (max-width: 767px) {
+    height: 426px;
+  }
 }
 
 .infoWrapper {
   display: flex;
   height: 100%;
   padding: 56px 32px 23px;
-  background: linear-gradient(360deg, #0a0e11 0%, rgba(10, 14, 17, 0.8) 100%)
+  background: linear-gradient(360deg, #0a0e11 0%, rgba(10, 14, 17, 0.8) 100%);
+
+  @media (max-width: 1024px) {
+    align-items: center;
+    flex-direction: column;
+    padding: 32px 16px;
+  }
 }
 
 .imageHolder {
   width: 210px;
   height: 210px;
-  border-radius: 20px;
+  border-radius: var(--border-radius-base);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
   overflow: hidden;
+
+  @media (max-width: 1024px) {
+    border-radius: var(--border-radius-small);
+    min-height: 80px;
+    max-height: 80px;
+    width: 80px;
+  }
 }
 
 .collectionInfo {
   margin-left: 24px;
+
+  @media (max-width: 1024px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0;
+  }
 }
 
 .collectionTitle {
@@ -40,6 +68,11 @@
   font-weight: 500;
   font-size: 38px;
   line-height: 46px;
+
+  @media (max-width: 1024px) {
+    text-align: center;
+    font-size: 24px;
+  }
 }
 
 .collectionDescriptionWrapper {
@@ -47,6 +80,11 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    gap: 16px;
+  }
 }
 
 .collectionDescription {
@@ -58,6 +96,11 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+
+  @media (max-width: 767px) {
+    max-width: 343px;
+    margin: 0;
+  }
 }
 
 .collectionDescriptionSocial {
@@ -113,10 +156,29 @@
   }
 }
 
+.collapsedStatWrapper {
+  @media (max-width: 1160px) {
+    flex-wrap: wrap;
+    max-width: 400px;
+  }
+}
+
 .collectionStatWrapper {
   display: flex;
   justify-content: space-between;
   gap: 16px;
+
+  @media (max-width: 1024px) {
+    flex-wrap: nowrap;
+    max-width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 300px;
+  }
 }
 
 .collectionStatItem {
@@ -124,6 +186,14 @@
   flex-grow: 1;
   height: 80px;
   padding: 16px;
+
+  @media (max-width: 767px) {
+    svg {
+      width: 15px;
+      height: 15px;
+    }
+    height: 72px;
+  }
 }
 
 .collectionStatTitle {
@@ -132,6 +202,10 @@
   font-size: 14px;
   line-height: 22px;
   color: var(--font-grey-color);
+
+  @media (max-width: 767px) {
+    font-size: 12px;
+  }
 }
 
 .collectionStatValue {
@@ -139,4 +213,18 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 22px;
+
+  @media (max-width: 767px) {
+    font-size: 14px;
+  }
+}
+
+.poolButton {
+  display: none;
+
+  @media (max-width: 1024px) {
+    display: flex;
+    margin-top: 16px;
+    width: 103px;
+  }
 }

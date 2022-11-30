@@ -29,6 +29,10 @@
   font-weight: 500;
   font-size: 24px;
   line-height: 28px;
+
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
 }
 
 .cardSubTitle {
@@ -46,6 +50,10 @@
         width: 12px;
       }
     }
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 14px;
   }
 }
 
@@ -75,7 +83,7 @@
 
 .scrollBlockWrapper {
   max-width: 632px;
-  min-width: 470px;
+  min-width: 288px;
   flex-grow: 1;
   margin-top: 16px;
   overflow: hidden;

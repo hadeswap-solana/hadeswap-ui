@@ -13,20 +13,15 @@ import {
   selectCertainPair,
   selectCertainPairLoading,
 } from '../../state/core/selectors';
-import { useQuery } from '@tanstack/react-query';
-import { fetchSwapHistory } from '../../requests/requests';
 import { Chart, usePriceGraph } from '../../components/Chart';
 import styles from './PoolPage.module.scss';
+import { PoolTradeTable } from './components/PoolTradeTable';
 
 export const PoolPage: FC = () => {
   const market = useSelector(selectCertainMarket);
   const pool = useSelector(selectCertainPair);
   const marketLoading = useSelector(selectCertainMarketLoading);
   const poolLoading = useSelector(selectCertainPairLoading);
-
-  const { data } = useQuery(['swapHistory', `${pool?.pairPubkey}`], () =>
-    fetchSwapHistory(pool?.pairPubkey),
-  );
 
   useFetchPair();
   useFetchMarket(pool?.market);
@@ -61,6 +56,7 @@ export const PoolPage: FC = () => {
                 className={styles.chart}
               />
             )}
+            <PoolTradeTable />
           </>
         )}
       </PageContentLayout>

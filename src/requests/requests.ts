@@ -1,5 +1,6 @@
 import { web3 } from 'hadeswap-sdk';
 import { Pair, MarketInfo, Nft } from '../state/core/types';
+import { AllStats, TVLandVolumeStats, TopMarket } from './types';
 
 export const fetchAllMarkets = async (): Promise<MarketInfo[]> => {
   const response = await fetch(`https://${process.env.BACKEND_DOMAIN}/markets`);
@@ -73,11 +74,30 @@ export const fetchMarketWalletNfts = async ({
   return await response.json();
 };
 
-export const fetchSwapHistory = async (pairPubkey: string) => {
+export const fetchAllStats = async (): Promise<AllStats> => {
+  const response = await fetch(`https://${process.env.BACKEND_DOMAIN}/stats`);
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return await response.json();
+};
+
+export const fetchTVLandVolumeStats = async (): Promise<TVLandVolumeStats> => {
   const response = await fetch(
-    `https://${process.env.BACKEND_DOMAIN}/trades/pair/${pairPubkey}`,
+    `https://${process.env.BACKEND_DOMAIN}/stats/all?$volumePeriod=all`,
   );
 
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return await response.json();
+};
+
+export const fetchTopMarkets = async (): Promise<TopMarket[]> => {
+  const response = await fetch(
+    `https://${process.env.BACKEND_DOMAIN}/stats/markets/volume24h`,
+  );
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
