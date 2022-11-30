@@ -50,11 +50,9 @@ export const PoolPage: FC = () => {
             <PoolGeneralInfo pool={pool} />
             <NftList pool={pool} />
             {!!chartData && !!chartData?.length && (
-              <Chart
-                title="price graph"
-                data={chartData}
-                className={styles.chart}
-              />
+              <div className={styles.chartWrapper}>
+                <Chart title="price graph" data={chartData} />
+              </div>
             )}
             <PoolTradeTable />
           </>
