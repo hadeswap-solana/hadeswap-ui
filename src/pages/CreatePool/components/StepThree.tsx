@@ -96,7 +96,6 @@ export const StepThree: FC<StepThreeProps> = ({
   const isLoading = marketsLoading || nftsLoading;
 
   const chartData = usePriceGraph({
-    isCreate: true,
     baseSpotPrice: spotPrice * 1e9,
     delta: rawDelta,
     fee: rawFee || 0,

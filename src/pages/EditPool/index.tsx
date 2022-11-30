@@ -129,7 +129,6 @@ export const EditPool: FC = () => {
   });
 
   const chartData = usePriceGraph({
-    isCreate: true,
     baseSpotPrice: spotPrice * 1e9,
     delta: rawDelta,
     fee: fee || 0,

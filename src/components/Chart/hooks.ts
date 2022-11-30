@@ -24,7 +24,6 @@ export const useD3 = <T extends SVGSVGElement = SVGSVGElement>(
 };
 
 type UsePriceGraph = (props: {
-  isCreate?: boolean;
   baseSpotPrice: number;
   delta: number;
   fee?: number;
@@ -36,7 +35,6 @@ type UsePriceGraph = (props: {
 }) => Point[] | null;
 
 export const usePriceGraph: UsePriceGraph = ({
-  isCreate = false,
   baseSpotPrice,
   delta,
   fee = 0,
@@ -89,19 +87,17 @@ export const usePriceGraph: UsePriceGraph = ({
     .map((price, i) => {
       const newPrice = price / 1e9;
       return {
-        order: mathCounter ? i + mathCounter : 1 + i + mathCounter,
+        order: 1 + i,
         price: newPrice - newPrice * (fee / 10000),
         type: 'buy',
       };
     })
     .reverse() as Point[];
 
-  console.log(pointsBuy, 'pointsBuy');
-
   const pointsSell: Point[] = priceArraySell.map((price, i) => {
     const newPrice = price / 1e9;
     return {
-      order: mathCounter ? i + mathCounter : 1 + i + mathCounter,
+      order: 1 + i,
       price: newPrice - newPrice * (fee / 10000),
       type: 'sell',
     };
@@ -111,15 +107,12 @@ export const usePriceGraph: UsePriceGraph = ({
     .map((price, i) => {
       const newPrice = price / 1e9;
       return {
-        order: 1 + i + mathCounter,
+        order: 1 + i,
         price: newPrice - newPrice * (fee / 10000),
         type: 'buy',
       };
     })
     .reverse() as Point[];
-
-  console.log(pointsSell, 'pointsSell');
-  console.log(type, 'type type');
 
   return type === 'liquidityProvision'
     ? [...pointsLiquidityProvision, ...pointsSell]
