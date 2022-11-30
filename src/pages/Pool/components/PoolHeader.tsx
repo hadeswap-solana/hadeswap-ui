@@ -32,7 +32,8 @@ export const PoolHeader: FC<PoolHeaderProps> = ({ market, pool }) => {
     history.push(createEditPoollLink(pool.pairPubkey));
   };
 
-  const { accumulatedFees, onWithdrawClick } = useWithdrawFees({ pool });
+  const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
+    useWithdrawFees({ pool });
 
   return (
     <div className={styles.header}>
@@ -62,6 +63,7 @@ export const PoolHeader: FC<PoolHeaderProps> = ({ market, pool }) => {
         <HeaderWidgetCard title="owner" value={pool?.assetReceiver} />
         {isOwner && (
           <WithdrawFees
+            isButtonDisabled={isWithdrawDisabled}
             accumulatedFees={accumulatedFees}
             onClick={onWithdrawClick}
           />

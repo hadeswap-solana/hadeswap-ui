@@ -18,13 +18,20 @@ export const useCloseClick = ({
   pool,
 }: {
   pool: Pair;
-}): (() => Promise<void>) => {
+}): {
+  onCloseClick: () => Promise<void>;
+  isClosePoolDisabled: boolean;
+} => {
   const dispatch = useDispatch();
   const history = useHistory();
   const connection = useConnection();
   const wallet = useWallet();
 
-  return async () => {
+  const isClosePoolDisabled = !(
+    pool?.nftsCount === 0 && pool?.buyOrdersAmount === 0
+  );
+
+  const onCloseClick = async () => {
     const transactions = [];
     const cards = [];
 
@@ -77,5 +84,10 @@ export const useCloseClick = ({
     if (isSuccess) {
       history.push(`/my-pools`);
     }
+  };
+
+  return {
+    onCloseClick,
+    isClosePoolDisabled,
   };
 };

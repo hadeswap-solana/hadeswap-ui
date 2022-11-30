@@ -25,8 +25,9 @@ import { Pair } from '../../state/core/types';
 import { useHistory } from 'react-router-dom';
 
 type UseWithdrawFees = ({ pool: Pair }) => {
-  accumulatedFees: string;
   onWithdrawClick: () => Promise<void>;
+  accumulatedFees: string;
+  isWithdrawDisabled: boolean;
 };
 
 export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
@@ -36,6 +37,7 @@ export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
   const wallet = useWallet();
 
   const accumulatedFees = formatRawSol(pool?.totalAccumulatedFees);
+  const isWithdrawDisabled = !parseFloat(accumulatedFees);
 
   const onWithdrawClick = async () => {
     const transactions = [];
@@ -96,8 +98,9 @@ export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
   };
 
   return {
-    accumulatedFees,
     onWithdrawClick,
+    accumulatedFees,
+    isWithdrawDisabled,
   };
 };
 
@@ -115,7 +118,10 @@ export const useWithdrawAllClick = ({
   rawSpotPrice,
   rawDelta,
   curveType,
-}: UseWithdrawAllClick): (() => Promise<void>) => {
+}: UseWithdrawAllClick): {
+  onWithdrawAllClick: () => Promise<void>;
+  isWithdrawAllDisabled: boolean;
+} => {
   const dispatch = useDispatch();
   const history = useHistory();
   const connection = useConnection();
@@ -125,7 +131,13 @@ export const useWithdrawAllClick = ({
   const isNftForTokenPool = pairType === PairType.NftForToken;
   const isTokenForNFTPool = pairType === PairType.TokenForNFT;
 
-  return async () => {
+  const isWithdrawAllDisabled = isTokenForNFTPool
+    ? !pool?.buyOrdersAmount
+    : isNftForTokenPool
+    ? !pool?.sellOrders.length
+    : !(pool?.nftsCount || pool?.buyOrdersAmount);
+
+  const onWithdrawAllClick = async () => {
     const transactions = [];
     const cards = [];
 
@@ -369,5 +381,10 @@ export const useWithdrawAllClick = ({
     if (isSuccess) {
       history.push(`/pools/${pool?.pairPubkey}`);
     }
+  };
+
+  return {
+    onWithdrawAllClick,
+    isWithdrawAllDisabled,
   };
 };
