@@ -12,12 +12,6 @@ export const formatPriceNumber = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 8,
 });
 
-export const formatRawSol = (number: number): string => {
-  return number
-    ? formatPriceNumber.format(Number((number / 1e9).toFixed(3)))
-    : '0';
-};
-
 // shorten the checksummed version of the input address to have 4 characters at start and end
 export const shortenAddress = (address: string, chars = 4): string => {
   return `${address.slice(0, chars)}...${address.slice(-chars)}`;

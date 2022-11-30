@@ -1,9 +1,8 @@
 import { FC, memo } from 'react';
-import { Typography } from 'antd';
-import { SolPrice } from '../../SolPrice/SolPrice';
-import DeleteButton from '../../Buttons/DeleteButton';
-
-import styles from './styles.module.scss';
+import { Button, Typography } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import solanaLogo from '../../../assets/icons/svg/solana-sol-logo.svg';
+import styles from '../CartSider.module.scss';
 
 interface CardProps {
   imageUrl: string;
@@ -19,11 +18,20 @@ const Card: FC<CardProps> = ({ name, price, imageUrl, onDeselect }) => (
       <Typography.Title level={5} className={styles.cardTitle}>
         {name}
       </Typography.Title>
-      <SolPrice className={styles.cardPrice} price={parseFloat(price)} />
+      <Typography.Text className={styles.cardPrice}>
+        <img width={16} height={16} src={solanaLogo} alt="sol" /> {price}
+      </Typography.Text>
     </div>
-    {onDeselect && (
-      <DeleteButton className={styles.deleteButton} onClick={onDeselect} />
-    )}
+    <div className={styles.btnWrapper}>
+      {onDeselect && (
+        <Button
+          type="default"
+          shape="default"
+          icon={<CloseOutlined />}
+          onClick={onDeselect}
+        />
+      )}
+    </div>
   </div>
 );
 

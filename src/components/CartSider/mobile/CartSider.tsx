@@ -1,20 +1,20 @@
 import { FC } from 'react';
-import { useDispatch } from 'react-redux';
+import BadgeButton from '../components/BadgeButton';
+import Card from '../components/Card';
 import withModal from '../../Modal/mobile/Modal';
+import classNames from 'classnames';
+import { formatBNToString } from '../../../utils';
+import BN from 'bn.js';
 import { CartSiderProps } from '../index';
-import BadgeButton from '../../Buttons/BadgeButton';
-import CartSection from '../components/CartSection';
-import CartSectionInvalid from '../components/CartSectionInvalid';
-import Button from '../../Buttons/Button';
-
-import styles from './styles.module.scss';
+import { SolPrice } from '../../SolPrice/SolPrice';
+import { Button } from 'antd';
+import { coreActions } from '../../../state/core/actions';
+import styles from './CartSider.module.scss';
 
 const CartSiderMobile: FC<CartSiderProps> = (props) => {
-  const dispatch = useDispatch();
-
   const {
     createOnDeselectHandler,
-    onDeselectBulkHandler,
+    dispatch,
     swap,
     setShowModal,
     cartItems,
@@ -26,41 +26,99 @@ const CartSiderMobile: FC<CartSiderProps> = (props) => {
   } = props;
 
   return (
-    <div className={styles.cartInner}>
+    <div className={styles.modalInner}>
       <div className={styles.badgeButtonWrapper}>
         <BadgeButton
-          btnClassName={styles.badgeButton}
-          onClick={() => setShowModal((value: boolean) => !value)}
+          setShowModal={setShowModal}
+          dispatch={dispatch}
           itemsAmount={itemsAmount}
         />
       </div>
-      <div className={styles.cartBody}>
-        <CartSection
-          title={`buy ${cartItems.buy.length} ${
-            cartItems.buy.length > 1 ? 'NFTs' : 'NFT'
-          }`}
-          cartItems={cartItems.buy}
-          onDeselectBulkHandler={onDeselectBulkHandler}
-          createOnDeselectHandler={createOnDeselectHandler}
-          totalPrice={totalBuy}
-        />
-        <CartSection
-          title={`sell ${cartItems.sell.length} nfts`}
-          cartItems={cartItems.sell}
-          onDeselectBulkHandler={onDeselectBulkHandler}
-          createOnDeselectHandler={createOnDeselectHandler}
-          totalPrice={totalSell}
-        />
-        <CartSectionInvalid invalidItems={invalidItems} dispatch={dispatch} />
+      <div className={styles.main}>
+        {!!cartItems.buy.length && (
+          <div className={styles.section}>
+            <div className={styles.header}>
+              <span className={styles.headerTitle}>
+                buy {cartItems.buy.length}{' '}
+                {cartItems.buy.length > 1 ? 'NFTs' : 'NFT'}
+              </span>
+              <SolPrice className={styles.headerPrice} price={totalBuy} raw />
+            </div>
+            <div className={styles.content}>
+              {cartItems.buy.map((item) => (
+                <Card
+                  key={item.mint}
+                  name={item.name}
+                  imageUrl={item.imageUrl}
+                  price={formatBNToString(new BN(item.price))}
+                  onDeselect={createOnDeselectHandler(item)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+        {!!cartItems.sell.length && (
+          <div className={styles.section}>
+            <div className={styles.header}>
+              <span className={styles.headerTitle}>
+                sell&nbsp;{cartItems.sell.length}&nbsp;nfts
+              </span>
+              <SolPrice className={styles.headerPrice} price={totalSell} raw />
+            </div>
+            <div className={styles.content}>
+              {cartItems.sell.map((item) => (
+                <Card
+                  key={item.mint}
+                  name={item.name}
+                  imageUrl={item.imageUrl}
+                  price={formatBNToString(new BN(item.price))}
+                  onDeselect={createOnDeselectHandler(item)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+        {!!invalidItems.length && (
+          <div className={styles.section}>
+            <div className={styles.header}>
+              <span className={styles.headerTitle}>
+                invalid&nbsp;{invalidItems.length}&nbsp;orders
+              </span>
+              <Button
+                size="small"
+                onClick={() => dispatch(coreActions.clearInvalidOrders())}
+              >
+                clear
+              </Button>
+            </div>
+            <p className={styles.headerSubTitle}>
+              {
+                "according blockchain changes, this orders aren't available anymore"
+              }
+            </p>
+            <div className={classNames(styles.content, styles.invalid)}>
+              {invalidItems.map((item) => (
+                <Card
+                  key={item.mint}
+                  name={item.name}
+                  imageUrl={item.imageUrl}
+                  price={formatBNToString(new BN(item.price))}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-      <div className={styles.submitWrapper}>
-        <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
-          <span>swap</span>
-        </Button>
-        {/* <Button outlined isDisabled={isSwapButtonDisabled} onClick={() => null}>
-          <span>swap by credit card</span>
-        </Button> */}
-      </div>
+      <Button
+        disabled={isSwapButtonDisabled}
+        type="primary"
+        block
+        size="large"
+        onClick={swap}
+        className={styles.swapButton}
+      >
+        swap
+      </Button>
     </div>
   );
 };

@@ -1,26 +1,19 @@
-import React, {
-  FC,
-  useEffect,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectScreeMode } from '../../state/common/selectors';
 import CartSiderDesktop from './CartSider';
 import CartSiderMobile from './mobile/CartSider';
 import { useCartSider, useSwap } from './hooks';
+import styles from './mobile/CartSider.module.scss';
 import { ScreenTypes } from '../../state/common/types';
 import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
 
-import styles from './mobile/styles.module.scss';
-
 export interface CartSiderProps {
-  createOnDeselectHandler?: (arg: CartOrder) => () => void;
-  onDeselectBulkHandler?: (arg: CartOrder[]) => void;
+  createOnDeselectHandler?: (arg) => () => void;
+  dispatch?: (arg) => void;
   swap?: () => Promise<void>;
-  setShowModal?: (func: Dispatch<SetStateAction<boolean>>) => void;
+  setShowModal?: () => void;
   itemsAmount: number;
   isSwapButtonDisabled?: boolean;
   isCartEmpty: boolean;
@@ -63,12 +56,6 @@ const CartSider: FC = () => {
     dispatch(coreActions.removeOrderFromCart(order.mint));
   };
 
-  const onDeselectBulkHandler = (data) => {
-    data.forEach((item) =>
-      dispatch(coreActions.removeOrderFromCart(item.mint)),
-    );
-  };
-
   useEffect(() => {
     if (!isCartEmpty && !visible) {
       setModalClassName(styles.pocketModal);
@@ -99,11 +86,10 @@ const CartSider: FC = () => {
     }
   }, [isCartEmpty, visible, showModal, isHeaderVisible]);
 
-  return screenMode !== ScreenTypes.DESKTOP ? (
+  return screenMode === ScreenTypes.TABLET ? (
     visible && (
       <CartSiderMobile
         createOnDeselectHandler={createOnDeselectHandler}
-        onDeselectBulkHandler={onDeselectBulkHandler}
         cartItems={cartItems}
         invalidItems={invalidItems}
         dispatch={dispatch}
@@ -123,9 +109,9 @@ const CartSider: FC = () => {
   ) : (
     <CartSiderDesktop
       createOnDeselectHandler={createOnDeselectHandler}
-      onDeselectBulkHandler={onDeselectBulkHandler}
       cartItems={cartItems}
       invalidItems={invalidItems}
+      dispatch={dispatch}
       swap={swap}
       itemsAmount={itemsAmount}
       isSwapButtonDisabled={isSwapButtonDisabled}

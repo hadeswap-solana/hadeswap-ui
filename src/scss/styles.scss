@@ -1,41 +1,104 @@
+// @import './base/reset.scss';
+@import './base/scrollBar.scss';
 @import './abstracts/fonts.scss';
 @import './abstracts/variables.scss';
 
-* {
-  font-family: var(--font-family-montserrat);
-  color: var(--primary-white-color);
-}
+:global {
+  a {
+    &,
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
 
-a {
-  &,
-  &:hover,
-  &:focus,
-  &:focus-visible,
-  &:active {
-    text-decoration: none;
-    color: inherit;
+  * {
+    font-family: var(--font-family-roboto);
   }
 }
 
-input {
-  padding: 0;
-  border: 0;
-  outline: 0;
-}
+// body {
+//   background: var(--black-color);
+//   color: var(--white-color);
+//   font: var(--font-text-3);
+// }
 
-button {
-  padding: 0;
-  border: 0;
-  background-color: var(--transparent-color);
-  cursor: pointer;
-}
+// h1,
+// h2,
+// h3,
+// h4,
+// h5 {
+//   color: var(--white-color);
+// }
 
-h1, h2, h3, h4, h5, p {
-  margin: 0;
-  color: unset;
-}
+// :global {
+//   .rc-tooltip {
+//     opacity: 1 !important;
+//   }
 
-ul, li {
-  margin: 0;
-  padding: 0;
-}
+//   .rc-tooltip-placement-bottom .rc-tooltip-arrow,
+//   .rc-tooltip-placement-bottomLeft .rc-tooltip-arrow,
+//   .rc-tooltip-placement-bottomRight .rc-tooltip-arrow {
+//     // border-bottom-color: var(--white-color);
+//     opacity: 0 !important;
+//   }
+
+//   .rc-tooltip-inner {
+//     border-radius: 0 !important;
+//     border: none !important;
+//     font-family: var(--font-family-oxanium) !important;
+//     font-size: 16px !important;
+//     padding: 8px !important;
+//   }
+
+//   .rc-tooltip.custom-animation-appear,
+//   .rc-tooltip.custom-animation-enter {
+//     opacity: 0 !important;
+//   }
+//   .rc-tooltip.custom-animation-enter,
+//   .rc-tooltip.custom-animation-leave {
+//     display: block !important;
+//   }
+//   .custom-animation-enter,
+//   .custom-animation-appear {
+//     opacity: 0 !important;
+//     animation-duration: 0.1s;
+//     animation-fill-mode: both;
+//     animation-timing-function: ease-in;
+//     animation-play-state: paused;
+//   }
+//   .custom-animation-leave {
+//     animation-duration: 0.1s;
+//     animation-fill-mode: both;
+//     animation-timing-function: ease-in;
+//     animation-play-state: paused;
+//   }
+//   .custom-animation-enter.custom-animation-enter-active,
+//   .custom-animation-appear.custom-animation-appear-active {
+//     animation-name: rcToolTipZoomIn;
+//     animation-play-state: running;
+//   }
+//   .custom-animation-leave.custom-animation-leave-active {
+//     animation-name: rcToolTipZoomOut;
+//     animation-play-state: running;
+//   }
+//   @keyframes rcToolTipZoomIn {
+//     0% {
+//       opacity: 0 !important;
+//     }
+//     100% {
+//       opacity: 1 !important;
+//     }
+//   }
+//   @keyframes rcToolTipZoomOut {
+//     0% {
+//       opacity: 1 !important;
+//     }
+//     100% {
+//       opacity: 0 !important;
+//     }
+//   }
+// }

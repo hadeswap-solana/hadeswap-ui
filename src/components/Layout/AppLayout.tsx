@@ -8,11 +8,11 @@ import Header from '../Header';
 import CartSider from '../CartSider';
 import { TransactionsLoadingModal } from '../TransactionsLoadingModal';
 import DocsIcon from '../../icons/DocsIcon';
-import DiscordSquareIcon from '../../icons/DiscordSquareIcon';
-import TwitterSquareIcon from '../../icons/TwitterSquareIcon';
+import DiscordIcon from '../../icons/DiscordIcon';
+import TwitterIcon from '../../icons/TwitterIcon';
 import styles from './AppLayout.module.scss';
 
-const { Footer } = AntdLayout;
+const { Content, Footer } = AntdLayout;
 
 interface LayoutProps {
   customHeader?: JSX.Element;
@@ -25,14 +25,15 @@ interface LayoutProps {
 const DOCS_LIST = [{ to: 'https://docs.hadeswap.com/', icon: DocsIcon }];
 
 const SOCIALS_LIST = [
-  { to: 'https://discord.gg/hadeswap', icon: DiscordSquareIcon },
-  { to: 'https://twitter.com/hadeswap', icon: TwitterSquareIcon },
+  { to: 'https://discord.gg/hadeswap', icon: DiscordIcon },
+  { to: 'https://twitter.com/hadeswap', icon: TwitterIcon },
   // { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
 ];
 
 export const AppLayout: FC<LayoutProps> = ({
   children,
-  hideFooter = true,
+  className = '',
+  hideFooter = false,
   contentClassName = '',
 }) => {
   const dispatch = useDispatch();
@@ -43,54 +44,52 @@ export const AppLayout: FC<LayoutProps> = ({
   }, [location]);
 
   return (
-    <>
-      <div className={styles.layoutWrapper}>
-        <Header />
-        <div className={styles.content}>
-          <div className={styles.mainWrapper}>
-            <main className={classNames(styles.main, contentClassName)}>
-              {children}
-            </main>
-            {!hideFooter && (
-              <Footer>
-                <div className={styles.footerSocial}>
-                  <div className={styles.footerSocialBlock}>
-                    <Typography.Text>documentation</Typography.Text>
-                    <ul className={styles.socialNavs}>
-                      {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
-                        <li className={styles.socialItem} key={idx}>
-                          <a href={to} target="_blank" rel="noreferrer">
-                            <Icon />
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className={styles.footerSocialBlock}>
-                    <Typography.Text>contact us</Typography.Text>
-                    <ul className={styles.socialNavs}>
-                      {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
-                        <li className={styles.socialItem} key={idx}>
-                          <a href={to} target="_blank" rel="noreferrer">
-                            <Icon />
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+    <AntdLayout className={className}>
+      <div className={styles.mainWrapper}>
+        <div className={styles.main}>
+          <Header />
+          <Content className={classNames(styles.content, contentClassName)}>
+            {children}
+          </Content>
+          {!hideFooter && (
+            <Footer>
+              <div className={styles.footerSocial}>
+                <div className={styles.footerSocialBlock}>
+                  <Typography.Text>documentation</Typography.Text>
+                  <ul className={styles.socialNavs}>
+                    {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
+                      <li className={styles.socialItem} key={idx}>
+                        <a href={to} target="_blank" rel="noreferrer">
+                          <Icon />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className={styles.footerDisclaimer}>
-                  hadeswap is currently not audited and will be open sourced
-                  soon after the audit is conducted. use at your own risk.
+                <div className={styles.footerSocialBlock}>
+                  <Typography.Text>contact us</Typography.Text>
+                  <ul className={styles.socialNavs}>
+                    {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
+                      <li className={styles.socialItem} key={idx}>
+                        <a href={to} target="_blank" rel="noreferrer">
+                          <Icon />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </Footer>
-            )}
-          </div>
-          <CartSider />
+              </div>
+              <div className={styles.footerDisclaimer}>
+                hadeswap is currently not audited and will be open sourced soon
+                after the audit is conducted. use at your own risk.
+              </div>
+            </Footer>
+          )}
         </div>
+        <CartSider />
       </div>
       <SelectWalletModal />
       <TransactionsLoadingModal />
-    </>
+    </AntdLayout>
   );
 };
