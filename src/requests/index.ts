@@ -215,7 +215,7 @@ export const useTableData = (params: {
     const data: NftActivityData[] = await (
       await fetch(
         `${baseUrl}/${publicKey}?sortBy=timestamp&sort=desc&limit=${LIMIT}&skip=${
-          LIMIT * 0
+          LIMIT * pageParam
         }`,
       )
     ).json();
