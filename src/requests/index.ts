@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { MarketInfo, Pair, Nft } from '../state/core/types';
+import { MarketInfo, Pair, Nft, NftActivityData } from '../state/core/types';
 import { web3 } from 'hadeswap-sdk';
 import {
   fetchAllMarkets,
@@ -13,7 +14,6 @@ import {
   fetchMarketWalletNfts,
 } from './requests';
 import { coreActions } from '../state/core/actions';
-import { useParams } from 'react-router-dom';
 
 const BASE_STALE_TIME = 5 * 60 * 1000; // 5 min
 const SHORT_STALE_TIME = 10000; // 10 sec
@@ -176,4 +176,59 @@ export const useFetchWalletPairs = (): void => {
       coreActions.setWalletPairs({ data, isLoading: walletPairsLoading }),
     );
   }, [dispatch, data, walletPairsLoading]);
+};
+
+export const useTableData = (params) => {
+  const LIMIT = 20;
+
+  const { publicKey, url: baseUrl, id } = params;
+  const [isListEnded, setIsListEnded] = useState<boolean>(false);
+
+  const fetchData = async ({
+    pageParam,
+    publicKey,
+  }: {
+    pageParam: number;
+    publicKey: string;
+  }) => {
+    const data: NftActivityData[] = await (
+      await fetch(
+        `${baseUrl}/${publicKey}?sortBy=timestamp&sort=desc&limit=${LIMIT}&skip=${
+          LIMIT * 0
+        }`,
+      )
+    ).json();
+
+    if (!data?.length) {
+      setIsListEnded(true);
+    }
+
+    return {
+      pageParam,
+      data,
+    };
+  };
+
+  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
+    [id, publicKey],
+    ({ pageParam = 0 }) => fetchData({ pageParam, publicKey }),
+    {
+      enabled: !!publicKey,
+      getPreviousPageParam: (firstPage) => {
+        return firstPage.pageParam - 1 ?? undefined;
+      },
+      getNextPageParam: (lastPage) => {
+        return lastPage.data?.length ? lastPage.pageParam + 1 : undefined;
+      },
+      cacheTime: 100_000,
+      networkMode: 'offlineFirst',
+    },
+  );
+
+  return {
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    isListEnded,
+  };
 };
