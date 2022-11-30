@@ -1,12 +1,12 @@
-.phantomIcon {
-  margin-right: 10px;
-}
+button.root {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  border-color: var(--primary-color);
+  font-size: 16px;
+  color: var(--primary-color);
 
-.chevronIcon {
-  width: 14px;
-  margin-left: 15px;
-
-  path {
-    fill: var(--blue-color);
+  &:hover {
+    background: rgba(157, 202, 255, 0.3);
   }
 }

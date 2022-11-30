@@ -4,13 +4,15 @@ import { PATHS } from './paths';
 import { Home } from '../pages/HomePage/Home';
 import { Page404 } from '../pages/Page404/Page404';
 import { Collections } from '../pages/Collections/Collections';
-import { CollectionPage } from '../pages/Collection/CollectionPage';
+import { CollectionActivityPage } from '../pages/Collection/CollectionActivityPage';
 import { MyNfts } from '../pages/MyNfts/MyNfts';
 import { MyPools } from '../pages/MyPools/MyPools';
+import { CollectionPoolsPage } from '../pages/Collection/CollectionPoolsPage';
 import { PoolPage } from '../pages/Pool/PoolPage';
-import { CreatePool } from '../pages/CreatePool';
-import { EditPool } from '../pages/EditPool';
-//import { EditPoolOld } from '../pages/EditPoolOld/EditPoolOld';
+import { NewPool } from '../pages/NewPool/NewPool';
+import { EditPool } from '../pages/EditPool/EditPool';
+import { CollectionBuyPage } from '../pages/Collection/CollectionBuyPage';
+import { CollectionSellPage } from '../pages/Collection/CollectionSellPage';
 
 interface Route {
   path: string;
@@ -31,8 +33,23 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: PATHS.COLLECTION,
-    component: CollectionPage,
+    path: PATHS.COLLECTION_BUY,
+    component: CollectionBuyPage,
+  },
+  {
+    exact: true,
+    path: PATHS.COLLECTION_SELL,
+    component: CollectionSellPage,
+  },
+  {
+    exact: true,
+    path: PATHS.COLLECTION_ACTIVITY,
+    component: CollectionActivityPage,
+  },
+  {
+    exact: true,
+    path: PATHS.COLLECTION_POOLS,
+    component: CollectionPoolsPage,
   },
   {
     exact: true,
@@ -52,7 +69,7 @@ export const routes: Route[] = [
   {
     exact: true,
     path: PATHS.CREATE_POOL,
-    component: CreatePool,
+    component: NewPool,
   },
   {
     exact: true,

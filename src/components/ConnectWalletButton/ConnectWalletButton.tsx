@@ -1,15 +1,16 @@
-import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import {
+  DisconnectOutlined,
+  DownOutlined,
+  WalletOutlined,
+} from '@ant-design/icons';
+import { Button, Dropdown, Menu, Space } from 'antd';
 import { useDispatch } from 'react-redux';
-import { DisconnectOutlined, WalletOutlined } from '@ant-design/icons';
-import { Dropdown, Menu } from 'antd';
-import ChevronIcon from '../../icons/ChevronIcon';
-import PhantomIcon from '../../icons/PhantomIcon';
-import Button from '../Buttons/Button';
 import { commonActions } from '../../state/common/actions';
 import { shortenAddress } from '../../utils/solanaUtils';
-
+import { FC } from 'react';
 import styles from './ConnectWalletButton.module.scss';
+import classNames from 'classnames';
 
 export interface ConnectButtonProps {
   className?: string;
@@ -17,17 +18,18 @@ export interface ConnectButtonProps {
 
 export const ConnectWalletButton: FC<ConnectButtonProps> = ({ className }) => {
   const dispatch = useDispatch();
+
   const { connected, publicKey, disconnect } = useWallet();
 
   return !connected ? (
     <Button
-      outlined
-      className={className}
+      className={classNames(styles.root, className)}
+      type="ghost"
       onClick={() => {
         dispatch(commonActions.toggleWalletModal());
       }}
     >
-      <span>connect wallet</span>
+      connect wallet
     </Button>
   ) : (
     <Dropdown
@@ -51,13 +53,12 @@ export const ConnectWalletButton: FC<ConnectButtonProps> = ({ className }) => {
         />
       }
     >
-      <div>
-        <Button className={className} outlined>
-          <PhantomIcon className={styles.phantomIcon} />
-          <span>{shortenAddress(publicKey.toBase58())}</span>
-          <ChevronIcon className={styles.chevronIcon} />
-        </Button>
-      </div>
+      <Button className={classNames(styles.root, className)} type="ghost">
+        <Space>
+          {shortenAddress(publicKey.toBase58())}
+          <DownOutlined />
+        </Space>
+      </Button>
     </Dropdown>
   );
 };

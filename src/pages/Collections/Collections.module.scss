@@ -1,3 +1,9 @@
+.tableWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .controlsWrapper {
   display: flex;
   width: 100%;
@@ -5,13 +11,28 @@
   margin-bottom: 24px;
   font-size: 16px;
 
-  :global {
-    .ant-input-affix-wrapper {
-      max-width: 520px;
+  input {
+    border-radius: 0;
+  }
+}
 
-      svg {
-        fill: var(--inactive-color);
-      }
-    }
+span.searchInput {
+  max-width: 520px;
+  border: var(--border-base);
+  border-radius: 10px;
+  font-weight: 400;
+  background: var(--primary-background-color) !important;
+
+  svg {
+    fill: var(--inactive-color);
+  }
+
+  input {
+    color: var(--primary-white-color);
+  }
+
+  &:focus,
+  &:focus-visible {
+    color: var(--white-color);
   }
 }

@@ -1,11 +1,13 @@
 .price {
   display: flex;
   align-items: center;
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 32px;
+  column-gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 700;
 }
 
-.rightIcon {
-  margin-left: 4px;
+.logo {
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
 }

@@ -10,9 +10,7 @@ export const Spinner: FC = () => {
       style={{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
         width: '100%',
-        height: '100%',
       }}
     >
       <Spin size="large" indicator={antIcon} />

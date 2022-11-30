@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../../constants';
 import Logo from '../../../icons/Logo';
@@ -8,7 +8,7 @@ import Menu from './Menu';
 import { ConnectWalletButton } from '../../ConnectWalletButton/ConnectWalletButton';
 import styles from './Header.module.scss';
 
-const HeaderMobile: FC = () => {
+const HeaderMobile = (): JSX.Element => {
   const [isMenuVisible, setMenuVisible] = useState<boolean>(false);
 
   return (
