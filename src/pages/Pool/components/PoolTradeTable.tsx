@@ -18,7 +18,7 @@ export const PoolTradeTable: FC = memo(() => {
   const params = {
     url,
     publicKey: pool?.pairPubkey,
-    id: 'marketActivity',
+    id: 'marketTrade',
   };
 
   const { data, fetchNextPage, isFetchingNextPage, isListEnded } =
