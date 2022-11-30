@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useFetchAllMarkets } from '../../../requests';
 import { useSelector } from 'react-redux';
 import {
@@ -7,7 +7,13 @@ import {
 } from '../../../state/core/selectors';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import ItemsList from '../../../components/ItemsList';
+import { Search } from '../../../components/Search';
+import { useSearch } from '../../../components/Search/useSearch';
 import { COLLECTION, PubKeys } from '../../../constants/common';
+import { filterCollections } from '../../Collections/helpers';
+import { MarketInfo } from '../../../state/core/types';
+
+import styles from './styles.module.scss';
 
 interface StepOneProps {
   setStep: (arg: number) => void;
@@ -15,6 +21,8 @@ interface StepOneProps {
 }
 
 export const StepOne: FC<StepOneProps> = ({ setStep, setChosenMarketKey }) => {
+  const [filteredMarkets, setFilteredMarkets] = useState<MarketInfo[]>();
+
   useFetchAllMarkets();
   const markets = useSelector(selectAllMarkets);
   const isLoading = useSelector(selectAllMarketsLoading);
@@ -24,17 +32,29 @@ export const StepOne: FC<StepOneProps> = ({ setStep, setChosenMarketKey }) => {
     setStep(1);
   };
 
+  const { searchStr, handleSearch } = useSearch();
+
+  useEffect(() => {
+    const collections = filterCollections([...markets], searchStr);
+    setFilteredMarkets(collections);
+  }, [searchStr, markets]);
+
   return (
     <>
       {isLoading ? (
         <Spinner />
       ) : (
-        <ItemsList
-          data={markets}
-          mapType={COLLECTION}
-          onRowClick={onRowClick}
-          pubKey={PubKeys.MARKET_PUBKEY}
-        />
+        <>
+          <Search onChange={handleSearch} className={styles.searchWrapper} />
+          {markets?.length && (
+            <ItemsList
+              data={filteredMarkets}
+              mapType={COLLECTION}
+              onRowClick={onRowClick}
+              pubKey={PubKeys.MARKET_PUBKEY}
+            />
+          )}
+        </>
       )}
     </>
   );

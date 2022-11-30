@@ -1,14 +1,25 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
+import classNames from 'classnames';
 import { SearchIcon } from '../../icons/SearchIcon';
 import styles from './Search.module.scss';
 
-const Search: FC = () => {
+interface SearchProps {
+  className?: string;
+  placeholder?: string;
+  onChange: (event: React.BaseSyntheticEvent<Event>) => void;
+}
+
+export const Search: FC<SearchProps> = ({
+  className,
+  placeholder = 'Search collections',
+  onChange,
+}) => {
   return (
-    <div className={styles.searchWrapper}>
-      <SearchIcon className={styles.searchIcon} />
-      <input placeholder="Search collections" />
+    <div className={classNames(styles.searchWrapper, className)}>
+      <div className={styles.searchInner}>
+        <SearchIcon className={styles.searchIcon} />
+        <input onChange={onChange} placeholder={placeholder} />
+      </div>
     </div>
   );
 };
-
-export default Search;

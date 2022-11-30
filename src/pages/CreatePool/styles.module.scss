@@ -1,8 +1,10 @@
 .contentWrapper {
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   justify-content: center;
-  gap: 16px;
+  align-items: center;
+  column-gap: 16px;
   margin-top: 24px;
 }
 

@@ -113,6 +113,12 @@
   margin-top: 24px;
 }
 
+.spinnerWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));

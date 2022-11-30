@@ -1,13 +1,16 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import Button from '../Buttons/Button';
+
+//import Button from '../Buttons/Button';
 import DeleteButton from '../Buttons/DeleteButton';
-import { PlusIcon } from '../../icons/PlusIcon';
-import { LoopIcon } from '../../icons/LoopIcon';
+//import { PlusIcon } from '../../icons/PlusIcon';
+//import { LoopIcon } from '../../icons/LoopIcon';
 import { SolPrice } from '../SolPrice/SolPrice';
 import { UNTITLED } from '../../constants/common';
-
+import { NftRarity } from '../../state/core/types';
 import styles from './NFTCard.module.scss';
+import HowRareIsIcon from '../../icons/HowRareIsIcon';
+import MoonRankIcon from '../../icons/MoonRankIcon';
 
 interface NFTCardProps {
   className?: string;
@@ -19,6 +22,7 @@ interface NFTCardProps {
   imageUrl: string;
   name: string;
   price?: string;
+  rarity?: NftRarity;
   onCardClick?: () => void;
   onAddToCart?: () => void;
   onExchange?: () => void;
@@ -34,9 +38,9 @@ export const NFTCard: FC<NFTCardProps> = ({
   imageUrl,
   name = UNTITLED,
   price,
+  rarity,
   onCardClick,
   onAddToCart,
-  onExchange,
 }) => {
   return (
     <div
@@ -50,7 +54,7 @@ export const NFTCard: FC<NFTCardProps> = ({
       onClick={onCardClick && onCardClick}
     >
       <div className={styles.cardImageWrapper}>
-        {!simpleCard && !selected && !withoutHover && (
+        {/* {!simpleCard && !selected && !withoutHover && (
           <div className={styles.cardImageHover}>
             {onAddToCart && (
               <Button className={styles.cardButton} onClick={onAddToCart}>
@@ -65,11 +69,26 @@ export const NFTCard: FC<NFTCardProps> = ({
               </Button>
             )}
           </div>
-        )}
+        )} */}
+        {/*{!simpleCard && !selected && (*/}
+        {/*  <div className={styles.cardImageHover}>*/}
+        {/*    <Button className={styles.cardButton} onClick={onAddToCart}>*/}
+        {/*      <PlusIcon />*/}
+        {/*      <span>add to cart</span>*/}
+        {/*    </Button>*/}
+        {/*    {onExchange && (*/}
+        {/*      <Button className={styles.cardButton} onClick={onExchange}>*/}
+        {/*        <LoopIcon />*/}
+        {/*        <span>exchange</span>*/}
+        {/*      </Button>*/}
+        {/*    )}*/}
+        {/*  </div>*/}
+        {/*)}*/}
         {selected && (
           <DeleteButton className={styles.deleteButton} onClick={onAddToCart} />
         )}
         <img className={styles.cardImage} src={imageUrl} alt={name} />
+        {!!rarity && <Rarity rarity={rarity} />}
       </div>
       <div className={styles.cardContent}>
         <h5 className={styles.cardTitle}>{name}</h5>
@@ -77,6 +96,27 @@ export const NFTCard: FC<NFTCardProps> = ({
           <SolPrice className={styles.cardPrice} price={parseFloat(price)} />
         )}
       </div>
+    </div>
+  );
+};
+
+interface RarityProps {
+  rarity: NftRarity;
+}
+
+const Rarity: FC<RarityProps> = ({ rarity }) => {
+  return (
+    <div className={styles.rarityWrapper}>
+      {!!rarity.howRareIs && (
+        <div className={styles.rarityValue}>
+          <HowRareIsIcon /> {rarity.howRareIs}
+        </div>
+      )}
+      {!!rarity.moonRank && (
+        <div className={styles.rarityValue}>
+          <MoonRankIcon /> {rarity.moonRank}
+        </div>
+      )}
     </div>
   );
 };

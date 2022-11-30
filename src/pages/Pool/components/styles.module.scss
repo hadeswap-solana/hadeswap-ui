@@ -166,3 +166,24 @@
 .nftCart {
   background: var(--component-third-background);
 }
+
+.tabContentWrapper {
+  margin-top: 16px;
+}
+
+.tradeTable {
+  :global {
+    .ant-table-tbody > tr.ant-table-row:hover > td {
+      background: unset;
+    }
+
+    .ant-table-tbody > tr.ant-table-row > td:hover {
+      background: var(--table-active-element);
+    }
+
+    .ant-table-tbody > tr.ant-table-row > td.disabled-cell-hover:hover {
+      background: unset;
+      cursor: default;
+    }
+  }
+}

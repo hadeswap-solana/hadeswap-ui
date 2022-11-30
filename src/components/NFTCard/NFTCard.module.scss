@@ -1,12 +1,14 @@
 .card {
   position: relative;
-  flex-direction: column;
   overflow: hidden;
   border: var(--border-base);
   border-radius: 16px;
   background: var(--component-base-background);
+  cursor: pointer;
 
   &:hover {
+    border-color: var(--blue-color);
+
     .cardImageHover {
       top: 0;
     }
@@ -51,6 +53,7 @@
   padding: 0 15px;
   background-color: rgba(10, 14, 17, 0.7);
   transition: top var(--ease-base-out) var(--animation-duration-slow);
+  z-index: 2;
 }
 
 .cardButton {
@@ -90,5 +93,35 @@
 
   svg {
     width: 16px;
+  }
+}
+
+.rarityWrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding: 8px;
+  gap: 4px;
+}
+
+.rarityValue {
+  border-radius: 100px;
+  padding: 4px 6px;
+  background: #0f1720;
+  color: #e3e2e5;
+  font: 400 10px var(--font-family-montserrat);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    fill: #e3e2e5;
   }
 }

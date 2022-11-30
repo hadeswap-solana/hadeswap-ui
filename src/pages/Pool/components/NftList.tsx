@@ -20,6 +20,7 @@ export const NftList: FC<NftListProps> = ({ pool }) => (
           imageUrl={order.imageUrl}
           name={order.name}
           simpleCard
+          rarity={order.rarity}
         />
       ))}
     </FakeInfinityScroll>

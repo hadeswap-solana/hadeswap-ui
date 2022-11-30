@@ -13,6 +13,9 @@ import {
   selectCertainPair,
   selectCertainPairLoading,
 } from '../../state/core/selectors';
+import { Chart, usePriceGraph } from '../../components/Chart';
+import styles from './PoolPage.module.scss';
+import { PoolTradeTable } from './components/PoolTradeTable';
 
 export const PoolPage: FC = () => {
   const market = useSelector(selectCertainMarket);
@@ -25,6 +28,17 @@ export const PoolPage: FC = () => {
 
   const isLoading = marketLoading || poolLoading;
 
+  const chartData = usePriceGraph({
+    baseSpotPrice: pool?.baseSpotPrice,
+    delta: pool?.delta,
+    fee: pool?.fee,
+    bondingCurve: pool?.bondingCurve,
+    buyOrdersAmount: pool?.buyOrdersAmount,
+    nftsCount: pool?.nftsCount,
+    mathCounter: pool?.mathCounter,
+    type: pool?.type,
+  });
+
   return (
     <AppLayout>
       <PageContentLayout>
@@ -35,6 +49,12 @@ export const PoolPage: FC = () => {
             <PoolHeader market={market} pool={pool} />
             <PoolGeneralInfo pool={pool} />
             <NftList pool={pool} />
+            {!!chartData && !!chartData?.length && (
+              <div className={styles.chartWrapper}>
+                <Chart title="price graph" data={chartData} />
+              </div>
+            )}
+            <PoolTradeTable />
           </>
         )}
       </PageContentLayout>

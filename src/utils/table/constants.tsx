@@ -12,7 +12,12 @@ import {
   LinkCell,
 } from '../../components/UI/TableComponents';
 import { shortenAddress } from '../solanaUtils';
-import { MarketInfo, OrderType, NftActivityData } from '../../state/core/types';
+import {
+  MarketInfo,
+  OrderType,
+  NftActivityData,
+  NftTradeData,
+} from '../../state/core/types';
 import { createPoolTableRow } from '../../state/core/helpers';
 
 const { Text } = Typography;
@@ -65,6 +70,7 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
       parseFloat(a?.fundsSolOrTokenBalance) -
       parseFloat(b?.fundsSolOrTokenBalance),
     showSorterTooltip: false,
+    defaultSortOrder: 'descend',
     render: (text, record) =>
       record.type === 'nftForToken' ? (
         <Text>--</Text>
@@ -207,7 +213,6 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
     dataIndex: 'nftName',
     sorter: (a, b) => specifyAndSort(a?.nftName, b?.nftName),
     showSorterTooltip: false,
-    defaultSortOrder: 'descend',
     render: (value, item) => (
       <LinkCell link={`https://solscan.io/token/${item.nftMint}`}>
         <TitleCell title={value} imgSrc={item.nftImageUrl} />
@@ -221,7 +226,6 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
     className: 'disabled-cell-hover',
     sorter: (a, b) => specifyAndSort(a?.orderType, b?.orderType),
     showSorterTooltip: false,
-    defaultSortOrder: 'descend',
     render: (value) => (
       <ColoredTextCell cellValue={value} defaultValue={OrderType.BUY} />
     ),
@@ -232,7 +236,6 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
     dataIndex: 'userTaker',
     sorter: (a, b) => specifyAndSort(a?.userTaker, b?.userTaker),
     showSorterTooltip: false,
-    defaultSortOrder: 'descend',
     render: (value, item) => (
       <LinkCell link={`https://solscan.io/account/${item.userTaker}`}>
         <Text>{shortenAddress(value)}</Text>
@@ -245,7 +248,6 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
     dataIndex: 'pair',
     sorter: (a, b) => specifyAndSort(a?.pair, b?.pair),
     showSorterTooltip: false,
-    defaultSortOrder: 'descend',
     render: (value, item) => (
       <LinkCell link={`/pools/${item.pair}`} internal>
         <Text>{shortenAddress(value)}</Text>
@@ -259,7 +261,6 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
     className: 'disabled-cell-hover',
     sorter: (a, b) => specifyAndSort(a?.solAmount, b?.solAmount),
     showSorterTooltip: false,
-    defaultSortOrder: 'descend',
     render: (value) => <PriceCell value={value} />,
   },
   {
@@ -267,6 +268,70 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
     title: 'when',
     dataIndex: 'timestamp',
     sorter: (a: NftActivityData, b: NftActivityData): number => {
+      const dateA = new Date(a.timestamp).getTime();
+      const dateB = new Date(b.timestamp).getTime();
+      return specifyAndSort(dateA, dateB);
+    },
+    showSorterTooltip: false,
+    defaultSortOrder: 'descend',
+    render: (value, item) => (
+      <LinkCell link={`https://solscan.io/tx/${item.signature}`}>
+        <Text>{moment(value).fromNow()}</Text>
+      </LinkCell>
+    ),
+  },
+];
+
+export const POOL_TRADE_COLUMNS: ColumnsType<NftTradeData> = [
+  {
+    key: 'nftName',
+    title: 'item',
+    dataIndex: 'nftName',
+    sorter: (a, b) => specifyAndSort(a?.nftName, b?.nftName),
+    showSorterTooltip: false,
+    render: (value, item) => (
+      <LinkCell link={`https://solscan.io/token/${item.nftMint}`}>
+        <TitleCell title={value} imgSrc={item.nftImageUrl} />
+      </LinkCell>
+    ),
+  },
+  {
+    key: 'orderType',
+    title: 'action',
+    dataIndex: 'orderType',
+    className: 'disabled-cell-hover',
+    sorter: (a, b) => specifyAndSort(a?.orderType, b?.orderType),
+    showSorterTooltip: false,
+    render: (value) => (
+      <ColoredTextCell cellValue={value} defaultValue={OrderType.BUY} />
+    ),
+  },
+  {
+    key: 'userTaker',
+    title: 'user',
+    dataIndex: 'userTaker',
+    sorter: (a, b) => specifyAndSort(a?.userTaker, b?.userTaker),
+    showSorterTooltip: false,
+    render: (value, item) => (
+      <LinkCell link={`https://solscan.io/account/${item.userTaker}`}>
+        <Text>{shortenAddress(value)}</Text>
+      </LinkCell>
+    ),
+  },
+  {
+    key: 'solAmount',
+    title: 'price',
+    dataIndex: 'solAmount',
+    className: 'disabled-cell-hover',
+    sorter: (a, b) => specifyAndSort(a?.solAmount, b?.solAmount),
+    showSorterTooltip: false,
+    render: (value) => <PriceCell value={value} />,
+  },
+  {
+    key: 'timestamp',
+    title: 'when',
+    dataIndex: 'timestamp',
+    sorter: (a: NftTradeData, b: NftTradeData): number => {
       const dateA = new Date(a.timestamp).getTime();
       const dateB = new Date(b.timestamp).getTime();
       return specifyAndSort(dateA, dateB);

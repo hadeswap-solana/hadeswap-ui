@@ -12,6 +12,7 @@ export const UNTITLED = 'untitled';
 export const COLLECTION = 'collection';
 export const POOL = 'pool';
 export const ACTIVITY = 'activity';
+export const TRADE = 'trade';
 
 export enum PubKeys {
   MARKET_PUBKEY = 'marketPubkey',

@@ -77,9 +77,15 @@ export interface PairSellOrder {
   mint: string;
   imageUrl: string;
   nftPairBox: string;
+  rarity?: NftRarity;
   vaultTokenAccount: string;
   name: string;
   traits: [string, string];
+}
+
+export interface NftRarity {
+  howRareIs?: number;
+  moonRank?: number;
 }
 
 export interface Nft {
@@ -93,6 +99,7 @@ export interface Nft {
   vaultTokenAccount?: string; //? Exists for Buy orders
   nftValidationAdapter?: string; //? Exists for Sell orders
   disabled?: boolean;
+  rarity?: NftRarity;
 }
 
 export interface NftActivityData {
@@ -107,6 +114,20 @@ export interface NftActivityData {
   timestamp: string;
   userMaker?: string;
   userTaker: string;
+}
+
+export interface NftTradeData {
+  signature: string;
+  orderType: string;
+  pairType: string;
+  nftMint: string;
+  nftName: string;
+  nftImageUrl: string;
+  solAmount: number;
+  userMaker: string;
+  userTaker: string;
+  market: string;
+  timestamp: string;
 }
 
 export interface CartOrder extends Nft {

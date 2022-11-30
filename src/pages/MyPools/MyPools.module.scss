@@ -15,3 +15,15 @@
 .mainButton {
   padding: 8px 16px;
 }
+
+.poolButtonWrapper {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.sortButtonWrapper {
+  display: flex;
+  flex-grow: 100;
+  justify-content: end;
+}

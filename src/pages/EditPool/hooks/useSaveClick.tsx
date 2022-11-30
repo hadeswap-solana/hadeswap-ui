@@ -40,6 +40,7 @@ interface UseSaveClick {
   buyOrdersAmount: number;
   rawSpotPrice: number;
   rawDelta: number;
+  spotPrice: number;
 }
 
 export const useSaveClick = ({
@@ -52,7 +53,11 @@ export const useSaveClick = ({
   buyOrdersAmount,
   rawSpotPrice,
   rawDelta,
-}: UseSaveClick): (() => Promise<void>) => {
+  spotPrice,
+}: UseSaveClick): {
+  onSaveClick: () => Promise<void>;
+  isSaveButtonDisabled: boolean;
+} => {
   const dispatch = useDispatch();
   const history = useHistory();
   const connection = useConnection();
@@ -76,7 +81,16 @@ export const useSaveClick = ({
     pool?.buyOrdersAmount !== (nftAmount ?? pool?.buyOrdersAmount);
   const isLiquidityProvisionChanged = pool?.buyOrdersAmount !== buyOrdersAmount;
 
-  return async () => {
+  const isNftForTokenChanged = nftsToDelete.length || nftsToAdd.length;
+
+  const isChanged = isLiquidityProvisionPool
+    ? isLiquidityProvisionChanged
+    : isTokenForNftChanged;
+
+  const isSaveButtonDisabled =
+    !(isPricingChanged || isNftForTokenChanged || isChanged) || !spotPrice;
+
+  const onSaveClick = async () => {
     const transactions = [];
     const cards = [];
 
@@ -373,5 +387,10 @@ export const useSaveClick = ({
     if (isSuccess) {
       history.push(`/pools/${pool?.pairPubkey}`);
     }
+  };
+
+  return {
+    onSaveClick,
+    isSaveButtonDisabled,
   };
 };
