@@ -40,13 +40,15 @@ export const PoolTradeTable: FC = memo(() => {
 
   return (
     <div className={styles.tabContentWrapper}>
-      <ItemsList
-        data={tradeData}
-        mapType={TRADE}
-        pubKey={PubKeys.NFT_MINT}
-        onRowClick={() => null}
-        tableClassName={styles.tradeTable}
-      />
+      {tradeData && (
+        <ItemsList
+          data={tradeData}
+          mapType={TRADE}
+          pubKey={PubKeys.NFT_MINT}
+          onRowClick={() => null}
+          tableClassName={styles.tradeTable}
+        />
+      )}
       {!!isFetchingNextPage && <Spinner />}
       <div ref={ref} />
     </div>

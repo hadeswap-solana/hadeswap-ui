@@ -40,13 +40,15 @@ export const CollectionActivityTab: FC = memo(() => {
 
   return (
     <div className={styles.tabContentWrapper}>
-      <ItemsList
-        data={activityData}
-        mapType={ACTIVITY}
-        pubKey={PubKeys.NFT_MINT}
-        onRowClick={() => null}
-        tableClassName={styles.activityTable}
-      />
+      {activityData?.length && (
+        <ItemsList
+          data={activityData}
+          mapType={ACTIVITY}
+          pubKey={PubKeys.NFT_MINT}
+          onRowClick={() => null}
+          tableClassName={styles.activityTable}
+        />
+      )}
       <div ref={ref} />
       {!!isFetchingNextPage && (
         <div className={styles.spinnerWrapper}>
