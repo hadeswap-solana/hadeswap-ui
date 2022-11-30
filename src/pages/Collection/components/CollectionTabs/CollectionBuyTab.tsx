@@ -94,7 +94,6 @@ export const CollectionBuyTab: FC = () => {
                 imageUrl={order.imageUrl}
                 name={order.name}
                 price={formatBNToString(new BN(order.price))}
-                //onAddToCart={createOnBtnClick(order)}
                 onCardClick={createOnBtnClick(order)}
                 selected={order?.selected}
                 onExchange={addBuyOrderToExchange(order)}
