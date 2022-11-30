@@ -1,11 +1,12 @@
 import { FC } from 'react';
+import { BN } from 'hadeswap-sdk';
 import { GeneralWidgetCard } from './GeneralWidgetCard';
 import { parseDelta } from '../../../state/core/helpers';
 import { Pair } from '../../../state/core/types';
+import { formatBNToString } from '../../../utils';
+import { formatRawSol } from '../../../utils/solanaUtils';
 
 import styles from './styles.module.scss';
-import { formatBNToString } from '../../../utils';
-import { BN } from 'hadeswap-sdk';
 
 interface PoolGeneralInfoProps {
   pool: Pair;
@@ -32,7 +33,7 @@ export const PoolGeneralInfo: FC<PoolGeneralInfoProps> = ({ pool }) => (
       <GeneralWidgetCard title="status" value={pool.pairState} />
       <GeneralWidgetCard
         title="accumulated fee"
-        value={`${pool?.totalAccumulatedFees || 0} SOL`}
+        value={`${formatRawSol(pool?.totalAccumulatedFees)} SOL`}
       />
     </div>
   </div>

@@ -90,7 +90,7 @@ export const EditPool: FC = () => {
   const rawDelta =
     curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
 
-  const onSaveClick = useSaveClick({
+  const { onSaveClick, isSaveButtonDisabled } = useSaveClick({
     pool,
     curveType,
     fee,
@@ -100,10 +100,12 @@ export const EditPool: FC = () => {
     buyOrdersAmount,
     rawSpotPrice,
     rawDelta,
+    spotPrice,
   });
 
-  const { accumulatedFees, onWithdrawClick } = useWithdrawFees({ pool });
-  const onWithdrawAllClick = useWithdrawAllClick({
+  const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
+    useWithdrawFees({ pool });
+  const { onWithdrawAllClick, isWithdrawAllDisabled } = useWithdrawAllClick({
     pool,
     pairType,
     rawSpotPrice,
@@ -111,7 +113,7 @@ export const EditPool: FC = () => {
     curveType,
   });
 
-  const onCloseClick = useCloseClick({ pool });
+  const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
   const isLoading = marketLoading || poolLoading || nftsLoading;
 
@@ -151,6 +153,7 @@ export const EditPool: FC = () => {
               className={styles.withdrawBlock}
               accumulatedFees={accumulatedFees}
               onClick={onWithdrawClick}
+              isButtonDisabled={isWithdrawDisabled}
             />
             <div className={styles.settingsBlock}>
               <PriceBlock
@@ -190,13 +193,21 @@ export const EditPool: FC = () => {
               />
             )}
             <div className={styles.buttonsWrapper}>
-              <Button onClick={onSaveClick}>
+              <Button isDisabled={isSaveButtonDisabled} onClick={onSaveClick}>
                 <span>save changes</span>
               </Button>
-              <Button outlined onClick={onWithdrawAllClick}>
+              <Button
+                outlined
+                isDisabled={isWithdrawAllDisabled}
+                onClick={onWithdrawAllClick}
+              >
                 <span>withdraw all liquidity</span>
               </Button>
-              <Button outlined onClick={onCloseClick}>
+              <Button
+                outlined
+                isDisabled={isClosePoolDisabled}
+                onClick={onCloseClick}
+              >
                 <span>close pool</span>
               </Button>
             </div>
