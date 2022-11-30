@@ -9,6 +9,7 @@ import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/usePoolServiceAssets';
+import { Chart, usePriceGraph } from '../../../components/Chart';
 import Button from '../../../components/Buttons/Button';
 import { useOnCreatePoolClick } from '../hooks';
 import { useFetchAllMarkets } from '../../../requests';
@@ -18,7 +19,6 @@ import {
 } from '../../../state/core/selectors';
 
 import styles from './styles.module.scss';
-import { Chart, usePriceGraph } from '../../../components/Chart';
 
 interface StepThreeProps {
   pairType: PairType;
@@ -103,6 +103,7 @@ export const StepThree: FC<StepThreeProps> = ({
     bondingCurve: curveType,
     buyOrdersAmount: nftAmount,
     nftsCount: selectedNfts.length,
+    type: pairType,
   });
 
   return (
@@ -137,7 +138,6 @@ export const StepThree: FC<StepThreeProps> = ({
           </div>
           {!!chartData && !!chartData?.length && (
             <Chart
-              isCreate
               title="price graph"
               data={chartData}
               className={styles.chart}

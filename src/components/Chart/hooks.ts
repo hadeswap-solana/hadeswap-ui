@@ -32,6 +32,7 @@ type UsePriceGraph = (props: {
   buyOrdersAmount?: number;
   nftsCount?: number;
   mathCounter?: number;
+  type?: string;
 }) => Point[] | null;
 
 export const usePriceGraph: UsePriceGraph = ({
@@ -43,6 +44,7 @@ export const usePriceGraph: UsePriceGraph = ({
   buyOrdersAmount = 0,
   nftsCount = 0,
   mathCounter = 0,
+  type,
 }) => {
   if (!delta || !bondingCurve || !baseSpotPrice) return null;
 
@@ -94,7 +96,7 @@ export const usePriceGraph: UsePriceGraph = ({
     })
     .reverse() as Point[];
 
-  // console.log(pointsBuy, 'pointsBuy');
+  console.log(pointsBuy, 'pointsBuy');
 
   const pointsSell: Point[] = priceArraySell.map((price, i) => {
     const newPrice = price / 1e9;
@@ -117,10 +119,9 @@ export const usePriceGraph: UsePriceGraph = ({
     .reverse() as Point[];
 
   console.log(pointsSell, 'pointsSell');
+  console.log(type, 'type type');
 
-  console.log(pointsLiquidityProvision, 'pointsLiquidityProvision');
-
-  return isCreate
+  return type === 'liquidityProvision'
     ? [...pointsLiquidityProvision, ...pointsSell]
     : [...pointsBuy, ...pointsSell];
 };

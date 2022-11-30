@@ -20,6 +20,7 @@ import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePool
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WithdrawFees } from '../../components/WithdrawFees';
+import { Chart, usePriceGraph } from '../../components/Chart';
 import Button from '../../components/Buttons/Button';
 import { useSaveClick } from './hooks/useSaveClick';
 import {
@@ -29,7 +30,6 @@ import {
 import { useCloseClick } from './hooks/useCloseClick';
 
 import styles from './styles.module.scss';
-import { Chart, usePriceGraph } from '../../components/Chart';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
@@ -136,6 +136,7 @@ export const EditPool: FC = () => {
     bondingCurve: curveType,
     buyOrdersAmount: nftAmount,
     nftsCount: selectedNfts.length,
+    type: pairType,
   });
 
   return (

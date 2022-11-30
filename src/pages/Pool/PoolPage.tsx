@@ -41,6 +41,7 @@ export const PoolPage: FC = () => {
     buyOrdersAmount: pool?.buyOrdersAmount,
     nftsCount: pool?.nftsCount,
     mathCounter: pool?.mathCounter,
+    type: pool?.type,
   });
 
   return (
