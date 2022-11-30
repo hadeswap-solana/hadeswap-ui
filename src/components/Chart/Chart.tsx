@@ -4,7 +4,6 @@ import { renderChart } from './d3/renderChart';
 import { useD3 } from './hooks';
 import { Point } from './types';
 import styles from './Chart.module.scss';
-import SliderGraph from './components/Slider/SliderGraph';
 
 interface ChartProps {
   title?: string;
@@ -30,9 +29,6 @@ export const Chart: FC<ChartProps> = ({ title, className, data }) => {
   return (
     <div ref={containerRef} className={`${styles.root} ${className || ''}`}>
       {!!title && <p className={styles.title}>{title}</p>}
-      {/* <div className={styles.sliderWrapper}>
-        <SliderGraph />
-      </div> */}
       <svg ref={svgRef} preserveAspectRatio="xMinYMin meet" />
     </div>
   );
