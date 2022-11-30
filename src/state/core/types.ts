@@ -77,6 +77,7 @@ export interface PairSellOrder {
   mint: string;
   imageUrl: string;
   nftPairBox: string;
+  rarity?: NftRarity;
   vaultTokenAccount: string;
   name: string;
   traits: [string, string];
@@ -98,7 +99,7 @@ export interface Nft {
   vaultTokenAccount?: string; //? Exists for Buy orders
   nftValidationAdapter?: string; //? Exists for Sell orders
   disabled?: boolean;
-  rarity: NftRarity;
+  rarity?: NftRarity;
 }
 
 export interface NftActivityData {
