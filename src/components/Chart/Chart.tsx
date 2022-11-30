@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef, useState, FC } from 'react';
+import { useLayoutEffect, useRef, useState, FC, useEffect } from 'react';
+import { throttle } from 'lodash';
 
 import { renderChart } from './d3/renderChart';
 import { useD3 } from './hooks';
@@ -16,7 +17,17 @@ export const Chart: FC<ChartProps> = ({ title, className, data }) => {
   const [containerWidth, setContainerWidth] = useState(0);
 
   useLayoutEffect(() => {
-    setContainerWidth(containerRef.current?.offsetWidth);
+    setContainerWidth(containerRef.current?.clientWidth);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = throttle(() => {
+      setContainerWidth(containerRef.current?.clientWidth);
+    }, 200);
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const svgRef = useD3(
