@@ -20,6 +20,7 @@ export const NftsBlock: FC<NftsBlockProps> = ({ nfts, toggleNft }) => {
             imageUrl={nft.imageUrl}
             name={nft.name}
             selected={nft.selected}
+            rarity={nft.rarity}
             onCardClick={() => toggleNft(nft.mint)}
             wholeAreaSelect
             simpleCard

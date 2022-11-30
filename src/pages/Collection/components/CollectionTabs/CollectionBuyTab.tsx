@@ -56,6 +56,7 @@ export const CollectionBuyTab: FC = () => {
                 price={formatBNToString(new BN(order.price))}
                 onAddToCart={createOnBtnClick(order)}
                 selected={order?.selected}
+                rarity={order.rarity}
               />
             ))}
           </FakeInfinityScroll>
