@@ -1,0 +1,16 @@
+.nftList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 16px;
+  max-height: 416px;
+  overflow-y: scroll;
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+.btn {
+  margin-top: 16px;
+  width: 100%;
+}

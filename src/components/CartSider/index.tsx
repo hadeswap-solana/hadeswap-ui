@@ -6,7 +6,10 @@ import React, {
   SetStateAction,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectScreeMode } from '../../state/common/selectors';
+import {
+  selectExchangeModalVisible,
+  selectScreeMode,
+} from '../../state/common/selectors';
 import CartSiderDesktop from './CartSider';
 import CartSiderMobile from './mobile/CartSider';
 import { useCartSider, useSwap } from './hooks';
@@ -32,6 +35,7 @@ export interface CartSiderProps {
   totalBuy: number;
   totalSell: number;
   invalidItems: CartOrder[];
+  isExchangeMode?: boolean;
 }
 
 const HEADER_HEIGHT = 56;
@@ -43,6 +47,7 @@ const CartSider: FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean | null>(null);
   const [modalClassName, setModalClassName] = useState<string>('');
+  const exchangeModalVisible = useSelector(selectExchangeModalVisible);
 
   const {
     cartItems,
@@ -133,6 +138,7 @@ const CartSider: FC = () => {
       cartOpened={cartOpened}
       totalBuy={totalBuy}
       totalSell={totalSell}
+      isExchangeMode={exchangeModalVisible}
     />
   );
 };

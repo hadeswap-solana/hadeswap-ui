@@ -121,6 +121,9 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
       invalidOrders: {},
     };
   },
+  [coreTypes.CLEAR_CART]: () => {
+    return initialCartState;
+  },
   [coreTypes.ADD_ORDER_TO_CART]: (
     state,
     { payload }: ReturnType<typeof coreActions.addOrderToCart>,
@@ -219,6 +222,39 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     return {
       ...state,
       finishedOrdersMints: [...state.finishedOrdersMints, payload.mint],
+    };
+  },
+  [coreTypes.REPLACE_BUY_ORDER]: (
+    state,
+    { payload }: ReturnType<typeof coreActions.replaceBuyOrder>,
+  ) => {
+    const { pairPublicKey, prevOrderMint, nextOrder } = payload;
+
+    const prevOrder = state.pendingOrders[pairPublicKey]?.find(
+      ({ mint }) => mint === prevOrderMint,
+    );
+
+    if (!prevOrder) return state;
+
+    const pendingOrdersWithRemovedPrevOrder = state.pendingOrders[
+      pairPublicKey
+    ].filter(({ mint }) => mint !== prevOrderMint);
+
+    return {
+      ...state,
+      pendingOrders: {
+        ...state.pendingOrders,
+        [pairPublicKey]: [
+          ...pendingOrdersWithRemovedPrevOrder,
+          {
+            ...nextOrder,
+            type: prevOrder.type,
+            targetPairPukey: prevOrder.targetPairPukey,
+            price: prevOrder.price,
+            mathCounter: prevOrder.mathCounter,
+          },
+        ],
+      },
     };
   },
 });

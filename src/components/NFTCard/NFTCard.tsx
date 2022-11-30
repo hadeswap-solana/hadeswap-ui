@@ -14,6 +14,7 @@ interface NFTCardProps {
   selected?: boolean;
   disabled?: boolean;
   simpleCard?: boolean;
+  withoutHover?: boolean;
   wholeAreaSelect?: boolean;
   imageUrl: string;
   name: string;
@@ -29,6 +30,7 @@ export const NFTCard: FC<NFTCardProps> = ({
   disabled = false,
   simpleCard = false,
   wholeAreaSelect = false,
+  withoutHover,
   imageUrl,
   name = UNTITLED,
   price,
@@ -48,12 +50,14 @@ export const NFTCard: FC<NFTCardProps> = ({
       onClick={onCardClick && onCardClick}
     >
       <div className={styles.cardImageWrapper}>
-        {!simpleCard && !selected && (
+        {!simpleCard && !selected && !withoutHover && (
           <div className={styles.cardImageHover}>
-            <Button className={styles.cardButton} onClick={onAddToCart}>
-              <PlusIcon />
-              <span>add to cart</span>
-            </Button>
+            {onAddToCart && (
+              <Button className={styles.cardButton} onClick={onAddToCart}>
+                <PlusIcon />
+                <span>add to cart</span>
+              </Button>
+            )}
             {onExchange && (
               <Button className={styles.cardButton} onClick={onExchange}>
                 <LoopIcon />

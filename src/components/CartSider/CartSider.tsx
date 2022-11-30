@@ -18,6 +18,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
   totalBuy,
   totalSell,
   invalidItems,
+  isExchangeMode,
 }) => {
   const dispatch = useDispatch();
   const titleBuy = `buy ${cartItems.buy.length} ${
@@ -28,7 +29,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
   return (
     <div
       className={classNames(styles.cartSider, {
-        [styles.openCart]: cartOpened,
+        [styles.openCart]: !isExchangeMode && cartOpened,
       })}
     >
       <div className={styles.cartBody}>

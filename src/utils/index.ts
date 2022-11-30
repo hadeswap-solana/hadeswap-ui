@@ -248,3 +248,7 @@ export const formatBNToString = (
     return null;
   }
 };
+
+export const getFormattedPrice = (price: number): string => {
+  return price > 0 ? formatBNToString(new BN(price)) : '';
+};

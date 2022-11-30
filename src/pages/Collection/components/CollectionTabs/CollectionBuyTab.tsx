@@ -7,6 +7,7 @@ import { Spinner } from '../../../../components/Spinner/Spinner';
 import { FakeInfinityScroll } from '../../../../components/FakeInfiinityScroll';
 import {
   selectAllBuyOrdersForMarket,
+  selectCartItems,
   selectMarketPairs,
   selectMarketPairsLoading,
 } from '../../../../state/core/selectors';
@@ -15,6 +16,10 @@ import { formatBNToString } from '../../../../utils';
 import { MarketOrder, OrderType } from '../../../../state/core/types';
 
 import styles from './styles.module.scss';
+import ExchangeNftModal, {
+  useExchangeModal,
+} from '../../../../components/ExchangeNftModal';
+import { commonActions } from '../../../../state/common/actions';
 
 export const CollectionBuyTab: FC = () => {
   const dispatch = useDispatch();
@@ -22,6 +27,8 @@ export const CollectionBuyTab: FC = () => {
   const marketPairsLoading = useSelector(selectMarketPairsLoading);
   const marketPairs = useSelector(selectMarketPairs);
   const buyOrders = useSelector(selectAllBuyOrdersForMarket);
+  const cartItems = useSelector(selectCartItems);
+  const pairs = useSelector(selectMarketPairs);
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
@@ -40,6 +47,39 @@ export const CollectionBuyTab: FC = () => {
     [dispatch, marketPairs],
   );
 
+  const {
+    visible: exchangeModalVisible,
+    open: openExchangeModal,
+    close: closeExchangeModal,
+  } = useExchangeModal();
+
+  const onCancelExchangeModal = (): void => {
+    closeExchangeModal();
+    dispatch(commonActions.setCartSider({ isVisible: false }));
+    dispatch(coreActions.clearCart());
+  };
+
+  const addBuyOrderToExchange = useCallback(
+    (order: MarketOrder) => () => {
+      const buyOrdersExists = !!cartItems?.buy.length;
+      const sellOrdersExists = !!cartItems?.sell.length;
+
+      if (buyOrdersExists || sellOrdersExists) {
+        dispatch(coreActions.clearCart());
+      }
+
+      openExchangeModal();
+      dispatch(
+        coreActions.addOrderToCart(
+          pairs.find((pair) => pair.pairPubkey === order.targetPairPukey),
+          order,
+          OrderType.BUY,
+        ),
+      );
+    },
+    [dispatch, pairs, cartItems, openExchangeModal],
+  );
+
   return (
     <div className={styles.tabContentWrapper}>
       {marketPairsLoading ? (
@@ -56,11 +96,16 @@ export const CollectionBuyTab: FC = () => {
                 price={formatBNToString(new BN(order.price))}
                 onAddToCart={createOnBtnClick(order)}
                 selected={order?.selected}
+                onExchange={addBuyOrderToExchange(order)}
               />
             ))}
           </FakeInfinityScroll>
         </>
       )}
+      <ExchangeNftModal
+        visible={exchangeModalVisible}
+        onCancel={onCancelExchangeModal}
+      />
     </div>
   );
 };
