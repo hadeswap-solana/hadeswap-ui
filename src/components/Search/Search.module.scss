@@ -1,10 +1,14 @@
 .searchWrapper {
+  width: 100%;
+}
+
+.searchInner {
   display: flex;
   flex-grow: 1;
   align-items: center;
   max-width: 516px;
   height: 40px;
-  margin-left: 60px;
+  margin: auto;
   border: var(--border-base);
   border-radius: var(--border-radius-base);
   overflow: hidden;

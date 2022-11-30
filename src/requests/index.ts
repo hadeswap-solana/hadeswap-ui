@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useQuery,
+  InfiniteData,
+  FetchNextPageOptions,
+  InfiniteQueryObserverResult,
+} from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -178,10 +184,25 @@ export const useFetchWalletPairs = (): void => {
   }, [dispatch, data, walletPairsLoading]);
 };
 
-export const useTableData = (params) => {
+export const useTableData = (params: {
+  publicKey: string;
+  url: string;
+  id: string;
+}): {
+  data: InfiniteData<{ pageParam: number; data: NftActivityData[] }>;
+  fetchNextPage: (options?: FetchNextPageOptions) => Promise<
+    InfiniteQueryObserverResult<{
+      pageParam: number;
+      data: NftActivityData[];
+    }>
+  >;
+  isFetchingNextPage: boolean;
+  isListEnded: boolean;
+} => {
   const LIMIT = 20;
 
   const { publicKey, url: baseUrl, id } = params;
+
   const [isListEnded, setIsListEnded] = useState<boolean>(false);
 
   const fetchData = async ({

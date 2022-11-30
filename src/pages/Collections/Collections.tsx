@@ -1,11 +1,10 @@
 import React, { FC, useEffect, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-
 import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
+import { Search } from '../../components/Search';
+import { useSearch } from '../../components/Search/useSearch';
 import ItemsList from '../../components/ItemsList';
 import Sorting from '../../components/Sorting/mobile/Sorting';
 import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
@@ -21,16 +20,14 @@ import {
   selectAllMarketsLoading,
 } from '../../state/core/selectors';
 import { ScreenTypes } from '../../state/common/types';
-import { useDebounce } from '../../hooks';
 import { createCollectionLink } from '../../constants';
 
 import styles from './Collections.module.scss';
 
 export const Collections: FC = () => {
   const INITIAL_SORT_VALUE = 'offerTVL';
-
   const history = useHistory();
-  const [searchStr, setSearchStr] = useState<string>('');
+
   const [sortValue, setSortValue] = useState<string>(
     `${INITIAL_SORT_VALUE}_${SORT_ORDER.DESC}`,
   );
@@ -40,9 +37,7 @@ export const Collections: FC = () => {
   const screenMode = useSelector(selectScreeMode);
   const isMobile = screenMode !== ScreenTypes.DESKTOP;
 
-  const setSearch = useDebounce((search: string): void => {
-    setSearchStr(search.toUpperCase());
-  }, 300);
+  const { searchStr, handleSearch } = useSearch();
 
   const onRowClick = useCallback(
     (data: string): void => {
@@ -71,17 +66,12 @@ export const Collections: FC = () => {
     <AppLayout>
       <PageContentLayout title="collections" isLoading={isLoading}>
         <>
-          {isMobile && (
-            <div className={styles.controlsWrapper}>
-              <Input
-                size="large"
-                placeholder="search by collection name"
-                prefix={<SearchOutlined />}
-                onChange={(event) => setSearch(event.target.value || '')}
-              />
+          <div className={styles.controlsWrapper}>
+            <Search onChange={handleSearch} />
+            {isMobile && (
               <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
-            </div>
-          )}
+            )}
+          </div>
           <ItemsList
             onRowClick={onRowClick}
             data={collections}
