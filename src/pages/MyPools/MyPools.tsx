@@ -75,19 +75,21 @@ export const MyPools: FC = () => {
         {connected && !isLoading && !walletPairs.length && (
           <h2 className={styles.h2}>no pools found</h2>
         )}
+        {connected && !isLoading && (
+          <div className={styles.buttonWrapper}>
+            <Button
+              onClick={() => history.push('/create-pool')}
+              className={styles.mainButton}
+            >
+              <span>create pool</span>
+            </Button>
+            {isMobile && !!pools.length && (
+              <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
+            )}
+          </div>
+        )}
         {connected && !isLoading && !!pools.length && (
           <>
-            <div className={styles.buttonWrapper}>
-              <Button
-                onClick={() => history.push('/create-pool')}
-                className={styles.mainButton}
-              >
-                <span>create pool</span>
-              </Button>
-              {isMobile && !!pools.length && (
-                <OpenSortButton setIsSortingVisible={setIsSortingVisible} />
-              )}
-            </div>
             <ItemsList
               data={pools}
               onRowClick={onRowClick}
