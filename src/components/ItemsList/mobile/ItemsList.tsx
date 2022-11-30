@@ -9,7 +9,7 @@ export const ItemsList: FC<ItemsListProps> = ({
   pubKey,
 }) => (
   <>
-    {data.map((item) => (
+    {data?.map((item) => (
       <ListItemMobile
         key={item[pubKey]}
         item={item}
