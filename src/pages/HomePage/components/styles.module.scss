@@ -96,6 +96,23 @@
 
   gap: 16px;
   overflow-x: scroll;
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    height: 4px;
+  }
+  &::-moz-scrollbar {
+    -webkit-appearance: none;
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: var(--component-base-background);
+  }
+  &::-moz-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: var(--component-base-background);
+  }
 }
 
 .marketCardWrapper {
@@ -128,6 +145,7 @@
 }
 
 .marketInfoTitle {
+  flex-grow: 1;
   font-family: var(--font-family-rubik);
   font-weight: 500;
   font-size: 20px;
@@ -137,19 +155,15 @@
   }
 }
 
-.marketInfoPriceWrapper {
-  display: flex;
-  align-items: flex-end;
-
-  margin-top: 4px;
-  flex-grow: 1;
-}
-
 .marketInfoPriceLogo {
   width: 16px;
 }
 
 .marketInfoPrice {
+  margin-top: 4px;
+
+  display: flex;
+  align-items: center;
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
@@ -159,9 +173,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.volumeTitle {
+  position: relative;
   font-family: var(--font-family-rubik);
   font-weight: 500;
   font-size: 14px;
@@ -183,5 +195,8 @@
   color: var(--green-color);
   @media (max-width: 767px) {
     font-size: 10px;
+    position: absolute;
+    top: 25%;
+    right: -10%;
   }
 }
