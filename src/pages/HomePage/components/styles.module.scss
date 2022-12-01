@@ -92,6 +92,7 @@
   width: 100%;
   gap: 16px;
   display: flex;
+  justify-content: center;
 
   @media (max-width: 767px) {
     display: grid;
