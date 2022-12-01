@@ -46,6 +46,7 @@ export const convertCartOrderToPairSellOrder = (
   vaultTokenAccount: order.vaultTokenAccount,
   name: order.name,
   traits: order.traits,
+  rarity: order.rarity,
 });
 
 export const findCartOrder = (
