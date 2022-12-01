@@ -12,7 +12,7 @@ export const Home: FC = () => {
   const { allStats, allStatsLoading } = useFetchAllStats();
   const { TVLstat, TVLStatLoading } = useFetchTVL();
 
-  const isTotalLoading = topMarketsLoading && allStatsLoading && TVLStatLoading;
+  const isLoading = topMarketsLoading || allStatsLoading || TVLStatLoading;
 
   return (
     <AppLayout>
@@ -21,20 +21,12 @@ export const Home: FC = () => {
           the best NFT marketplace on{' '}
           <span className={styles.emphasis}>SOLANA</span> for traders
         </h1>
-        {isTotalLoading ? (
+        {isLoading ? (
           <Spinner />
         ) : (
           <>
-            {!isTotalLoading && (allStatsLoading || TVLStatLoading) ? (
-              <Spinner />
-            ) : (
-              <Stats TVLstat={TVLstat} allStats={allStats} />
-            )}
-            {!isTotalLoading && topMarketsLoading ? (
-              <Spinner />
-            ) : (
-              <TopMarkets topMarkets={topMarkets} />
-            )}
+            <Stats TVLstat={TVLstat} allStats={allStats} />
+            <TopMarkets topMarkets={topMarkets} />
           </>
         )}
       </div>

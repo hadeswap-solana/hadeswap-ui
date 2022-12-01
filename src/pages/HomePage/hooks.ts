@@ -15,6 +15,8 @@ export const useFetchAllStats = (): {
     () => fetchAllStats(),
     {
       networkMode: 'offlineFirst',
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
       initialData: {
         volume24h: null,
         volumeAll: null,
@@ -44,6 +46,8 @@ export const useFetchTVL = (): {
     isFetching: boolean;
   } = useQuery(['TVL'], () => fetchTVLandVolumeStats(), {
     networkMode: 'offlineFirst',
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
     initialData: {
       TVL: '',
       volume: '',
@@ -65,6 +69,8 @@ export const useTopMarkets = (): {
     () => fetchTopMarkets(),
     {
       networkMode: 'offlineFirst',
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
       initialData: [],
     },
   );
