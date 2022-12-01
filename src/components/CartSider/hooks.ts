@@ -27,7 +27,12 @@ import { CartSiderProps } from './index';
 
 type UseCartSider = () => CartSiderProps;
 
-type UseSwap = () => {
+type UseSwap = (params: {
+  onAfterTxn: () => void;
+  onFail?: () => void;
+  ixsPerTxn?: number;
+  onSuccessTxn?: () => void;
+}) => {
   swap: () => Promise<void>;
 };
 
@@ -52,9 +57,12 @@ export const useCartSider: UseCartSider = () => {
   };
 };
 
-export const useSwap: UseSwap = () => {
-  const IX_PER_TXN = 1;
-
+export const useSwap: UseSwap = ({
+  onAfterTxn,
+  onSuccessTxn,
+  onFail,
+  ixsPerTxn = 1,
+}) => {
   const connection = useConnection();
   const wallet = useWallet();
   const dispatch = useDispatch();
@@ -77,7 +85,7 @@ export const useSwap: UseSwap = () => {
       ),
     );
 
-    const ixsDataChunks = chunk(ixsData, IX_PER_TXN);
+    const ixsDataChunks = chunk(ixsData, ixsPerTxn);
 
     const txnsData = ixsDataChunks.map((ixsAndSigners) =>
       mergeIxsIntoTxn(ixsAndSigners),
@@ -112,6 +120,7 @@ export const useSwap: UseSwap = () => {
           txnData.nftMints.map((nftMint) => {
             dispatch(coreActions.addFinishedOrderMint(nftMint));
           });
+          onSuccessTxn?.();
         },
         onError: () => {
           notify({
@@ -125,10 +134,10 @@ export const useSwap: UseSwap = () => {
     });
 
     if (!allTxnsSuccess) {
-      dispatch(commonActions.setCartSider({ isVisible: true }));
+      onFail?.();
     }
 
-    dispatch(txsLoadingModalActions.setVisible(false));
+    onAfterTxn?.();
   };
 
   return {

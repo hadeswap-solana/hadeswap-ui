@@ -1,16 +1,20 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 
-//import Button from '../Buttons/Button';
-import DeleteButton from '../Buttons/DeleteButton';
-//import { PlusIcon } from '../../icons/PlusIcon';
-//import { LoopIcon } from '../../icons/LoopIcon';
+import Button from '../Buttons/Button';
+// import DeleteButton from '../Buttons/DeleteButton';
+// import { PlusIcon } from '../../icons/PlusIcon';
+// import { LoopIcon } from '../../icons/LoopIcon';
 import { SolPrice } from '../SolPrice/SolPrice';
 import { UNTITLED } from '../../constants/common';
 import { NftRarity } from '../../state/core/types';
 import styles from './NFTCard.module.scss';
 import HowRareIsIcon from '../../icons/HowRareIsIcon';
 import MoonRankIcon from '../../icons/MoonRankIcon';
+import { SwapButton } from '../Buttons/SwapButton';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { PlusIcon } from '../../icons/PlusIcon';
+import { MinusIcon } from '../../icons/MinusIcon';
 
 interface NFTCardProps {
   className?: string;
@@ -25,6 +29,7 @@ interface NFTCardProps {
   onCardClick?: () => void;
   onAddToCart?: () => void;
   onExchange?: () => void;
+  withoutAddToCartBtn?: boolean;
 }
 
 export const NFTCard: FC<NFTCardProps> = ({
@@ -38,8 +43,12 @@ export const NFTCard: FC<NFTCardProps> = ({
   price,
   rarity,
   onCardClick,
-  onAddToCart,
+  // onAddToCart,
+  onExchange,
+  withoutAddToCartBtn,
 }) => {
+  const { connected } = useWallet();
+
   return (
     <div
       className={classNames(
@@ -66,9 +75,9 @@ export const NFTCard: FC<NFTCardProps> = ({
         {/*    )}*/}
         {/*  </div>*/}
         {/*)}*/}
-        {selected && (
+        {/* {selected && (
           <DeleteButton className={styles.deleteButton} onClick={onAddToCart} />
-        )}
+        )} */}
         <img className={styles.cardImage} src={imageUrl} alt={name} />
         {!!rarity && <Rarity rarity={rarity} />}
       </div>
@@ -77,6 +86,25 @@ export const NFTCard: FC<NFTCardProps> = ({
         {!simpleCard && (
           <SolPrice className={styles.cardPrice} price={parseFloat(price)} />
         )}
+
+        <div className={styles.cardBtnWrapper}>
+          {!simpleCard && !withoutAddToCartBtn && (
+            <Button outlined className={styles.cardButton}>
+              {selected ? <MinusIcon /> : <PlusIcon />}
+            </Button>
+          )}
+          {onExchange && (
+            <SwapButton
+              onClick={(e) => {
+                e.stopPropagation();
+                if (connected) {
+                  onExchange();
+                }
+                return;
+              }}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

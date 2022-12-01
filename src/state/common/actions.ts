@@ -10,6 +10,7 @@ import {
   ConfettiState,
   CartSiderState,
   ScreenTypes,
+  ModalState,
 } from './types';
 
 export const commonTypes = {
@@ -39,6 +40,7 @@ export const commonTypes = {
   SET_CART_SIDER: 'common/SET_CART_SIDER',
   TOGGLE_CART_SIDER: 'common/SET_CART_SIDER',
   SET_SCREEN_MODE: 'common/SET_SCREEN_MODE',
+  SET_EXCHANGE_MODAL: 'common/SET_EXCHANGE_MODAL',
 };
 
 export const commonActions = {
@@ -141,5 +143,9 @@ export const commonActions = {
   setScreenMode: createCustomAction(
     commonTypes.SET_SCREEN_MODE,
     (payload: ScreenTypes) => ({ payload }),
+  ),
+  setExchangeModal: createCustomAction(
+    commonTypes.SET_EXCHANGE_MODAL,
+    (payload: ModalState) => ({ payload }),
   ),
 };
