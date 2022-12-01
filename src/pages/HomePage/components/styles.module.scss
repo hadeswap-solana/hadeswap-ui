@@ -87,11 +87,38 @@
 }
 
 .topMarkets {
-  margin-top: 32px;
-  display: flex;
-  flex-flow: row wrap;
+  padding: 32px 0;
+  margin-bottom: -32px;
+  width: 100%;
   gap: 16px;
+  display: flex;
   justify-content: center;
+
+  @media (max-width: 767px) {
+    display: grid;
+    justify-content: flex-start;
+    grid-template-columns: repeat(5, 1fr);
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+      appearance: none;
+      -webkit-appearance: none;
+      height: 4px;
+    }
+    &::-moz-scrollbar {
+      appearance: none;
+      -moz-appearance: none;
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: var(--component-base-background);
+    }
+    &::-moz-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: var(--component-base-background);
+    }
+  }
 }
 
 .marketCardWrapper {
@@ -103,31 +130,39 @@
   background: var(--component-base-background);
   overflow: hidden;
   cursor: pointer;
+  @media (max-width: 767px) {
+    width: 224px;
+  }
+  @media (max-width: 374px) {
+    width: 138px;
+  }
 }
 
 .marketImageWrapper {
-  flex-grow: 1;
+  flex-grow: 0;
 }
 
 .marketImage {
   width: 100%;
+  height: 100%;
 }
 
 .marketInfo {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .marketInfoTitle {
+  flex-grow: 1;
   font-family: var(--font-family-rubik);
   font-weight: 500;
   font-size: 20px;
   line-height: 28px;
-}
-
-.marketInfoPriceWrapper {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
+  @media (max-width: 767px) {
+    font-size: 18px;
+  }
 }
 
 .marketInfoPriceLogo {
@@ -135,7 +170,43 @@
 }
 
 .marketInfoPrice {
+  margin-top: 4px;
+
+  display: flex;
+  align-items: center;
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+
+  color: var(--dark-grey-color);
+
+  @media (max-width: 767px) {
+    font-size: 12px;
+  }
+}
+
+.volumeValue {
+  font-family: var(--font-family-montserrat);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 120%;
+
+  color: var(--green-color);
+  @media (max-width: 767px) {
+    font-size: 10px;
+    position: absolute;
+    top: 25%;
+    right: -10%;
+  }
 }
