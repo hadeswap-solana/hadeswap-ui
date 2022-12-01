@@ -97,11 +97,13 @@
   gap: 16px;
   overflow-x: scroll;
   &::-webkit-scrollbar {
+    appearance: none;
     -webkit-appearance: none;
     height: 4px;
   }
   &::-moz-scrollbar {
-    -webkit-appearance: none;
+    appearance: none;
+    -moz-appearance: none;
     height: 4px;
   }
 
