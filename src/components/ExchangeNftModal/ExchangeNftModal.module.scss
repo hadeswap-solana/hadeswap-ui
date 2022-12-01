@@ -1,0 +1,48 @@
+.nftList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 16px;
+  max-height: 300px;
+  overflow-y: scroll;
+  padding-top: 10px;
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+}
+
+.btn {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.cardWrapper {
+  &::before {
+    content: '';
+    display: block;
+    height: 1px;
+    width: calc(100% + 48px);
+    background-color: var(--border-color-base);
+    margin-left: -24px;
+  }
+}
+
+.cardLabel {
+  font-family: var(--font-family-rubik);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 28px;
+  padding: 16px 0 8px;
+}
+
+.priceDifference {
+  color: var(--dark-grey-color);
+  font-family: var(--font-family-rubik);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+}

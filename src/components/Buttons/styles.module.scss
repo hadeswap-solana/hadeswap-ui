@@ -27,7 +27,7 @@
 }
 
 .disabled {
-  opacity: .7;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
@@ -42,6 +42,10 @@
 
   span {
     color: var(--blue-color);
+  }
+
+  &:hover {
+    background: var(--button-hover-outline);
   }
 }
 
@@ -128,5 +132,45 @@
     font-weight: 400;
     font-size: 16px;
     line-height: 24px;
+  }
+}
+
+.swapButtonWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.swapButton {
+  height: 38px;
+  width: 80px;
+
+  span {
+    margin-left: 4px;
+    font-size: 14px;
+  }
+
+  svg {
+    height: 20px;
+    min-width: 20px;
+    path {
+      fill: var(--blue-color);
+    }
+  }
+}
+
+.notConnectedBtn {
+  cursor: not-allowed;
+  border-color: var(--disabled-outline-color);
+
+  svg > path {
+    fill: var(--disabled-outline-color);
+  }
+
+  span {
+    color: var(--disabled-outline-color);
+  }
+
+  &:hover {
+    background: unset;
   }
 }

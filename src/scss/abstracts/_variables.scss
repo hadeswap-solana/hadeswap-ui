@@ -33,6 +33,7 @@
   --text-color: rgba(0, 0, 0, 0.65); // major text color
   --text-color-secondary: rgba(0, 0, 0, 0.45); // secondary text color
   --disabled-color: rgba(0, 0, 0, 0.25); // disable state color
+  --disabled-outline-color: rgba(35, 48, 61, 1);
   --box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
   0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
 
@@ -56,6 +57,7 @@
   // Animation
   --button-transition: opacity .3s;
   --button-hover-opacity: .7;
+  --button-hover-outline: rgba(37, 124, 255, 0.2);
 
   --ease-base-out: cubic-bezier(0.7, 0.3, 0.1, 1);
   --ease-base-in: cubic-bezier(0.9, 0, 0.3, 0.7);

@@ -146,6 +146,16 @@ const setScreenModeReducer = createReducer<ScreenTypes>(initialScreenMode, {
   [commonTypes.SET_SCREEN_MODE]: (__, action) => action.payload,
 });
 
+const setExchangeModalReducer = createReducer<ModalState>(initialModalState, {
+  [commonTypes.SET_EXCHANGE_MODAL]: (
+    state,
+    action: ReturnType<typeof commonActions.setExchangeModal>,
+  ) => ({
+    ...state,
+    ...action.payload,
+  }),
+});
+
 export default combineReducers({
   connection: setConnectionReducer,
   socket: setSocketReducer,
@@ -159,4 +169,5 @@ export default combineReducers({
   confetti: setConfettiReducer,
   cartSider: composeReducers(setCartSiderReducer, toggleCartSiderReducer),
   screenMode: setScreenModeReducer,
+  exchangeModal: setExchangeModalReducer,
 });

@@ -1,12 +1,9 @@
-import React, {
-  FC,
-  useEffect,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import { FC, useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectScreeMode } from '../../state/common/selectors';
+import {
+  selectExchangeModalVisible,
+  selectScreeMode,
+} from '../../state/common/selectors';
 import CartSiderDesktop from './CartSider';
 import CartSiderMobile from './mobile/CartSider';
 import { useCartSider, useSwap } from './hooks';
@@ -15,6 +12,8 @@ import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
 
 import styles from './mobile/styles.module.scss';
+import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
+import { commonActions } from '../../state/common/actions';
 
 export interface CartSiderProps {
   createOnDeselectHandler?: (arg: CartOrder) => () => void;
@@ -32,6 +31,7 @@ export interface CartSiderProps {
   totalBuy: number;
   totalSell: number;
   invalidItems: CartOrder[];
+  isExchangeMode?: boolean;
 }
 
 const HEADER_HEIGHT = 56;
@@ -43,6 +43,7 @@ const CartSider: FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean | null>(null);
   const [modalClassName, setModalClassName] = useState<string>('');
+  const exchangeModalVisible = useSelector(selectExchangeModalVisible);
 
   const {
     cartItems,
@@ -57,7 +58,10 @@ const CartSider: FC = () => {
   const isHeaderVisible = window.scrollY < HEADER_HEIGHT;
   const isSwapButtonDisabled = !itemsAmount;
 
-  const { swap } = useSwap();
+  const { swap } = useSwap({
+    onAfterTxn: () => dispatch(txsLoadingModalActions.setVisible(false)),
+    onFail: () => dispatch(commonActions.setCartSider({ isVisible: true })),
+  });
 
   const createOnDeselectHandler = (order: CartOrder) => () => {
     dispatch(coreActions.removeOrderFromCart(order.mint));
@@ -133,6 +137,7 @@ const CartSider: FC = () => {
       cartOpened={cartOpened}
       totalBuy={totalBuy}
       totalSell={totalSell}
+      isExchangeMode={exchangeModalVisible}
     />
   );
 };
