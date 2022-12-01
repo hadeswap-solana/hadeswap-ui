@@ -87,7 +87,8 @@
 }
 
 .topMarkets {
-  padding-top: 32px;
+  padding: 32px 0;
+  margin-bottom: -32px;
   width: 100%;
 
   display: grid;
