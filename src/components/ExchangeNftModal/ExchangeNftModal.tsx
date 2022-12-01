@@ -57,12 +57,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
     dispatch(commonActions.setCartSider({ isVisible: false }));
   };
 
-  const params = {
-    onAfterTxn,
-    IX_PER_TXN: 2,
-  };
-
-  const { swap } = useSwap(params);
+  const { swap } = useSwap({ onAfterTxn, isxPerTxn: 2 });
 
   const isLoading = nftsLoading || marketPairsLoading;
 

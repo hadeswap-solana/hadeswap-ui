@@ -29,8 +29,8 @@ type UseCartSider = () => CartSiderProps;
 
 type UseSwap = (params: {
   onAfterTxn: () => void;
-  onFailedTxn?: () => void;
-  IX_PER_TXN: number;
+  onFail?: () => void;
+  isxPerTxn: number;
 }) => {
   swap: () => Promise<void>;
 };
@@ -56,9 +56,7 @@ export const useCartSider: UseCartSider = () => {
   };
 };
 
-export const useSwap: UseSwap = (params) => {
-  const { onAfterTxn, onFailedTxn, IX_PER_TXN } = params;
-
+export const useSwap: UseSwap = ({ onAfterTxn, onFail, isxPerTxn }) => {
   const connection = useConnection();
   const wallet = useWallet();
   const dispatch = useDispatch();
@@ -81,7 +79,7 @@ export const useSwap: UseSwap = (params) => {
       ),
     );
 
-    const ixsDataChunks = chunk(ixsData, IX_PER_TXN);
+    const ixsDataChunks = chunk(ixsData, isxPerTxn);
 
     const txnsData = ixsDataChunks.map((ixsAndSigners) =>
       mergeIxsIntoTxn(ixsAndSigners),
@@ -129,7 +127,7 @@ export const useSwap: UseSwap = (params) => {
     });
 
     if (!allTxnsSuccess) {
-      onFailedTxn?.();
+      onFail?.();
     }
 
     onAfterTxn?.();

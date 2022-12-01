@@ -8,7 +8,7 @@ import Button from './Button';
 
 interface ButtonProps {
   className?: string;
-  onClick: (args?: MouseEvent<HTMLButtonElement>) => void;
+  onClick: (args?: MouseEvent<HTMLButtonElement> | TouchEvent) => void;
 }
 
 export const SwapButton: FC<ButtonProps> = ({ className, onClick }) => {

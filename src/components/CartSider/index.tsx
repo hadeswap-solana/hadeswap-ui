@@ -64,14 +64,11 @@ const CartSider: FC = () => {
   const isHeaderVisible = window.scrollY < HEADER_HEIGHT;
   const isSwapButtonDisabled = !itemsAmount;
 
-  const params = {
+  const { swap } = useSwap({
     onAfterTxn: () => dispatch(txsLoadingModalActions.setVisible(false)),
-    onFailedTxn: () =>
-      dispatch(commonActions.setCartSider({ isVisible: true })),
-    IX_PER_TXN: 1,
-  };
-
-  const { swap } = useSwap(params);
+    onFail: () => dispatch(commonActions.setCartSider({ isVisible: true })),
+    isxPerTxn: 1,
+  });
 
   const createOnDeselectHandler = (order: CartOrder) => () => {
     dispatch(coreActions.removeOrderFromCart(order.mint));

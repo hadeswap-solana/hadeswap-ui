@@ -7,7 +7,7 @@ interface ButtonProps {
   className?: string;
   outlined?: boolean;
   isDisabled?: boolean;
-  onClick?: (args?: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (args?: MouseEvent<HTMLButtonElement> | TouchEvent) => void;
   children: JSX.Element[] | JSX.Element;
 }
 
