@@ -1,10 +1,4 @@
-import React, {
-  FC,
-  useEffect,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import { FC, useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectExchangeModalVisible,
@@ -67,7 +61,6 @@ const CartSider: FC = () => {
   const { swap } = useSwap({
     onAfterTxn: () => dispatch(txsLoadingModalActions.setVisible(false)),
     onFail: () => dispatch(commonActions.setCartSider({ isVisible: true })),
-    isxPerTxn: 1,
   });
 
   const createOnDeselectHandler = (order: CartOrder) => () => {
