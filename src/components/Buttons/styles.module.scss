@@ -27,7 +27,7 @@
 }
 
 .disabled {
-  opacity: .7;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
@@ -45,7 +45,7 @@
   }
 
   &:hover {
-    background: rgba(37, 124, 255, 0.2);
+    background: var(--button-hover-outline);
   }
 }
 
@@ -160,14 +160,14 @@
 
 .notConnectedBtn {
   cursor: not-allowed;
-  border-color: rgba(35, 48, 61, 1);
+  border-color: var(--disabled-outline-color);
 
   svg > path {
-    fill: rgba(35, 48, 61, 1);
+    fill: var(--disabled-outline-color);
   }
 
   span {
-    color: rgba(35, 48, 61, 1);
+    color: var(--disabled-outline-color);
   }
 
   &:hover {

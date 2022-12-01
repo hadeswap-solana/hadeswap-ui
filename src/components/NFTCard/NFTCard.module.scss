@@ -133,5 +133,5 @@
 }
 
 .card:hover .cardButton {
-  background: rgba(37, 124, 255, 0.2);
+  background: var(--button-hover-outline);
 }

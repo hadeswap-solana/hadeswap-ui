@@ -1,5 +1,4 @@
 import { FC, useCallback, useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseOutlined } from '@ant-design/icons';
 import { Typography, Modal, Col, Row } from 'antd';
@@ -65,9 +64,18 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
   const buyNftPrice = parseFloat(getFormattedPrice(selectedBuyNft?.price));
   const sellNftPrice = parseFloat(getFormattedPrice(selectedSellOrder?.price));
 
-  const differencePrice =
+  const priceDifference =
     (selectedOrder?.mint && buyNftPrice - sellNftPrice) || 0;
   const isDisabled = !selectedBuyNft || !selectedOrder?.mint;
+
+  const onSelect = useCallback(
+    (order: CartOrder): void => {
+      selectedOrder?.mint === order.mint
+        ? setSelectedOrder(null)
+        : setSelectedOrder(order);
+    },
+    [selectedOrder],
+  );
 
   const addSellOrderToExchange = useCallback(
     (order: MarketOrder) => () => {
@@ -91,18 +99,12 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
         ),
       );
     },
-    [dispatch, cartItems, pairs, selectedSellOrder],
+    [dispatch, cartItems, pairs, selectedSellOrder, onSelect],
   );
 
-  const onDeselectHandler = (order: CartOrder) => () => {
+  const createDeselectHandler = (order: CartOrder) => () => {
     dispatch(coreActions.removeOrderFromCart(order.mint));
     onCancel();
-  };
-
-  const onSelect = (order: CartOrder): void => {
-    selectedOrder?.mint === order.mint
-      ? setSelectedOrder(null)
-      : setSelectedOrder(order);
   };
 
   return (
@@ -144,19 +146,19 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
           name={selectedBuyNft?.name}
           imageUrl={selectedBuyNft?.imageUrl}
           price={formatBNToString(new BN(selectedBuyNft?.price))}
-          onDeselect={onDeselectHandler(selectedBuyNft)}
+          onDeselect={createDeselectHandler(selectedBuyNft)}
         />
       </Col>
 
       <Row style={{ marginTop: 32 }} justify="space-between">
         <Text className={styles.priceDifference}>price difference</Text>
         <Row align="middle" style={{ gap: 5 }}>
-          <Text>{differencePrice.toFixed(2)}</Text>
+          <Text>{priceDifference.toFixed(2)}</Text>
           <img width={12} height={12} src={solanaLogo} alt="sol" />
         </Row>
       </Row>
       <Button isDisabled={isDisabled} className={styles.btn} onClick={swap}>
-        <span>exchange for {differencePrice.toFixed(2)} SOL</span>
+        <span>exchange for {priceDifference.toFixed(2)} SOL</span>
       </Button>
     </Modal>
   );

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 import classNames from 'classnames';
 
 import styles from './styles.module.scss';
@@ -7,7 +7,7 @@ interface ButtonProps {
   className?: string;
   outlined?: boolean;
   isDisabled?: boolean;
-  onClick?: (args?: any) => void;
+  onClick?: (args?: MouseEvent<HTMLButtonElement>) => void;
   children: JSX.Element[] | JSX.Element;
 }
 

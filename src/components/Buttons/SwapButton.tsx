@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
@@ -8,7 +8,7 @@ import Button from './Button';
 
 interface ButtonProps {
   className?: string;
-  onClick: (args?: any) => void;
+  onClick: (args?: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const SwapButton: FC<ButtonProps> = ({ className, onClick }) => {
