@@ -87,11 +87,14 @@
 }
 
 .topMarkets {
-  margin-top: 32px;
-  display: flex;
-  flex-flow: row wrap;
+  padding-top: 32px;
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+
   gap: 16px;
-  justify-content: center;
+  overflow-x: scroll;
 }
 
 .marketCardWrapper {
@@ -103,10 +106,13 @@
   background: var(--component-base-background);
   overflow: hidden;
   cursor: pointer;
+  @media (max-width: 767px) {
+    width: 136px;
+  }
 }
 
 .marketImageWrapper {
-  flex-grow: 1;
+  flex-grow: 0;
 }
 
 .marketImage {
@@ -115,6 +121,9 @@
 
 .marketInfo {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .marketInfoTitle {
@@ -122,12 +131,17 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 28px;
+  @media (max-width: 767px) {
+    font-size: 18px;
+  }
 }
 
 .marketInfoPriceWrapper {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+
   margin-top: 4px;
+  flex-grow: 1;
 }
 
 .marketInfoPriceLogo {
@@ -138,4 +152,35 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.volumeTitle {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+
+  color: var(--dark-grey-color);
+
+  @media (max-width: 767px) {
+    font-size: 12px;
+  }
+}
+
+.volumeValue {
+  font-family: var(--font-family-montserrat);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 120%;
+
+  color: var(--green-color);
+  @media (max-width: 767px) {
+    font-size: 10px;
+  }
 }
