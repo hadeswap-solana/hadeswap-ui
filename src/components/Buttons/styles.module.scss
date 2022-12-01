@@ -43,6 +43,10 @@
   span {
     color: var(--blue-color);
   }
+
+  &:hover {
+    background: rgba(37, 124, 255, 0.2);
+  }
 }
 
 .roundIconWrapper {
@@ -134,25 +138,39 @@
 .swapButtonWrapper {
   display: flex;
   justify-content: center;
-  margin-top: 16px;
 }
 
 .swapButton {
-  height: 24px;
-  width: 136px;
-  border: 0;
+  height: 38px;
+  width: 80px;
 
   span {
-    color: var(--white-color);
-    margin-left: 10px;
+    margin-left: 4px;
     font-size: 14px;
+  }
+
+  svg {
+    height: 20px;
+    min-width: 20px;
+    path {
+      fill: var(--blue-color);
+    }
   }
 }
 
-.swapButton:hover svg > path {
-  fill: var(--blue-color);
-}
+.notConnectedBtn {
+  cursor: not-allowed;
+  border-color: rgba(35, 48, 61, 1);
 
-.swapButton:hover span {
-  color: var(--blue-color);
+  svg > path {
+    fill: rgba(35, 48, 61, 1);
+  }
+
+  span {
+    color: rgba(35, 48, 61, 1);
+  }
+
+  &:hover {
+    background: unset;
+  }
 }

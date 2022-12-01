@@ -129,6 +129,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
               selected={selectedOrder?.mint === order.mint}
               disabled={order.disabled}
               onCardClick={addSellOrderToExchange(order)}
+              withoutAddToCartBtn
             />
           ))}
         </FakeInfinityScroll>

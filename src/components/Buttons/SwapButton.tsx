@@ -18,8 +18,11 @@ export const SwapButton: FC<ButtonProps> = ({ className, onClick }) => {
     <div className={styles.swapButtonWrapper}>
       <Button
         onClick={onClick}
-        className={classNames(styles.swapButton, className)}
-        isDisabled={!connected}
+        className={classNames(
+          styles.swapButton,
+          !connected && styles.notConnectedBtn,
+          className,
+        )}
         outlined
       >
         <LoopIcon />

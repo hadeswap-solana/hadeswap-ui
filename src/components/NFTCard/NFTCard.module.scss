@@ -63,7 +63,7 @@
 }
 
 .cardContent {
-  padding: 16px;
+  padding: 8px;
 }
 
 .cardTitle {
@@ -115,4 +115,23 @@
     height: 12px;
     fill: #e3e2e5;
   }
+}
+
+.cardBtnWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.cardButton {
+  width: 38px;
+  height: 38px;
+  svg > path {
+    fill: var(--blue-color);
+  }
+}
+
+.card:hover .cardButton {
+  background: rgba(37, 124, 255, 0.2);
 }
