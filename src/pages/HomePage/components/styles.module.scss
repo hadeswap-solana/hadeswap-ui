@@ -96,6 +96,7 @@
 
   @media (max-width: 767px) {
     display: grid;
+    justify-content: flex-start;
     grid-template-columns: repeat(5, 1fr);
     overflow-x: scroll;
     &::-webkit-scrollbar {
