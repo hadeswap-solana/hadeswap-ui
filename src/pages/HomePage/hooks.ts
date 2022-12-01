@@ -17,17 +17,18 @@ export const useFetchAllStats = (): {
       networkMode: 'offlineFirst',
       staleTime: Infinity,
       refetchOnWindowFocus: false,
-      initialData: {
-        volume24h: null,
-        volumeAll: null,
-        solanaTPS: null,
-        solanaPrice: null,
-      },
     },
   );
 
+  const initialData = {
+    volume24h: null,
+    volumeAll: null,
+    solanaTPS: null,
+    solanaPrice: null,
+  };
+
   return {
-    allStats: data,
+    allStats: data || initialData,
     allStatsLoading: isLoading || isFetching,
   };
 };
@@ -48,14 +49,10 @@ export const useFetchTVL = (): {
     networkMode: 'offlineFirst',
     staleTime: Infinity,
     refetchOnWindowFocus: false,
-    initialData: {
-      TVL: '',
-      volume: '',
-    },
   });
 
   return {
-    TVLstat: data.TVL,
+    TVLstat: data?.TVL || '',
     TVLStatLoading: isLoading || isFetching,
   };
 };
@@ -71,12 +68,11 @@ export const useTopMarkets = (): {
       networkMode: 'offlineFirst',
       staleTime: Infinity,
       refetchOnWindowFocus: false,
-      initialData: [],
     },
   );
 
   return {
-    topMarkets: data,
+    topMarkets: data || [],
     topMarketsLoading: isLoading || isFetching,
   };
 };
