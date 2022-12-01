@@ -25,6 +25,7 @@ import {
   selectSellOrdersForExchange,
 } from '../../state/core/selectors';
 import { commonActions } from '../../state/common/actions';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const { Title, Text } = Typography;
 
@@ -35,6 +36,7 @@ interface ExchangeNftModalProps {
 
 const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
   const dispatch = useDispatch();
+  const { connected } = useWallet();
 
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
   const sellOrders = useSelector((state: never) =>
@@ -64,8 +66,9 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
   const buyNftPrice = parseFloat(getFormattedPrice(selectedBuyNft?.price));
   const sellNftPrice = parseFloat(getFormattedPrice(selectedSellOrder?.price));
 
-  const differencePrice = buyNftPrice - sellNftPrice || 0;
-  const isDisabled = !selectedBuyNft || !selectedSellOrder;
+  const differencePrice =
+    (selectedOrder?.mint && buyNftPrice - sellNftPrice) || 0;
+  const isDisabled = !selectedBuyNft || !selectedOrder?.mint;
 
   const addSellOrderToExchange = useCallback(
     (order: MarketOrder) => () => {
@@ -114,9 +117,13 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
       width={488}
       destroyOnClose
     >
-      <Title level={3}>select NFT to exchange</Title>
-      {isLoading && <Spinner />}
-      {!isLoading && !!sellOrders.length && (
+      {!connected ? (
+        <Title level={3}>connect your wallet to see your nfts</Title>
+      ) : (
+        <Title level={3}>select NFT to exchange</Title>
+      )}
+      {connected && isLoading && <Spinner />}
+      {!isLoading && connected && !!sellOrders.length && (
         <FakeInfinityScroll itemsPerScroll={12} className={styles.nftList}>
           {sellOrders.map((order) => (
             <NFTCard

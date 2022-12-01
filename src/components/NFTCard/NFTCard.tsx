@@ -11,6 +11,7 @@ import { NftRarity } from '../../state/core/types';
 import styles from './NFTCard.module.scss';
 import HowRareIsIcon from '../../icons/HowRareIsIcon';
 import MoonRankIcon from '../../icons/MoonRankIcon';
+import { SwapButton } from '../Buttons/SwapButton';
 
 interface NFTCardProps {
   className?: string;
@@ -55,23 +56,6 @@ export const NFTCard: FC<NFTCardProps> = ({
       onClick={onCardClick && onCardClick}
     >
       <div className={styles.cardImageWrapper}>
-        {!selected && !withoutHover && (
-          <div className={styles.cardImageHover}>
-            {onExchange && (
-              <Button
-                className={styles.cardButton}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onExchange();
-                }}
-              >
-                <LoopIcon />
-                <span>exchange</span>
-              </Button>
-            )}
-          </div>
-        )}
-
         {/*{!simpleCard && !selected && (*/}
         {/*  <div className={styles.cardImageHover}>*/}
         {/*    <Button className={styles.cardButton} onClick={onAddToCart}>*/}
@@ -96,6 +80,15 @@ export const NFTCard: FC<NFTCardProps> = ({
         <h5 className={styles.cardTitle}>{name}</h5>
         {!simpleCard && (
           <SolPrice className={styles.cardPrice} price={parseFloat(price)} />
+        )}
+
+        {onExchange && (
+          <SwapButton
+            onClick={(event) => {
+              event.stopPropagation();
+              onExchange();
+            }}
+          />
         )}
       </div>
     </div>

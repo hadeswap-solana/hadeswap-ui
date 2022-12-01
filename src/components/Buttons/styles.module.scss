@@ -130,3 +130,29 @@
     line-height: 24px;
   }
 }
+
+.swapButtonWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.swapButton {
+  height: 24px;
+  width: 136px;
+  border: 0;
+
+  span {
+    color: var(--white-color);
+    margin-left: 10px;
+    font-size: 14px;
+  }
+}
+
+.swapButton:hover svg > path {
+  fill: var(--blue-color);
+}
+
+.swapButton:hover span {
+  color: var(--blue-color);
+}
