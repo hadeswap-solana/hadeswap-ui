@@ -1,14 +1,15 @@
 import { FC, useCallback, useState } from 'react';
-import { Typography, Modal, Col, Row } from 'antd';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseOutlined } from '@ant-design/icons';
-import BN from 'bn.js';
+import { Typography, Modal, Col, Row } from 'antd';
 import { useParams } from 'react-router-dom';
+import BN from 'bn.js';
 
-import { formatBNToString, getFormattedPrice } from '../../utils';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { CartOrder, MarketOrder, OrderType } from '../../state/core/types';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
+import { formatBNToString, getFormattedPrice } from '../../utils';
 import { FakeInfinityScroll } from '../FakeInfiinityScroll';
 import { coreActions } from '../../state/core/actions';
 import styles from './ExchangeNftModal.module.scss';
@@ -25,7 +26,6 @@ import {
   selectSellOrdersForExchange,
 } from '../../state/core/selectors';
 import { commonActions } from '../../state/common/actions';
-import { useWallet } from '@solana/wallet-adapter-react';
 
 const { Title, Text } = Typography;
 
@@ -36,7 +36,6 @@ interface ExchangeNftModalProps {
 
 const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
   const dispatch = useDispatch();
-  const { connected } = useWallet();
 
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
   const sellOrders = useSelector((state: never) =>
@@ -114,16 +113,12 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
       closable
       closeIcon={<CloseOutlined />}
       onCancel={onCancel}
-      width={488}
+      width={495}
       destroyOnClose
     >
-      {!connected ? (
-        <Title level={3}>connect your wallet to see your nfts</Title>
-      ) : (
-        <Title level={3}>select NFT to exchange</Title>
-      )}
-      {connected && isLoading && <Spinner />}
-      {!isLoading && connected && !!sellOrders.length && (
+      <Title level={4}>select NFT to exchange</Title>
+      {isLoading && <Spinner />}
+      {!isLoading && !!sellOrders.length && (
         <FakeInfinityScroll itemsPerScroll={12} className={styles.nftList}>
           {sellOrders.map((order) => (
             <NFTCard
@@ -134,7 +129,6 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
               selected={selectedOrder?.mint === order.mint}
               disabled={order.disabled}
               onCardClick={addSellOrderToExchange(order)}
-              withoutHover
             />
           ))}
         </FakeInfinityScroll>
@@ -142,8 +136,10 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
       {!sellOrders?.length && !isLoading && (
         <Title level={5}>no nfts of this collections</Title>
       )}
-      <Col style={{ marginTop: 32 }}>
-        <Title level={4}>you’ll get</Title>
+      <Col className={styles.cardWrapper}>
+        <Title style={{ paddingTop: 32 }} level={4}>
+          you’ll get
+        </Title>
         <Card
           key={selectedBuyNft?.mint}
           name={selectedBuyNft?.name}
