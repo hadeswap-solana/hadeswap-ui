@@ -64,6 +64,11 @@ export const selectCartSiderVisible = createSelector(
   identity,
 );
 
+export const selectExchangeModalVisible = createSelector(
+  [pathOr(false, ['common', 'exchangeModal', 'isVisible'])],
+  identity,
+);
+
 export const selectScreeMode = createSelector(
   (store: any) => store?.common?.screenMode as ScreenTypes,
   (screenType: ScreenTypes) => screenType,
