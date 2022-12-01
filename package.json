@@ -48,7 +48,7 @@
   "scripts": {
     "start": "webpack serve --config webpack.dev.js --env SOLANA_NETWORK=devnet",
     "mainnet": "webpack serve --config webpack.dev.js --env SOLANA_NETWORK=mainnet",
-    "bundle": "webpack build --config webpack.prod.js --env SOLANA_NETWORK=mainnet",
+    "bundle": "webpack build --config webpack.prod.js --env SOLANA_NETWORK=devnet",
     "bundle-devnet": "webpack build --config webpack.prod.js --env SOLANA_NETWORK=devnet",
     "type-scss": "typed-scss-modules src --exportType default --nameFormat none",
     "build": "npm run type-scss && npm run bundle",
