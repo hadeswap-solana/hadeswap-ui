@@ -18,6 +18,8 @@ import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
 
 import styles from './mobile/styles.module.scss';
+import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
+import { commonActions } from '../../state/common/actions';
 
 export interface CartSiderProps {
   createOnDeselectHandler?: (arg: CartOrder) => () => void;
@@ -62,7 +64,14 @@ const CartSider: FC = () => {
   const isHeaderVisible = window.scrollY < HEADER_HEIGHT;
   const isSwapButtonDisabled = !itemsAmount;
 
-  const { swap } = useSwap();
+  const params = {
+    onAfterTxn: () => dispatch(txsLoadingModalActions.setVisible(false)),
+    onFailedTxn: () =>
+      dispatch(commonActions.setCartSider({ isVisible: true })),
+    IX_PER_TXN: 1,
+  };
+
+  const { swap } = useSwap(params);
 
   const createOnDeselectHandler = (order: CartOrder) => () => {
     dispatch(coreActions.removeOrderFromCart(order.mint));

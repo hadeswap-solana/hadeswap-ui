@@ -27,7 +27,11 @@ import { CartSiderProps } from './index';
 
 type UseCartSider = () => CartSiderProps;
 
-type UseSwap = () => {
+type UseSwap = (params: {
+  onAfterTxn: () => void;
+  onFailedTxn?: () => void;
+  IX_PER_TXN: number;
+}) => {
   swap: () => Promise<void>;
 };
 
@@ -52,8 +56,8 @@ export const useCartSider: UseCartSider = () => {
   };
 };
 
-export const useSwap: UseSwap = () => {
-  const IX_PER_TXN = 1;
+export const useSwap: UseSwap = (params) => {
+  const { onAfterTxn, onFailedTxn, IX_PER_TXN } = params;
 
   const connection = useConnection();
   const wallet = useWallet();
@@ -125,10 +129,10 @@ export const useSwap: UseSwap = () => {
     });
 
     if (!allTxnsSuccess) {
-      dispatch(commonActions.setCartSider({ isVisible: true }));
+      onFailedTxn?.();
     }
 
-    dispatch(txsLoadingModalActions.setVisible(false));
+    onAfterTxn?.();
   };
 
   return {

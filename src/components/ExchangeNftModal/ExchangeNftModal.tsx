@@ -16,7 +16,6 @@ import Card from '../CartSider/components/Card';
 import { NFTCard } from '../NFTCard/NFTCard';
 import { Spinner } from '../Spinner/Spinner';
 import Button from '../Buttons/Button';
-import { useExchange } from './hooks';
 import {
   selectCartItems,
   selectMarketPairs,
@@ -25,6 +24,7 @@ import {
   selectSellOrdersForExchange,
 } from '../../state/core/selectors';
 import { commonActions } from '../../state/common/actions';
+import { useSwap } from '../CartSider/hooks';
 
 const { Title, Text } = Typography;
 
@@ -57,7 +57,12 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
     dispatch(commonActions.setCartSider({ isVisible: false }));
   };
 
-  const { swap } = useExchange(onAfterTxn);
+  const params = {
+    onAfterTxn,
+    IX_PER_TXN: 2,
+  };
+
+  const { swap } = useSwap(params);
 
   const isLoading = nftsLoading || marketPairsLoading;
 
