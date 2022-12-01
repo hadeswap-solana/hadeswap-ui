@@ -31,6 +31,7 @@ type UseSwap = (params: {
   onAfterTxn: () => void;
   onFail?: () => void;
   ixsPerTxn?: number;
+  onSuccessTxn?: () => void;
 }) => {
   swap: () => Promise<void>;
 };
@@ -56,7 +57,12 @@ export const useCartSider: UseCartSider = () => {
   };
 };
 
-export const useSwap: UseSwap = ({ onAfterTxn, onFail, ixsPerTxn = 1 }) => {
+export const useSwap: UseSwap = ({
+  onAfterTxn,
+  onSuccessTxn,
+  onFail,
+  ixsPerTxn = 1,
+}) => {
   const connection = useConnection();
   const wallet = useWallet();
   const dispatch = useDispatch();
@@ -114,6 +120,7 @@ export const useSwap: UseSwap = ({ onAfterTxn, onFail, ixsPerTxn = 1 }) => {
           txnData.nftMints.map((nftMint) => {
             dispatch(coreActions.addFinishedOrderMint(nftMint));
           });
+          onSuccessTxn?.();
         },
         onError: () => {
           notify({

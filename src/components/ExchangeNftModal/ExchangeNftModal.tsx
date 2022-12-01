@@ -57,7 +57,12 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
     dispatch(commonActions.setCartSider({ isVisible: false }));
   };
 
-  const { swap } = useSwap({ onAfterTxn, ixsPerTxn: 2 });
+  const { swap } = useSwap({
+    onAfterTxn,
+    ixsPerTxn: 2,
+    onSuccessTxn: () =>
+      dispatch(commonActions.setExchangeModal({ isVisible: false })),
+  });
 
   const isLoading = nftsLoading || marketPairsLoading;
 
@@ -76,6 +81,11 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
     },
     [selectedOrder],
   );
+
+  const closeExchangeModal = (): void => {
+    onCancel();
+    setSelectedOrder(null);
+  };
 
   const addSellOrderToExchange = useCallback(
     (order: MarketOrder) => () => {
@@ -104,7 +114,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
 
   const createDeselectHandler = (order: CartOrder) => () => {
     dispatch(coreActions.removeOrderFromCart(order.mint));
-    onCancel();
+    closeExchangeModal();
   };
 
   return (
@@ -114,7 +124,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
       centered
       closable
       closeIcon={<CloseOutlined />}
-      onCancel={onCancel}
+      onCancel={closeExchangeModal}
       width={495}
       destroyOnClose
     >
