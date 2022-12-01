@@ -29,14 +29,17 @@ export const MarketCard: FC<MarketCardProps> = ({ market }) => {
         )}
       </div>
       <div className={styles.marketInfo}>
-        <span className={styles.marketInfoTitle}>
+        <div className={styles.marketInfoTitle}>
           {market.collectionName || UNTITLED}
-        </span>
-        <div className={styles.marketInfoPriceWrapper}>
+        </div>
+        <div className={styles.volume}>
+          24h volume
+          {/* <span className={styles.volumeValue}>+ 22.5%</span> */}
+        </div>
+
+        <div className={styles.marketInfoPrice}>
+          {formatRawSol(market.volume24)}
           <SolanaLogo className={styles.marketInfoPriceLogo} />
-          <span className={styles.marketInfoPrice}>
-            {formatRawSol(market.volume24)}
-          </span>
         </div>
       </div>
     </li>
