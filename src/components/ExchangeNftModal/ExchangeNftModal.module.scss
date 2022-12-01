@@ -30,3 +30,19 @@
     margin-left: -24px;
   }
 }
+
+.cardLabel {
+  font-family: Rubik;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 28px;
+  padding: 16px 0 8px;
+}
+
+.priceDifference {
+  color: var(--dark-grey-color);
+  font-family: Rubik;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+}

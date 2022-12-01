@@ -137,9 +137,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
         <Title level={5}>no nfts of this collections</Title>
       )}
       <Col className={styles.cardWrapper}>
-        <Title style={{ paddingTop: 32 }} level={4}>
-          you’ll get
-        </Title>
+        <p className={styles.cardLabel}>you’ll get</p>
         <Card
           key={selectedBuyNft?.mint}
           name={selectedBuyNft?.name}
@@ -150,7 +148,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
       </Col>
 
       <Row style={{ marginTop: 32 }} justify="space-between">
-        <Text>price difference</Text>
+        <Text className={styles.priceDifference}>price difference</Text>
         <Row align="middle" style={{ gap: 5 }}>
           <Text>{differencePrice.toFixed(2)}</Text>
           <img width={12} height={12} src={solanaLogo} alt="sol" />
