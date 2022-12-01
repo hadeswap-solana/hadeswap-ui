@@ -129,7 +129,10 @@
   overflow: hidden;
   cursor: pointer;
   @media (max-width: 767px) {
-    width: 136px;
+    width: 224px;
+  }
+  @media (max-width: 374px) {
+    width: 138px;
   }
 }
 
@@ -139,6 +142,7 @@
 
 .marketImage {
   width: 100%;
+  height: 100%;
 }
 
 .marketInfo {
