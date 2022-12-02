@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useDispatch } from 'react-redux';
+import { web3 } from 'hadeswap-sdk';
 import { DisconnectOutlined, WalletOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
 import ChevronIcon from '../../icons/ChevronIcon';
@@ -13,11 +13,18 @@ import styles from './ConnectWalletButton.module.scss';
 
 export interface ConnectButtonProps {
   className?: string;
+  connected: boolean;
+  publicKey: web3.PublicKey;
+  disconnect: () => void;
 }
 
-export const ConnectWalletButton: FC<ConnectButtonProps> = ({ className }) => {
+export const ConnectWalletButton: FC<ConnectButtonProps> = ({
+  className,
+  connected,
+  publicKey,
+  disconnect,
+}) => {
   const dispatch = useDispatch();
-  const { connected, publicKey, disconnect } = useWallet();
 
   return !connected ? (
     <Button
