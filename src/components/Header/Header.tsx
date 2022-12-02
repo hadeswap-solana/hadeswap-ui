@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { web3 } from 'hadeswap-sdk';
 import { PATHS } from '../../constants';
 import Logo from '../../icons/Logo';
 // import InfoBlock from './InfoBlock';
@@ -11,9 +11,17 @@ import { ConnectWalletButton } from '../ConnectWalletButton/ConnectWalletButton'
 
 import styles from './Header.module.scss';
 
-const HeaderDesktop: FC = () => {
-  const { connected, publicKey, disconnect } = useWallet();
+export interface HeaderDesktopProps {
+  connected: boolean;
+  publicKey: web3.PublicKey;
+  disconnect: () => void;
+}
 
+const HeaderDesktop: FC<HeaderDesktopProps> = ({
+  connected,
+  publicKey,
+  disconnect,
+}) => {
   return (
     <header className={styles.header}>
       {/*<InfoBlock />*/}

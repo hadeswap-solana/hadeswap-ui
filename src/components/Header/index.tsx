@@ -4,13 +4,23 @@ import { selectScreeMode } from '../../state/common/selectors';
 import HeaderDesktop from './Header';
 import HeaderMobile from './mobile/Header';
 import { ScreenTypes } from '../../state/common/types';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const Header: FC = () => {
+  const { connected, publicKey, disconnect } = useWallet();
   const screenMode = useSelector(selectScreeMode);
   return screenMode !== ScreenTypes.DESKTOP ? (
-    <HeaderMobile />
+    <HeaderMobile
+      connected={connected}
+      publicKey={publicKey}
+      disconnect={disconnect}
+    />
   ) : (
-    <HeaderDesktop />
+    <HeaderDesktop
+      connected={connected}
+      publicKey={publicKey}
+      disconnect={disconnect}
+    />
   );
 };
 

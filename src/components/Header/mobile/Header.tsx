@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { web3 } from 'hadeswap-sdk';
 import { PATHS } from '../../../constants';
 import Logo from '../../../icons/Logo';
 import { BurgerIcon } from '../../../icons/BurgerIcon';
@@ -8,7 +9,17 @@ import Menu from './Menu';
 import { ConnectWalletButton } from '../../ConnectWalletButton/ConnectWalletButton';
 import styles from './Header.module.scss';
 
-const HeaderMobile: FC = () => {
+export interface HeaderMobileProps {
+  connected: boolean;
+  publicKey: web3.PublicKey;
+  disconnect: () => void;
+}
+
+const HeaderMobile: FC<HeaderMobileProps> = ({
+  connected,
+  publicKey,
+  disconnect,
+}) => {
   const [isMenuVisible, setMenuVisible] = useState<boolean>(false);
 
   return (
@@ -17,7 +28,11 @@ const HeaderMobile: FC = () => {
         <Logo className={styles.logoIcon} />
       </NavLink>
       <div className={styles.buttonsWrapper}>
-        <ConnectWalletButton />
+        <ConnectWalletButton
+          connected={connected}
+          publicKey={publicKey}
+          disconnect={disconnect}
+        />
         <div
           className={styles.menuBtnWrapper}
           onClick={() => setMenuVisible(!isMenuVisible)}
