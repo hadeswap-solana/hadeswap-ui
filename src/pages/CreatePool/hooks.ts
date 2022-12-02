@@ -92,9 +92,11 @@ export const useCreatePool: UseCreatePool = (props) => {
             dispatch(
               txsLoadingModalActions.setState({
                 visible: true,
-                cards: restTxnsData,
+                cards: restTxnsData.map(
+                  ({ loadingModalCard }) => loadingModalCard,
+                ),
                 amountOfTxs: restTxnsData.length + 1,
-                currentTxNumber: restTxnsData.length,
+                currentTxNumber: restTxnsData.length + 1,
                 textStatus: TxsLoadingModalTextStatus.APPROVE,
               }),
             );
@@ -303,7 +305,7 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
     wallet,
     marketPubkey,
     bondingCurveType: curveType,
-    pairType: PairType.NftForToken,
+    pairType: PairType.LiquidityProvision,
     delta: rawDelta,
     spotPrice: rawSpotPrice,
     fee: rawFee,
