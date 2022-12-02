@@ -10,7 +10,8 @@ import Sorting from '../../components/Sorting/mobile/Sorting';
 import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
 import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { COLLECTION_COLUMNS } from '../../utils/table/constants';
-import { SORT_ORDER, PubKeys, COLLECTION } from '../../constants/common';
+import { SORT_ORDER, COLLECTION } from '../../constants/common';
+import { PubKeys } from '../../types';
 import { filterCollections } from './helpers';
 import { useFetchAllMarkets } from '../../requests';
 

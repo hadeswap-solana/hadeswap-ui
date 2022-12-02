@@ -3,7 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import ItemsList from '../../../../components/ItemsList';
-import { POOL, PubKeys } from '../../../../constants/common';
+import { POOL } from '../../../../constants/common';
+import { PubKeys } from '../../../../types';
 import {
   selectMarketPairsLoading,
   selectCertainMarketLoading,

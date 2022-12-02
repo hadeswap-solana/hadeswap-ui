@@ -13,7 +13,8 @@ import Sorting from '../../components/Sorting/mobile/Sorting';
 import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
 import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
-import { SORT_ORDER, PubKeys, POOL } from '../../constants/common';
+import { SORT_ORDER, POOL } from '../../constants/common';
+import { PubKeys } from '../../types';
 import {
   selectAllMarketsLoading,
   selectWalletPairsLoading,

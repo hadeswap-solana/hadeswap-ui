@@ -9,7 +9,8 @@ import { Spinner } from '../../../components/Spinner/Spinner';
 import ItemsList from '../../../components/ItemsList';
 import { Search } from '../../../components/Search';
 import { useSearch } from '../../../components/Search/useSearch';
-import { COLLECTION, PubKeys } from '../../../constants/common';
+import { COLLECTION } from '../../../constants/common';
+import { PubKeys } from '../../../types';
 import { filterCollections } from '../../Collections/helpers';
 import { MarketInfo } from '../../../state/core/types';
 

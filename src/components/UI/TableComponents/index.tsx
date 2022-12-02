@@ -1,7 +1,10 @@
 import { FC } from 'react';
-import { UNTITLED_COLLECTION } from '../../../constants/common';
-import { SolPrice } from '../../SolPrice/SolPrice';
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames';
+
+import { SolPrice } from '../../SolPrice/SolPrice';
+import { TableCellAlign } from '../../../types';
+import { UNTITLED_COLLECTION } from '../../../constants/common';
 
 import styles from './styles.module.scss';
 
@@ -9,15 +12,16 @@ export const LinkCell: FC<{
   internal?: boolean;
   link: string;
   children: JSX.Element | JSX.Element[];
-}> = ({ internal, link, children }) => (
+  align?: TableCellAlign;
+}> = ({ internal, link, children, align }) => (
   <>
     {internal ? (
-      <NavLink className={styles.linkCell} to={link}>
+      <NavLink to={link} className={classNames(styles.linkCell, styles[align])}>
         {children}
       </NavLink>
     ) : (
       <a
-        className={styles.linkCell}
+        className={classNames(styles.linkCell, styles[align])}
         href={link}
         target="_blank"
         rel="noopener noreferrer"
