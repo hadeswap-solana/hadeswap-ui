@@ -1,7 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { createWithdrawLiquidityFeesTxns } from '../../utils/transactions/createWithdrawLiquidityFeesTxns';
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
-import { signAndSendTransactionsInSeries } from '../Layout/helpers';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { notify } from '../../utils';
@@ -342,37 +341,37 @@ export const useWithdrawAllClick = ({
       }
     }
 
-    const isSuccess = await signAndSendTransactionsInSeries({
+    const isSuccess = await signAndSendAllTransactions({
       connection,
       wallet,
-      txnData: transactions.map((txn, index) => ({
-        signers: txn.signers,
+      txnsAndSigners: transactions.map((txn) => ({
         transaction: txn.transaction,
-        onBeforeApprove: () => {
-          dispatch(
-            txsLoadingModalActions.setState({
-              visible: true,
-              cards: cards[index],
-              amountOfTxs: transactions.length,
-              currentTxNumber: 1 + index,
-              textStatus: TxsLoadingModalTextStatus.APPROVE,
-            }),
-          );
-        },
-        onAfterSend: () => {
-          dispatch(
-            txsLoadingModalActions.setTextStatus(
-              TxsLoadingModalTextStatus.WAITING,
-            ),
-          );
-        },
-        onError: () => {
-          notify({
-            message: 'Transaction just failed for some reason',
-            type: NotifyType.ERROR,
-          });
-        },
+        signers: txn.signers,
       })),
+      onBeforeApprove: () => {
+        dispatch(
+          txsLoadingModalActions.setState({
+            visible: true,
+            cards: cards,
+            amountOfTxs: transactions.length,
+            currentTxNumber: transactions.length,
+            textStatus: TxsLoadingModalTextStatus.APPROVE,
+          }),
+        );
+      },
+      onAfterSend: () => {
+        dispatch(
+          txsLoadingModalActions.setTextStatus(
+            TxsLoadingModalTextStatus.WAITING,
+          ),
+        );
+      },
+      onError: () => {
+        notify({
+          message: 'Transaction just failed for some reason',
+          type: NotifyType.ERROR,
+        });
+      },
     });
 
     dispatch(txsLoadingModalActions.setVisible(false));
