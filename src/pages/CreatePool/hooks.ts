@@ -1,5 +1,7 @@
-import { useWallet } from '@solana/wallet-adapter-react';
+import React from 'react';
+import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import { useHistory } from 'react-router-dom';
+import { hadeswap, web3 } from 'hadeswap-sdk';
 import {
   OrderType,
   PairType,
@@ -9,15 +11,16 @@ import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../components/TransactionsLoadingModal';
-import { getArrayByNumber } from '../../utils/transactions';
+import {
+  getArrayByNumber,
+  signAndSendAllTransactions,
+  signAndSendTransaction,
+} from '../../utils/transactions';
 import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenForNftPairTxn';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
-import { hadeswap } from 'hadeswap-sdk';
 import { createPairTxn } from '../../utils/transactions/createPairTxn';
 import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepositNftsToPairTxns';
-import { chunk } from 'lodash';
 import { createDepositLiquidityToPairTxns } from '../../utils/transactions/createDepositLiquidityToPairTxns';
-import { signAndSendTransactionsInSeries } from '../../components/Layout/helpers';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { notify } from '../../utils';
@@ -25,163 +28,44 @@ import { NotifyType } from '../../utils/solanaUtils';
 import { useDispatch } from 'react-redux';
 import { useConnection } from '../../hooks';
 import { Nft } from '../../state/core/types';
+import { captureSentryError } from '../../utils/sentry';
 
-interface UseOnCreatePoolClickProps {
-  pairType: PairType;
-  nftAmount: number;
-  chosenMarketKey: string;
-  selectedNfts: Nft[];
-  curveType: BondingCurveType;
-  rawSpotPrice: number;
-  rawDelta: number;
-  rawFee: number;
-}
+type UseCreatePool = (
+  props: Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'>,
+) => {
+  create: () => Promise<void>;
+};
 
-export const useOnCreatePoolClick = ({
-  pairType,
-  nftAmount,
-  chosenMarketKey,
-  selectedNfts,
-  curveType,
-  rawSpotPrice,
-  rawDelta,
-  rawFee,
-}: UseOnCreatePoolClickProps): (() => Promise<void>) => {
+export const useCreatePool: UseCreatePool = (props) => {
   const dispatch = useDispatch();
   const connection = useConnection();
   const wallet = useWallet();
   const history = useHistory();
 
-  return async () => {
-    const transactions = [];
-    const cards = [[createIxCardFuncs[IX_TYPE.CREATE_EMPTY_POOL]()]];
+  const create = async () => {
+    try {
+      const splittedTxnsData = await (
+        getCreateSplittedDataFunc[props.pairType] ||
+        getCreateSplittedDataFunc.DEFAULT
+      )({ ...props, connection, wallet });
 
-    if (pairType === PairType.TokenForNFT) {
-      const nftAmounts = getArrayByNumber(nftAmount, 20);
-      const firstAmount = nftAmounts.shift();
+      if (!splittedTxnsData) return;
 
-      const createTransaction = await createTokenForNftPairTxn({
+      const { firstTxnData, restTxnsData } = splittedTxnsData;
+
+      //? Run First Txn
+      await signAndSendTransaction({
         connection,
         wallet,
-        marketPubkey: chosenMarketKey,
-        bondingCurveType: curveType,
-        pairType: PairType.TokenForNFT,
-        delta: rawDelta,
-        spotPrice: rawSpotPrice,
-        amountOfOrders: firstAmount,
-      });
-
-      transactions.push(createTransaction);
-
-      for (const amount of nftAmounts) {
-        transactions.push(
-          await createDepositSolToPairTxn({
-            connection,
-            wallet,
-            pairPubkey: createTransaction.pairPubkey.toBase58(),
-            authorityAdapter:
-              createTransaction.authorityAdapterPubkey.toBase58(),
-            amountOfOrders: amount,
-          }),
-        );
-      }
-
-      const amounts = hadeswap.helpers.calculatePricesArray({
-        starting_spot_price: rawSpotPrice,
-        delta: rawDelta,
-        amount: nftAmount,
-        bondingCurveType: curveType,
-        orderType: OrderType.Sell,
-        counter: 1,
-      });
-
-      cards[0].push(
-        createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amounts.total),
-      );
-
-      //TODO: FIX
-      for (let i = 0; i < transactions.length - 1; i++) {
-        cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
-      }
-    } else {
-      const pairTxn = await createPairTxn({
-        connection,
-        wallet,
-        marketPubkey: chosenMarketKey,
-        bondingCurveType: curveType,
-        pairType:
-          pairType === PairType.NftForToken
-            ? PairType.NftForToken
-            : PairType.LiquidityProvision,
-        delta: rawDelta,
-        spotPrice: rawSpotPrice,
-        fee: rawFee,
-      });
-
-      transactions.push(pairTxn);
-
-      if (pairType === PairType.NftForToken) {
-        const txns = await createDepositNftsToPairTxns({
-          connection,
-          wallet,
-          pairPubkey: pairTxn.pairPubkey,
-          authorityAdapter: pairTxn.authorityAdapterPubkey,
-          nfts: selectedNfts,
-        });
-
-        const nftCards = selectedNfts.map((nft) =>
-          createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](nft),
-        );
-
-        transactions.push(...txns);
-        cards.push(
-          ...chunk(nftCards, Math.round(nftCards.length / txns.length)),
-        );
-      } else if (pairType === PairType.LiquidityProvision) {
-        const txns = await createDepositLiquidityToPairTxns({
-          connection,
-          wallet,
-          pairPubkey: pairTxn.pairPubkey,
-          authorityAdapter: pairTxn.authorityAdapterPubkey,
-          nfts: selectedNfts,
-        });
-
-        const sellAmounts = hadeswap.helpers.calculatePricesArray({
-          starting_spot_price: rawSpotPrice,
-          delta: rawDelta,
-          amount: selectedNfts.length,
-          bondingCurveType: curveType,
-          orderType: OrderType.Sell,
-          counter: 1,
-        });
-
-        const nftCards = selectedNfts.map((nft, index) =>
-          createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-            nft,
-            sellAmounts.array[index],
-          ),
-        );
-
-        transactions.push(...txns);
-        cards.push(
-          ...chunk(nftCards, Math.round(nftCards.length / txns.length)),
-        );
-      }
-    }
-
-    const isSuccess = await signAndSendTransactionsInSeries({
-      connection,
-      wallet,
-      txnData: transactions.map((txn, index) => ({
-        signers: txn.signers,
-        transaction: txn.transaction,
+        transaction: firstTxnData.transaction,
+        signers: firstTxnData.signers,
         onBeforeApprove: () => {
           dispatch(
             txsLoadingModalActions.setState({
               visible: true,
-              cards: cards[index],
-              amountOfTxs: transactions.length,
-              currentTxNumber: 1 + index,
+              cards: [firstTxnData.loadingModalCard],
+              amountOfTxs: restTxnsData.length + 1,
+              currentTxNumber: 1,
               textStatus: TxsLoadingModalTextStatus.APPROVE,
             }),
           );
@@ -193,19 +77,282 @@ export const useOnCreatePoolClick = ({
             ),
           );
         },
-        onError: () => {
-          notify({
-            message: 'Transaction just failed for some reason',
-            type: NotifyType.ERROR,
-          });
-        },
-      })),
-    });
+      });
 
-    dispatch(txsLoadingModalActions.setVisible(false));
+      //? Run Rest Txns
+      if (restTxnsData?.length) {
+        await signAndSendAllTransactions({
+          connection,
+          wallet,
+          txnsAndSigners: restTxnsData.map(({ transaction, signers }) => ({
+            transaction,
+            signers,
+          })),
+          onBeforeApprove: () => {
+            dispatch(
+              txsLoadingModalActions.setState({
+                visible: true,
+                cards: restTxnsData,
+                amountOfTxs: restTxnsData.length + 1,
+                currentTxNumber: restTxnsData.length,
+                textStatus: TxsLoadingModalTextStatus.APPROVE,
+              }),
+            );
+          },
+          onAfterSend: () => {
+            dispatch(
+              txsLoadingModalActions.setTextStatus(
+                TxsLoadingModalTextStatus.WAITING,
+              ),
+            );
+          },
+          onError: () => {
+            notify({
+              message: 'Some transactions were failed for some reason',
+              type: NotifyType.ERROR,
+            });
+          },
+        });
+      }
 
-    if (isSuccess) {
       history.push('/my-pools');
+    } catch (error) {
+      console.error(error);
+      captureSentryError({
+        error,
+        wallet,
+      });
+    } finally {
+      dispatch(txsLoadingModalActions.setVisible(false));
     }
   };
+
+  return { create };
+};
+
+interface TxnData {
+  transaction: web3.Transaction;
+  signers?: web3.Signer[];
+  loadingModalCard: React.ReactNode;
+}
+
+interface SplittedTxnsData {
+  firstTxnData: TxnData;
+  restTxnsData?: TxnData[];
+}
+
+interface CreateTxnSplittedDataProps {
+  pairType: PairType;
+  nftsAmount: number;
+  marketPubkey: string;
+  selectedNfts: Nft[];
+  curveType: BondingCurveType;
+  rawSpotPrice: number;
+  rawDelta: number;
+  rawFee: number;
+  connection: web3.Connection;
+  wallet: WalletContextState;
+}
+
+type CreateTxnSplittedData = (
+  props: CreateTxnSplittedDataProps,
+) => Promise<SplittedTxnsData>;
+
+const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
+  nftsAmount,
+  marketPubkey,
+  curveType,
+  rawSpotPrice,
+  rawDelta,
+  connection,
+  wallet,
+}) => {
+  const ORDERS_AMOUNT_PER_TXN = 20;
+
+  const amountPerChunk = getArrayByNumber(nftsAmount, ORDERS_AMOUNT_PER_TXN);
+
+  const cards = amountPerChunk.map((ordersAmount, idx) => {
+    const { total: amount }: { total: number } =
+      hadeswap.helpers.calculatePricesArray({
+        starting_spot_price: rawSpotPrice,
+        delta: rawDelta,
+        amount: ordersAmount,
+        bondingCurveType: curveType,
+        orderType: OrderType.Sell,
+        counter: idx + 1,
+      });
+
+    return createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amount);
+  });
+
+  const {
+    pairPubkey,
+    transaction: createTxn,
+    authorityAdapterPubkey,
+    signers: createSigners,
+  } = await createTokenForNftPairTxn({
+    connection,
+    wallet,
+    marketPubkey,
+    bondingCurveType: curveType,
+    pairType: PairType.TokenForNFT,
+    delta: rawDelta,
+    spotPrice: rawSpotPrice,
+    amountOfOrders: amountPerChunk[0],
+  });
+
+  const restTxns = await Promise.all(
+    amountPerChunk.slice(1).map((amount) =>
+      createDepositSolToPairTxn({
+        connection,
+        wallet,
+        pairPubkey: pairPubkey.toBase58(),
+        authorityAdapter: authorityAdapterPubkey.toBase58(),
+        amountOfOrders: amount,
+      }),
+    ),
+  );
+
+  return {
+    firstTxnData: {
+      transaction: createTxn,
+      signers: createSigners,
+      loadingModalCard: cards[0],
+    },
+    restTxnsData: restTxns.length
+      ? restTxns?.map(({ transaction, signers }, idx) => {
+          return {
+            transaction,
+            signers,
+            loadingModalCard: cards?.[idx + 1],
+          };
+        })
+      : null,
+  };
+};
+
+const createNftForTokenTxnSplittedData: CreateTxnSplittedData = async ({
+  marketPubkey,
+  selectedNfts,
+  curveType,
+  rawSpotPrice,
+  rawDelta,
+  rawFee,
+  connection,
+  wallet,
+}) => {
+  const {
+    pairPubkey,
+    transaction: createTxn,
+    authorityAdapterPubkey,
+    signers: createSigners,
+  } = await createPairTxn({
+    connection,
+    wallet,
+    marketPubkey,
+    bondingCurveType: curveType,
+    pairType: PairType.NftForToken,
+    delta: rawDelta,
+    spotPrice: rawSpotPrice,
+    fee: rawFee,
+  });
+
+  const restTxns = await createDepositNftsToPairTxns({
+    connection,
+    wallet,
+    pairPubkey: pairPubkey,
+    authorityAdapter: authorityAdapterPubkey,
+    nfts: selectedNfts,
+  });
+
+  return {
+    firstTxnData: {
+      transaction: createTxn,
+      signers: createSigners,
+      loadingModalCard: createIxCardFuncs[IX_TYPE.CREATE_EMPTY_POOL](),
+    },
+    restTxnsData: restTxns.map(({ transaction, signers }, idx) => {
+      return {
+        transaction,
+        signers,
+        loadingModalCard: createIxCardFuncs[
+          IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL
+        ](selectedNfts[idx]),
+      };
+    }),
+  };
+};
+
+const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
+  marketPubkey,
+  selectedNfts,
+  curveType,
+  rawSpotPrice,
+  rawDelta,
+  rawFee,
+  connection,
+  wallet,
+}) => {
+  const {
+    pairPubkey,
+    transaction: createTxn,
+    authorityAdapterPubkey,
+    signers: createSigners,
+  } = await createPairTxn({
+    connection,
+    wallet,
+    marketPubkey,
+    bondingCurveType: curveType,
+    pairType: PairType.NftForToken,
+    delta: rawDelta,
+    spotPrice: rawSpotPrice,
+    fee: rawFee,
+  });
+
+  const restTxns = await createDepositLiquidityToPairTxns({
+    connection,
+    wallet,
+    pairPubkey: pairPubkey,
+    authorityAdapter: authorityAdapterPubkey,
+    nfts: selectedNfts,
+  });
+
+  const { array: amounts }: { array: number[] } =
+    hadeswap.helpers.calculatePricesArray({
+      starting_spot_price: rawSpotPrice,
+      delta: rawDelta,
+      amount: selectedNfts.length,
+      bondingCurveType: curveType,
+      orderType: OrderType.Sell,
+      counter: 1,
+    });
+
+  const restTxnsCards = selectedNfts.map((nft, idx) => {
+    return createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+      nft,
+      amounts[idx],
+    );
+  });
+
+  return {
+    firstTxnData: {
+      transaction: createTxn,
+      signers: createSigners,
+      loadingModalCard: createIxCardFuncs[IX_TYPE.CREATE_EMPTY_POOL](),
+    },
+    restTxnsData: restTxns.map(({ transaction, signers }, idx) => {
+      return {
+        transaction,
+        signers,
+        loadingModalCard: restTxnsCards[idx],
+      };
+    }),
+  };
+};
+
+const getCreateSplittedDataFunc = {
+  [PairType.TokenForNFT]: createTokenForNftTxnSplittedData,
+  [PairType.NftForToken]: createNftForTokenTxnSplittedData,
+  [PairType.LiquidityProvision]: createLiquidityProvisionTxnSplittedData,
+  DEFAULT: () => {},
 };
