@@ -89,10 +89,11 @@ export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
         });
       },
       onSuccess: () => {
-        dispatch(txsLoadingModalActions.setVisible(false));
         refetch();
       },
     });
+
+    dispatch(txsLoadingModalActions.setVisible(false));
   };
 
   return {
