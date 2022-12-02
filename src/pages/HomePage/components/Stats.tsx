@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { SolanaLogo } from '../../../icons/SolanaLogo';
+import { formatPriceNumber } from '../../../utils/solanaUtils';
 import { createStatData } from '../helpers';
 import { AllStats } from '../../../requests/types';
 
@@ -17,6 +18,8 @@ export const Stats: FC<StatsProps> = ({ TVLstat, allStats }) => {
     volume24: allStats.volume24h,
   });
 
+  console.log(statData, 'statData');
+
   return (
     <div className={styles.statsWrapper}>
       {Object.entries(statData).map(([label, value]) => (
@@ -24,7 +27,7 @@ export const Stats: FC<StatsProps> = ({ TVLstat, allStats }) => {
           <span className={styles.statsLabel}>{label}</span>
           <div className={styles.statsPriceBlock}>
             <span className={styles.statsNumber}>
-              {value ? value.toFixed(2) : '--'}
+              {value ? formatPriceNumber.format(value) : '--'}
             </span>
             <SolanaLogo />
           </div>
