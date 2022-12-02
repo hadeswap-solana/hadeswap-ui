@@ -24,7 +24,7 @@ export const Stats: FC<StatsProps> = ({ TVLstat, allStats }) => {
           <span className={styles.statsLabel}>{label}</span>
           <div className={styles.statsPriceBlock}>
             <span className={styles.statsNumber}>
-              {value ? value.toFixed(0) : '--'}
+              {value ? value.toFixed(2) : '--'}
             </span>
             <SolanaLogo />
           </div>
