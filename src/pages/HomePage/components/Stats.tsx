@@ -18,8 +18,6 @@ export const Stats: FC<StatsProps> = ({ TVLstat, allStats }) => {
     volume24: allStats.volume24h,
   });
 
-  console.log(statData, 'statData');
-
   return (
     <div className={styles.statsWrapper}>
       {Object.entries(statData).map(([label, value]) => (
