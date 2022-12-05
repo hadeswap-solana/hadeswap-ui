@@ -21,8 +21,8 @@ export interface CartSiderProps {
   isCartEmpty: boolean;
   cartOpened?: boolean;
   cartItems: {
-    buy?: CartOrder[];
-    sell?: CartOrder[];
+    buy: CartOrder[];
+    sell: CartOrder[];
   };
   invalidItems: CartOrder[];
   itemsAmount: number;
