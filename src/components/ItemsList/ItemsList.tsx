@@ -6,10 +6,11 @@ import { ItemsListProps } from './index';
 import styles from './styles.module.scss';
 
 export const ItemsList: FC<ItemsListProps> = ({
-  data,
-  onRowClick,
-  mapType,
+  idKey,
   pubKey,
+  data,
+  mapType,
+  onRowClick,
   tableClassName,
 }) => (
   <Table
@@ -17,7 +18,7 @@ export const ItemsList: FC<ItemsListProps> = ({
     columns={mapType}
     dataSource={data}
     pagination={false}
-    rowKey={(record) => record[pubKey]}
+    rowKey={(record) => record[idKey || pubKey]}
     onRow={(source) => ({
       onClick: () => onRowClick(source[pubKey], source),
     })}

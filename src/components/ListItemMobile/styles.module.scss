@@ -48,13 +48,10 @@
 }
 
 .listItem {
-  span {
-    font-weight: 400;
-    color: var(--primary-white-color);
-  }
+  font-weight: 400;
+}
 
-  & > span:nth-child(1) {
-    font-weight: 700;
-    color: var(--inactive-color);
-  }
+.listItemTitle {
+  font-weight: 700;
+  color: var(--inactive-color);
 }

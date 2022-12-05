@@ -1,7 +1,7 @@
 import { BN } from 'hadeswap-sdk';
 import { Typography } from 'antd';
 import { formatBNToString } from '../../index';
-import { PubKeys } from '../../../constants/common';
+import { PubKeys, TableCellAlign } from '../../../types';
 import { shortenAddress } from '../../solanaUtils';
 import { PriceWithIcon } from '../../../components/PriceWithIcon';
 import {
@@ -174,7 +174,10 @@ export const ACTIVITY_ITEM: ActivityItem = {
       title: 'user',
       valueKey: 'userTaker',
       render: (value: string, item) => (
-        <LinkCell link={`https://solscan.io/account/${item.userTaker}`}>
+        <LinkCell
+          link={`https://solscan.io/account/${item.userTaker}`}
+          align={TableCellAlign.left}
+        >
           <Text>{shortenAddress(value)}</Text>
         </LinkCell>
       ),
@@ -183,7 +186,11 @@ export const ACTIVITY_ITEM: ActivityItem = {
       title: 'pool',
       valueKey: 'pair',
       render: (value: string, item) => (
-        <LinkCell link={`/pools/${item.pair}`} internal>
+        <LinkCell
+          link={`/pools/${item.pair}`}
+          internal
+          align={TableCellAlign.left}
+        >
           <Text>{shortenAddress(value)}</Text>
         </LinkCell>
       ),
@@ -197,7 +204,10 @@ export const ACTIVITY_ITEM: ActivityItem = {
       title: 'when',
       valueKey: 'timestamp',
       render: (value: string, item) => (
-        <LinkCell link={`https://solscan.io/tx/${item.signature}`}>
+        <LinkCell
+          link={`https://solscan.io/tx/${item.signature}`}
+          align={TableCellAlign.left}
+        >
           <Text>{moment(value).fromNow()}</Text>
         </LinkCell>
       ),
