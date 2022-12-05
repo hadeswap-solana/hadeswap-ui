@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import { Card } from '../Card';
 import classNames from 'classnames';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
@@ -46,6 +46,8 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
     ref,
   ) => {
     const isSelectedButtonDisabled = buyOrdersAmount < pool?.buyOrdersAmount;
+
+    const [value, setValue] = useState(pool?.buyOrdersAmount);
 
     return (
       <div ref={ref} className={styles.assetsBlockWrapper}>
@@ -96,13 +98,20 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
                   <h3 className={styles.cardSubTitle}>buy orders amount</h3>
                   <Form form={form} initialValues={formInitialValues}>
                     <Form.Item name="buyOrdersAmount">
+                      <div style={{ display: 'none' }}>
+                        {selectedNfts.length}
+                      </div>
                       <InputNumber
                         disabled={Boolean(selectedNfts.length)}
                         max={
                           isSelectedButtonDisabled
                             ? pool?.buyOrdersAmount
-                            : buyOrdersAmount
+                            : value
                         }
+                        value={
+                          selectedNfts.length ? selectedNfts.length : value
+                        }
+                        onChange={(e) => setValue(e)}
                         min={0}
                         step={2}
                         addonAfter="NFTs"
