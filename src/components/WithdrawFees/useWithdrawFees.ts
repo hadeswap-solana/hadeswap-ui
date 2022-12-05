@@ -211,15 +211,13 @@ export const useWithdrawAllClick = ({
               ? pool.sellOrders
               : pool.sellOrders.slice(0, pool.buyOrdersAmount);
 
-          const { chunks: txns, takenLpOrders } =
-            await createWithdrawLiquidityFromPairTxns({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              liquidityProvisionOrders: pool.liquidityProvisionOrders,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              nfts: balancedOrdersToWithdraw,
-            });
+          const { chunks: txns } = await createWithdrawLiquidityFromPairTxns({
+            connection,
+            wallet,
+            pairPubkey: pool.pairPubkey,
+            authorityAdapter: pool.authorityAdapterPubkey,
+            nfts: balancedOrdersToWithdraw,
+          });
 
           const nftRemoveCards = balancedOrdersToWithdraw.map((nft, index) =>
             createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
@@ -245,10 +243,6 @@ export const useWithdrawAllClick = ({
                 connection,
                 wallet,
                 pairPubkey: pool.pairPubkey,
-                liquidityProvisionOrders: pool.liquidityProvisionOrders.filter(
-                  (order) =>
-                    !takenLpOrders.includes(order.liquidityProvisionOrder),
-                ),
                 authorityAdapter: pool.authorityAdapterPubkey,
                 buyOrdersAmountToDelete: amount,
               })),
@@ -269,10 +263,6 @@ export const useWithdrawAllClick = ({
               connection,
               wallet,
               pairPubkey: pool.pairPubkey,
-              liquidityProvisionOrders: pool.liquidityProvisionOrders.filter(
-                (order) =>
-                  !takenLpOrders.includes(order.liquidityProvisionOrder),
-              ),
               authorityAdapter: pool.authorityAdapterPubkey,
               nfts: orders,
             });
@@ -301,7 +291,6 @@ export const useWithdrawAllClick = ({
               connection,
               wallet,
               pairPubkey: pool.pairPubkey,
-              liquidityProvisionOrders: pool.liquidityProvisionOrders,
               authorityAdapter: pool.authorityAdapterPubkey,
               buyOrdersAmountToDelete: ordersToDelete,
             })),
@@ -317,7 +306,6 @@ export const useWithdrawAllClick = ({
             connection,
             wallet,
             pairPubkey: pool.pairPubkey,
-            liquidityProvisionOrders: pool.liquidityProvisionOrders,
             authorityAdapter: pool.authorityAdapterPubkey,
             nfts: pool.sellOrders,
           });

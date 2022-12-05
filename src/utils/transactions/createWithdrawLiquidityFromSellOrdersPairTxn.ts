@@ -1,6 +1,6 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
-import { Nft, ProvisionOrders } from '../../state/core/types';
+import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
 
 const { withdrawLiquidityFromSellOrdersPair } =
@@ -13,7 +13,6 @@ type CreateWithdrawLiquidityFromSellOrdersPair = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   pairPubkey: string;
-  liquidityProvisionOrders: ProvisionOrders[];
   authorityAdapter: string;
   nfts: Nft[];
 }) => Promise<
@@ -26,45 +25,14 @@ type CreateWithdrawLiquidityFromSellOrdersPair = (params: {
 const IXNS_PER_CHUNK = 2; //? Maybe it will work with 3
 
 export const createWithdrawLiquidityFromSellOrdersPair: CreateWithdrawLiquidityFromSellOrdersPair =
-  async ({
-    connection,
-    wallet,
-    pairPubkey,
-    liquidityProvisionOrders,
-    authorityAdapter,
-    nfts,
-  }) => {
-    const takenLpOrders = {};
-
+  async ({ connection, wallet, pairPubkey, authorityAdapter, nfts }) => {
     const ixsAndSigners = (
       await Promise.all(
         chunk(nfts, 2).map((nftsPair) => {
-          const liquidityProvisionOrderOnEdgeToWithdraw =
-            liquidityProvisionOrders
-              .filter(
-                (provisionOrder) =>
-                  !takenLpOrders[provisionOrder.liquidityProvisionOrder],
-              )
-              .reduce((maxProvisionOrder, provisionOrder) =>
-                maxProvisionOrder.orderBCounter < provisionOrder.orderBCounter
-                  ? provisionOrder
-                  : maxProvisionOrder,
-              );
-
-          takenLpOrders[
-            liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder
-          ] = true;
-
           return withdrawLiquidityFromSellOrdersPair({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             accounts: {
-              liquidityProvisionOrderToReplace: new web3.PublicKey(
-                liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-              ), // same if virtual
-              liquidityProvisionOrderToWithdraw: new web3.PublicKey(
-                liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-              ),
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),
               userPubkey: wallet.publicKey,

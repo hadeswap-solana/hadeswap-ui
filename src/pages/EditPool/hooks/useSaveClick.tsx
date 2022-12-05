@@ -280,7 +280,6 @@ export const useSaveClick = ({
             connection,
             wallet,
             pairPubkey: pool.pairPubkey,
-            liquidityProvisionOrders: pool.liquidityProvisionOrders,
             authorityAdapter: pool.authorityAdapterPubkey,
             nfts: nftsToDelete,
           });
@@ -310,7 +309,6 @@ export const useSaveClick = ({
                 connection,
                 wallet,
                 pairPubkey: pool.pairPubkey,
-                liquidityProvisionOrders: pool.liquidityProvisionOrders,
                 authorityAdapter: pool.authorityAdapterPubkey,
                 buyOrdersAmountToDelete: ordersToDelete,
               })),
@@ -327,7 +325,6 @@ export const useSaveClick = ({
             connection,
             wallet,
             pairPubkey: pool.pairPubkey,
-            liquidityProvisionOrders: pool.liquidityProvisionOrders,
             authorityAdapter: pool.authorityAdapterPubkey,
             nfts: nftsToDelete,
           });
