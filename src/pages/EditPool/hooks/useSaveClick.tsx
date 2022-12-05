@@ -265,86 +265,84 @@ export const useSaveClick = ({
         ...chunk(nftAddCards, Math.round(nftAddCards.length / txns.length)),
       );
 
-      if (pool.liquidityProvisionOrders.length) {
-        const buyAmounts = hadeswap.helpers.calculatePricesArray({
-          starting_spot_price: rawSpotPrice,
-          delta: rawDelta,
-          amount: nftsToDelete.length,
-          bondingCurveType: curveType,
-          orderType: OrderType.Buy,
-          counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1 - 1,
+      const buyAmounts = hadeswap.helpers.calculatePricesArray({
+        starting_spot_price: rawSpotPrice,
+        delta: rawDelta,
+        amount: nftsToDelete.length,
+        bondingCurveType: curveType,
+        orderType: OrderType.Buy,
+        counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1 - 1,
+      });
+
+      if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
+        const { chunks: txns } = await createWithdrawLiquidityFromPairTxns({
+          connection,
+          wallet,
+          pairPubkey: pool.pairPubkey,
+          authorityAdapter: pool.authorityAdapterPubkey,
+          nfts: nftsToDelete,
         });
 
-        if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
-          const { chunks: txns } = await createWithdrawLiquidityFromPairTxns({
-            connection,
-            wallet,
-            pairPubkey: pool.pairPubkey,
-            authorityAdapter: pool.authorityAdapterPubkey,
-            nfts: nftsToDelete,
-          });
+        const nftRemoveCards = nftsToDelete.map((nft, index) =>
+          createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+            nft,
+            buyAmounts.array[index],
+            true,
+          ),
+        );
 
-          const nftRemoveCards = nftsToDelete.map((nft, index) =>
-            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-              nft,
-              buyAmounts.array[index],
-              true,
-            ),
+        transactions.push(...txns);
+        cards.push(
+          ...chunk(
+            nftRemoveCards,
+            Math.round(nftRemoveCards.length / txns.length),
+          ),
+        );
+      } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
+        if (isLiquidityProvisionChanged) {
+          const ordersToDelete =
+            pool.buyOrdersAmount - buyOrdersAmount || pool.buyOrdersAmount;
+
+          transactions.push(
+            ...(await createWithdrawLiquidityFromBuyOrdersPair({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              buyOrdersAmountToDelete: ordersToDelete,
+            })),
           );
 
-          transactions.push(...txns);
-          cards.push(
-            ...chunk(
-              nftRemoveCards,
-              Math.round(nftRemoveCards.length / txns.length),
+          cards.push([
+            createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](
+              ordersToDelete,
             ),
-          );
-        } else if (pool?.nftsCount === 0 && pool?.buyOrdersAmount > 0) {
-          if (isLiquidityProvisionChanged) {
-            const ordersToDelete =
-              pool.buyOrdersAmount - buyOrdersAmount || pool.buyOrdersAmount;
-
-            transactions.push(
-              ...(await createWithdrawLiquidityFromBuyOrdersPair({
-                connection,
-                wallet,
-                pairPubkey: pool.pairPubkey,
-                authorityAdapter: pool.authorityAdapterPubkey,
-                buyOrdersAmountToDelete: ordersToDelete,
-              })),
-            );
-
-            cards.push([
-              createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](
-                ordersToDelete,
-              ),
-            ]);
-          }
-        } else if (pool?.nftsCount > 0 && pool?.buyOrdersAmount === 0) {
-          const txns = await createWithdrawLiquidityFromSellOrdersPair({
-            connection,
-            wallet,
-            pairPubkey: pool.pairPubkey,
-            authorityAdapter: pool.authorityAdapterPubkey,
-            nfts: nftsToDelete,
-          });
-
-          const nftRemoveCards = nftsToDelete.map((nft, index) =>
-            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-              nft,
-              buyAmounts.array[index],
-              true,
-            ),
-          );
-
-          transactions.push(...txns);
-          cards.push(
-            ...chunk(
-              nftRemoveCards,
-              Math.round(nftRemoveCards.length / txns.length),
-            ),
-          );
+          ]);
         }
+      } else if (pool?.nftsCount > 0 && pool?.buyOrdersAmount === 0) {
+        const txns = await createWithdrawLiquidityFromSellOrdersPair({
+          connection,
+          wallet,
+          pairPubkey: pool.pairPubkey,
+          authorityAdapter: pool.authorityAdapterPubkey,
+          nfts: nftsToDelete,
+        });
+
+        const nftRemoveCards = nftsToDelete.map((nft, index) =>
+          createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+            nft,
+            buyAmounts.array[index],
+            true,
+          ),
+        );
+
+        transactions.push(...txns);
+        cards.push(
+          ...chunk(
+            nftRemoveCards,
+            Math.round(nftRemoveCards.length / txns.length),
+          ),
+        );
       }
     }
 
