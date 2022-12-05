@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Steps } from 'antd';
@@ -15,9 +16,11 @@ const { Step } = Steps;
 
 export const CreatePool: FC = () => {
   const { connected } = useWallet();
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-  const [step, setStep] = useState<number>(0);
-  const [chosenMarketKey, setChosenMarketKey] = useState<string>();
+  const [step, setStep] = useState<number>(marketPublicKey ? 1 : 0);
+  const [chosenMarketKey, setChosenMarketKey] =
+    useState<string>(marketPublicKey);
   const [pairType, setPairType] = useState<PairType>();
 
   return (
