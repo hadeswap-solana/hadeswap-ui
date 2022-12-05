@@ -1,19 +1,26 @@
-import { FC } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import ItemsList from '../../../../components/ItemsList';
-import { POOL } from '../../../../constants/common';
+import { sortCollection } from '../../../../components/Sorting/mobile/helpers';
+import { POOL, SORT_ORDER } from '../../../../constants/common';
 import { PubKeys } from '../../../../types';
+
 import {
   selectMarketPairsLoading,
   selectCertainMarketLoading,
   selectPoolsTableInfo,
 } from '../../../../state/core/selectors';
+import { Pair } from '../../../../state/core/types';
+
 import styles from './styles.module.scss';
 
 export const CollectionPoolsTab: FC = () => {
+  const INITIAL_SORT_VALUE = 'fundsSolOrTokenBalance';
   const history = useHistory();
+
+  const [pools, setPools] = useState<Pair[]>([]);
 
   const poolsTableInfo = useSelector(selectPoolsTableInfo);
   const marketPairsLoading = useSelector(selectMarketPairsLoading);
@@ -26,17 +33,29 @@ export const CollectionPoolsTab: FC = () => {
     window.scrollTo(0, 0);
   };
 
+  useEffect(() => {
+    setPools(
+      sortCollection(poolsTableInfo, INITIAL_SORT_VALUE, SORT_ORDER.DESC),
+    );
+  }, [poolsTableInfo]);
+
   return (
     <div className={styles.tabContentWrapper}>
       {isLoading ? (
         <Spinner />
       ) : (
-        <ItemsList
-          onRowClick={onRowClick}
-          data={poolsTableInfo}
-          mapType={POOL}
-          pubKey={PubKeys.PAIR_PUBKEY}
-        />
+        <>
+          {pools.length ? (
+            <ItemsList
+              onRowClick={onRowClick}
+              data={pools}
+              mapType={POOL}
+              pubKey={PubKeys.PAIR_PUBKEY}
+            />
+          ) : (
+            <h2 className={styles.h2}>no pools</h2>
+          )}
+        </>
       )}
     </div>
   );
