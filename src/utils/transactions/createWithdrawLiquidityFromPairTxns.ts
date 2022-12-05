@@ -1,6 +1,6 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
-import { Nft, ProvisionOrders } from '../../state/core/types';
+import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
 
 const { withdrawLiquidityFromBalancedPair } =
@@ -13,7 +13,6 @@ type CreateWithdrawLiquidityFromPairTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   pairPubkey: string;
-  liquidityProvisionOrders: ProvisionOrders[];
   authorityAdapter: string;
   nfts: Nft[];
 }) => Promise<{
@@ -21,51 +20,19 @@ type CreateWithdrawLiquidityFromPairTxns = (params: {
     transaction: web3.Transaction;
     signers: web3.Signer[];
   }[];
-  takenLpOrders: string[];
 }>;
 
 const IXNS_PER_CHUNK = 1; //? Maybe it will work with 3
 
 export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPairTxns =
-  async ({
-    connection,
-    wallet,
-    pairPubkey,
-    liquidityProvisionOrders,
-    authorityAdapter,
-    nfts,
-  }) => {
-    const takenLpOrders = {};
-
+  async ({ connection, wallet, pairPubkey, authorityAdapter, nfts }) => {
     const ixsAndSigners = (
       await Promise.all(
         nfts.map((nft) => {
-          const liquidityProvisionOrderOnEdgeToWithdraw =
-            liquidityProvisionOrders
-              .filter(
-                (provisionOrder) =>
-                  !takenLpOrders[provisionOrder.liquidityProvisionOrder],
-              )
-              .reduce((maxProvisionOrder, provisionOrder) =>
-                maxProvisionOrder.orderBCounter < provisionOrder.orderBCounter
-                  ? provisionOrder
-                  : maxProvisionOrder,
-              );
-
-          takenLpOrders[
-            liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder
-          ] = true;
-
           return withdrawLiquidityFromBalancedPair({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             accounts: {
-              liquidityProvisionOrderToReplace: new web3.PublicKey(
-                liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-              ), // same if virtual
-              liquidityProvisionOrderToWithdraw: new web3.PublicKey(
-                liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-              ),
               nftPairBox: new web3.PublicKey(nft.nftPairBox),
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),
@@ -92,6 +59,5 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
           signers: chunk.map(({ signers }) => signers).flat(),
         };
       }),
-      takenLpOrders: Object.keys(takenLpOrders),
     };
   };
