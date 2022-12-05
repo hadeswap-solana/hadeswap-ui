@@ -10,7 +10,10 @@ import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../../components/TransactionsLoadingModal';
-import { getArrayByNumber } from '../../../utils/transactions';
+import {
+  getArrayByNumber,
+  signAndSendAllTransactions,
+} from '../../../utils/transactions';
 import { createDepositSolToPairTxn } from '../../../utils/transactions/createDepositSolToPairTxn';
 import { createWithdrawSolFromPairTxn } from '../../../utils/transactions/createWithdrawSolFromPairTxn';
 import { createDepositNftsToPairTxns } from '../../../utils/transactions/createDepositNftsToPairTxns';
@@ -20,7 +23,6 @@ import { createDepositLiquidityToPairTxns } from '../../../utils/transactions/cr
 import { createWithdrawLiquidityFromPairTxns } from '../../../utils/transactions/createWithdrawLiquidityFromPairTxns';
 import { createWithdrawLiquidityFromBuyOrdersPair } from '../../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
 import { createWithdrawLiquidityFromSellOrdersPair } from '../../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
-import { signAndSendTransactionsInSeries } from '../../../components/Layout/helpers';
 import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
 import { notify } from '../../../utils';
@@ -278,7 +280,6 @@ export const useSaveClick = ({
             connection,
             wallet,
             pairPubkey: pool.pairPubkey,
-            liquidityProvisionOrders: pool.liquidityProvisionOrders,
             authorityAdapter: pool.authorityAdapterPubkey,
             nfts: nftsToDelete,
           });
@@ -308,7 +309,6 @@ export const useSaveClick = ({
                 connection,
                 wallet,
                 pairPubkey: pool.pairPubkey,
-                liquidityProvisionOrders: pool.liquidityProvisionOrders,
                 authorityAdapter: pool.authorityAdapterPubkey,
                 buyOrdersAmountToDelete: ordersToDelete,
               })),
@@ -325,7 +325,6 @@ export const useSaveClick = ({
             connection,
             wallet,
             pairPubkey: pool.pairPubkey,
-            liquidityProvisionOrders: pool.liquidityProvisionOrders,
             authorityAdapter: pool.authorityAdapterPubkey,
             nfts: nftsToDelete,
           });
@@ -349,37 +348,37 @@ export const useSaveClick = ({
       }
     }
 
-    const isSuccess = await signAndSendTransactionsInSeries({
+    const isSuccess = await signAndSendAllTransactions({
       connection,
       wallet,
-      txnData: transactions.map((txn, index) => ({
-        signers: txn.signers,
+      txnsAndSigners: transactions.map((txn) => ({
         transaction: txn.transaction,
-        onBeforeApprove: () => {
-          dispatch(
-            txsLoadingModalActions.setState({
-              visible: true,
-              cards: cards[index],
-              amountOfTxs: transactions.length,
-              currentTxNumber: 1 + index,
-              textStatus: TxsLoadingModalTextStatus.APPROVE,
-            }),
-          );
-        },
-        onAfterSend: () => {
-          dispatch(
-            txsLoadingModalActions.setTextStatus(
-              TxsLoadingModalTextStatus.WAITING,
-            ),
-          );
-        },
-        onError: () => {
-          notify({
-            message: 'Transaction just failed for some reason',
-            type: NotifyType.ERROR,
-          });
-        },
+        signers: txn.signers,
       })),
+      onBeforeApprove: () => {
+        dispatch(
+          txsLoadingModalActions.setState({
+            visible: true,
+            cards: cards,
+            amountOfTxs: transactions.length,
+            currentTxNumber: transactions.length,
+            textStatus: TxsLoadingModalTextStatus.APPROVE,
+          }),
+        );
+      },
+      onAfterSend: () => {
+        dispatch(
+          txsLoadingModalActions.setTextStatus(
+            TxsLoadingModalTextStatus.WAITING,
+          ),
+        );
+      },
+      onError: () => {
+        notify({
+          message: 'Transaction just failed for some reason',
+          type: NotifyType.ERROR,
+        });
+      },
     });
 
     dispatch(txsLoadingModalActions.setVisible(false));
