@@ -15,26 +15,26 @@
 @primary-color: #257cff;
 @btn-primary-color: #1a1c1e;
 
-
 @layout-header-background: #282f37;
 
 @menu-bg: @body-background;
 
-@dropdown-menu-bg: #282F37;
+@dropdown-menu-bg: #282f37;
 
-@ant-success-color: #30DE37;
-@ant-error-color: #DE3730;
-@ant-info-color: #309FDE;
+@ant-success-color: #30de37;
+@ant-error-color: #de3730;
+@ant-info-color: #309fde;
 
 .ant-card {
   background: @layout-header-background;
 }
 
-.ant-modal-header, .ant-modal-content {
+.ant-modal-header,
+.ant-modal-content {
   background: @component-base-background;
 }
 
-.ant-modal-content  {
+.ant-modal-content {
   border: 1px solid @border-color-base;
 }
 
@@ -46,7 +46,8 @@
   border-radius: 100px;
   background: @component-third-background;
 
-  div, input {
+  div,
+  input {
     height: 100%;
   }
 }
@@ -86,11 +87,17 @@
 }
 
 .ant-steps-item-title::after,
-.ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title::after {
+.ant-steps-item-process
+  > .ant-steps-item-container
+  > .ant-steps-item-content
+  > .ant-steps-item-title::after {
   background: #535b5f;
 }
 
-.ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+.ant-steps-item-wait
+  > .ant-steps-item-container
+  > .ant-steps-item-content
+  > .ant-steps-item-title {
   color: #535b5f;
 }
 
@@ -121,7 +128,8 @@
   box-shadow: unset;
 }
 
-.ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
   box-shadow: unset;
 }
 
@@ -158,8 +166,16 @@
   background: @component-base-background;
 }
 
+.anticon {
+  &.active {
+    & svg {
+      fill: var(--primary-color);
+    }
+  }
+}
+
 .ant-dropdown-menu {
-  border: 1px solid #3E4854;
+  border: 1px solid #3e4854;
   border-radius: 10px;
   padding: 0;
 
