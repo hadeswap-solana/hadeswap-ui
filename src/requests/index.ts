@@ -80,28 +80,30 @@ export const useFetchMarket = (publicKey: string): void => {
   }, [dispatch, data, marketLoading]);
 };
 
-export const useFetchPair = (): void => {
+type UseFetchPair = () => { refetch: () => void };
+
+export const useFetchPair: UseFetchPair = () => {
   const dispatch = useDispatch();
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
 
-  const {
-    data,
-    isLoading,
-    isFetching,
-  }: {
-    data: Pair;
-    isLoading: boolean;
-    isFetching: boolean;
-  } = useQuery(['fetchPair', `${poolPubkey}`], () => fetchPair(poolPubkey), {
-    staleTime: BASE_STALE_TIME,
-    enabled: !!poolPubkey,
-  });
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ['fetchPair', `${poolPubkey}`],
+    () => fetchPair(poolPubkey),
+    {
+      staleTime: BASE_STALE_TIME,
+      enabled: !!poolPubkey,
+    },
+  );
 
   const pairLoading = isLoading || isFetching;
 
   useEffect(() => {
     dispatch(coreActions.setPair({ data, isLoading: pairLoading }));
   }, [dispatch, pairLoading, data]);
+
+  return {
+    refetch,
+  };
 };
 
 export const useFetchMarketPairs = (): void => {

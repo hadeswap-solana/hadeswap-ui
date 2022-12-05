@@ -9,7 +9,7 @@ import { WAD, ZERO } from './solanaUtils.constants';
 export const formatPriceNumber = new Intl.NumberFormat('en-US', {
   style: 'decimal',
   minimumFractionDigits: 2,
-  maximumFractionDigits: 8,
+  maximumFractionDigits: 2,
 });
 
 export const formatRawSol = (number: number): string => {

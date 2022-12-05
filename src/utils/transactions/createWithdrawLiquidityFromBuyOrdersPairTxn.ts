@@ -1,6 +1,5 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
-import { ProvisionOrders } from '../../state/core/types';
 import { chunk } from 'lodash';
 
 const { withdrawLiquidityFromBuyOrdersPair } =
@@ -13,7 +12,6 @@ type CreateWithdrawLiquidityFromBuyOrdersPair = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   pairPubkey: string;
-  liquidityProvisionOrders: ProvisionOrders[];
   authorityAdapter: string;
   buyOrdersAmountToDelete: number;
 }) => Promise<
@@ -30,40 +28,17 @@ export const createWithdrawLiquidityFromBuyOrdersPair: CreateWithdrawLiquidityFr
     connection,
     wallet,
     pairPubkey,
-    liquidityProvisionOrders,
     authorityAdapter,
     buyOrdersAmountToDelete,
   }) => {
     const trxs = [];
-    const takenLpOrders = {};
 
     for (let i = 0; i < buyOrdersAmountToDelete / 2; i++) {
-      const liquidityProvisionOrderOnEdgeToWithdraw = liquidityProvisionOrders
-        .filter(
-          (provisionOrder) =>
-            !takenLpOrders[provisionOrder.liquidityProvisionOrder],
-        )
-        .reduce((maxProvisionOrder, provisionOrder) =>
-          maxProvisionOrder.orderBCounter < provisionOrder.orderBCounter
-            ? provisionOrder
-            : maxProvisionOrder,
-        );
-
-      takenLpOrders[
-        liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder
-      ] = true;
-
       trxs.push(
         withdrawLiquidityFromBuyOrdersPair({
           programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
           connection,
           accounts: {
-            liquidityProvisionOrderToReplace: new web3.PublicKey(
-              liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-            ), // same if virtual
-            liquidityProvisionOrderToWithdraw: new web3.PublicKey(
-              liquidityProvisionOrderOnEdgeToWithdraw.liquidityProvisionOrder,
-            ),
             pair: new web3.PublicKey(pairPubkey),
             authorityAdapter: new web3.PublicKey(authorityAdapter),
             userPubkey: wallet.publicKey,

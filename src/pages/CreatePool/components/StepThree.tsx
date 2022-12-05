@@ -11,7 +11,7 @@ import { usePoolServicePrice } from '../../../components/PoolSettings/hooks/useP
 import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { Chart, usePriceGraph } from '../../../components/Chart';
 import Button from '../../../components/Buttons/Button';
-import { useOnCreatePoolClick } from '../hooks';
+import { useCreatePool } from '../hooks';
 import { useFetchAllMarkets } from '../../../requests';
 import {
   selectAllMarkets,
@@ -69,10 +69,10 @@ export const StepThree: FC<StepThreeProps> = ({
     (pairType === PairType.TokenForNFT && !nftAmount) ||
     !spotPrice;
 
-  const onCreatePoolClick = useOnCreatePoolClick({
+  const { create: onCreatePoolClick } = useCreatePool({
     pairType,
-    nftAmount,
-    chosenMarketKey,
+    nftsAmount: nftAmount,
+    marketPubkey: chosenMarketKey,
     selectedNfts,
     curveType,
     rawSpotPrice,
