@@ -4,7 +4,7 @@ import { SORT_ORDER } from '../../../constants/common';
 import { PairButtons } from '../../Buttons/PairButtons';
 import ChevronIcon from '../../../icons/ChevronIcon';
 import ArrowIcon from '../../../icons/ArrowIcon';
-import withModal from '../../Modal/mobile/Modal';
+import Modal from '../../Modal/mobile/Modal';
 import styles from './Sorting.module.scss';
 import { createPoolTableRow } from '../../../state/core/helpers';
 import { MarketInfo } from '../../../state/core/types';
@@ -31,7 +31,7 @@ const Sorting: FC<SortingProps> = ({
   };
 
   return (
-    <>
+    <Modal>
       <div className={styles.sortingHeader}>
         <h3>sorting</h3>
         <div onClick={() => setIsSortingVisible((value: boolean) => !value)}>
@@ -57,8 +57,8 @@ const Sorting: FC<SortingProps> = ({
           </Fragment>
         ))}
       </div>
-    </>
+    </Modal>
   );
 };
 
-export default withModal(Sorting);
+export default Sorting;

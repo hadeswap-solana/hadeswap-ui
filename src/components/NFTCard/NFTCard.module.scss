@@ -5,9 +5,14 @@
   border-radius: 16px;
   background: var(--component-base-background);
   cursor: pointer;
+  transition: border-color .3s;
 
   &:hover {
     border-color: var(--blue-color);
+
+    .cardButton {
+      background-color: var(--button-hover-outline);
+    }
 
     .cardImageHover {
       top: 0;
@@ -127,11 +132,9 @@
 .cardButton {
   width: 38px;
   height: 38px;
+  transition: background-color .3s;
+
   svg > path {
     fill: var(--blue-color);
   }
-}
-
-.card:hover .cardButton {
-  background: var(--button-hover-outline);
 }

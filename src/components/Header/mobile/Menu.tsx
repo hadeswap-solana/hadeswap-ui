@@ -1,8 +1,15 @@
 import { FC } from 'react';
-import withModal from '../../Modal/mobile/Modal';
+import Modal from '../../Modal/mobile/Modal';
 import MenuList from '../MenuList';
+
 import styles from './Header.module.scss';
 
-const Menu: FC = () => <MenuList classNames={styles} />;
+const Menu: FC<{ modalClassName: string }> = ({ modalClassName }) => {
+  return (
+    <Modal className={modalClassName}>
+      <MenuList classNames={styles} />
+    </Modal>
+  );
+};
 
-export default withModal(Menu);
+export default Menu;

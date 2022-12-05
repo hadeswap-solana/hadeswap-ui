@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, Dispatch, SetStateAction } from 'react';
+import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectExchangeModalVisible,
@@ -10,39 +10,31 @@ import { useCartSider, useSwap } from './hooks';
 import { ScreenTypes } from '../../state/common/types';
 import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
-
-import styles from './mobile/styles.module.scss';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { commonActions } from '../../state/common/actions';
 
 export interface CartSiderProps {
-  createOnDeselectHandler?: (arg: CartOrder) => () => void;
-  onDeselectBulkHandler?: (arg: CartOrder[]) => void;
-  swap?: () => Promise<void>;
-  setShowModal?: (func: Dispatch<SetStateAction<boolean>>) => void;
-  itemsAmount: number;
-  isSwapButtonDisabled?: boolean;
+  createOnDeselectHandler: (arg: CartOrder) => () => void;
+  onDeselectBulkHandler: (arg: CartOrder[]) => void;
+  swap: () => Promise<void>;
+  isSwapButtonDisabled: boolean;
   isCartEmpty: boolean;
-  cartOpened: boolean;
+  cartOpened?: boolean;
   cartItems: {
     buy?: CartOrder[];
     sell?: CartOrder[];
   };
+  invalidItems: CartOrder[];
+  itemsAmount: number;
   totalBuy: number;
   totalSell: number;
-  invalidItems: CartOrder[];
   isExchangeMode?: boolean;
 }
-
-const HEADER_HEIGHT = 56;
 
 const CartSider: FC = () => {
   const dispatch = useDispatch();
   const screenMode = useSelector(selectScreeMode);
 
-  const [visible, setVisible] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean | null>(null);
-  const [modalClassName, setModalClassName] = useState<string>('');
   const exchangeModalVisible = useSelector(selectExchangeModalVisible);
 
   const {
@@ -55,7 +47,6 @@ const CartSider: FC = () => {
     totalSell,
   } = useCartSider();
 
-  const isHeaderVisible = window.scrollY < HEADER_HEIGHT;
   const isSwapButtonDisabled = !itemsAmount;
 
   const { swap } = useSwap({
@@ -73,68 +64,30 @@ const CartSider: FC = () => {
     );
   };
 
-  useEffect(() => {
-    if (!isCartEmpty && !visible) {
-      setModalClassName(styles.pocketModal);
-      setVisible(true);
-    }
-
-    if (isCartEmpty) {
-      setVisible(false);
-      setShowModal(null);
-    }
-
-    if (showModal !== null) {
-      if (showModal) {
-        isHeaderVisible
-          ? setModalClassName(styles.showModalToHeader)
-          : setModalClassName(styles.showModalToTop);
-      }
-
-      if (!showModal) {
-        isHeaderVisible
-          ? setModalClassName(
-              `${styles.pocketModal} ${styles.hideModalfromHeader}`,
-            )
-          : setModalClassName(
-              `${styles.pocketModal} ${styles.hideModalfromTop}`,
-            );
-      }
-    }
-  }, [isCartEmpty, visible, showModal, isHeaderVisible]);
-
   return screenMode !== ScreenTypes.DESKTOP ? (
-    visible && (
-      <CartSiderMobile
-        createOnDeselectHandler={createOnDeselectHandler}
-        onDeselectBulkHandler={onDeselectBulkHandler}
-        cartItems={cartItems}
-        invalidItems={invalidItems}
-        dispatch={dispatch}
-        swap={swap}
-        cartOpened={cartOpened}
-        isCartEmpty={isCartEmpty}
-        setShowModal={setShowModal}
-        modalClassName={modalClassName}
-        itemsAmount={itemsAmount}
-        isSwapButtonDisabled={isSwapButtonDisabled}
-        totalBuy={totalBuy}
-        totalSell={totalSell}
-        stopScroll={showModal}
-        scrollToTop={showModal && isHeaderVisible}
-      />
-    )
+    <CartSiderMobile
+      createOnDeselectHandler={createOnDeselectHandler}
+      onDeselectBulkHandler={onDeselectBulkHandler}
+      swap={swap}
+      isSwapButtonDisabled={isSwapButtonDisabled}
+      isCartEmpty={isCartEmpty}
+      cartItems={cartItems}
+      invalidItems={invalidItems}
+      itemsAmount={itemsAmount}
+      totalBuy={totalBuy}
+      totalSell={totalSell}
+    />
   ) : (
     <CartSiderDesktop
       createOnDeselectHandler={createOnDeselectHandler}
       onDeselectBulkHandler={onDeselectBulkHandler}
-      cartItems={cartItems}
-      invalidItems={invalidItems}
       swap={swap}
-      itemsAmount={itemsAmount}
       isSwapButtonDisabled={isSwapButtonDisabled}
       isCartEmpty={isCartEmpty}
       cartOpened={cartOpened}
+      cartItems={cartItems}
+      invalidItems={invalidItems}
+      itemsAmount={itemsAmount}
       totalBuy={totalBuy}
       totalSell={totalSell}
       isExchangeMode={exchangeModalVisible}
