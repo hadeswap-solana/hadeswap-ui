@@ -4,7 +4,7 @@
   column-gap: 32px;
   margin-bottom: 80px;
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     column-gap: 16px;
   }
 }
@@ -22,7 +22,7 @@
     width: 1px;
     height: 100%;
     background: var(--border-color-base);
-    @media (max-width: 767px) {
+    @media (max-width: 768px) {
       right: -7px;
     }
   }
@@ -31,7 +31,7 @@
     min-width: 224px;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     min-width: 107px;
   }
 }
@@ -47,7 +47,7 @@
     font-size: 20px;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-size: 10px;
   }
 }
@@ -58,7 +58,7 @@
   align-items: center;
   margin-top: 8px;
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     margin-top: 0;
 
     svg {
@@ -76,7 +76,7 @@
     font-size: 28px;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-size: 14px;
   }
 }
@@ -97,7 +97,7 @@
   display: flex;
   justify-content: center;
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     display: grid;
     justify-content: flex-start;
     grid-template-columns: repeat(5, 1fr);
@@ -133,7 +133,7 @@
   background: var(--component-base-background);
   overflow: hidden;
   cursor: pointer;
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     width: 224px;
   }
   @media (max-width: 374px) {
@@ -163,7 +163,7 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 28px;
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-size: 18px;
   }
 }
@@ -194,7 +194,7 @@
 
   color: var(--dark-grey-color);
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-size: 12px;
   }
 }
@@ -206,7 +206,7 @@
   line-height: 120%;
 
   color: var(--green-color);
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     font-size: 10px;
     position: absolute;
     top: 25%;
