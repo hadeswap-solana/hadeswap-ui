@@ -28,6 +28,8 @@ export const PoolHeader: FC<PoolHeaderProps> = ({ market, pool }) => {
   const wallet = useWallet();
 
   const isLiquidityProvision = pool.type === PairType.LiquidityProvision;
+  const isBuy = pool.type === PairType.TokenForNFT;
+  const isSell = pool.type === PairType.NftForToken;
 
   const isOwner =
     wallet.publicKey && wallet.publicKey?.toBase58() === pool?.assetReceiver;
@@ -49,17 +51,41 @@ export const PoolHeader: FC<PoolHeaderProps> = ({ market, pool }) => {
           <span>{'<'}&nbsp;&nbsp;back</span>
         </BlackButton>
         <div className={styles.badges}>
-          <CombinedBadges
-            BaseBadge={<SolRoundElement />}
-            ShiftedBadge={
+          {isBuy && (
+            <>
+              <SolRoundElement />
+              <ArrowRightIcon />
               <ImageBadge
                 src={market.collectionImage}
                 name={market.collectionName}
               />
-            }
-          />
-          {isLiquidityProvision ? <ArrowsLeftRightIcon /> : <ArrowRightIcon />}
-          <TradingBadge />
+            </>
+          )}
+          {isSell && (
+            <>
+              <ImageBadge
+                src={market.collectionImage}
+                name={market.collectionName}
+              />
+              <ArrowRightIcon />
+              <SolRoundElement />
+            </>
+          )}
+          {isLiquidityProvision && (
+            <>
+              <CombinedBadges
+                BaseBadge={<SolRoundElement />}
+                ShiftedBadge={
+                  <ImageBadge
+                    src={market.collectionImage}
+                    name={market.collectionName}
+                  />
+                }
+              />
+              <ArrowsLeftRightIcon />
+              <SolRoundElement />
+            </>
+          )}
         </div>
       </div>
       <div className={styles.widgetsWrapper}>
