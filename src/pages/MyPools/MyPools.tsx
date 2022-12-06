@@ -6,14 +6,15 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useFetchWalletPairs, useFetchAllMarkets } from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
-import Button from '../../components/Buttons/Button';
+import { CreatePoolButton } from '../../components/CreatePoolButton/CreatePoolButton';
 import { Spinner } from '../../components/Spinner/Spinner';
 import ItemsList from '../../components/ItemsList';
 import Sorting from '../../components/Sorting/mobile/Sorting';
 import { OpenSortButton } from '../../components/Sorting/mobile/OpenSortButton';
 import { sortCollection } from '../../components/Sorting/mobile/helpers';
 import { POOL_TABLE_COLUMNS } from '../../utils/table/constants';
-import { SORT_ORDER, PubKeys, POOL } from '../../constants/common';
+import { SORT_ORDER, POOL } from '../../constants/common';
+import { PubKeys } from '../../types';
 import {
   selectAllMarketsLoading,
   selectWalletPairsLoading,
@@ -57,13 +58,9 @@ export const MyPools: FC = () => {
   const isLoading = marketsLoading || pairsLoading;
 
   useEffect(() => {
-    !isLoading && setPools(walletPairs);
-  }, [isLoading, walletPairs]);
-
-  useEffect(() => {
     const [name, order] = sortValue.split('_');
-    setPools(sortCollection(pools, name, order));
-  }, [sortValue, pools]);
+    setPools(sortCollection(walletPairs, name, order));
+  }, [sortValue, walletPairs]);
 
   return (
     <AppLayout>
@@ -78,12 +75,7 @@ export const MyPools: FC = () => {
         {connected && !isLoading && (
           <div className={styles.buttonWrapper}>
             <div className={styles.poolButtonWrapper}>
-              <Button
-                onClick={() => history.push('/create-pool')}
-                className={styles.mainButton}
-              >
-                <span>create pool</span>
-              </Button>
+              <CreatePoolButton />
             </div>
             {isMobile && !!pools.length && (
               <div className={styles.sortButtonWrapper}>
