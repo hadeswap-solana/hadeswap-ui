@@ -64,7 +64,7 @@ export const useCreatePool: UseCreatePool = (props) => {
             txsLoadingModalActions.setState({
               visible: true,
               cards: [firstTxnData.loadingModalCard],
-              amountOfTxs: restTxnsData.length + 1,
+              amountOfTxs: (restTxnsData?.length || 0) + 1,
               currentTxNumber: 1,
               textStatus: TxsLoadingModalTextStatus.APPROVE,
             }),
