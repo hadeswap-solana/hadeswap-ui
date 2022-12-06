@@ -7,14 +7,16 @@ import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
 
 export interface ItemsListProps {
-  onRowClick?: (pubKey: string, source?: any) => void;
+  idKey?: string;
+  pubKey?: string;
   data: any[];
   mapType: any;
-  pubKey?: string;
+  onRowClick?: (pubKey: string, source?: any) => void;
   tableClassName?: string;
 }
 
 const ItemsList: FC<ItemsListProps> = ({
+  idKey = null,
   onRowClick,
   data,
   mapType,
@@ -26,17 +28,19 @@ const ItemsList: FC<ItemsListProps> = ({
 
   return isMobile ? (
     <ItemsListMobile
-      data={data}
-      onRowClick={onRowClick}
-      mapType={mobileItemsType[mapType]}
+      idKey={idKey}
       pubKey={pubKey}
+      data={data}
+      mapType={mobileItemsType[mapType]}
+      onRowClick={onRowClick}
     />
   ) : (
     <ItemsListDesktop
-      data={data}
-      onRowClick={onRowClick}
-      mapType={columnsType[mapType]}
+      idKey={idKey}
       pubKey={pubKey}
+      data={data}
+      mapType={columnsType[mapType]}
+      onRowClick={onRowClick}
       tableClassName={tableClassName}
     />
   );

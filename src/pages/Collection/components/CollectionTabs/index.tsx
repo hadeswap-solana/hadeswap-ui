@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Tabs } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import CreatePoolButton from '../CreatePoolButton/CreatePoolButton';
+import { CreatePoolButton } from '../../../../components/CreatePoolButton/CreatePoolButton';
 import { TabButton } from './TabButton';
 import { CollectionBuyTab } from './CollectionBuyTab';
 import { CollectionSellTab } from './CollectionSellTab';
@@ -51,10 +51,7 @@ export const CollectionTabs: FC = () => {
         >
           <CollectionPoolsTab />
         </TabPane>
-        <TabPane
-          key="button"
-          tab={<CreatePoolButton marketPublicKey={marketPublicKey} />}
-        />
+        <TabPane key="button" tab={<CreatePoolButton />} />
       </Tabs>
     </div>
   );

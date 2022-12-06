@@ -1,3 +1,15 @@
+export enum LoadingStatus {
+  loading = 'loading',
+  success = 'success',
+  error = 'error',
+}
+
+export enum FetchingStatus {
+  fetching = 'fetching',
+  idle = 'idle',
+  paused = 'paused',
+}
+
 export interface AllStats {
   volume24h: number;
   volumeAll: number;
