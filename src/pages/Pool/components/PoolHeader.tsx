@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '../../../components/Buttons/Button';
 import { BlackButton } from '../../../components/Buttons/BlackButton';
 import { CombinedBadges } from '../../../components/UI/CombinedBadges';
@@ -11,10 +12,11 @@ import { HeaderWidgetCard } from './HeaderWidgetCard';
 import { WithdrawFees } from '../../../components/WithdrawFees';
 import { useWithdrawFees } from '../../../components/WithdrawFees/useWithdrawFees';
 import { createEditPoollLink } from '../../../constants';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { MarketInfo, Pair } from '../../../state/core/types';
 
+import { ArrowRightIcon } from '../../../icons/ArrowRightIcon';
 import styles from './styles.module.scss';
-import { useWallet } from '@solana/wallet-adapter-react';
 
 interface PoolHeaderProps {
   market: MarketInfo;
@@ -24,6 +26,8 @@ interface PoolHeaderProps {
 export const PoolHeader: FC<PoolHeaderProps> = ({ market, pool }) => {
   const history = useHistory();
   const wallet = useWallet();
+
+  const isLiquidityProvision = pool.type === PairType.LiquidityProvision;
 
   const isOwner =
     wallet.publicKey && wallet.publicKey?.toBase58() === pool?.assetReceiver;
@@ -54,14 +58,14 @@ export const PoolHeader: FC<PoolHeaderProps> = ({ market, pool }) => {
               />
             }
           />
-          <ArrowsLeftRightIcon />
+          {isLiquidityProvision ? <ArrowsLeftRightIcon /> : <ArrowRightIcon />}
           <TradingBadge />
         </div>
       </div>
       <div className={styles.widgetsWrapper}>
         <HeaderWidgetCard title="pool" value={pool?.pairPubkey} />
         <HeaderWidgetCard title="owner" value={pool?.assetReceiver} />
-        {isOwner && (
+        {isOwner && isLiquidityProvision && (
           <WithdrawFees
             isButtonDisabled={isWithdrawDisabled}
             accumulatedFees={accumulatedFees}
