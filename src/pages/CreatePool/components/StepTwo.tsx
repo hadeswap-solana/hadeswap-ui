@@ -9,6 +9,7 @@ import { CombinedBadges } from '../../../components/UI/CombinedBadges';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
 import styles from './styles.module.scss';
+import { ArrowRightIcon } from '../../../icons/ArrowRightIcon';
 
 interface StepTwoProps {
   setStep: (arg: number) => void;
@@ -36,7 +37,7 @@ export const StepTwo: FC<StepTwoProps> = ({
       >
         <div className={styles.poolTypeBadges}>
           <SolRoundElement />
-          <ArrowsLeftRightIcon />
+          <ArrowRightIcon />
           <NFTBadge />
         </div>
         <span className={styles.poolTypeTitle}>buy NFTs with SOL</span>
@@ -49,7 +50,7 @@ export const StepTwo: FC<StepTwoProps> = ({
       >
         <div className={styles.poolTypeBadges}>
           <NFTBadge />
-          <ArrowsLeftRightIcon />
+          <ArrowRightIcon />
           <SolRoundElement />
         </div>
         <span className={styles.poolTypeTitle}>Sell NFTs for SOL</span>
