@@ -9,6 +9,7 @@ import { StepOne } from './components/StepOne';
 import { StepTwo } from './components/StepTwo';
 import { StepThree } from './components/StepThree';
 import { StepsButtons } from './components/StepsButtons';
+import { useFetchMarket } from '../../requests';
 
 import styles from './styles.module.scss';
 
@@ -22,6 +23,8 @@ export const CreatePool: FC = () => {
   const [chosenMarketKey, setChosenMarketKey] =
     useState<string>(marketPublicKey);
   const [pairType, setPairType] = useState<PairType>();
+
+  useFetchMarket(chosenMarketKey);
 
   return (
     <AppLayout>

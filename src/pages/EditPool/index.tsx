@@ -149,12 +149,14 @@ export const EditPool: FC = () => {
           <Spinner />
         ) : (
           <>
-            <WithdrawFees
-              className={styles.withdrawBlock}
-              accumulatedFees={accumulatedFees}
-              onClick={onWithdrawClick}
-              isButtonDisabled={isWithdrawDisabled}
-            />
+            {pairType === PairType.LiquidityProvision && (
+              <WithdrawFees
+                className={styles.withdrawBlock}
+                accumulatedFees={accumulatedFees}
+                onClick={onWithdrawClick}
+                isButtonDisabled={isWithdrawDisabled}
+              />
+            )}
             <div className={styles.settingsBlock}>
               <PriceBlock
                 ref={priceBlockRef}
