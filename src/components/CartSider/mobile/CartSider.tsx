@@ -26,9 +26,13 @@ const CartSiderMobile: FC<CartSiderProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const [showModal, setShowModal] = useState<boolean | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(null);
 
   const isHeaderVisible = window.scrollY < HEADER_HEIGHT;
+
+  const onShowModalClick = () => {
+    setShowModal((value: boolean) => !value);
+  };
 
   return (
     <>
@@ -54,7 +58,7 @@ const CartSiderMobile: FC<CartSiderProps> = ({
             <div className={styles.badgeButtonWrapper}>
               <BadgeButton
                 btnClassName={styles.badgeButton}
-                onClick={() => setShowModal((value: boolean) => !value)}
+                onClick={onShowModalClick}
                 itemsAmount={itemsAmount}
               />
             </div>
