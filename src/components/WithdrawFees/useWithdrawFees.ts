@@ -66,14 +66,19 @@ export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
           ),
         );
       },
+
+      onSuccess: () => {
+        notify({
+          message: 'transaction successful!',
+          type: NotifyType.SUCCESS,
+        });
+        refetch();
+      },
       onError: () => {
         notify({
-          message: 'Some transactions were failed for some reason',
+          message: 'oops... something went wrong!',
           type: NotifyType.ERROR,
         });
-      },
-      onSuccess: () => {
-        refetch();
       },
     });
 

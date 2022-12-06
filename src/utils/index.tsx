@@ -1,6 +1,9 @@
 import { notification } from 'antd';
 import { web3, BN } from 'hadeswap-sdk';
 import { Dictionary } from 'lodash';
+import { NotifyErrorIcon } from '../icons/NotifyErrorIcon';
+import { NotifyInfoIcon } from '../icons/NotifyInfoIcon';
+import { NotifySuccessIcon } from '../icons/NotifySuccessIcon';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
@@ -9,6 +12,12 @@ export enum PoolType {
   nftForToken = 'sell',
   liquidityProvision = 'liquidity provision',
 }
+
+const iconsNotify = {
+  [NotifyType.INFO]: <NotifyInfoIcon />,
+  [NotifyType.SUCCESS]: <NotifySuccessIcon />,
+  [NotifyType.ERROR]: <NotifyErrorIcon />,
+};
 
 export const notify: Notify = ({
   message = '',
@@ -23,6 +32,7 @@ export const notify: Notify = ({
     description,
     placement: 'bottomRight',
     duration: persist ? 0 : 4.5,
+    icon: iconsNotify[type],
     key,
   });
 };
@@ -225,11 +235,11 @@ export const specifyAndSort = (
 ): number => {
   if (!isNaN(Number(valueA))) {
     return compareNumbers(
-      parseFloat(String(<number>valueA)),
-      parseFloat(String(<number>valueB)),
+      parseFloat(String(valueA as string)),
+      parseFloat(String(valueB as string)),
     );
   }
-  return compareStrings(<string>valueA, <string>valueB);
+  return compareStrings(valueA as string, valueB as string);
 };
 
 export const formatBNToString = (
