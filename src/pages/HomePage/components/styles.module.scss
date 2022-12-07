@@ -90,7 +90,8 @@
 }
 
 .topMarketsListWrapper {
-  width: 100%;
+  display: flex;
+  justify-content: center;
   margin-top: 32px;
   margin-bottom: 56px;
   overflow: hidden;
@@ -98,10 +99,9 @@
 
 .topMarketsList {
   display: flex;
-  width: 100%;
+  gap: 16px;
   padding-bottom: 20px;
   margin-bottom: -20px;
-  gap: 16px;
   overflow-x: scroll;
 }
 
@@ -109,6 +109,7 @@
   display: flex;
   flex-direction: column;
   min-width: 254px;
+  max-width: 262px;
   border: var(--border-base);
   border-radius: 16px;
   background: var(--component-base-background);
