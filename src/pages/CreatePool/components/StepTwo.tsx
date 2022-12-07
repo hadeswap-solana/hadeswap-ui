@@ -1,16 +1,13 @@
 import { FC } from 'react';
-import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Card } from '../../../components/Card';
 import { SolRoundElement } from '../../../components/UI/SolanaBadge';
 import { TradingBadge } from '../../../components/UI/TradingBadge';
 import { CombinedBadges } from '../../../components/UI/CombinedBadges';
 import { Spinner } from '../../../components/Spinner/Spinner';
-import {
-  selectCertainMarket,
-  selectCertainMarketLoading,
-} from '../../../state/core/selectors';
+
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { MarketInfo } from '../../../state/core/types';
 
 import { ImageBadge } from '../../../components/UI/ImageBadge';
 import { ArrowRightIcon } from '../../../icons/ArrowRightIcon';
@@ -21,16 +18,17 @@ interface StepTwoProps {
   setStep: (arg: number) => void;
   pairType: PairType;
   setPairType: (arg: PairType) => void;
+  market: MarketInfo;
+  marketLoading: boolean;
 }
 
 export const StepTwo: FC<StepTwoProps> = ({
   setStep,
   pairType,
   setPairType,
+  market,
+  marketLoading,
 }) => {
-  const market = useSelector(selectCertainMarket);
-  const marketLoading = useSelector(selectCertainMarketLoading);
-
   const onCardClick = (type: PairType) => {
     setPairType(type);
     setStep(2);
