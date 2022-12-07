@@ -52,7 +52,8 @@
 
   // components
   --cart-sider-width: 324px;
-  --cart-sider-pocket-mode-height: calc(100% - 68px);
+  --cart-sider-pocket-mode-height: 68px;
+  --cart-sider-pocket-mode-position: calc(100% - var(--cart-sider-pocket-mode-height));
 
   // Animation
   --button-transition: opacity .3s;

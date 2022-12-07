@@ -6,7 +6,6 @@ import { BlackButton } from '../../../components/Buttons/BlackButton';
 import { CombinedBadges } from '../../../components/UI/CombinedBadges';
 import { SolRoundElement } from '../../../components/UI/SolanaBadge';
 import { ArrowsLeftRightIcon } from '../../../icons/ArrowsLeftRightIcon';
-import { TradingBadge } from '../../../components/UI/TradingBadge';
 import { ImageBadge } from '../../../components/UI/ImageBadge';
 import { HeaderWidgetCard } from './HeaderWidgetCard';
 import { WithdrawFees } from '../../../components/WithdrawFees';

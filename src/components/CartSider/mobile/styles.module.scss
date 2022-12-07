@@ -1,5 +1,5 @@
 .pocketModal {
-  top: var(--cart-sider-pocket-mode-height);
+  top: var(--cart-sider-pocket-mode-position);
   border-width: 1px 1px 0 1px;
 }
 
@@ -42,7 +42,7 @@
 
 @keyframes showToHeader {
   0% {
-    top: var(--cart-sider-pocket-mode-height);
+    top: var(--cart-sider-pocket-mode-position);
   }
   100% {
     top: var(--header-height-mobile);
@@ -51,7 +51,7 @@
 
 @keyframes showToTop {
   0% {
-    top: var(--cart-sider-pocket-mode-height);
+    top: var(--cart-sider-pocket-mode-position);
   }
   100% {
     top: 0;
@@ -63,7 +63,7 @@
     top: var(--header-height-mobile);
   }
   100% {
-    top: var(--cart-sider-pocket-mode-height);
+    top: var(--cart-sider-pocket-mode-position);
   }
 }
 
@@ -72,7 +72,7 @@
     top: 0;
   }
   100% {
-    top: var(--cart-sider-pocket-mode-height);
+    top: var(--cart-sider-pocket-mode-position);
   }
 }
 

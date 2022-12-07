@@ -9,24 +9,29 @@
 }
 
 .mainWrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   overflow-x: hidden;
-}
-
-.main {
-  position: relative;
   padding: 0 var(--body-horizontal-padding);
   margin-bottom: 32px;
 
   @media screen and (max-width: 1024px) {
     padding: 0 24px;
     margin-bottom: 24px;
+
+    &.cartHasItems {
+      margin-bottom: calc(24px + var(--cart-sider-pocket-mode-height));
+    }
   }
 
   @media screen and (max-width: 768px) {
     padding: 0 16px;
     margin-bottom: 16px;
+
+    &.cartHasItems {
+      margin-bottom: calc(16px + var(--cart-sider-pocket-mode-height));
+    }
   }
 }
