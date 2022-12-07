@@ -28,7 +28,6 @@ export const CollectionBuyTab: FC = () => {
   const marketPairs = useSelector(selectMarketPairs);
   const buyOrders = useSelector(selectAllBuyOrdersForMarket);
   const cartItems = useSelector(selectCartItems);
-  const pairs = useSelector(selectMarketPairs);
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
@@ -71,13 +70,13 @@ export const CollectionBuyTab: FC = () => {
       openExchangeModal();
       dispatch(
         coreActions.addOrderToCart(
-          pairs.find((pair) => pair.pairPubkey === order.targetPairPukey),
+          marketPairs.find((pair) => pair.pairPubkey === order.targetPairPukey),
           order,
           OrderType.BUY,
         ),
       );
     },
-    [dispatch, pairs, cartItems, openExchangeModal],
+    [dispatch, marketPairs, cartItems, openExchangeModal],
   );
 
   return (
