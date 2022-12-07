@@ -55,7 +55,7 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
     const txnSignatures = await Promise.all(
       signedTransactions.map((txn) =>
         connection.sendRawTransaction(txn.serialize(), {
-          skipPreflight: false,
+          skipPreflight: true,
         }),
       ),
     );

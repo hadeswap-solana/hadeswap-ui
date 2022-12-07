@@ -43,7 +43,7 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
 
   const signature = await connection.sendRawTransaction(
     signedTransaction.serialize(),
-    { skipPreflight: false },
+    { skipPreflight: true },
   );
 
   notify({
