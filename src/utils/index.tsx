@@ -235,8 +235,8 @@ export const specifyAndSort = (
 ): number => {
   if (!isNaN(Number(valueA))) {
     return compareNumbers(
-      parseFloat(String(valueA as string)),
-      parseFloat(String(valueB as string)),
+      parseFloat(String(valueA as number)),
+      parseFloat(String(valueB as number)),
     );
   }
   return compareStrings(valueA as string, valueB as string);

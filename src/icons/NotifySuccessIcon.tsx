@@ -1,4 +1,6 @@
-export const NotifySuccessIcon = (): JSX.Element => (
+import { FC } from 'react';
+
+export const NotifySuccessIcon: FC = () => (
   <svg
     width="18"
     height="18"
