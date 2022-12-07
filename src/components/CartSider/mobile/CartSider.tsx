@@ -44,11 +44,11 @@ const CartSiderMobile: FC<CartSiderProps> = ({
             { [styles.showModalToTop]: showModal && !isHeaderVisible },
             {
               [styles.hideModalfromHeader]:
-                !showModal && showModal !== null && isHeaderVisible,
+                showModal === false && isHeaderVisible,
             },
             {
               [styles.hideModalfromTop]:
-                !showModal && showModal !== null && !isHeaderVisible,
+                showModal === false && !isHeaderVisible,
             },
           )}
           stopScroll={showModal}
