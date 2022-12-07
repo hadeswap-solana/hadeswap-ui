@@ -120,83 +120,81 @@ export const useSaveClick = ({
       cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
     }
 
-    if (isTokenForNFTPool) {
-      if (isTokenForNftChanged) {
-        if (pool?.buyOrdersAmount < nftAmount) {
-          const amountOfOrders = getArrayByNumber(
-            nftAmount - pool?.buyOrdersAmount,
-            20,
+    if (isTokenForNFTPool && isTokenForNftChanged) {
+      if (pool?.buyOrdersAmount < nftAmount) {
+        const amountOfOrders = getArrayByNumber(
+          nftAmount - pool?.buyOrdersAmount,
+          20,
+        );
+
+        for (const amount of amountOfOrders) {
+          transactions.push(
+            await createDepositSolToPairTxn({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              amountOfOrders: amount,
+            }),
           );
+        }
 
-          for (const amount of amountOfOrders) {
-            transactions.push(
-              await createDepositSolToPairTxn({
-                connection,
-                wallet,
-                pairPubkey: pool.pairPubkey,
-                authorityAdapter: pool.authorityAdapterPubkey,
-                amountOfOrders: amount,
-              }),
-            );
-          }
+        const sellAmounts = hadeswap.helpers.calculatePricesArray({
+          starting_spot_price: rawSpotPrice,
+          delta: rawDelta,
+          amount: nftAmount - pool?.buyOrdersAmount,
+          bondingCurveType: curveType,
+          orderType: OrderType.Sell,
+          counter: pool?.buyOrdersAmount * -1 + 1,
+        });
 
-          const sellAmounts = hadeswap.helpers.calculatePricesArray({
-            starting_spot_price: rawSpotPrice,
-            delta: rawDelta,
-            amount: nftAmount - pool?.buyOrdersAmount,
-            bondingCurveType: curveType,
-            orderType: OrderType.Sell,
-            counter: pool?.buyOrdersAmount * -1 + 1,
-          });
+        cards.push([
+          createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](
+            sellAmounts.total,
+          ),
+        ]);
 
-          cards.push([
-            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](
-              sellAmounts.total,
-            ),
-          ]);
+        //TODO: FIX
+        for (let i = 0; i < transactions.length - 1; i++) {
+          cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
+        }
+      } else {
+        const amountOfOrders = getArrayByNumber(
+          pool?.buyOrdersAmount - nftAmount,
+          20,
+        );
 
-          //TODO: FIX
-          for (let i = 0; i < transactions.length - 1; i++) {
-            cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
-          }
-        } else {
-          const amountOfOrders = getArrayByNumber(
-            pool?.buyOrdersAmount - nftAmount,
-            20,
+        for (const amount of amountOfOrders) {
+          transactions.push(
+            await createWithdrawSolFromPairTxn({
+              connection,
+              wallet,
+              pairPubkey: pool.pairPubkey,
+              authorityAdapter: pool.authorityAdapterPubkey,
+              amountOfOrders: amount,
+            }),
           );
+        }
 
-          for (const amount of amountOfOrders) {
-            transactions.push(
-              await createWithdrawSolFromPairTxn({
-                connection,
-                wallet,
-                pairPubkey: pool.pairPubkey,
-                authorityAdapter: pool.authorityAdapterPubkey,
-                amountOfOrders: amount,
-              }),
-            );
-          }
+        const buyAmounts = hadeswap.helpers.calculatePricesArray({
+          starting_spot_price: rawSpotPrice,
+          delta: rawDelta,
+          amount: pool?.buyOrdersAmount - nftAmount,
+          bondingCurveType: curveType,
+          orderType: OrderType.Buy,
+          counter: pool?.buyOrdersAmount * -1,
+        });
 
-          const buyAmounts = hadeswap.helpers.calculatePricesArray({
-            starting_spot_price: rawSpotPrice,
-            delta: rawDelta,
-            amount: pool?.buyOrdersAmount - nftAmount,
-            bondingCurveType: curveType,
-            orderType: OrderType.Buy,
-            counter: pool?.buyOrdersAmount * -1,
-          });
+        cards.push([
+          createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](
+            buyAmounts.total,
+            true,
+          ),
+        ]);
 
-          cards.push([
-            createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](
-              buyAmounts.total,
-              true,
-            ),
-          ]);
-
-          //TODO: FIX
-          for (let i = 0; i < transactions.length - 1; i++) {
-            cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
-          }
+        //TODO: FIX
+        for (let i = 0; i < transactions.length - 1; i++) {
+          cards.push([createIxCardFuncs[IX_TYPE.EDIT_POOL]()]);
         }
       }
     } else if (isNftForTokenPool) {
