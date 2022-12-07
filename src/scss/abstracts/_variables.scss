@@ -41,7 +41,7 @@
   --body-horizontal-padding: 32px;
   --font-size-base: 14px; // major text font size
   --header-height-mobile: 56px;
-  --header-height-desktop: 97px;
+  --header-height-desktop: 65px;
   --collection-page-header-height: 289px;
 
   // other
@@ -52,7 +52,8 @@
 
   // components
   --cart-sider-width: 324px;
-  --cart-sider-pocket-mode-height: calc(100% - 68px);
+  --cart-sider-pocket-mode-height: 68px;
+  --cart-sider-pocket-mode-position: calc(100% - var(--cart-sider-pocket-mode-height));
 
   // Animation
   --button-transition: opacity .3s;
