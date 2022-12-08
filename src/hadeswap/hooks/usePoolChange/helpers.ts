@@ -47,6 +47,7 @@ type CheckIsPoolChanged = (props: {
   rawFee: number;
   rawSpotPrice: number;
   rawDelta: number;
+  buyOrdersAmount: number;
 }) => boolean;
 export const checkIsPoolChanged: CheckIsPoolChanged = ({
   pool,
@@ -54,6 +55,7 @@ export const checkIsPoolChanged: CheckIsPoolChanged = ({
   rawFee,
   rawDelta,
   selectedNfts,
+  buyOrdersAmount,
 }) => {
   const isPricingChanged = checkIsPricingChanged({
     pool,
@@ -62,6 +64,10 @@ export const checkIsPoolChanged: CheckIsPoolChanged = ({
     rawDelta,
   });
 
+  const buyOrdersAmountChanged =
+    pool?.buyOrdersAmount !== buyOrdersAmount &&
+    pool.type === PairType.TokenForNFT;
+
   const nftsToRemove = differenceBy(
     pool?.sellOrders,
     selectedNfts,
@@ -69,7 +75,12 @@ export const checkIsPoolChanged: CheckIsPoolChanged = ({
   ) as Nft[];
   const nftsToDeposit = selectedNfts.filter((nft) => !nft.nftPairBox);
 
-  return !!(nftsToRemove?.length || nftsToDeposit?.length || isPricingChanged);
+  return !!(
+    nftsToRemove?.length ||
+    nftsToDeposit?.length ||
+    isPricingChanged ||
+    buyOrdersAmountChanged
+  );
 };
 
 type CreateModifyPairTxnData = (props: {

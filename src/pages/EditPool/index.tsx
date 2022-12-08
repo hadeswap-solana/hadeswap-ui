@@ -92,7 +92,7 @@ export const EditPool: FC = () => {
   const { change, isChanged } = usePoolChange({
     pool,
     selectedNfts,
-    buyOrdersAmount,
+    buyOrdersAmount: nftAmount,
     rawFee: fee * 100,
     rawDelta,
     rawSpotPrice,

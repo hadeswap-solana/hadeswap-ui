@@ -26,7 +26,7 @@ export type UsePoolChange = (props: {
 export const usePoolChange: UsePoolChange = ({
   pool,
   selectedNfts,
-  buyOrdersAmount,
+  buyOrdersAmount, //? For TokenForNft pool only!
   rawFee,
   rawDelta,
   rawSpotPrice,
@@ -42,6 +42,7 @@ export const usePoolChange: UsePoolChange = ({
     rawFee,
     rawDelta,
     selectedNfts,
+    buyOrdersAmount,
   });
 
   const change = async () => {
