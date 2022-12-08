@@ -327,7 +327,8 @@ export const createDepositLiquidityToPairTxnsData: CreateDepositLiquidityToPairT
 
 type CreateWithdrawLiquidityFromPairTxnsData = (props: {
   pool: Pair;
-  withdrawableNfts: Nft[];
+  withdrawableNfts?: Nft[];
+  withdrawAll?: boolean;
   rawSpotPrice: number;
   rawDelta: number;
   connection: web3.Connection;
@@ -337,15 +338,18 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
   async ({
     pool,
     withdrawableNfts,
+    withdrawAll = false,
     rawSpotPrice,
     rawDelta,
     connection,
     wallet,
   }) => {
+    const nftsToWithdraw = withdrawAll ? pool?.sellOrders : withdrawableNfts;
+
     const { array: solAmounts } = hadeswap.helpers.calculatePricesArray({
       starting_spot_price: rawSpotPrice,
       delta: rawDelta,
-      amount: withdrawableNfts.length,
+      amount: nftsToWithdraw?.length,
       bondingCurveType: pool.bondingCurve,
       orderType: OrderType.Buy,
       counter: ((pool.nftsCount + pool.buyOrdersAmount) / 2) * -1 - 1,
@@ -359,7 +363,7 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
         wallet,
         pairPubkey: pool.pairPubkey,
         authorityAdapter: pool.authorityAdapterPubkey,
-        nfts: withdrawableNfts.slice(0, balancedPairsAmount),
+        nfts: nftsToWithdraw.slice(0, balancedPairsAmount),
       });
 
     const balancedTxnsData = balancedTxnsAndSigners.map(
@@ -368,7 +372,7 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
         signers,
         loadingModalCard: createIxCardFuncs[
           IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
-        ](withdrawableNfts[idx], solAmounts[idx], true),
+        ](nftsToWithdraw[idx], solAmounts[idx], true),
       }),
     );
 
@@ -390,7 +394,7 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
               wallet,
               pairPubkey: pool.pairPubkey,
               authorityAdapter: pool.authorityAdapterPubkey,
-              nfts: withdrawableNfts.slice(-sellOrdersToWithdraw),
+              nfts: nftsToWithdraw.slice(-sellOrdersToWithdraw),
             })
           : createWithdrawLiquidityFromBuyOrdersPair({
               connection,
@@ -407,7 +411,7 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
         signers,
         loadingModalCard: sellOrdersToWithdraw
           ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-              withdrawableNfts[idx + unbalancedOrdersAmount],
+              nftsToWithdraw[idx + unbalancedOrdersAmount],
               solAmounts[idx + unbalancedOrdersAmount],
               true,
             )
