@@ -15,7 +15,7 @@ export const Home: FC = () => {
   const isLoading = topMarketsLoading || allStatsLoading || TVLStatLoading;
 
   return (
-    <AppLayout>
+    <AppLayout hideFooter={false}>
       <div className={styles.contentWrapper}>
         <h1 className={styles.h1}>
           the best NFT marketplace on{' '}

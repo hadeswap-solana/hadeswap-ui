@@ -19,10 +19,21 @@ import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers'
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
-import { CartSiderProps } from './index';
 import { signAndSendTransactionsInSeries } from '../../utils/transactions';
+import { CartOrder } from '../../state/core/types';
 
-type UseCartSider = () => CartSiderProps;
+type UseCartSider = () => {
+  cartItems: {
+    buy: CartOrder[];
+    sell: CartOrder[];
+  };
+  cartOpened: boolean;
+  isCartEmpty: boolean;
+  invalidItems: CartOrder[];
+  itemsAmount: number;
+  totalBuy: number;
+  totalSell: number;
+};
 
 type UseSwap = (params: {
   onAfterTxn: () => void;

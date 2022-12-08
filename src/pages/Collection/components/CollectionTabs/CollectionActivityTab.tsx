@@ -1,9 +1,10 @@
-import { FC, useEffect, memo } from 'react';
+import { FC, useEffect, useMemo, memo } from 'react';
 import { useParams } from 'react-router-dom';
 import ItemsList from '../../../../components/ItemsList';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { useIntersection } from '../../../../hooks';
-import { ACTIVITY, PubKeys } from '../../../../constants/common';
+import { ACTIVITY } from '../../../../constants/common';
+import { PubKeys } from '../../../../types';
 import { useTableData } from '../../../../requests';
 
 import styles from './styles.module.scss';
@@ -30,25 +31,26 @@ export const CollectionActivityTab: FC = memo(() => {
     }
   }, [inView, fetchNextPage, isFetchingNextPage, isListEnded]);
 
-  const activityData = data?.pages
-    ?.map((page) => {
-      return page.data.filter(
-        (activity) => activity.solAmount > 0 && activity.solAmount !== 0,
-      );
-    })
-    .flat();
+  const activityData = useMemo(() => {
+    return data?.pages
+      ?.map((page) => {
+        return page.data.filter(
+          (activity) => activity.solAmount > 0 && activity.solAmount !== 0,
+        );
+      })
+      .flat();
+  }, [data]);
 
   return (
     <div className={styles.tabContentWrapper}>
-      {activityData?.length && (
-        <ItemsList
-          data={activityData}
-          mapType={ACTIVITY}
-          pubKey={PubKeys.NFT_MINT}
-          onRowClick={() => null}
-          tableClassName={styles.activityTable}
-        />
-      )}
+      <ItemsList
+        idKey="_id"
+        data={activityData}
+        mapType={ACTIVITY}
+        pubKey={PubKeys.NFT_MINT}
+        onRowClick={() => null}
+        tableClassName={styles.activityTable}
+      />
       <div ref={ref} />
       {!!isFetchingNextPage && (
         <div className={styles.spinnerWrapper}>

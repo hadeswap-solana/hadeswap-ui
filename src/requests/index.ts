@@ -5,11 +5,12 @@ import {
   InfiniteData,
   FetchNextPageOptions,
   InfiniteQueryObserverResult,
+  QueryStatus,
+  FetchStatus,
 } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { MarketInfo, Pair, Nft, NftActivityData } from '../state/core/types';
 import { web3 } from 'hadeswap-sdk';
 import {
   fetchAllMarkets,
@@ -19,6 +20,8 @@ import {
   fetchMarket,
   fetchMarketWalletNfts,
 } from './requests';
+import { LoadingStatus, FetchingStatus } from './types';
+import { MarketInfo, Pair, Nft, NftActivityData } from '../state/core/types';
 import { coreActions } from '../state/core/actions';
 
 const BASE_STALE_TIME = 5 * 60 * 1000; // 5 min
@@ -143,18 +146,19 @@ export const useFetchAllMarkets = (): void => {
 
   const {
     data,
-    isLoading,
-    isFetching,
+    status,
+    fetchStatus,
   }: {
     data: MarketInfo[];
-    isLoading: boolean;
-    isFetching: boolean;
+    status: QueryStatus;
+    fetchStatus: FetchStatus;
   } = useQuery(['fetchAllMarkets'], fetchAllMarkets, {
     staleTime: BASE_STALE_TIME,
     refetchOnWindowFocus: false,
   });
 
-  const marketsLoading = isLoading || isFetching;
+  const marketsLoading =
+    status === LoadingStatus.loading || fetchStatus === FetchingStatus.fetching;
 
   useEffect(() => {
     dispatch(coreActions.setAllMarkets({ data, isLoading: marketsLoading }));
@@ -167,12 +171,12 @@ export const useFetchWalletPairs = (): void => {
 
   const {
     data,
-    isLoading,
-    isFetching,
+    status,
+    fetchStatus,
   }: {
     data: Pair[];
-    isLoading: boolean;
-    isFetching: boolean;
+    status: QueryStatus;
+    fetchStatus: FetchStatus;
   } = useQuery(
     ['fetchWalletPairs', `${publicKey}`],
     () => fetchWalletPairs(publicKey),
@@ -183,7 +187,8 @@ export const useFetchWalletPairs = (): void => {
     },
   );
 
-  const walletPairsLoading = isLoading || isFetching;
+  const walletPairsLoading =
+    status === LoadingStatus.loading || fetchStatus === FetchingStatus.fetching;
 
   useEffect(() => {
     dispatch(
@@ -207,7 +212,7 @@ export const useTableData = (params: {
   isFetchingNextPage: boolean;
   isListEnded: boolean;
 } => {
-  const LIMIT = 20;
+  const LIMIT = 10;
 
   const { publicKey, url: baseUrl, id } = params;
 

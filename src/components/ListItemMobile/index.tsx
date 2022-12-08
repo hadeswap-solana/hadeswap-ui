@@ -38,7 +38,7 @@ const ListItemMobile: FC<ListItemMobileProps> = ({
       <ul>
         {itemMap.list.map((listItem) => (
           <li key={listItem.valueKey} className={styles.listItem}>
-            <span>{listItem.title}</span>
+            <span className={styles.listItemTitle}>{listItem.title}</span>
             {listItem.render(item[listItem.valueKey], item)}
           </li>
         ))}

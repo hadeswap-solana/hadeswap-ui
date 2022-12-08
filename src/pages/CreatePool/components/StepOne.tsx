@@ -9,7 +9,8 @@ import { Spinner } from '../../../components/Spinner/Spinner';
 import ItemsList from '../../../components/ItemsList';
 import { Search } from '../../../components/Search';
 import { useSearch } from '../../../components/Search/useSearch';
-import { COLLECTION, PubKeys } from '../../../constants/common';
+import { COLLECTION } from '../../../constants/common';
+import { PubKeys } from '../../../types';
 import { filterCollections } from '../../Collections/helpers';
 import { MarketInfo } from '../../../state/core/types';
 
@@ -21,6 +22,7 @@ interface StepOneProps {
 }
 
 export const StepOne: FC<StepOneProps> = ({ setStep, setChosenMarketKey }) => {
+  const [showList, setShowList] = useState<boolean>(false);
   const [filteredMarkets, setFilteredMarkets] = useState<MarketInfo[]>();
 
   useFetchAllMarkets();
@@ -35,25 +37,24 @@ export const StepOne: FC<StepOneProps> = ({ setStep, setChosenMarketKey }) => {
   const { searchStr, handleSearch } = useSearch();
 
   useEffect(() => {
-    const collections = filterCollections([...markets], searchStr);
-    setFilteredMarkets(collections);
+    const filteredCollections = filterCollections([...markets], searchStr);
+    setFilteredMarkets(filteredCollections);
+    markets.length && setShowList(true);
   }, [searchStr, markets]);
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || !showList ? (
         <Spinner />
       ) : (
         <>
           <Search onChange={handleSearch} className={styles.searchWrapper} />
-          {markets?.length && (
-            <ItemsList
-              data={filteredMarkets}
-              mapType={COLLECTION}
-              onRowClick={onRowClick}
-              pubKey={PubKeys.MARKET_PUBKEY}
-            />
-          )}
+          <ItemsList
+            data={filteredMarkets}
+            mapType={COLLECTION}
+            onRowClick={onRowClick}
+            pubKey={PubKeys.MARKET_PUBKEY}
+          />
         </>
       )}
     </>
