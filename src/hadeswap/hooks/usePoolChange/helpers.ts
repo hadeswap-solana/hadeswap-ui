@@ -18,8 +18,8 @@ import { createWithdrawNftsFromPairTxns } from '../../../utils/transactions/crea
 import { createWithdrawSolFromPairTxn } from '../../../utils/transactions/createWithdrawSolFromPairTxn';
 import { createWithdrawLiquidityFromBuyOrdersPair } from '../../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
 import { createWithdrawLiquidityFromSellOrdersPair } from '../../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
-
 import { TxnData } from './types';
+import { createDepositSolToPairTxn } from '../../../utils/transactions/createDepositSolToPairTxn';
 
 type CheckIsPricingChanged = (props: {
   pool: Pair;
@@ -214,7 +214,7 @@ export const createDepositSOLToPairTxnsData: CreateDepositSOLToPairTxnsData =
 
     const txnsAndSigners = await Promise.all(
       amountPerChunk.map((amount) =>
-        createWithdrawSolFromPairTxn({
+        createDepositSolToPairTxn({
           connection,
           wallet,
           pairPubkey: pool.pairPubkey,
