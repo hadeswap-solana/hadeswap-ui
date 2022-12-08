@@ -3,11 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { chunk, keyBy } from 'lodash';
 
 import { useConnection } from '../../hooks';
-import {
-  createIx,
-  mergeIxsIntoTxn,
-  signAndSendTransactionsInSeries,
-} from '../Layout/helpers';
+import { createIx, mergeIxsIntoTxn } from '../Layout/helpers';
 import { commonActions } from '../../state/common/actions';
 import { coreActions } from '../../state/core/actions';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
@@ -24,6 +20,7 @@ import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { CartSiderProps } from './index';
+import { signAndSendTransactionsInSeries } from '../../utils/transactions';
 
 type UseCartSider = () => CartSiderProps;
 
