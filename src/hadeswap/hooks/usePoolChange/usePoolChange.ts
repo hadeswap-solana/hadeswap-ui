@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useHistory } from 'react-router-dom';
 
-import { buildChangePoolTxnsData } from './helpers';
+import { buildChangePoolTxnsData, checkIsPoolChanged } from './helpers';
 import { useConnection } from '../../../hooks';
 import { Nft, Pair } from '../../../state/core/types';
 import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
@@ -36,6 +36,14 @@ export const usePoolChange: UsePoolChange = ({
   const wallet = useWallet();
   const connection = useConnection();
 
+  const isChanged = checkIsPoolChanged({
+    pool,
+    rawSpotPrice,
+    rawFee,
+    rawDelta,
+    selectedNfts,
+  });
+
   const change = async () => {
     const txnsDataArray = await buildChangePoolTxnsData({
       pool,
@@ -48,35 +56,38 @@ export const usePoolChange: UsePoolChange = ({
       connection,
     });
 
-    const txnsData = txnsDataArray.map((txnsData) => ({
-      txnsAndSigners: txnsData.map(({ transaction, signers }) => ({
-        transaction,
-        signers,
-      })),
-      onBeforeApprove: () => {
-        dispatch(
-          txsLoadingModalActions.setState({
-            visible: true,
-            cards: txnsData.map(({ loadingModalCard }) => loadingModalCard),
-            amountOfTxs: 0, //TODO: calc txns amount
-            currentTxNumber: 0, //TODO: calc txns amount
-            textStatus: TxsLoadingModalTextStatus.APPROVE,
+    const txnsData = txnsDataArray.map(
+      (txnsData, txnsDataIdx, txnsDataArray) => ({
+        txnsAndSigners: txnsData.map(({ transaction, signers }) => ({
+          transaction,
+          signers,
+        })),
+        onBeforeApprove: () => {
+          dispatch(
+            txsLoadingModalActions.setState({
+              visible: true,
+              cards: txnsData.map(({ loadingModalCard }) => loadingModalCard),
+              amountOfTxs: txnsDataArray?.flat()?.length || 0,
+              currentTxNumber:
+                txnsDataArray?.slice(0, txnsDataIdx + 1)?.flat()?.length || 0,
+              textStatus: TxsLoadingModalTextStatus.APPROVE,
+            }),
+          );
+        },
+        onAfterSend: () => {
+          dispatch(
+            txsLoadingModalActions.setTextStatus(
+              TxsLoadingModalTextStatus.WAITING,
+            ),
+          );
+        },
+        onError: () =>
+          notify({
+            message: 'Transaction just failed for some reason',
+            type: NotifyType.ERROR,
           }),
-        );
-      },
-      onAfterSend: () => {
-        dispatch(
-          txsLoadingModalActions.setTextStatus(
-            TxsLoadingModalTextStatus.WAITING,
-          ),
-        );
-      },
-      onError: () =>
-        notify({
-          message: 'Transaction just failed for some reason',
-          type: NotifyType.ERROR,
-        }),
-    }));
+      }),
+    );
 
     const isSuccess = await signAndSendAllTransactionsInSeries({
       txnsData,
@@ -93,6 +104,6 @@ export const usePoolChange: UsePoolChange = ({
 
   return {
     change,
-    isChanged: true, //TODO finish it
+    isChanged,
   };
 };
