@@ -41,6 +41,37 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
   return spotPriceChanged || deltaChanged || feeChanged;
 };
 
+type CheckIsPoolChanged = (props: {
+  pool: Pair;
+  selectedNfts: Nft[];
+  rawFee: number;
+  rawSpotPrice: number;
+  rawDelta: number;
+}) => boolean;
+export const checkIsPoolChanged: CheckIsPoolChanged = ({
+  pool,
+  rawSpotPrice,
+  rawFee,
+  rawDelta,
+  selectedNfts,
+}) => {
+  const isPricingChanged = checkIsPricingChanged({
+    pool,
+    rawSpotPrice,
+    rawFee,
+    rawDelta,
+  });
+
+  const nftsToRemove = differenceBy(
+    pool?.sellOrders,
+    selectedNfts,
+    'mint',
+  ) as Nft[];
+  const nftsToDeposit = selectedNfts.filter((nft) => !nft.nftPairBox);
+
+  return !!(nftsToRemove?.length || nftsToDeposit?.length || isPricingChanged);
+};
+
 type CreateModifyPairTxnData = (props: {
   pool: Pair;
   rawSpotPrice: number;
@@ -388,7 +419,6 @@ type BuildChangePoolTxnsData = (props: {
   connection: web3.Connection;
   wallet: WalletContextState;
 }) => Promise<TxnData[][]>;
-
 export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
   pool,
   selectedNfts,
