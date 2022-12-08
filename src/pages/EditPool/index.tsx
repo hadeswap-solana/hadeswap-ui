@@ -22,13 +22,12 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { WithdrawFees } from '../../components/WithdrawFees';
 import { Chart, usePriceGraph } from '../../components/Chart';
 import Button from '../../components/Buttons/Button';
-import { useSaveClick } from './hooks/useSaveClick';
 import {
   useWithdrawAllClick,
   useWithdrawFees,
 } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
-
+import { usePoolChange } from '../../hadeswap/hooks';
 import styles from './styles.module.scss';
 
 export const EditPool: FC = () => {
@@ -90,17 +89,13 @@ export const EditPool: FC = () => {
   const rawDelta =
     curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
 
-  const { onSaveClick, isSaveButtonDisabled } = useSaveClick({
+  const { change, isChanged } = usePoolChange({
     pool,
-    curveType,
-    fee,
-    nftAmount,
-    pairType,
     selectedNfts,
     buyOrdersAmount,
-    rawSpotPrice,
+    rawFee: fee * 100,
     rawDelta,
-    spotPrice,
+    rawSpotPrice,
   });
 
   const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
@@ -193,7 +188,7 @@ export const EditPool: FC = () => {
               </div>
             )}
             <div className={styles.buttonsWrapper}>
-              <Button isDisabled={isSaveButtonDisabled} onClick={onSaveClick}>
+              <Button isDisabled={!isChanged} onClick={change}>
                 <span>save changes</span>
               </Button>
               <Button
