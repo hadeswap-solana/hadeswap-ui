@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Steps } from 'antd';
@@ -10,23 +10,18 @@ import { StepTwo } from './components/StepTwo';
 import { StepThree } from './components/StepThree';
 import { StepsButtons } from './components/StepsButtons';
 import { useFetchMarket } from '../../requests';
-import {
-  selectCertainMarket,
-  selectCertainMarketLoading,
-} from '../../state/core/selectors';
+
 import styles from './styles.module.scss';
 
 const { Step } = Steps;
 
 export const CreatePool: FC = () => {
   const { connected } = useWallet();
-  const market = useSelector(selectCertainMarket);
-  const marketLoading = useSelector(selectCertainMarketLoading);
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-  const [step, setStep] = useState<number>(market.marketPubkey ? 1 : 0);
-  const [chosenMarketKey, setChosenMarketKey] = useState<string>(
-    market.marketPubkey,
-  );
+  const [step, setStep] = useState<number>(marketPublicKey ? 1 : 0);
+  const [chosenMarketKey, setChosenMarketKey] =
+    useState<string>(marketPublicKey);
   const [pairType, setPairType] = useState<PairType>();
 
   useFetchMarket(chosenMarketKey);
@@ -60,8 +55,6 @@ export const CreatePool: FC = () => {
                 )}
                 {step === 1 && (
                   <StepTwo
-                    market={market}
-                    marketLoading={marketLoading}
                     setStep={setStep}
                     pairType={pairType}
                     setPairType={setPairType}
