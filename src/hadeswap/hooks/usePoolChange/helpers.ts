@@ -277,9 +277,9 @@ export const createDepositLiquidityToPairTxnsData: CreateDepositLiquidityToPairT
     return txnsAndSigners.map(({ transaction, signers }, idx) => ({
       transaction,
       signers,
-      loadingModalCard: createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](
-        solDepositAmounts[idx],
-      ),
+      loadingModalCard: createIxCardFuncs[
+        IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
+      ](nftsToDeposit[idx], solDepositAmounts[idx]),
     }));
   };
 
