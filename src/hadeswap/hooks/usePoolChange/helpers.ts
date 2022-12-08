@@ -1,7 +1,7 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 import { OrderType, PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
-import { min } from 'lodash';
+import { min, differenceBy } from 'lodash';
 
 import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../..';
 import {
@@ -363,15 +363,149 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
       ({ transaction, signers }, idx) => ({
         transaction,
         signers,
-        loadingModalCard: createIxCardFuncs[
-          IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
-        ](
-          withdrawableNfts[idx + unbalancedOrdersAmount],
-          solAmounts[idx + unbalancedOrdersAmount],
-          true,
-        ),
+        loadingModalCard: sellOrdersToWithdraw
+          ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
+              withdrawableNfts[idx + unbalancedOrdersAmount],
+              solAmounts[idx + unbalancedOrdersAmount],
+              true,
+            )
+          : createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](
+              solAmounts[idx + unbalancedOrdersAmount],
+            ),
       }),
     );
 
     return [balancedTxnsData, unbalancedTxnsData];
   };
+
+type BuildChangePoolTxnsData = (props: {
+  pool: Pair;
+  selectedNfts: Nft[];
+  buyOrdersAmount: number;
+  rawFee: number;
+  rawSpotPrice: number;
+  rawDelta: number;
+  connection: web3.Connection;
+  wallet: WalletContextState;
+}) => Promise<TxnData[][]>;
+
+export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
+  pool,
+  selectedNfts,
+  buyOrdersAmount,
+  rawFee,
+  rawDelta,
+  rawSpotPrice,
+  wallet,
+  connection,
+}) => {
+  const txnsData: TxnData[][] = [];
+
+  const isTokenForNFTPool = pool.type === PairType.TokenForNFT;
+  const isNftForTokenPool = pool.type === PairType.NftForToken;
+  const isLiquidityProvisionPool = pool.type === PairType.LiquidityProvision;
+
+  const nftsToRemove = differenceBy(pool?.sellOrders, selectedNfts, 'mint');
+  const nftsToDeposit = selectedNfts.filter((nft) => !nft.nftPairBox);
+
+  const isPricingChanged = checkIsPricingChanged({
+    pool,
+    rawSpotPrice,
+    rawFee,
+    rawDelta,
+  });
+
+  //! Remove liquidity transactions:
+  //? Buy
+  if (isTokenForNFTPool && pool.buyOrdersAmount < buyOrdersAmount) {
+    const withdrawSOLTxnsData = await createWithdrawSOLFromPairTxnsData({
+      pool,
+      rawSpotPrice,
+      rawDelta,
+      withdrawOrdersAmount: 10, //TODO Calc difference
+      connection,
+      wallet,
+    });
+    txnsData.push(withdrawSOLTxnsData);
+  }
+  //? Sell
+  if (isNftForTokenPool && !!nftsToRemove.length) {
+    const withdrawNftsTxnsData = await createWithdrawNftsFromPairTxnsData({
+      pool,
+      withdrawableNfts: nftsToRemove,
+      connection,
+      wallet,
+    });
+    txnsData.push(withdrawNftsTxnsData);
+  }
+  //? Liquidty
+  if (isLiquidityProvisionPool && !!nftsToRemove.length) {
+    const [balancedTxnsData, unbalancedTxnsData] =
+      await createWithdrawLiquidityFromPairTxnsData({
+        pool,
+        withdrawableNfts: nftsToRemove,
+        rawSpotPrice,
+        rawDelta,
+        connection,
+        wallet,
+      });
+
+    txnsData.push(balancedTxnsData);
+    unbalancedTxnsData.length && txnsData.push(unbalancedTxnsData);
+  }
+
+  //! Pair modification transaction logic
+  if (isPricingChanged) {
+    const modifyTxnData = await createModifyPairTxnData({
+      pool,
+      rawSpotPrice,
+      rawFee,
+      rawDelta,
+      connection,
+      wallet,
+    });
+    txnsData.push([modifyTxnData]);
+  }
+
+  //! Add liquidity transactions
+  //? Buy
+  if (isTokenForNFTPool && pool.buyOrdersAmount > buyOrdersAmount) {
+    const depositSOLTxnsData = await createDepositSOLToPairTxnsData({
+      pool,
+      rawSpotPrice,
+      rawDelta,
+      ordersAmount: 10, //TODO Calc difference
+      connection,
+      wallet,
+    });
+    txnsData.push(depositSOLTxnsData);
+  }
+
+  //? Sell -- easy
+  if (isNftForTokenPool && !!nftsToDeposit.length) {
+    const depositNftsTxnsData = await createDepositNftsToPairTxnsData({
+      pool,
+      nftsToDeposit,
+      connection,
+      wallet,
+    });
+    txnsData.push(depositNftsTxnsData);
+  }
+
+  //? Liquidity -- easy
+  if (isLiquidityProvisionPool && !!nftsToDeposit.length) {
+    const depositLiquidityTxnsData = await createDepositLiquidityToPairTxnsData(
+      {
+        pool,
+        nftsToDeposit,
+        rawSpotPrice,
+        rawDelta,
+        connection,
+        wallet,
+      },
+    );
+    txnsData.push(depositLiquidityTxnsData);
+  }
+
+  return txnsData;
+};

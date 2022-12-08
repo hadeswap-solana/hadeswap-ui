@@ -1,22 +1,15 @@
+import { signAndSendAllTransactionsInSeries } from './../../../utils/transactions/helpers/signAndSendAllTransactionsInSeries';
 import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useHistory } from 'react-router-dom';
-import { differenceBy } from 'lodash';
-import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
-import {
-  checkIsPricingChanged,
-  createDepositLiquidityToPairTxnsData,
-  createDepositNftsToPairTxnsData,
-  createDepositSOLToPairTxnsData,
-  createModifyPairTxnData,
-  createWithdrawLiquidityFromPairTxnsData,
-  createWithdrawNftsFromPairTxnsData,
-  createWithdrawSOLFromPairTxnsData,
-} from './helpers';
+import { buildChangePoolTxnsData } from './helpers';
 import { useConnection } from '../../../hooks';
 import { Nft, Pair } from '../../../state/core/types';
-import { TxnData } from './types';
+import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
+import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
+import { notify } from '../../../utils';
+import { NotifyType } from '../../../utils/solanaUtils';
 
 export type UsePoolChange = (props: {
   pool: Pair;
@@ -43,112 +36,63 @@ export const usePoolChange: UsePoolChange = ({
   const wallet = useWallet();
   const connection = useConnection();
 
-  const isTokenForNFTPool = pool.type === PairType.TokenForNFT;
-  const isNftForTokenPool = pool.type === PairType.NftForToken;
-  const isLiquidityProvisionPool = pool.type === PairType.LiquidityProvision;
-
-  const isPricingChanged = checkIsPricingChanged({
-    pool,
-    rawSpotPrice,
-    rawFee,
-    rawDelta,
-  });
-
-  const nftsToRemove = differenceBy(pool?.sellOrders, selectedNfts, 'mint');
-  const nftsToDeposit = selectedNfts.filter((nft) => !nft.nftPairBox);
-
   const change = async () => {
-    const txnsData: TxnData[][] = [];
+    const txnsDataArray = await buildChangePoolTxnsData({
+      pool,
+      selectedNfts,
+      buyOrdersAmount,
+      rawFee,
+      rawDelta,
+      rawSpotPrice,
+      wallet,
+      connection,
+    });
 
-    //! Remove liquidity transactions:
-    //? Buy
-    if (isTokenForNFTPool && pool.buyOrdersAmount < buyOrdersAmount) {
-      const withdrawSOLTxnsData = await createWithdrawSOLFromPairTxnsData({
-        pool,
-        rawSpotPrice,
-        rawDelta,
-        withdrawOrdersAmount: 10, //TODO Calc difference
-        connection,
-        wallet,
-      });
-      txnsData.push(withdrawSOLTxnsData);
-    }
-    //? Sell
-    if (isNftForTokenPool && !!nftsToRemove.length) {
-      const withdrawNftsTxnsData = await createWithdrawNftsFromPairTxnsData({
-        pool,
-        withdrawableNfts: nftsToRemove,
-        connection,
-        wallet,
-      });
-      txnsData.push(withdrawNftsTxnsData);
-    }
-    //? Liquidty
-    if (isLiquidityProvisionPool && !!nftsToRemove.length) {
-      const [balancedTxnsData, unbalancedTxnsData] =
-        await createWithdrawLiquidityFromPairTxnsData({
-          pool,
-          withdrawableNfts: nftsToRemove,
-          rawSpotPrice,
-          rawDelta,
-          connection,
-          wallet,
-        });
+    const txnsData = txnsDataArray.map((txnsData) => ({
+      txnsAndSigners: txnsData.map(({ transaction, signers }) => ({
+        transaction,
+        signers,
+      })),
+      onBeforeApprove: () => {
+        dispatch(
+          txsLoadingModalActions.setState({
+            visible: true,
+            cards: txnsData.map(({ loadingModalCard }) => loadingModalCard),
+            amountOfTxs: 0, //TODO: calc txns amount
+            currentTxNumber: 0, //TODO: calc txns amount
+            textStatus: TxsLoadingModalTextStatus.APPROVE,
+          }),
+        );
+      },
+      onAfterSend: () => {
+        dispatch(
+          txsLoadingModalActions.setTextStatus(
+            TxsLoadingModalTextStatus.WAITING,
+          ),
+        );
+      },
+      onError: () =>
+        notify({
+          message: 'Transaction just failed for some reason',
+          type: NotifyType.ERROR,
+        }),
+    }));
 
-      txnsData.push(balancedTxnsData);
-      unbalancedTxnsData.length && txnsData.push(unbalancedTxnsData);
-    }
+    const isSuccess = await signAndSendAllTransactionsInSeries({
+      txnsData,
+      wallet,
+      connection,
+    });
 
-    //! Pair modification transaction logic
-    if (isPricingChanged) {
-      const modifyTxnData = await createModifyPairTxnData({
-        pool,
-        rawSpotPrice,
-        rawFee,
-        rawDelta,
-        connection,
-        wallet,
-      });
-      txnsData.push([modifyTxnData]);
-    }
+    dispatch(txsLoadingModalActions.setVisible(false));
 
-    //! Add liquidity transactions
-    //? Buy
-    if (isTokenForNFTPool && pool.buyOrdersAmount > buyOrdersAmount) {
-      const depositSOLTxnsData = await createDepositSOLToPairTxnsData({
-        pool,
-        rawSpotPrice,
-        rawDelta,
-        ordersAmount: 10, //TODO Calc difference
-        connection,
-        wallet,
-      });
-      txnsData.push(depositSOLTxnsData);
+    if (isSuccess) {
+      history.push(`/pools/${pool?.pairPubkey}`);
     }
+  };
 
-    //? Sell -- easy
-    if (isNftForTokenPool && !!nftsToDeposit.length) {
-      const depositNftsTxnsData = await createDepositNftsToPairTxnsData({
-        pool,
-        nftsToDeposit,
-        connection,
-        wallet,
-      });
-      txnsData.push(depositNftsTxnsData);
-    }
-
-    //? Liquidity -- easy
-    if (isLiquidityProvisionPool && !!nftsToDeposit.length) {
-      const depositLiquidityTxnsData =
-        await createDepositLiquidityToPairTxnsData({
-          pool,
-          nftsToDeposit,
-          rawSpotPrice,
-          rawDelta,
-          connection,
-          wallet,
-        });
-      txnsData.push(depositLiquidityTxnsData);
-    }
+  return {
+    change,
+    isChanged: true, //TODO finish it
   };
 };
