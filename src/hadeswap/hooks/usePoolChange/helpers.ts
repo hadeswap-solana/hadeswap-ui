@@ -33,7 +33,7 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
   rawFee,
   rawDelta,
 }) => {
-  const isLiquidityProvisionPool = pool.type === PairType.LiquidityProvision;
+  const isLiquidityProvisionPool = pool?.type === PairType.LiquidityProvision;
   const spotPriceChanged = pool?.currentSpotPrice !== rawSpotPrice;
   const deltaChanged = pool?.delta !== rawDelta;
   const feeChanged = isLiquidityProvisionPool && pool?.fee !== rawFee;
