@@ -458,12 +458,12 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
 
   //! Remove liquidity transactions:
   //? Buy
-  if (isTokenForNFTPool && pool.buyOrdersAmount < buyOrdersAmount) {
+  if (isTokenForNFTPool && buyOrdersAmount < pool.buyOrdersAmount) {
     const withdrawSOLTxnsData = await createWithdrawSOLFromPairTxnsData({
       pool,
       rawSpotPrice,
       rawDelta,
-      withdrawOrdersAmount: 10, //TODO Calc difference
+      withdrawOrdersAmount: pool.buyOrdersAmount - buyOrdersAmount,
       connection,
       wallet,
     });
@@ -510,12 +510,12 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
 
   //! Add liquidity transactions
   //? Buy
-  if (isTokenForNFTPool && pool.buyOrdersAmount > buyOrdersAmount) {
+  if (isTokenForNFTPool && pool.buyOrdersAmount < buyOrdersAmount) {
     const depositSOLTxnsData = await createDepositSOLToPairTxnsData({
       pool,
       rawSpotPrice,
       rawDelta,
-      ordersAmount: 10, //TODO Calc difference
+      ordersAmount: buyOrdersAmount - pool.buyOrdersAmount, //TODO Calc difference
       connection,
       wallet,
     });
