@@ -1,7 +1,6 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
 
-import { captureSentryError } from '../../sentry';
 import { signAndSendAllTransactions } from './signAndSendAllTransactions';
 
 interface TxnDataWithHandlers {
@@ -31,29 +30,22 @@ export const signAndSendAllTransactionsInSeries: SignAndSendAllTransactionsInSer
         onBeforeApprove,
         onAfterSend,
       } = txnsData[i];
-      try {
-        await signAndSendAllTransactions({
-          txnsAndSigners,
-          onSuccess,
-          onError,
-          onBeforeApprove,
-          onAfterSend,
-          wallet,
-          connection,
-          commitment: 'finalized',
-        });
 
-        onSuccess?.();
-      } catch (error) {
-        captureSentryError({
-          error,
-          wallet,
-        });
+      const result = await signAndSendAllTransactions({
+        txnsAndSigners,
+        onSuccess,
+        onError,
+        onBeforeApprove,
+        onAfterSend,
+        wallet,
+        connection,
+        commitment: 'finalized',
+      });
 
+      if (!result) {
         onError?.();
         return false;
       }
     }
-
     return true;
   };
