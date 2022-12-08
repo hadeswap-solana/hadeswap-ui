@@ -1,8 +1,7 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
 
-// import { mockData } from '../../mockData';
-import { Plate } from './Plate';
+import { Cart } from './Cart';
 // import { SocialLink } from './SocialLink';
 // import { GlobeIcon } from '../../../../icons/GlobeIcon';
 // import { DiscordIcon } from '../../../../icons/DiscordIcon';
@@ -11,6 +10,7 @@ import { Plate } from './Plate';
 // import { BellThinIcon } from '../../../../icons/BellThinIcon';
 import { SolPrice } from '../../../../components/SolPrice/SolPrice';
 import { Spinner } from '../../../../components/Spinner/Spinner';
+import { CreatePoolButton } from '../../../../components/CreatePoolButton/CreatePoolButton';
 import {
   selectCertainMarket,
   selectCertainMarketLoading,
@@ -18,27 +18,25 @@ import {
 import { marketStatList } from './CollectionHeader.constants';
 
 import styles from './styles.module.scss';
-import { CreatePoolButton } from '../../../../components/CreatePoolButton/CreatePoolButton';
-import { selectCartSiderVisible } from '../../../../state/common/selectors';
-import classNames from 'classnames';
 
 export const CollectionHeader: FC = () => {
   const market = useSelector(selectCertainMarket);
   const isLoading = useSelector(selectCertainMarketLoading);
-  const cartSiderVisible = useSelector(selectCartSiderVisible);
 
   return (
     <div className={styles.headerWrapper}>
       {isLoading ? (
         <Spinner />
       ) : (
-        <div
-          className={styles.headerInner}
-          style={{
-            backgroundImage: `url('${market.collectionImage}')`,
-          }}
-        >
-          <div className={styles.infoWrapper}>
+        <>
+          <div className={styles.coverImageContainer}>
+            <div
+              className={styles.coverImage}
+              style={{ backgroundImage: `url('${market.collectionImage}')` }}
+            />
+            <div className={styles.coverImageDecorator} />
+          </div>
+          <div className={styles.headerMain}>
             <div
               className={styles.imageHolder}
               style={{
@@ -83,14 +81,9 @@ export const CollectionHeader: FC = () => {
                   </Plate>
                 </div>
               </div> */}
-              <div
-                className={classNames(
-                  styles.collectionStatWrapper,
-                  cartSiderVisible && styles.collapsedStatWrapper,
-                )}
-              >
+              <div className={styles.collectionStatWrapper}>
                 {marketStatList.map((item, index) => (
-                  <Plate key={index} className={styles.collectionStatItem}>
+                  <Cart key={index} className={styles.collectionStatItem}>
                     <span className={styles.collectionStatTitle}>
                       {item.title}
                     </span>
@@ -105,13 +98,15 @@ export const CollectionHeader: FC = () => {
                         {market[item.key]}
                       </span>
                     )}
-                  </Plate>
+                  </Cart>
                 ))}
               </div>
-              <CreatePoolButton className={styles.poolButton} />
             </div>
           </div>
-        </div>
+          <div className={styles.buttonsWrapper}>
+            <CreatePoolButton />
+          </div>
+        </>
       )}
     </div>
   );

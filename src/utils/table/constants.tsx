@@ -219,7 +219,7 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
   },
   {
     key: 'orderType',
-    title: 'action',
+    title: 'pool action',
     dataIndex: 'orderType',
     className: 'disabled-cell-hover',
     showSorterTooltip: false,
@@ -284,7 +284,7 @@ export const POOL_TRADE_COLUMNS: ColumnsType<NftTradeData> = [
   },
   {
     key: 'orderType',
-    title: 'action',
+    title: 'pool action',
     dataIndex: 'orderType',
     className: 'disabled-cell-hover',
     showSorterTooltip: false,
