@@ -1,14 +1,17 @@
 import React, { forwardRef } from 'react';
 import { Card } from '../Card';
-import { Form, InputNumber, Tooltip, FormInstance } from 'antd';
+import { Form, FormInstance, InputNumber, Tooltip } from 'antd';
 import {
   BondingCurveType,
-  OrderType,
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { PairButtons } from '../Buttons/PairButtons';
-import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
+import {
+  startingBuyingPrice,
+  startingSellingPrice,
+  priceLockedIntoPool,
+} from './utils';
 import { MarketInfo, Pair } from '../../state/core/types';
 
 import styles from './styles.module.scss';
@@ -23,6 +26,9 @@ interface PriceBlockProps {
   setCurveType: React.Dispatch<BondingCurveType>;
   spotPrice: number;
   delta: number;
+  fee: number;
+  nftAmount: number;
+  nftsCount: number;
   formInitialValues: {
     fee: number;
     spotPrice: number;
@@ -42,6 +48,9 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       setCurveType,
       spotPrice,
       delta,
+      fee,
+      nftAmount,
+      nftsCount,
       formInitialValues,
       pool,
     },
@@ -50,6 +59,26 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
     const deltaType = curveType === BondingCurveType.Exponential ? '%' : 'SOL';
     const isDisableFields =
       !(pairType === PairType.NftForToken) && pool?.buyOrdersAmount > 20;
+
+    const buyingPrice = startingBuyingPrice({ pairType, fee, spotPrice });
+    const sellingPrice = startingSellingPrice({
+      pairType,
+      curveType,
+      fee,
+      spotPrice,
+      delta,
+      mathCounter: pool?.mathCounter,
+    });
+
+    const priceIntoPool = priceLockedIntoPool({
+      pairType,
+      spotPrice,
+      delta,
+      buyOrdersAmount: nftAmount,
+      nftsCount,
+      curveType,
+      mathCounter: pool?.mathCounter,
+    });
 
     return (
       <div className={styles.priceBlockWrapper}>
@@ -146,7 +175,9 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                   <span className={styles.noticeTitle}>
                     starting buying price
                   </span>
-                  <span className={styles.noticeValue}>{spotPrice} SOL</span>
+                  <span className={styles.noticeValue}>
+                    {buyingPrice?.toFixed(3)} SOL
+                  </span>
                 </div>
               )}
               {pairType !== PairType.TokenForNFT && (
@@ -155,14 +186,17 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                     starting selling price
                   </span>
                   <span className={styles.noticeValue}>
-                    {helpers.calculateNextSpotPrice({
-                      orderType: OrderType.Buy,
-                      delta: delta,
-                      spotPrice: spotPrice,
-                      bondingCurveType: curveType,
-                      counter: 0,
-                    })}{' '}
-                    SOL
+                    {sellingPrice?.toFixed(3)} SOL
+                  </span>
+                </div>
+              )}
+              {pairType !== PairType.NftForToken && (
+                <div className={styles.noticeRow}>
+                  <span className={styles.noticeTitle}>
+                    to be locked into pool
+                  </span>
+                  <span className={styles.noticeValue}>
+                    {priceIntoPool?.toFixed(3)} SOL
                   </span>
                 </div>
               )}
