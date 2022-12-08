@@ -201,8 +201,14 @@ export const useWithdrawAllClick = ({
         amount: pool.sellOrders.length,
         bondingCurveType: curveType,
         orderType: OrderType.Buy,
-        counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1 - 1,
+        counter: pool?.buyOrdersAmount * -1,
       });
+
+      const solWithdrawals = [...buyAmounts.array].fill(
+        0,
+        pool.buyOrdersAmount,
+        buyAmounts.array.length,
+      );
 
       if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
         const balancedOrdersToWithdraw =
@@ -221,7 +227,7 @@ export const useWithdrawAllClick = ({
         const nftRemoveCards = balancedOrdersToWithdraw.map((nft, index) =>
           createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
             nft,
-            buyAmounts.array[index],
+            solWithdrawals[index] || 0,
             true,
           ),
         );
@@ -269,7 +275,7 @@ export const useWithdrawAllClick = ({
           const nftRemoveCards = orders.map((nft, index) =>
             createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
               nft,
-              buyAmounts.array[index],
+              solWithdrawals[index] || 0,
               true,
             ),
           );
@@ -312,7 +318,7 @@ export const useWithdrawAllClick = ({
         const nftRemoveCards = pool.sellOrders.map((nft, index) =>
           createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
             nft,
-            buyAmounts.array[index],
+            solWithdrawals[index] || 0,
             true,
           ),
         );

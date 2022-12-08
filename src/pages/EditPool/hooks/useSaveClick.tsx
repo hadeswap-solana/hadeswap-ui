@@ -250,7 +250,7 @@ export const useSaveClick = ({
         amount: nftsToAdd.length,
         bondingCurveType: curveType,
         orderType: OrderType.Sell,
-        counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1,
+        counter: pool.mathCounter + pool?.buyOrdersAmount * -1 + 3,
       });
 
       const nftAddCards = nftsToAdd.map((nft, index) =>
@@ -271,7 +271,7 @@ export const useSaveClick = ({
         amount: nftsToDelete.length,
         bondingCurveType: curveType,
         orderType: OrderType.Buy,
-        counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1 - 1,
+        counter: pool?.buyOrdersAmount * -1,
       });
 
       if (pool?.nftsCount > 0 && pool?.buyOrdersAmount > 0) {
