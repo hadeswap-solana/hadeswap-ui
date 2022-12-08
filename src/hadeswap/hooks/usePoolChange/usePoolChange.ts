@@ -3,7 +3,11 @@ import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useHistory } from 'react-router-dom';
 
-import { buildChangePoolTxnsData, checkIsPoolChanged } from './helpers';
+import {
+  buildChangePoolTxnsData,
+  buildWithdrawAllLiquidityFromPoolTxnsData,
+  checkIsPoolChanged,
+} from './helpers';
 import { useConnection } from '../../../hooks';
 import { Nft, Pair } from '../../../state/core/types';
 import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
@@ -20,7 +24,9 @@ export type UsePoolChange = (props: {
   rawDelta: number;
 }) => {
   change: () => Promise<void>;
+  withdrawAllLiquidity: () => Promise<void>;
   isChanged: boolean;
+  isWithdrawAllAvailable: boolean;
 };
 
 export const usePoolChange: UsePoolChange = ({
@@ -103,8 +109,65 @@ export const usePoolChange: UsePoolChange = ({
     }
   };
 
+  const withdrawAllLiquidity = async () => {
+    const txnsDataArray = await buildWithdrawAllLiquidityFromPoolTxnsData({
+      pool,
+      rawDelta,
+      rawSpotPrice,
+      wallet,
+      connection,
+    });
+
+    const txnsData = txnsDataArray.map(
+      (txnsData, txnsDataIdx, txnsDataArray) => ({
+        txnsAndSigners: txnsData.map(({ transaction, signers }) => ({
+          transaction,
+          signers,
+        })),
+        onBeforeApprove: () => {
+          dispatch(
+            txsLoadingModalActions.setState({
+              visible: true,
+              cards: txnsData.map(({ loadingModalCard }) => loadingModalCard),
+              amountOfTxs: txnsDataArray?.flat()?.length || 0,
+              currentTxNumber:
+                txnsDataArray?.slice(0, txnsDataIdx + 1)?.flat()?.length || 0,
+              textStatus: TxsLoadingModalTextStatus.APPROVE,
+            }),
+          );
+        },
+        onAfterSend: () => {
+          dispatch(
+            txsLoadingModalActions.setTextStatus(
+              TxsLoadingModalTextStatus.WAITING,
+            ),
+          );
+        },
+        onError: () =>
+          notify({
+            message: 'Transaction just failed for some reason',
+            type: NotifyType.ERROR,
+          }),
+      }),
+    );
+
+    const isSuccess = await signAndSendAllTransactionsInSeries({
+      txnsData,
+      wallet,
+      connection,
+    });
+
+    dispatch(txsLoadingModalActions.setVisible(false));
+
+    if (isSuccess) {
+      history.push(`/pools/${pool?.pairPubkey}`);
+    }
+  };
+
   return {
     change,
     isChanged,
+    withdrawAllLiquidity,
+    isWithdrawAllAvailable: !!(pool?.buyOrdersAmount || pool?.nftsCount),
   };
 };
