@@ -22,10 +22,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { WithdrawFees } from '../../components/WithdrawFees';
 import { Chart, usePriceGraph } from '../../components/Chart';
 import Button from '../../components/Buttons/Button';
-import {
-  useWithdrawAllClick,
-  useWithdrawFees,
-} from '../../components/WithdrawFees/useWithdrawFees';
+import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
 import { usePoolChange } from '../../hadeswap/hooks';
 import styles from './styles.module.scss';
@@ -89,24 +86,18 @@ export const EditPool: FC = () => {
   const rawDelta =
     curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
 
-  const { change, isChanged } = usePoolChange({
-    pool,
-    selectedNfts,
-    buyOrdersAmount: nftAmount,
-    rawFee: fee * 100,
-    rawDelta,
-    rawSpotPrice,
-  });
+  const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
+    usePoolChange({
+      pool,
+      selectedNfts,
+      buyOrdersAmount: nftAmount,
+      rawFee: fee * 100,
+      rawDelta,
+      rawSpotPrice,
+    });
 
   const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
     useWithdrawFees({ pool });
-  const { onWithdrawAllClick, isWithdrawAllDisabled } = useWithdrawAllClick({
-    pool,
-    pairType,
-    rawSpotPrice,
-    rawDelta,
-    curveType,
-  });
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
@@ -193,8 +184,8 @@ export const EditPool: FC = () => {
               </Button>
               <Button
                 outlined
-                isDisabled={isWithdrawAllDisabled}
-                onClick={onWithdrawAllClick}
+                isDisabled={!isWithdrawAllAvailable}
+                onClick={withdrawAllLiquidity}
               >
                 <span>withdraw all liquidity</span>
               </Button>
