@@ -1,40 +1,29 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+
 import styles from './Modal.module.scss';
 
 interface ModalProps {
-  modalElement: HTMLDivElement;
-  children: JSX.Element;
-  modalClassName?: string;
-  closeModal?: (arg: (value: boolean) => boolean) => void;
+  children: JSX.Element | JSX.Element[];
+  className?: string;
   stopScroll?: boolean;
   scrollToTop?: boolean;
 }
 
 const root = document.getElementById('root');
 
-const withModal = (Component: FC): ((arg) => JSX.Element) => {
-  const modalElement = document.createElement('div');
-
-  const Modal = (props) => {
-    return (
-      <ModalWrapper {...props} modalElement={modalElement}>
-        <Component {...props} />
-      </ModalWrapper>
-    );
-  };
-  return Modal;
-};
-
-const ModalWrapper: FC<ModalProps> = ({
-  modalElement,
+const Modal: FC<ModalProps> = ({
   children,
-  modalClassName = '',
+  className = '',
   stopScroll = true,
   scrollToTop = true,
 }) => {
   const body = document.querySelector('body');
+
+  const modalElement = useMemo(() => {
+    return document.createElement('div');
+  }, []);
 
   useEffect(() => {
     root.appendChild(modalElement);
@@ -52,12 +41,10 @@ const ModalWrapper: FC<ModalProps> = ({
   });
 
   useEffect(() => {
-    modalElement.className = classNames(styles.modalWrapper, {
-      [modalClassName]: modalClassName,
-    });
-  }, [modalClassName, modalElement]);
+    modalElement.className = classNames(styles.modalWrapper, className);
+  }, [className, modalElement]);
 
   return ReactDOM.createPortal(children, modalElement);
 };
 
-export default withModal;
+export default Modal;

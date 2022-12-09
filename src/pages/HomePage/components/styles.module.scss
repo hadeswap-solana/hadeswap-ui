@@ -89,55 +89,39 @@
   line-height: 120%;
 }
 
-.topMarkets {
-  padding: 32px 0;
-  margin-bottom: -32px;
-  width: 100%;
-  gap: 16px;
+.topMarketsListWrapper {
   display: flex;
   justify-content: center;
+  margin-top: 32px;
+  margin-bottom: 56px;
+  overflow: hidden;
+}
 
-  @media (max-width: 768px) {
-    display: grid;
-    justify-content: flex-start;
-    grid-template-columns: repeat(5, 1fr);
-    overflow-x: scroll;
-    &::-webkit-scrollbar {
-      appearance: none;
-      -webkit-appearance: none;
-      height: 4px;
-    }
-    &::-moz-scrollbar {
-      appearance: none;
-      -moz-appearance: none;
-      height: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: 4px;
-      background-color: var(--component-base-background);
-    }
-    &::-moz-scrollbar-thumb {
-      border-radius: 4px;
-      background-color: var(--component-base-background);
-    }
-  }
+.topMarketsList {
+  display: flex;
+  gap: 16px;
+  padding-bottom: 20px;
+  margin-bottom: -20px;
+  overflow-x: scroll;
 }
 
 .marketCardWrapper {
   display: flex;
   flex-direction: column;
-  width: 254px;
+  min-width: 254px;
+  max-width: 262px;
   border: var(--border-base);
   border-radius: 16px;
   background: var(--component-base-background);
   overflow: hidden;
   cursor: pointer;
+
   @media (max-width: 768px) {
-    width: 224px;
+    min-width: 224px;
   }
+
   @media (max-width: 374px) {
-    width: 138px;
+    min-width: 138px;
   }
 }
 
@@ -163,6 +147,7 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 28px;
+
   @media (max-width: 768px) {
     font-size: 18px;
   }
@@ -174,7 +159,6 @@
 
 .marketInfoPrice {
   margin-top: 4px;
-
   display: flex;
   align-items: center;
   font-weight: 500;
@@ -191,7 +175,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 22px;
-
   color: var(--dark-grey-color);
 
   @media (max-width: 768px) {
@@ -204,8 +187,8 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 120%;
-
   color: var(--green-color);
+
   @media (max-width: 768px) {
     font-size: 10px;
     position: absolute;

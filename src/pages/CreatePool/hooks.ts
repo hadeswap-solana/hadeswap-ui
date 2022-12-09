@@ -29,6 +29,7 @@ import { useDispatch } from 'react-redux';
 import { useConnection } from '../../hooks';
 import { Nft } from '../../state/core/types';
 import { captureSentryError } from '../../utils/sentry';
+import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../../hadeswap';
 
 type UseCreatePool = (
   props: Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'>,
@@ -169,9 +170,10 @@ const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
   connection,
   wallet,
 }) => {
-  const ORDERS_AMOUNT_PER_TXN = 20;
-
-  const amountPerChunk = getArrayByNumber(nftsAmount, ORDERS_AMOUNT_PER_TXN);
+  const amountPerChunk = getArrayByNumber(
+    nftsAmount,
+    SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
+  );
 
   const cards = amountPerChunk.map((ordersAmount, idx) => {
     const { total: amount }: { total: number } =
