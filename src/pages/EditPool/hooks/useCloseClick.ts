@@ -1,18 +1,19 @@
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
 import { createClosePairTxn } from '../../../utils/transactions/createClosePairTxn';
 import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../../components/TransactionsLoadingModal';
-import { signAndSendTransactionsInSeries } from '../../../components/Layout/helpers';
 import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
 import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { useConnection } from '../../../hooks';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { Pair } from '../../../state/core/types';
+import { signAndSendTransactionsInSeries } from '../../../utils/transactions';
 
 export const useCloseClick = ({
   pool,

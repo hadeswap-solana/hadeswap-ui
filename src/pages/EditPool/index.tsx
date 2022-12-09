@@ -22,13 +22,9 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { WithdrawFees } from '../../components/WithdrawFees';
 import { Chart, usePriceGraph } from '../../components/Chart';
 import Button from '../../components/Buttons/Button';
-import { useSaveClick } from './hooks/useSaveClick';
-import {
-  useWithdrawAllClick,
-  useWithdrawFees,
-} from '../../components/WithdrawFees/useWithdrawFees';
+import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
-
+import { usePoolChange } from '../../hadeswap/hooks';
 import styles from './styles.module.scss';
 
 export const EditPool: FC = () => {
@@ -90,28 +86,18 @@ export const EditPool: FC = () => {
   const rawDelta =
     curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
 
-  const { onSaveClick, isSaveButtonDisabled } = useSaveClick({
-    pool,
-    curveType,
-    fee,
-    nftAmount,
-    pairType,
-    selectedNfts,
-    buyOrdersAmount,
-    rawSpotPrice,
-    rawDelta,
-    spotPrice,
-  });
+  const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
+    usePoolChange({
+      pool,
+      selectedNfts,
+      buyOrdersAmount: nftAmount,
+      rawFee: fee * 100,
+      rawDelta,
+      rawSpotPrice,
+    });
 
   const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
     useWithdrawFees({ pool });
-  const { onWithdrawAllClick, isWithdrawAllDisabled } = useWithdrawAllClick({
-    pool,
-    pairType,
-    rawSpotPrice,
-    rawDelta,
-    curveType,
-  });
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
@@ -193,13 +179,13 @@ export const EditPool: FC = () => {
               </div>
             )}
             <div className={styles.buttonsWrapper}>
-              <Button isDisabled={isSaveButtonDisabled} onClick={onSaveClick}>
+              <Button isDisabled={!isChanged} onClick={change}>
                 <span>save changes</span>
               </Button>
               <Button
                 outlined
-                isDisabled={isWithdrawAllDisabled}
-                onClick={onWithdrawAllClick}
+                isDisabled={!isWithdrawAllAvailable}
+                onClick={withdrawAllLiquidity}
               >
                 <span>withdraw all liquidity</span>
               </Button>

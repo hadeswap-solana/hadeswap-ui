@@ -50,6 +50,7 @@ export const useFetchMarketWalletNfts = (marketPubkey: string): void => {
     {
       staleTime: SHORT_STALE_TIME,
       enabled: !!walletPubkey && !!marketPubkey,
+      refetchOnWindowFocus: false,
     },
   );
 
@@ -74,6 +75,7 @@ export const useFetchMarket = (publicKey: string): void => {
   } = useQuery(['fetchMarket', `${publicKey}`], () => fetchMarket(publicKey), {
     staleTime: BASE_STALE_TIME,
     enabled: !!publicKey,
+    refetchOnWindowFocus: false,
   });
 
   const marketLoading = isLoading || isFetching;
@@ -95,6 +97,7 @@ export const useFetchPair: UseFetchPair = () => {
     {
       staleTime: BASE_STALE_TIME,
       enabled: !!poolPubkey,
+      refetchOnWindowFocus: false,
     },
   );
 
@@ -127,6 +130,7 @@ export const useFetchMarketPairs = (): void => {
     {
       staleTime: SHORT_STALE_TIME,
       enabled: !!marketPubkey,
+      refetchOnWindowFocus: false,
     },
   );
 
@@ -150,6 +154,7 @@ export const useFetchAllMarkets = (): void => {
     fetchStatus: FetchStatus;
   } = useQuery(['fetchAllMarkets'], fetchAllMarkets, {
     staleTime: BASE_STALE_TIME,
+    refetchOnWindowFocus: false,
   });
 
   const marketsLoading =
@@ -178,6 +183,7 @@ export const useFetchWalletPairs = (): void => {
     {
       staleTime: 10,
       enabled: !!publicKey,
+      refetchOnWindowFocus: false,
     },
   );
 
@@ -250,6 +256,7 @@ export const useTableData = (params: {
       },
       cacheTime: 100_000,
       networkMode: 'offlineFirst',
+      refetchOnWindowFocus: false,
     },
   );
 

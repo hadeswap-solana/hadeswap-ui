@@ -1,0 +1,1 @@
+export const SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN = 20;
