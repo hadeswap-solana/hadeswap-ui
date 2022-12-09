@@ -593,7 +593,10 @@ export const buildWithdrawAllLiquidityFromPoolTxnsData: BuildWithdrawAllLiquidit
       txnsData.push(withdrawNftsTxnsData);
     }
     //? Liquidty
-    if (isLiquidityProvisionPool && !!pool?.sellOrders.length) {
+    if (
+      isLiquidityProvisionPool &&
+      (!!pool?.sellOrders.length || !!pool?.buyOrdersAmount)
+    ) {
       const [balancedTxnsData, unbalancedTxnsData] =
         await createWithdrawLiquidityFromPairTxnsData({
           pool,
