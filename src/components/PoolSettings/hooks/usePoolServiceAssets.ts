@@ -48,9 +48,13 @@ export const usePoolServiceAssets = ({
   marketPublicKey: string;
   preSelectedNfts?: Nft[];
 }): UsePoolServiceAssets => {
-  const [nftsByMint, setNftsByMint] = useState<NftsByMint>(() =>
+  const [nftsByMint, setNftsByMint] = useState<NftsByMint>(
     createNftsByMint(preSelectedNfts, true),
   );
+
+  useEffect(() => {
+    setNftsByMint(createNftsByMint(preSelectedNfts, true));
+  }, [preSelectedNfts]);
 
   useFetchMarketWalletNfts(marketPublicKey);
 
