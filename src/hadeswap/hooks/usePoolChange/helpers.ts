@@ -376,6 +376,8 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
       }),
     );
 
+    const balancedTxnsAmount = balancedTxnsAndSigners?.length || 0;
+
     const sellOrdersToWithdraw =
       pool.nftsCount > pool.buyOrdersAmount
         ? pool.nftsCount - pool.buyOrdersAmount
@@ -411,12 +413,12 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
         signers,
         loadingModalCard: sellOrdersToWithdraw
           ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-              nftsToWithdraw[idx + unbalancedOrdersAmount],
-              solAmounts[idx + unbalancedOrdersAmount],
+              nftsToWithdraw?.[idx + balancedTxnsAmount],
+              solAmounts?.[idx + balancedTxnsAmount],
               true,
             )
           : createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](
-              solAmounts[idx + unbalancedOrdersAmount],
+              solAmounts?.[idx + balancedTxnsAmount],
             ),
       }),
     );
@@ -495,7 +497,7 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
         wallet,
       });
 
-    txnsData.push(balancedTxnsData);
+    balancedTxnsData.length && txnsData.push(balancedTxnsData);
     unbalancedTxnsData.length && txnsData.push(unbalancedTxnsData);
   }
 
@@ -607,7 +609,7 @@ export const buildWithdrawAllLiquidityFromPoolTxnsData: BuildWithdrawAllLiquidit
           wallet,
         });
 
-      txnsData.push(balancedTxnsData);
+      balancedTxnsData.length && txnsData.push(balancedTxnsData);
       unbalancedTxnsData.length && txnsData.push(unbalancedTxnsData);
     }
 
