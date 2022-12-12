@@ -1,17 +1,5 @@
 .footer {
-  padding: 0 var(--body-horizontal-padding);
   margin-top: 8px;
-  margin-bottom: 32px;
-
-  @media screen and (max-width: 1024px) {
-    padding: 0 24px;
-    margin-bottom: 24px;
-  }
-
-  @media screen and (max-width: 768px) {
-    padding: 0 16px;
-    margin-bottom: 24px;
-  }
 }
 
 .footerMain {

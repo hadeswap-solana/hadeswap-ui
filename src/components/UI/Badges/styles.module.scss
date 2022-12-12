@@ -1,0 +1,78 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--primary-white-color);
+
+  @media (max-width: 1024px) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.combinedBadges {
+  position: relative;
+  width: 100px;
+
+  @media (max-width: 1024px) {
+    width: 68px;
+  }
+}
+
+.shiftedBadge {
+  position: absolute;
+  top: 0;
+  left: 44px;
+
+  @media (max-width: 1024px) {
+    left: 32px;
+  }
+}
+
+.imageBadge {
+  border-radius: 12px;
+
+  @media (max-width: 1024px) {
+    span {
+      font-size: 14px;
+    }
+  }
+}
+
+.solanaBadge {
+  border-radius: 50%;
+  background: var(--component-secondary-background);
+
+  svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  @media (max-width: 1024px) {
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+.tradingBadge {
+  border-radius: 50%;
+  background: var(--blue-color);
+
+  span {
+    text-align: center;
+    font-family: var(--font-family-rubik);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    span {
+      font-size: 9px;
+    }
+  }
+}
