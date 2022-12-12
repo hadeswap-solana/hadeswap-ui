@@ -6,17 +6,17 @@ import { formatBNToString, specifyAndSort } from '../index';
 import { PriceWithIcon } from '../../components/PriceWithIcon';
 import { TitleWithInfo } from '../../components/TitleWithInfo';
 import {
-  TitleCell,
   ColoredTextCell,
-  PriceCell,
   LinkCell,
+  PriceCell,
+  TitleCell,
 } from '../../components/UI/TableComponents';
 import { shortenAddress } from '../solanaUtils';
 import {
   MarketInfo,
-  OrderType,
   NftActivityData,
   NftTradeData,
+  OrderType,
 } from '../../state/core/types';
 import { createPoolTableRow } from '../../state/core/helpers';
 
@@ -284,12 +284,15 @@ export const POOL_TRADE_COLUMNS: ColumnsType<NftTradeData> = [
   },
   {
     key: 'orderType',
-    title: 'action',
+    title: 'pool action',
     dataIndex: 'orderType',
     className: 'disabled-cell-hover',
     showSorterTooltip: false,
     render: (value) => (
-      <ColoredTextCell cellValue={value} defaultValue={OrderType.BUY} />
+      <ColoredTextCell
+        cellValue={value === OrderType.BUY ? OrderType.SELL : OrderType.BUY}
+        defaultValue={OrderType.BUY}
+      />
     ),
   },
   {
