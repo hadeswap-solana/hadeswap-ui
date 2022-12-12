@@ -15,9 +15,7 @@ import { ScreenTypes } from '../../state/common/types';
 import styles from './AppLayout.module.scss';
 
 interface LayoutProps {
-  customHeader?: JSX.Element;
   children: JSX.Element[] | JSX.Element;
-  className?: string;
   hideFooter?: boolean;
 }
 
