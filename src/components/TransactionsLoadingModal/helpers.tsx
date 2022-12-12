@@ -70,13 +70,12 @@ const makeAddOrRemoveLiquidityFromPoolIxCard = (
   solAmount: number,
   isRemove = false,
 ): ReactNode => {
-  const { imageUrl, name } = nft;
   return (
     <IxCard>
-      <IxCardImage src={imageUrl} alt={name} />
+      <IxCardImage src={nft?.imageUrl} alt={nft?.name} />
       <IxCardText>
         {isRemove ? 'remove ' : 'add '}
-        <strong>{name}</strong> and <SolAmount solAmount={solAmount} />{' '}
+        <strong>{nft?.name}</strong> and <SolAmount solAmount={solAmount} />{' '}
         {isRemove ? 'from ' : 'into '} pool
       </IxCardText>
     </IxCard>

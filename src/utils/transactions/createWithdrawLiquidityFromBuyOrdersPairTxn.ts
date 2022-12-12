@@ -21,7 +21,7 @@ type CreateWithdrawLiquidityFromBuyOrdersPair = (params: {
   }[]
 >;
 
-const IXNS_PER_CHUNK = 2; //? Maybe it will work with 3
+const IXNS_PER_CHUNK = 1;
 
 export const createWithdrawLiquidityFromBuyOrdersPair: CreateWithdrawLiquidityFromBuyOrdersPair =
   async ({

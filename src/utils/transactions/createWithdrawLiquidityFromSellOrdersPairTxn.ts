@@ -22,7 +22,7 @@ type CreateWithdrawLiquidityFromSellOrdersPair = (params: {
   }[]
 >;
 
-const IXNS_PER_CHUNK = 2; //? Maybe it will work with 3
+const IXNS_PER_CHUNK = 1;
 
 export const createWithdrawLiquidityFromSellOrdersPair: CreateWithdrawLiquidityFromSellOrdersPair =
   async ({ connection, wallet, pairPubkey, authorityAdapter, nfts }) => {
