@@ -2,11 +2,6 @@ import { useState, useEffect } from 'react';
 import { Form, FormInstance } from 'antd';
 import { Nft } from '../../../state/core/types';
 import { useFetchMarketWalletNfts } from '../../../requests';
-import { useSelector } from 'react-redux';
-import {
-  selectMarketWalletNfts,
-  selectMarketWalletNftsLoading,
-} from '../../../state/core/selectors';
 
 export interface NftWithSelect extends Nft {
   selected: boolean;
@@ -28,11 +23,7 @@ interface UsePoolServiceAssets {
   buyOrdersAmount?: number;
 }
 
-const createNftsByMint = (nfts: Nft[], isSelected: boolean) => {
-  if (!nfts) {
-    return {};
-  }
-
+const createNftsByMint = (nfts: Nft[] = [], isSelected: boolean) => {
   return nfts.reduce((acc, nft) => {
     return {
       ...acc,
@@ -52,23 +43,17 @@ export const usePoolServiceAssets = ({
     createNftsByMint(preSelectedNfts, true),
   );
 
-  useEffect(() => {
-    setNftsByMint(createNftsByMint(preSelectedNfts, true));
-  }, [preSelectedNfts]);
-
-  useFetchMarketWalletNfts(marketPublicKey);
-
-  const walletNfts = useSelector(selectMarketWalletNfts);
-  const nftsLoading = useSelector(selectMarketWalletNftsLoading);
+  const { walletNfts, nftsLoading } = useFetchMarketWalletNfts(marketPublicKey);
 
   useEffect(() => {
-    setNftsByMint((prevState) => ({
-      ...prevState,
-      ...createNftsByMint(walletNfts, false),
-    }));
-  }, [walletNfts]);
+    !nftsLoading &&
+      setNftsByMint((prevState) => ({
+        ...prevState,
+        ...createNftsByMint(walletNfts, false),
+      }));
+  }, [walletNfts, nftsLoading]);
 
-  const toggleNft = (mint) => {
+  const toggleNft = (mint: string): void => {
     setNftsByMint((prevState) => ({
       ...prevState,
       [mint]: { ...prevState[mint], selected: !prevState[mint].selected },
@@ -78,11 +63,11 @@ export const usePoolServiceAssets = ({
   const nfts: NftWithSelect[] = Object.values(nftsByMint);
   const selectedNfts: NftWithSelect[] = nfts.filter((nft) => nft.selected);
 
-  const selectAll = () => {
+  const selectAll = (): void => {
     setNftsByMint(createNftsByMint(nfts, true));
   };
 
-  const deselectAll = () => {
+  const deselectAll = (): void => {
     setNftsByMint(createNftsByMint(nfts, false));
   };
 

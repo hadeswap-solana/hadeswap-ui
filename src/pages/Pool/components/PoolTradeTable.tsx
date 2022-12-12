@@ -44,7 +44,6 @@ export const PoolTradeTable: FC = memo(() => {
   return (
     <div className={styles.tabContentWrapper}>
       <ItemsList
-        idKey="_id"
         data={tradeData}
         mapType={TRADE}
         pubKey={PubKeys.NFT_MINT}
