@@ -121,6 +121,9 @@ export const StepThree: FC<StepThreeProps> = ({
               setCurveType={setCurveType}
               spotPrice={spotPrice}
               delta={delta}
+              fee={fee}
+              nftAmount={nftAmount}
+              nftsCount={selectedNfts.length}
               formInitialValues={initialValuesPrice}
             />
             <AssetsBlock
