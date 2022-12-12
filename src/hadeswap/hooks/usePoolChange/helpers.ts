@@ -356,6 +356,7 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
     });
 
     const balancedPairsAmount = min([pool.nftsCount, pool.buyOrdersAmount]);
+    const balancedNfts = nftsToWithdraw.slice(0, balancedPairsAmount);
 
     const { chunks: balancedTxnsAndSigners } =
       await createWithdrawLiquidityFromPairTxns({
@@ -363,7 +364,7 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
         wallet,
         pairPubkey: pool.pairPubkey,
         authorityAdapter: pool.authorityAdapterPubkey,
-        nfts: nftsToWithdraw.slice(0, balancedPairsAmount),
+        nfts: balancedNfts,
       });
 
     const balancedTxnsData = balancedTxnsAndSigners.map(
@@ -372,11 +373,9 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
         signers,
         loadingModalCard: createIxCardFuncs[
           IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
-        ](nftsToWithdraw[idx], solAmounts[idx], true),
+        ](balancedNfts[idx], solAmounts[idx], true),
       }),
     );
-
-    const balancedTxnsAmount = balancedTxnsAndSigners?.length || 0;
 
     const sellOrdersToWithdraw =
       pool.nftsCount > pool.buyOrdersAmount
@@ -407,13 +406,15 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
             }))
       : [];
 
+    const balancedTxnsAmount = balancedTxnsAndSigners?.length || 0;
+
     const unbalancedTxnsData = unbalancedTxnsAndSigners.map(
       ({ transaction, signers }, idx) => ({
         transaction,
         signers,
         loadingModalCard: sellOrdersToWithdraw
           ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-              nftsToWithdraw?.[idx + balancedTxnsAmount],
+              nftsToWithdraw?.[idx + balancedNfts?.length],
               solAmounts?.[idx + balancedTxnsAmount],
               true,
             )
