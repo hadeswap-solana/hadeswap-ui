@@ -356,6 +356,7 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
     });
 
     const balancedPairsAmount = min([pool.nftsCount, pool.buyOrdersAmount]);
+    const balancedNfts = nftsToWithdraw.slice(0, balancedPairsAmount);
 
     const { chunks: balancedTxnsAndSigners } =
       await createWithdrawLiquidityFromPairTxns({
@@ -363,7 +364,7 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
         wallet,
         pairPubkey: pool.pairPubkey,
         authorityAdapter: pool.authorityAdapterPubkey,
-        nfts: nftsToWithdraw.slice(0, balancedPairsAmount),
+        nfts: balancedNfts,
       });
 
     const balancedTxnsData = balancedTxnsAndSigners.map(
@@ -372,7 +373,7 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
         signers,
         loadingModalCard: createIxCardFuncs[
           IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
-        ](nftsToWithdraw[idx], solAmounts[idx], true),
+        ](balancedNfts[idx], solAmounts[idx], true),
       }),
     );
 
@@ -405,18 +406,20 @@ export const createWithdrawLiquidityFromPairTxnsData: CreateWithdrawLiquidityFro
             }))
       : [];
 
+    const balancedTxnsAmount = balancedTxnsAndSigners?.length || 0;
+
     const unbalancedTxnsData = unbalancedTxnsAndSigners.map(
       ({ transaction, signers }, idx) => ({
         transaction,
         signers,
         loadingModalCard: sellOrdersToWithdraw
           ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-              nftsToWithdraw[idx + unbalancedOrdersAmount],
-              solAmounts[idx + unbalancedOrdersAmount],
+              nftsToWithdraw?.[idx + balancedNfts?.length],
+              solAmounts?.[idx + balancedTxnsAmount],
               true,
             )
           : createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](
-              solAmounts[idx + unbalancedOrdersAmount],
+              solAmounts?.[idx + balancedTxnsAmount],
             ),
       }),
     );
@@ -495,7 +498,7 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
         wallet,
       });
 
-    txnsData.push(balancedTxnsData);
+    balancedTxnsData.length && txnsData.push(balancedTxnsData);
     unbalancedTxnsData.length && txnsData.push(unbalancedTxnsData);
   }
 
@@ -607,7 +610,7 @@ export const buildWithdrawAllLiquidityFromPoolTxnsData: BuildWithdrawAllLiquidit
           wallet,
         });
 
-      txnsData.push(balancedTxnsData);
+      balancedTxnsData.length && txnsData.push(balancedTxnsData);
       unbalancedTxnsData.length && txnsData.push(unbalancedTxnsData);
     }
 
