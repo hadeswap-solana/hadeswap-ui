@@ -6,15 +6,16 @@ import { SolRoundElement } from '../../../components/UI/Badges/SolanaBadge';
 import { TradingBadge } from '../../../components/UI/Badges/TradingBadge';
 import { CombinedBadges } from '../../../components/UI/Badges/CombinedBadge';
 import { Spinner } from '../../../components/Spinner/Spinner';
-import {
-  selectCertainMarket,
-  selectCertainMarketLoading,
-} from '../../../state/core/selectors';
+
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
 import { ImageBadge } from '../../../components/UI/Badges/ImageBadge';
 import { ArrowRightIcon } from '../../../icons/ArrowRightIcon';
 import { ArrowsLeftRightIcon } from '../../../icons/ArrowsLeftRightIcon';
+import {
+  selectCertainMarket,
+  selectCertainMarketLoading,
+} from '../../../state/core/selectors';
 import styles from './styles.module.scss';
 
 interface StepTwoProps {
@@ -30,7 +31,6 @@ export const StepTwo: FC<StepTwoProps> = ({
 }) => {
   const market = useSelector(selectCertainMarket);
   const marketLoading = useSelector(selectCertainMarketLoading);
-
   const onCardClick = (type: PairType) => {
     setPairType(type);
     setStep(2);

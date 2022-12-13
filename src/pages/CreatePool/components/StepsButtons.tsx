@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useHistory } from 'react-router-dom';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { BlackButton } from '../../../components/Buttons/BlackButton';
 
@@ -17,11 +18,13 @@ export const StepsButtons: FC<StepsButtonsProps> = ({
   chosenMarketKey,
   pairType,
 }) => {
+  const history = useHistory();
   const onClick = (next: boolean) => {
     if (next) {
       step === 0 && chosenMarketKey && setStep((prev) => prev + 1);
       step === 1 && pairType && setStep((prev) => prev + 1);
     } else {
+      step === 1 && history.push('/create-pool');
       setStep((prev) => prev - 1);
     }
   };

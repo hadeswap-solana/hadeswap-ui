@@ -1,10 +1,7 @@
-import React, { FC, useState, useEffect } from 'react';
-import { useFetchAllMarkets } from '../../../requests';
+import { FC, useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {
-  selectAllMarkets,
-  selectAllMarketsLoading,
-} from '../../../state/core/selectors';
+import { useFetchAllMarkets } from '../../../requests';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import ItemsList from '../../../components/ItemsList';
 import { Search } from '../../../components/Search';
@@ -13,6 +10,11 @@ import { COLLECTION } from '../../../constants/common';
 import { PubKeys } from '../../../types';
 import { filterCollections } from '../../Collections/helpers';
 import { MarketInfo } from '../../../state/core/types';
+import { createCreatePoolPickSideLink } from '../../../constants';
+import {
+  selectAllMarkets,
+  selectAllMarketsLoading,
+} from '../../../state/core/selectors';
 
 import styles from './styles.module.scss';
 
@@ -22,6 +24,8 @@ interface StepOneProps {
 }
 
 export const StepOne: FC<StepOneProps> = ({ setStep, setChosenMarketKey }) => {
+  const history = useHistory();
+
   const [showList, setShowList] = useState<boolean>(false);
   const [filteredMarkets, setFilteredMarkets] = useState<MarketInfo[]>();
 
@@ -32,6 +36,7 @@ export const StepOne: FC<StepOneProps> = ({ setStep, setChosenMarketKey }) => {
   const onRowClick = (marketPubkey) => {
     setChosenMarketKey(marketPubkey);
     setStep(1);
+    history.push(createCreatePoolPickSideLink(marketPubkey));
   };
 
   const { searchStr, handleSearch } = useSearch();
