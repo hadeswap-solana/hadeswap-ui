@@ -112,11 +112,12 @@ export const NFTCard: FC<NFTCardProps> = ({
 
 interface RarityProps {
   rarity: NftRarity;
+  className?: string;
 }
 
-const Rarity: FC<RarityProps> = ({ rarity }) => {
+export const Rarity: FC<RarityProps> = ({ rarity, className }) => {
   return (
-    <div className={styles.rarityWrapper}>
+    <div className={classNames(styles.rarityWrapper, className)}>
       {!!rarity.howRareIs && (
         <div className={styles.rarityValue}>
           <HowRareIsIcon /> {rarity.howRareIs}
