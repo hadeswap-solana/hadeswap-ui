@@ -38,7 +38,9 @@
   0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
 
   // sizes
-  --body-horizontal-padding: 32px;
+  --body-offset-desktop: 32px;
+  --body-offset-small-screen: 24px;
+  --body-offset-tablet: 16px;
   --font-size-base: 14px; // major text font size
   --header-height-mobile: 56px;
   --header-height-desktop: 65px;

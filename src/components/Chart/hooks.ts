@@ -27,7 +27,7 @@ type UsePriceGraph = (props: {
   baseSpotPrice: number;
   delta: number;
   fee?: number;
-  bondingCurve: string;
+  bondingCurve: BondingCurveType;
   buyOrdersAmount?: number;
   nftsCount?: number;
   mathCounter?: number;

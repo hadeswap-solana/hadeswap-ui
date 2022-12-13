@@ -14,24 +14,24 @@
   flex-direction: column;
   flex-grow: 1;
   overflow-x: hidden;
-  padding: 0 var(--body-horizontal-padding);
-  margin-bottom: 32px;
+  padding-inline: var(--body-offset-desktop);
+  margin-bottom: var(--body-offset-desktop);
 
   @media screen and (max-width: 1024px) {
-    padding: 0 24px;
-    margin-bottom: 24px;
+    padding-inline: var(--body-offset-small-screen);
+    margin-bottom: var(--body-offset-small-screen);
 
     &.cartHasItems {
-      margin-bottom: calc(24px + var(--cart-sider-pocket-mode-height));
+      margin-bottom: calc(var(--body-offset-small-screen) + var(--cart-sider-pocket-mode-height));
     }
   }
 
   @media screen and (max-width: 768px) {
-    padding: 0 16px;
-    margin-bottom: 16px;
+    padding-inline: var(--body-offset-tablet);
+    margin-bottom: var(--body-offset-tablet);
 
     &.cartHasItems {
-      margin-bottom: calc(16px + var(--cart-sider-pocket-mode-height));
+      margin-bottom: calc(var(--body-offset-tablet) + var(--cart-sider-pocket-mode-height));
     }
   }
 }
