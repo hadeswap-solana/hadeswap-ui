@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { BlackButton } from '../../../components/Buttons/BlackButton';
-import { createCreatePoolPickSideLink } from '../../../constants';
 
 import styles from './styles.module.scss';
 
@@ -24,10 +23,8 @@ export const StepsButtons: FC<StepsButtonsProps> = ({
     if (next) {
       step === 0 && chosenMarketKey && setStep((prev) => prev + 1);
       step === 1 && pairType && setStep((prev) => prev + 1);
-      history.push(createCreatePoolPickSideLink(chosenMarketKey));
     } else {
       step === 1 && history.push('/create-pool');
-      step === 2 && history.push(createCreatePoolPickSideLink(chosenMarketKey));
       setStep((prev) => prev - 1);
     }
   };
