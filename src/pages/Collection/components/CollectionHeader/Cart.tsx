@@ -3,18 +3,18 @@ import classNames from 'classnames';
 
 import styles from './styles.module.scss';
 
-interface PlateProps {
+interface CartProps {
   className?: string;
   children: JSX.Element | JSX.Element[];
   onClick?: () => void;
 }
 
-export const Plate: FC<PlateProps> = ({
+export const Cart: FC<CartProps> = ({
   className,
   children,
   onClick = null,
 }) => (
-  <div onClick={onClick} className={classNames(styles.plate, className)}>
+  <div onClick={onClick} className={classNames(styles.cart, className)}>
     {children}
   </div>
 );

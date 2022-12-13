@@ -2,9 +2,9 @@ import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Card } from '../../../components/Card';
-import { SolRoundElement } from '../../../components/UI/SolanaBadge';
-import { TradingBadge } from '../../../components/UI/TradingBadge';
-import { CombinedBadges } from '../../../components/UI/CombinedBadges';
+import { SolRoundElement } from '../../../components/UI/Badges/SolanaBadge';
+import { TradingBadge } from '../../../components/UI/Badges/TradingBadge';
+import { CombinedBadges } from '../../../components/UI/Badges/CombinedBadge';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import {
   selectCertainMarket,
@@ -12,7 +12,7 @@ import {
 } from '../../../state/core/selectors';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
-import { ImageBadge } from '../../../components/UI/ImageBadge';
+import { ImageBadge } from '../../../components/UI/Badges/ImageBadge';
 import { ArrowRightIcon } from '../../../icons/ArrowRightIcon';
 import { ArrowsLeftRightIcon } from '../../../icons/ArrowsLeftRightIcon';
 import styles from './styles.module.scss';

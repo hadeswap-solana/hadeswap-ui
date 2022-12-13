@@ -164,7 +164,7 @@ export const ACTIVITY_ITEM: ActivityItem = {
   imageKey: 'nftImageUrl',
   list: [
     {
-      title: 'action',
+      title: 'pool action',
       valueKey: 'orderType',
       render: (value: string) => (
         <ColoredTextCell cellValue={value} defaultValue="buy" />
@@ -221,7 +221,7 @@ export const TRADE_ITEM: TradeItem = {
   imageKey: 'nftImageUrl',
   list: [
     {
-      title: 'action',
+      title: 'pool action',
       valueKey: 'orderType',
       render: (value: string) => (
         <ColoredTextCell cellValue={value} defaultValue="buy" />
@@ -231,7 +231,10 @@ export const TRADE_ITEM: TradeItem = {
       title: 'user',
       valueKey: 'userTaker',
       render: (value: string, item) => (
-        <LinkCell link={`https://solscan.io/account/${item.userTaker}`}>
+        <LinkCell
+          link={`https://solscan.io/account/${item.userTaker}`}
+          align={TableCellAlign.left}
+        >
           <Text>{shortenAddress(value)}</Text>
         </LinkCell>
       ),
@@ -245,7 +248,10 @@ export const TRADE_ITEM: TradeItem = {
       title: 'when',
       valueKey: 'timestamp',
       render: (value: string, item) => (
-        <LinkCell link={`https://solscan.io/tx/${item.signature}`}>
+        <LinkCell
+          link={`https://solscan.io/tx/${item.signature}`}
+          align={TableCellAlign.left}
+        >
           <Text>{moment(value).fromNow()}</Text>
         </LinkCell>
       ),

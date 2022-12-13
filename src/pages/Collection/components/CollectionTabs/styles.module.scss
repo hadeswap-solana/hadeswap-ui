@@ -3,16 +3,6 @@
 }
 
 .collectionTabsWrapper {
-  margin-top: 16px;
-
-  @media (max-width: 1024px) {
-    margin-top: 46px;
-  }
-
-  @media (max-width: 767px) {
-    margin-top: 96px;
-  }
-
   :global {
     .ant-tabs-nav {
       height: 67px;
