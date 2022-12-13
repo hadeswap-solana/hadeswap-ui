@@ -12,15 +12,17 @@ export const ItemsList: FC<ItemsListProps> = ({
   mapType,
   onRowClick,
   tableClassName,
-}) => (
-  <Table
-    className={classNames(styles.table, tableClassName)}
-    columns={mapType}
-    dataSource={data}
-    pagination={false}
-    rowKey={(record) => record[idKey || pubKey]}
-    onRow={(source) => ({
-      onClick: () => onRowClick(source[pubKey], source),
-    })}
-  />
-);
+}) => {
+  return (
+    <Table
+      className={classNames(styles.table, tableClassName)}
+      columns={mapType}
+      dataSource={data}
+      pagination={false}
+      rowKey={(record, ...rest) => record[idKey] || rest[0]}
+      onRow={(source) => ({
+        onClick: () => onRowClick(source[pubKey], source),
+      })}
+    />
+  );
+};
