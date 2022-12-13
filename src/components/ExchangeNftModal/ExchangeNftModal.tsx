@@ -31,13 +31,13 @@ const { Title, Text } = Typography;
 interface ExchangeNftModalProps {
   visible: boolean;
   onCancel: () => void;
-  buyOrder: any;
+  selectedBuyOrder: CartOrder;
 }
 
 const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
   visible,
   onCancel,
-  buyOrder,
+  selectedBuyOrder,
 }) => {
   const dispatch = useDispatch();
 
@@ -46,7 +46,8 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
     selectSellOrdersForExchange(state, marketPublicKey),
   );
 
-  const [selectedOrder, setSelectedOrder] = useState<CartOrder>(buyOrder);
+  const [selectedOrder, setSelectedOrder] =
+    useState<CartOrder>(selectedBuyOrder);
 
   const marketPairsLoading = useSelector(selectMarketPairsLoading);
   const nftsLoading = useSelector(selectMarketWalletNftsLoading);
@@ -54,7 +55,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
   const cartItems = useSelector(selectCartItems);
   const pairs = useSelector(selectMarketPairs);
 
-  const selectedBuyNft = cartItems?.buy[0] || buyOrder;
+  const selectedBuyNft = cartItems?.buy[0] || selectedBuyOrder;
   const selectedSellOrder = cartItems?.sell[0];
 
   const onAfterTxn = (): void => {
@@ -116,13 +117,15 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
 
       dispatch(
         coreActions.addOrderToCart(
-          pairs.find((pair) => pair.pairPubkey === buyOrder.targetPairPukey),
-          buyOrder,
+          pairs.find(
+            (pair) => pair.pairPubkey === selectedBuyOrder.targetPairPukey,
+          ),
+          selectedBuyOrder,
           OrderType.BUY,
         ),
       );
     },
-    [dispatch, cartItems, pairs, selectedSellOrder, buyOrder, onSelect],
+    [dispatch, cartItems, pairs, selectedSellOrder, selectedBuyOrder, onSelect],
   );
 
   const createDeselectHandler = (order: CartOrder) => () => {
