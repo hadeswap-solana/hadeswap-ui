@@ -88,7 +88,7 @@ export const NFTCard: FC<NFTCardProps> = ({
         )}
 
         <div className={styles.cardBtnWrapper}>
-          {!simpleCard && !withoutAddToCartBtn && (
+          {!withoutAddToCartBtn && (
             <Button outlined className={styles.cardButton}>
               {selected ? <MinusIcon /> : <PlusIcon />}
             </Button>
