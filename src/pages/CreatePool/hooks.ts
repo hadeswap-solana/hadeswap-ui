@@ -109,9 +109,15 @@ export const useCreatePool: UseCreatePool = (props) => {
               ),
             );
           },
+          onSuccess: () => {
+            notify({
+              message: 'transaction successful!',
+              type: NotifyType.SUCCESS,
+            });
+          },
           onError: () => {
             notify({
-              message: 'Some transactions were failed for some reason',
+              message: 'oops... something went wrong!',
               type: NotifyType.ERROR,
             });
           },

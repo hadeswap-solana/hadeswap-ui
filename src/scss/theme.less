@@ -166,14 +166,6 @@
   background: @component-base-background;
 }
 
-.anticon {
-  &.active {
-    & svg {
-      fill: var(--primary-color);
-    }
-  }
-}
-
 .ant-dropdown-menu {
   border: 1px solid #3e4854;
   border-radius: 10px;
@@ -193,7 +185,21 @@
 }
 
 .ant-notification-notice {
-  background: @layout-header-background;
+  background: @component-base-background;
+  padding: 9px 16px;
+}
+
+.ant-notification-notice-message {
+  margin-bottom: 0 !important;
+  margin-left: 32px !important;
+
+  font-family: var(--font-family-rubik) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+.ant-notification-notice-close {
+  top: 10px;
 }
 
 .ant-notification-notice-success {
