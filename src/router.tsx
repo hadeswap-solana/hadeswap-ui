@@ -6,14 +6,14 @@ import {
   useConnectionInit,
   useAppInit,
   useWalletInit,
-  useDesktopMode,
+  useScreenMode,
 } from './hooks';
 
 export const Router: FC = () => {
   useAppInit();
   useConnectionInit();
   useWalletInit();
-  useDesktopMode();
+  useScreenMode();
 
   return (
     <BrowserRouter>

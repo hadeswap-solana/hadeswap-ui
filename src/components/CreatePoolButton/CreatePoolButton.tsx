@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import classNames from 'classnames';
 
 import Button from '../Buttons/Button';
@@ -10,11 +10,13 @@ interface CreatePoolButtonProps {
 }
 
 export const CreatePoolButton: FC<CreatePoolButtonProps> = ({ className }) => {
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
+
   return (
-    <Button className={classNames(styles.poolButton, className)}>
-      <NavLink to="/create-pool">
+    <NavLink to={`/create-pool/${marketPublicKey || ''}`}>
+      <Button className={classNames(styles.poolButton, className)}>
         <span>create pool</span>
-      </NavLink>
-    </Button>
+      </Button>
+    </NavLink>
   );
 };

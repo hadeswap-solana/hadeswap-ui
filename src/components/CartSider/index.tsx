@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectExchangeModalVisible,
@@ -34,7 +34,6 @@ export interface CartSiderProps {
 const CartSider: FC = () => {
   const dispatch = useDispatch();
   const screenMode = useSelector(selectScreeMode);
-
   const exchangeModalVisible = useSelector(selectExchangeModalVisible);
 
   const {
@@ -95,4 +94,4 @@ const CartSider: FC = () => {
   );
 };
 
-export default CartSider;
+export default memo(CartSider);

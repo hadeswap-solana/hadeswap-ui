@@ -27,7 +27,12 @@ import { coreActions } from '../state/core/actions';
 const BASE_STALE_TIME = 5 * 60 * 1000; // 5 min
 const SHORT_STALE_TIME = 10000; // 10 sec
 
-export const useFetchMarketWalletNfts = (marketPubkey: string): void => {
+export const useFetchMarketWalletNfts = (
+  marketPubkey: string,
+): {
+  walletNfts: Nft[];
+  nftsLoading: boolean;
+} => {
   const dispatch = useDispatch();
   const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
   const walletPubkey: string = publicKey?.toBase58();
@@ -59,6 +64,11 @@ export const useFetchMarketWalletNfts = (marketPubkey: string): void => {
   useEffect(() => {
     dispatch(coreActions.setMarketWalletNfts({ data, isLoading: nftsLoading }));
   }, [data, nftsLoading, dispatch]);
+
+  return {
+    walletNfts: data,
+    nftsLoading,
+  };
 };
 
 export const useFetchMarket = (publicKey: string): void => {

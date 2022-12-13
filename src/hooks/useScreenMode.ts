@@ -5,10 +5,10 @@ import { ScreenTypes } from '../state/common/types';
 import { commonActions } from '../state/common/actions';
 import { throttle } from 'lodash';
 
-export const useDesktopMode = (): void => {
+export const useScreenMode = (): void => {
   const dispatch = useDispatch();
 
-  const setMobileMode = useCallback((): void => {
+  const setMobileMode = useCallback(() => {
     if (window.screen.width <= TABLET_SIZE) {
       dispatch(commonActions.setScreenMode(ScreenTypes.TABLET));
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -19,7 +19,9 @@ export const useDesktopMode = (): void => {
     }
   }, [dispatch]);
 
-  setMobileMode();
+  useEffect(() => {
+    setMobileMode();
+  }, [setMobileMode]);
 
   useEffect(() => {
     const resizeThrottled = throttle(setMobileMode, 300);
