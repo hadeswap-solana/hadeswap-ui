@@ -24,6 +24,7 @@ export const NftsBlock: FC<NftsBlockProps> = ({ nfts, toggleNft }) => {
             onCardClick={() => toggleNft(nft.mint)}
             wholeAreaSelect
             simpleCard
+            createPool
           />
         ))}
       </div>

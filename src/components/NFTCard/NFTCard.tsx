@@ -30,6 +30,7 @@ interface NFTCardProps {
   onAddToCart?: () => void;
   onExchange?: () => void;
   withoutAddToCartBtn?: boolean;
+  createPool?: boolean;
 }
 
 export const NFTCard: FC<NFTCardProps> = ({
@@ -46,6 +47,7 @@ export const NFTCard: FC<NFTCardProps> = ({
   // onAddToCart,
   onExchange,
   withoutAddToCartBtn,
+  createPool = false,
 }) => {
   const { connected } = useWallet();
 
@@ -89,6 +91,11 @@ export const NFTCard: FC<NFTCardProps> = ({
 
         <div className={styles.cardBtnWrapper}>
           {!simpleCard && !withoutAddToCartBtn && (
+            <Button outlined className={styles.cardButton}>
+              {selected ? <MinusIcon /> : <PlusIcon />}
+            </Button>
+          )}
+          {createPool && (
             <Button outlined className={styles.cardButton}>
               {selected ? <MinusIcon /> : <PlusIcon />}
             </Button>
