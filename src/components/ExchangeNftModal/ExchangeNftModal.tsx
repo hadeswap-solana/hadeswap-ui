@@ -140,6 +140,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
               price={getFormattedPrice(order.price)}
               selected={selectedOrder?.mint === order.mint}
               disabled={order.disabled}
+              rarity={order.rarity}
               onCardClick={addSellOrderToExchange(order)}
               withoutAddToCartBtn
             />
@@ -153,9 +154,10 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({ visible, onCancel }) => {
         <p className={styles.cardLabel}>you’ll get</p>
         <Card
           key={selectedBuyNft?.mint}
-          name={selectedBuyNft?.name}
+          name={`#${selectedBuyNft?.name.split('#')[1]}`}
           imageUrl={selectedBuyNft?.imageUrl}
           price={formatBNToString(new BN(selectedBuyNft?.price))}
+          rarity={selectedBuyNft?.rarity}
           onDeselect={createDeselectHandler(selectedBuyNft)}
         />
       </Col>
