@@ -61,7 +61,7 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
     );
 
     notify({
-      message: 'Transactions sent',
+      message: 'transaction sent!',
       type: NotifyType.INFO,
     });
 

@@ -88,9 +88,15 @@ export const usePoolChange: UsePoolChange = ({
             ),
           );
         },
+        onSuccess: () => {
+          notify({
+            message: 'transaction successful!',
+            type: NotifyType.SUCCESS,
+          });
+        },
         onError: () =>
           notify({
-            message: 'Transaction just failed for some reason',
+            message: 'oops... something went wrong!',
             type: NotifyType.ERROR,
           }),
       }),
@@ -143,9 +149,15 @@ export const usePoolChange: UsePoolChange = ({
             ),
           );
         },
+        onSuccess: () => {
+          notify({
+            message: 'transaction successful!',
+            type: NotifyType.SUCCESS,
+          });
+        },
         onError: () =>
           notify({
-            message: 'Transaction just failed for some reason',
+            message: 'oops... something went wrong!',
             type: NotifyType.ERROR,
           }),
       }),
