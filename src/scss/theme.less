@@ -167,9 +167,25 @@
 }
 
 .ant-dropdown-menu {
-  border: 1px solid #3e4854;
-  border-radius: 10px;
   padding: 0;
+  border: var(--border-base);
+  background-color: var(--component-base-background);
+  border-radius: 10px;
+
+  font-family: var(--font-family-rubik);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+
+  li {
+    padding: 9px 12px;
+    svg {
+      margin-right: 10px;
+    }
+    &:hover {
+      background-color: var(--table-active-element);
+    }
+  }
 
   li:first-child {
     border-radius: 10px 10px 0 0;
