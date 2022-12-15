@@ -10,16 +10,38 @@
   @media screen and (min-width: 1025px) {
     justify-content: center;
   }
+
+  @media screen and (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 32px 0 24px;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
 }
 
 .poolButtonWrapper {
   display: flex;
   flex-grow: 1;
   justify-content: center;
+  gap: 16px;
+
+  @media screen and (max-width: 768px) {
+    justify-content: flex-start;
+  }
+
+  @media screen and (max-width: 550px) {
+    justify-content: center;
+  }
 }
 
 .sortButtonWrapper {
   display: flex;
   flex-grow: 100;
   justify-content: end;
+
+  @media screen and (max-width: 550px) {
+    justify-content: center;
+  }
 }
