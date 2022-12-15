@@ -27,7 +27,7 @@ interface PriceBlockProps {
   spotPrice: number;
   delta: number;
   fee: number;
-  nftAmount: number;
+  buyOrdersAmount: number;
   nftsCount: number;
   formInitialValues: {
     fee: number;
@@ -49,7 +49,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       spotPrice,
       delta,
       fee,
-      nftAmount,
+      buyOrdersAmount,
       nftsCount,
       formInitialValues,
       pool,
@@ -74,7 +74,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       pairType,
       spotPrice,
       delta,
-      buyOrdersAmount: nftAmount,
+      buyOrdersAmount,
       nftsCount,
       curveType,
       mathCounter: pool?.mathCounter,

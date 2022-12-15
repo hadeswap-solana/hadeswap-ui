@@ -152,7 +152,7 @@ interface SplittedTxnsData {
 
 interface CreateTxnSplittedDataProps {
   pairType: PairType;
-  nftsAmount: number;
+  buyOrdersAmount: number;
   marketPubkey: string;
   selectedNfts: Nft[];
   curveType: BondingCurveType;
@@ -168,7 +168,7 @@ type CreateTxnSplittedData = (
 ) => Promise<SplittedTxnsData>;
 
 const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
-  nftsAmount,
+  buyOrdersAmount,
   marketPubkey,
   curveType,
   rawSpotPrice,
@@ -177,7 +177,7 @@ const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
   wallet,
 }) => {
   const amountPerChunk = getArrayByNumber(
-    nftsAmount,
+    buyOrdersAmount,
     SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
   );
 

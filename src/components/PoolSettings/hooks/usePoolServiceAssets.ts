@@ -19,7 +19,6 @@ interface UsePoolServiceAssets {
   deselectAll: () => void;
   nftsLoading: boolean;
   formAssets: FormInstance;
-  nftAmount: number;
   buyOrdersAmount?: number;
 }
 
@@ -72,7 +71,6 @@ export const usePoolServiceAssets = ({
   };
 
   const [formAssets] = Form.useForm();
-  const nftAmount: number = Form.useWatch('nftAmount', formAssets);
   const buyOrdersAmount: number = Form.useWatch('buyOrdersAmount', formAssets);
 
   return {
@@ -83,7 +81,6 @@ export const usePoolServiceAssets = ({
     deselectAll,
     nftsLoading,
     formAssets,
-    nftAmount,
     buyOrdersAmount,
   };
 };

@@ -45,7 +45,7 @@ export const StepThree: FC<StepThreeProps> = ({
     deselectAll,
     nftsLoading,
     formAssets,
-    nftAmount,
+    buyOrdersAmount,
   } = usePoolServiceAssets({ marketPublicKey: chosenMarketKey });
 
   const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
@@ -57,8 +57,6 @@ export const StepThree: FC<StepThreeProps> = ({
     delta: 0,
   };
 
-  const initialValuesAssets = { nftAmount: 0 };
-
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
     curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
@@ -66,12 +64,12 @@ export const StepThree: FC<StepThreeProps> = ({
 
   const isCreateButtonDisabled =
     (pairType !== PairType.TokenForNFT && !selectedNfts.length) ||
-    (pairType === PairType.TokenForNFT && !nftAmount) ||
+    (pairType === PairType.TokenForNFT && !buyOrdersAmount) ||
     !spotPrice;
 
   const { create: onCreatePoolClick } = useCreatePool({
     pairType,
-    nftsAmount: nftAmount,
+    buyOrdersAmount,
     marketPubkey: chosenMarketKey,
     selectedNfts,
     curveType,
@@ -91,7 +89,7 @@ export const StepThree: FC<StepThreeProps> = ({
     ) {
       assetsBlockRef.current.style.height = `${priceBlockRef.current.offsetHeight}px`;
     }
-  });
+  }, [pairType]);
 
   const isLoading = marketsLoading || nftsLoading;
 
@@ -100,7 +98,7 @@ export const StepThree: FC<StepThreeProps> = ({
     delta: rawDelta,
     fee: rawFee || 0,
     bondingCurve: curveType,
-    buyOrdersAmount: nftAmount,
+    buyOrdersAmount,
     nftsCount: selectedNfts.length,
     type: pairType,
   });
@@ -122,7 +120,7 @@ export const StepThree: FC<StepThreeProps> = ({
               spotPrice={spotPrice}
               delta={delta}
               fee={fee}
-              nftAmount={nftAmount}
+              buyOrdersAmount={buyOrdersAmount}
               nftsCount={selectedNfts.length}
               formInitialValues={initialValuesPrice}
             />
@@ -135,7 +133,6 @@ export const StepThree: FC<StepThreeProps> = ({
               form={formAssets}
               selectAll={selectAll}
               deselectAll={deselectAll}
-              formInitialValues={initialValuesAssets}
             />
           </div>
           {!!chartData && !!chartData?.length && (
