@@ -9,7 +9,11 @@ import {
   LinkCell,
   PriceCell,
 } from '../../../components/UI/TableComponents';
-import { MarketInfo, NftActivityData } from '../../../state/core/types';
+import {
+  MarketInfo,
+  NftActivityData,
+  OrderType,
+} from '../../../state/core/types';
 import { createPoolTableRow } from '../../../state/core/helpers';
 import moment from 'moment';
 
@@ -224,7 +228,10 @@ export const TRADE_ITEM: TradeItem = {
       title: 'pool action',
       valueKey: 'orderType',
       render: (value: string) => (
-        <ColoredTextCell cellValue={value} defaultValue="buy" />
+        <ColoredTextCell
+          cellValue={value === OrderType.BUY ? OrderType.SELL : OrderType.BUY}
+          defaultValue="buy"
+        />
       ),
     },
     {
