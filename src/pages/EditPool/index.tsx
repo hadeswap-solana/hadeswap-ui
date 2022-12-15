@@ -42,20 +42,13 @@ export const EditPool: FC = () => {
     (item) => item.marketPubkey === pool?.market,
   );
 
-  const {
-    nfts,
-    selectedNfts,
-    toggleNft,
-    selectAll,
-    deselectAll,
-    nftsLoading,
-    formAssets,
-    nftAmount,
-    buyOrdersAmount,
-  } = usePoolServiceAssets({
-    marketPublicKey: chosenMarket?.marketPubkey,
-    preSelectedNfts: pool?.sellOrders,
-  });
+  const { nfts, selectedNfts, toggleNft, selectAll, deselectAll, nftsLoading } =
+    usePoolServiceAssets({
+      marketPublicKey: chosenMarket?.marketPubkey,
+      preSelectedNfts: pool?.sellOrders,
+    });
+
+  const buyOrdersAmount = selectedNfts.length;
 
   const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
     usePoolServicePrice({ pool });
@@ -72,14 +65,6 @@ export const EditPool: FC = () => {
     [pool, curveType],
   );
 
-  const initialValuesAssets = useMemo(
-    () => ({
-      nftAmount: pool?.buyOrdersAmount,
-      buyOrdersAmount: pool?.buyOrdersAmount,
-    }),
-    [pool],
-  );
-
   const pairType = pool?.type;
 
   const rawSpotPrice = spotPrice * 1e9;
@@ -90,7 +75,6 @@ export const EditPool: FC = () => {
     usePoolChange({
       pool,
       selectedNfts,
-      buyOrdersAmount: nftAmount,
       rawFee: fee * 100,
       rawDelta,
       rawSpotPrice,
@@ -101,7 +85,14 @@ export const EditPool: FC = () => {
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
-  const isLoading = marketLoading || poolLoading || nftsLoading;
+  const chartData = usePriceGraph({
+    baseSpotPrice: spotPrice * 1e9,
+    delta: rawDelta,
+    fee: fee || 0,
+    bondingCurve: curveType,
+    nftsCount: selectedNfts.length,
+    type: pairType,
+  });
 
   const assetsBlockRef = useRef<HTMLDivElement>();
   const priceBlockRef = useRef<HTMLDivElement>();
@@ -116,15 +107,7 @@ export const EditPool: FC = () => {
     }
   });
 
-  const chartData = usePriceGraph({
-    baseSpotPrice: spotPrice * 1e9,
-    delta: rawDelta,
-    fee: fee || 0,
-    bondingCurve: curveType,
-    buyOrdersAmount: nftAmount,
-    nftsCount: selectedNfts.length,
-    type: pairType,
-  });
+  const isLoading = marketLoading || poolLoading || nftsLoading;
 
   return (
     <AppLayout>
@@ -155,7 +138,7 @@ export const EditPool: FC = () => {
                 spotPrice={spotPrice}
                 delta={delta}
                 fee={fee}
-                nftAmount={nftAmount}
+                buyOrdersAmount={buyOrdersAmount}
                 nftsCount={selectedNfts.length}
                 formInitialValues={initialValuesPrice}
                 pool={pool}
@@ -169,13 +152,9 @@ export const EditPool: FC = () => {
                 toggleNft={toggleNft}
                 selectAll={selectAll}
                 deselectAll={deselectAll}
-                form={formAssets}
-                formInitialValues={initialValuesAssets}
-                pool={pool}
-                buyOrdersAmount={buyOrdersAmount}
+                buyOrdersAmount={pool?.buyOrdersAmount}
               />
             </div>
-
             {!!chartData && !!chartData?.length && (
               <div className={styles.chartWrapper}>
                 <Chart title="price graph" data={chartData} />
