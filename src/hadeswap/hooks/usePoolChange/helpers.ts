@@ -503,7 +503,8 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
   }
 
   //! Pair modification transaction logic
-  if (isPricingChanged) {
+  //? Ignore when somehow rawSpotPrice === 0
+  if (isPricingChanged && rawSpotPrice !== 0) {
     const modifyTxnData = await createModifyPairTxnData({
       pool,
       rawSpotPrice,
