@@ -168,7 +168,7 @@ export const ACTIVITY_ITEM: ActivityItem = {
   imageKey: 'nftImageUrl',
   list: [
     {
-      title: 'pool action',
+      title: 'action',
       valueKey: 'orderType',
       render: (value: string) => (
         <ColoredTextCell cellValue={value} defaultValue="buy" />
