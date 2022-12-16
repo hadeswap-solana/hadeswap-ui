@@ -60,9 +60,9 @@ export const MyPools: FC = () => {
   const pairsLoading = useSelector(selectWalletPairsLoading);
   const isLoading = marketsLoading || pairsLoading;
 
-  const poolsWithFees = pairs.filter((pool) => pool.totalAccumulatedFees > 0);
-
-  const { onWithdrawClick } = useWithdrawAllFees({ poolsWithFees });
+  const { onWithdrawClick, isWithdrawAllAvailable } = useWithdrawAllFees({
+    pairs,
+  });
 
   useEffect(() => {
     const [name, order] = sortValue.split('_');
@@ -86,7 +86,7 @@ export const MyPools: FC = () => {
               {connected && !isLoading && !!walletPairs.length && (
                 <Button
                   outlined
-                  isDisabled={!poolsWithFees.length}
+                  isDisabled={!isWithdrawAllAvailable}
                   onClick={onWithdrawClick}
                 >
                   <span>withdraw all fees</span>

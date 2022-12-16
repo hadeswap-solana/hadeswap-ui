@@ -1,53 +1,49 @@
 import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useFetchPair } from '../../../requests';
-import { BasePair } from '../../../state/core/types';
-import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
-import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
-import { notify } from '../../../utils';
-import { NotifyType } from '../../../utils/solanaUtils';
 import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../../components/TransactionsLoadingModal';
-import { signAndSendAllTransactionsInSeries } from '../../../utils/transactions';
+import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
+import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
+import { signAndSendAllTransactions } from '../../../utils/transactions';
 import { useConnection } from '../../../hooks';
 import { createWithdrawLiquidityAllFeesTxns } from '../../../utils/transactions/createWithdrawLiquidityAllFeesTxns';
+import { notify } from '../../../utils';
+import { NotifyType } from '../../../utils/solanaUtils';
+import { Pair } from '../../../state/core/types';
 
-type UseWithdrawAllFees = (props: { poolsWithFees: BasePair[] }) => {
+type UseWithdrawAllFees = (props: { pairs: Pair[] }) => {
   onWithdrawClick: () => Promise<void>;
+  isWithdrawAllAvailable: boolean;
 };
 
-export const useWithdrawAllFees: UseWithdrawAllFees = ({ poolsWithFees }) => {
+export const useWithdrawAllFees: UseWithdrawAllFees = ({ pairs }) => {
   const dispatch = useDispatch();
   const connection = useConnection();
   const wallet = useWallet();
-  const { refetch } = useFetchPair();
+
+  const poolsWithFees = pairs.filter((pool) => pool.totalAccumulatedFees > 0);
+  const isWithdrawAllAvailable = Boolean(poolsWithFees.length);
 
   const onWithdrawClick = async () => {
-    const transactions = [];
-
     const txns = await createWithdrawLiquidityAllFeesTxns({
       connection,
       wallet,
       poolsWithFees,
     });
 
-    transactions.push(...txns);
+    const cards = txns.map(() => createIxCardFuncs[IX_TYPE.WITHDRAW_FEES]());
 
-    const cards = transactions.map(() =>
-      createIxCardFuncs[IX_TYPE.WITHDRAW_FEES](),
-    );
-
-    const txnsData = transactions.map((txnsAndSigners) => ({
-      txnsAndSigners,
+    const txnsData = {
+      txnsAndSigners: txns,
       onBeforeApprove: () => {
         dispatch(
           txsLoadingModalActions.setState({
             visible: true,
             cards,
-            amountOfTxs: transactions.length,
-            currentTxNumber: transactions.length,
+            amountOfTxs: txns.length,
+            currentTxNumber: txns.length,
             textStatus: TxsLoadingModalTextStatus.APPROVE,
           }),
         );
@@ -70,19 +66,18 @@ export const useWithdrawAllFees: UseWithdrawAllFees = ({ poolsWithFees }) => {
           message: 'oops... something went wrong!',
           type: NotifyType.ERROR,
         }),
-    }));
+    };
 
-    const isSuccess = await signAndSendAllTransactionsInSeries({
-      txnsData,
+    await signAndSendAllTransactions({
+      ...txnsData,
       wallet,
       connection,
     });
 
     dispatch(txsLoadingModalActions.setVisible(false));
-
-    if (isSuccess) refetch();
   };
   return {
     onWithdrawClick,
+    isWithdrawAllAvailable,
   };
 };

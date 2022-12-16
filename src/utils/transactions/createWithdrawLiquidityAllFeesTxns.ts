@@ -9,7 +9,7 @@ const { withdrawVirtualFees } =
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);
 
-type CreateWithdrawLiquidityFeesTxns = (params: {
+type CreateWithdrawLiquidityAllFeesTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   poolsWithFees: BasePair[];
@@ -22,7 +22,7 @@ type CreateWithdrawLiquidityFeesTxns = (params: {
 
 const IXNS_PER_CHUNK = 2; //? Maybe it will work with 3
 
-export const createWithdrawLiquidityAllFeesTxns: CreateWithdrawLiquidityFeesTxns =
+export const createWithdrawLiquidityAllFeesTxns: CreateWithdrawLiquidityAllFeesTxns =
   async ({ connection, wallet, poolsWithFees }) => {
     const ixsAndSigners = (
       await Promise.all(
