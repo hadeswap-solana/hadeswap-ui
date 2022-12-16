@@ -5,6 +5,7 @@
   border-radius: var(--border-radius-small);
   background-color: var(--component-base-background);
   overflow: hidden;
+  position: relative;
 }
 
 .cardImage {
@@ -106,5 +107,12 @@
 }
 
 .cartItemsInvalid {
-  opacity: .6;
+  opacity: 0.6;
+}
+
+.rarityWrapper {
+  top: 0;
+  left: unset !important;
+  right: 55px;
+  height: 20px;
 }
