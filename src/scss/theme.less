@@ -166,6 +166,14 @@
   background: @component-base-background;
 }
 
+.anticon {
+  &.active {
+    & svg {
+      fill: var(--primary-color);
+    }
+  }
+}
+
 .ant-dropdown-menu {
   padding: 0;
   border: var(--border-base);
