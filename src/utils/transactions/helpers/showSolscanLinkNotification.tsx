@@ -12,7 +12,7 @@ export const showSolscanLinkNotification = (error: any): boolean => {
     );
 
     notify({
-      message: 'Transaction processing problems',
+      message: 'transaction processing problems',
       description: (
         <p>
           Unable to determine transaction result.

@@ -30,6 +30,7 @@ interface NFTCardProps {
   onAddToCart?: () => void;
   onExchange?: () => void;
   withoutAddToCartBtn?: boolean;
+  createPool?: boolean;
 }
 
 export const NFTCard: FC<NFTCardProps> = ({
@@ -46,6 +47,7 @@ export const NFTCard: FC<NFTCardProps> = ({
   // onAddToCart,
   onExchange,
   withoutAddToCartBtn,
+  createPool = false,
 }) => {
   const { connected } = useWallet();
 
@@ -93,6 +95,11 @@ export const NFTCard: FC<NFTCardProps> = ({
               {selected ? <MinusIcon /> : <PlusIcon />}
             </Button>
           )}
+          {createPool && (
+            <Button outlined className={styles.cardButton}>
+              {selected ? <MinusIcon /> : <PlusIcon />}
+            </Button>
+          )}
           {onExchange && (
             <SwapButton
               onClick={(e) => {
@@ -112,11 +119,12 @@ export const NFTCard: FC<NFTCardProps> = ({
 
 interface RarityProps {
   rarity: NftRarity;
+  className?: string;
 }
 
-const Rarity: FC<RarityProps> = ({ rarity }) => {
+export const Rarity: FC<RarityProps> = ({ rarity, className }) => {
   return (
-    <div className={styles.rarityWrapper}>
+    <div className={classNames(styles.rarityWrapper, className)}>
       {!!rarity.howRareIs && (
         <div className={styles.rarityValue}>
           <HowRareIsIcon /> {rarity.howRareIs}

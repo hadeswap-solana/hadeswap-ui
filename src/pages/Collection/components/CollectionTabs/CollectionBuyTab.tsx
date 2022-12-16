@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useState } from 'react';
 import BN from 'bn.js';
 import { useDispatch, useSelector } from 'react-redux';
 // import { SweepButton } from '../SweepButton';
@@ -13,7 +13,11 @@ import {
 } from '../../../../state/core/selectors';
 import { coreActions } from '../../../../state/core/actions';
 import { formatBNToString } from '../../../../utils';
-import { MarketOrder, OrderType } from '../../../../state/core/types';
+import {
+  CartOrder,
+  MarketOrder,
+  OrderType,
+} from '../../../../state/core/types';
 
 import styles from './styles.module.scss';
 import ExchangeNftModal, {
@@ -28,6 +32,7 @@ export const CollectionBuyTab: FC = () => {
   const marketPairs = useSelector(selectMarketPairs);
   const buyOrders = useSelector(selectAllBuyOrdersForMarket);
   const cartItems = useSelector(selectCartItems);
+  const [selectedBuyOrder, setSelectedBuyOrder] = useState<CartOrder>(null);
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
@@ -68,13 +73,8 @@ export const CollectionBuyTab: FC = () => {
       }
 
       openExchangeModal();
-      dispatch(
-        coreActions.addOrderToCart(
-          marketPairs.find((pair) => pair.pairPubkey === order.targetPairPukey),
-          order,
-          OrderType.BUY,
-        ),
-      );
+
+      setSelectedBuyOrder(order);
     },
     [dispatch, marketPairs, cartItems, openExchangeModal],
   );
@@ -105,6 +105,7 @@ export const CollectionBuyTab: FC = () => {
       <ExchangeNftModal
         visible={exchangeModalVisible}
         onCancel={onCancelExchangeModal}
+        selectedBuyOrder={selectedBuyOrder}
       />
     </div>
   );

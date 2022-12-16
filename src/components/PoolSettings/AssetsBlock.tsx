@@ -61,7 +61,7 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
                 className={styles.selectButton}
                 onClick={selectedNfts.length ? deselectAll : selectAll}
               >
-                {!selectedNfts.length && (
+                {!selectedNfts.length && !!nfts.length && (
                   <span>
                     <BigPlusIcon />
                     select all
