@@ -18,10 +18,21 @@ import {
 import { marketStatList } from './CollectionHeader.constants';
 
 import styles from './styles.module.scss';
+import Button from '../../../../components/Buttons/Button';
+import { useCreateOfferModal } from '../../../../components/CreateOfferModal/hooks';
+import CreateOfferModal from '../../../../components/CreateOfferModal/CreateOfferModal';
 
 export const CollectionHeader: FC = () => {
   const market = useSelector(selectCertainMarket);
   const isLoading = useSelector(selectCertainMarketLoading);
+
+  const {
+    visible: createOfferModalVisible,
+    open: openCreateOfferModal,
+    close: closeCreateOfferModal,
+  } = useCreateOfferModal();
+
+  console.log(createOfferModalVisible);
 
   return (
     <div className={styles.headerWrapper}>
@@ -105,9 +116,16 @@ export const CollectionHeader: FC = () => {
           </div>
           <div className={styles.buttonsWrapper}>
             <CreatePoolButton />
+            <Button onClick={openCreateOfferModal} outlined>
+              <span>oneprice order</span>
+            </Button>
           </div>
         </>
       )}
+      <CreateOfferModal
+        visible={createOfferModalVisible}
+        onCancel={closeCreateOfferModal}
+      />
     </div>
   );
 };

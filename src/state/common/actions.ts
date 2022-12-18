@@ -41,6 +41,7 @@ export const commonTypes = {
   TOGGLE_CART_SIDER: 'common/SET_CART_SIDER',
   SET_SCREEN_MODE: 'common/SET_SCREEN_MODE',
   SET_EXCHANGE_MODAL: 'common/SET_EXCHANGE_MODAL',
+  SET_CREATE_OFFER_MODAL: 'common/SET_CREATE_OFFER_MODAL',
 };
 
 export const commonActions = {
@@ -146,6 +147,10 @@ export const commonActions = {
   ),
   setExchangeModal: createCustomAction(
     commonTypes.SET_EXCHANGE_MODAL,
+    (payload: ModalState) => ({ payload }),
+  ),
+  setCreateOfferModal: createCustomAction(
+    commonTypes.SET_CREATE_OFFER_MODAL,
     (payload: ModalState) => ({ payload }),
   ),
 };
