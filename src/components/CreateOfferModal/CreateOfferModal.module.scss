@@ -1,0 +1,59 @@
+.modal {
+  :global {
+    @media (max-width: 767px) {
+      position: fixed !important;
+      bottom: 0;
+      top: unset !important;
+      left: 0;
+      right: 0;
+      margin: 0 !important;
+      max-width: unset !important;
+      width: 100% !important;
+    }
+    .ant-modal-content {
+      height: 705px;
+    }
+  }
+}
+
+.header {
+  height: 67px;
+  position: relative;
+  max-width: 100%;
+}
+
+.title {
+  position: absolute;
+  color: var(--primary-white-color);
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 20px;
+  top: 20px;
+}
+
+.tabs {
+  :global {
+    .ant-tabs-content {
+      margin-top: 24px;
+    }
+    .ant-tabs-nav-wrap {
+      height: 67px;
+      justify-content: flex-end !important;
+    }
+    .ant-tabs-tab {
+      width: 105px;
+      justify-content: center;
+      margin: 0 !important;
+
+      @media (max-width: 767px) {
+        width: 72px;
+      }
+    }
+    .ant-tabs-nav-list {
+      border-bottom: 1px solid var(--border-color-base);
+    }
+    .ant-tabs-ink-bar {
+      bottom: -1px !important;
+    }
+  }
+}

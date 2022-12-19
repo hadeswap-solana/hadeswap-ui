@@ -1,6 +1,13 @@
-import { CloseOutlined } from '@ant-design/icons';
-import { Modal } from 'antd';
 import { FC } from 'react';
+import { Modal, Tabs } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import { useFetchAllMarkets } from '../../requests';
+
+import styles from './CreateOfferModal.module.scss';
+import BuyTab from './BuyTab/BuyTab';
+import SellTab from './SellTab/SellTab';
+
+const { TabPane } = Tabs;
 
 interface CreateOfferModalProps {
   visible: boolean;
@@ -8,6 +15,8 @@ interface CreateOfferModalProps {
 }
 
 const CreateOfferModal: FC<CreateOfferModalProps> = ({ visible, onCancel }) => {
+  useFetchAllMarkets();
+
   return (
     <Modal
       visible={visible}
@@ -17,9 +26,20 @@ const CreateOfferModal: FC<CreateOfferModalProps> = ({ visible, onCancel }) => {
       closeIcon={<CloseOutlined />}
       onCancel={onCancel}
       width={495}
+      className={styles.modal}
       destroyOnClose
     >
-      <div></div>
+      <div className={styles.header}>
+        <div className={styles.title}>oneprice order</div>
+        <Tabs defaultActiveKey="buy" centered className={styles.tabs}>
+          <TabPane key="buy" tab="buy">
+            <BuyTab />
+          </TabPane>
+          <TabPane key="sell" tab="sell">
+            <SellTab />
+          </TabPane>
+        </Tabs>
+      </div>
     </Modal>
   );
 };

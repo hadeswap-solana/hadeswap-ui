@@ -1,0 +1,57 @@
+.cardSubTitle {
+  margin: 16px 0 8px 0;
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  @media (max-width: 1024px) {
+    font-size: 14px;
+  }
+}
+
+.noticeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.notice {
+  padding-top: 228px;
+}
+
+.noticeTitle {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--dark-grey-color);
+}
+
+.noticeValue {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.noticeText {
+  margin-top: 16px;
+  font-family: var(--font-family-montserrat);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+
+  @media (max-width: 767px) {
+    font-size: 14px;
+  }
+}
+
+.offerBtn {
+  margin-top: 16px;
+  width: 100%;
+}

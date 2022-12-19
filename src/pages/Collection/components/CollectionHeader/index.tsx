@@ -32,8 +32,6 @@ export const CollectionHeader: FC = () => {
     close: closeCreateOfferModal,
   } = useCreateOfferModal();
 
-  console.log(createOfferModalVisible);
-
   return (
     <div className={styles.headerWrapper}>
       {isLoading ? (
