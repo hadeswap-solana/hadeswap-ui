@@ -20,6 +20,7 @@ interface AssetsBlockProps {
   deselectAll: () => void;
   form?: FormInstance;
   buyOrdersAmount?: number;
+  sellOrdersAmount?: number;
 }
 
 export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
@@ -34,9 +35,14 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
       pairType,
       form,
       buyOrdersAmount,
+      sellOrdersAmount,
     },
     ref,
   ) => {
+    const selectedNftsAmount = selectedNfts.length;
+    const actualBuyOrders =
+      buyOrdersAmount + (selectedNftsAmount - sellOrdersAmount);
+
     return (
       <div ref={ref} className={styles.assetsBlockWrapper}>
         <Card
@@ -81,7 +87,7 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
               <h3 className={styles.cardSubTitle}>buy orders amount</h3>
               <InputNumber
                 disabled
-                value={selectedNfts.length}
+                value={actualBuyOrders}
                 defaultValue={buyOrdersAmount}
                 addonAfter="NFTs"
               />

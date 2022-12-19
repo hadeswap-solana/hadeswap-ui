@@ -48,7 +48,8 @@ export const EditPool: FC = () => {
       preSelectedNfts: pool?.sellOrders,
     });
 
-  const buyOrdersAmount = selectedNfts.length;
+  const buyOrdersAmount = pool?.buyOrdersAmount;
+  const sellOrdersAmount = pool?.sellOrders.length;
 
   const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
     usePoolServicePrice({ pool });
@@ -75,6 +76,7 @@ export const EditPool: FC = () => {
     usePoolChange({
       pool,
       selectedNfts,
+      buyOrdersAmount,
       rawFee: fee * 100,
       rawDelta,
       rawSpotPrice,
@@ -89,8 +91,9 @@ export const EditPool: FC = () => {
     baseSpotPrice: spotPrice * 1e9,
     delta: rawDelta,
     fee: fee || 0,
-    bondingCurve: curveType,
+    buyOrdersAmount,
     nftsCount: selectedNfts.length,
+    bondingCurve: curveType,
     type: pairType,
   });
 
@@ -152,7 +155,8 @@ export const EditPool: FC = () => {
                 toggleNft={toggleNft}
                 selectAll={selectAll}
                 deselectAll={deselectAll}
-                buyOrdersAmount={pool?.buyOrdersAmount}
+                buyOrdersAmount={buyOrdersAmount}
+                sellOrdersAmount={sellOrdersAmount}
               />
             </div>
             {!!chartData && !!chartData?.length && (
