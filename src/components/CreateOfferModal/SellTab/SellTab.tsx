@@ -1,4 +1,5 @@
 import { FC, useRef } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Form, InputNumber } from 'antd';
@@ -14,9 +15,8 @@ import { AssetsBlock } from '../../PoolSettings/AssetsBlock';
 import { Spinner } from '../../Spinner/Spinner';
 import styles from './SellTab.module.scss';
 import Button from '../../Buttons/Button';
-import { useWallet } from '@solana/wallet-adapter-react';
 
-const SellTab: FC = () => {
+const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
   const marketsLoading = useSelector(selectAllMarketsLoading);
   const { connected } = useWallet();
@@ -48,6 +48,7 @@ const SellTab: FC = () => {
     rawSpotPrice,
     rawDelta: 0,
     rawFee: 0,
+    onAfterTxn: onCancel,
   });
 
   const assetsBlockRef = useRef<HTMLDivElement>();

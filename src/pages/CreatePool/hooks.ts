@@ -123,7 +123,7 @@ export const useCreatePool: UseCreatePool = (props) => {
         });
       }
 
-      props?.onRedirect();
+      props?.onAfterTxn();
     } catch (error) {
       console.error(error);
       captureSentryError({
@@ -160,7 +160,7 @@ interface CreateTxnSplittedDataProps {
   rawFee: number;
   connection: web3.Connection;
   wallet: WalletContextState;
-  onRedirect?: () => void;
+  onAfterTxn?: () => void;
 }
 
 type CreateTxnSplittedData = (

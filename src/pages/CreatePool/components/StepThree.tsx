@@ -80,7 +80,7 @@ export const StepThree: FC<StepThreeProps> = ({
     rawSpotPrice,
     rawDelta,
     rawFee,
-    onRedirect: () => history.push('/my-pools'),
+    onAfterTxn: () => history.push('/my-pools'),
   });
 
   const assetsBlockRef = useRef<HTMLDivElement>();

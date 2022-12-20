@@ -33,10 +33,10 @@ const CreateOfferModal: FC<CreateOfferModalProps> = ({ visible, onCancel }) => {
         <div className={styles.title}>limit order</div>
         <Tabs defaultActiveKey="buy" centered className={styles.tabs}>
           <TabPane key="buy" tab="buy">
-            <BuyTab />
+            <BuyTab onCancel={onCancel} />
           </TabPane>
           <TabPane key="sell" tab="sell">
-            <SellTab />
+            <SellTab onCancel={onCancel} />
           </TabPane>
         </Tabs>
       </div>

@@ -12,7 +12,7 @@ import { useCreatePool } from '../../../pages/CreatePool/hooks';
 import styles from './BuyTab.module.scss';
 import Button from '../../Buttons/Button';
 
-const BuyTab: FC = () => {
+const BuyTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
   const { connected } = useWallet();
 
@@ -40,6 +40,7 @@ const BuyTab: FC = () => {
     rawSpotPrice,
     rawDelta: 0,
     rawFee: 0,
+    onAfterTxn: onCancel,
   });
 
   return (
