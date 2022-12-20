@@ -14,6 +14,10 @@
   border: 0 !important;
   height: 300px !important;
   padding: 0 !important;
+
+  @media (max-width: 767px) {
+    height: 280px !important;
+  }
 }
 
 .noticeTitle {
@@ -38,6 +42,7 @@
   line-height: 24px;
 
   @media (max-width: 767px) {
+    margin-top: 8px;
     font-size: 14px;
   }
 }
@@ -52,4 +57,8 @@
 .offerBtn {
   margin-top: 16px;
   width: 100%;
+
+  @media (max-width: 767px) {
+    margin-top: 8px;
+  }
 }

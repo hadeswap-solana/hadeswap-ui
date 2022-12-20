@@ -15,14 +15,14 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 8px;
-
-  &:first-child {
-    margin-top: 0;
-  }
 }
 
 .notice {
-  padding-top: 228px;
+  padding-top: 220px;
+
+  @media (max-width: 767px) {
+    padding-top: 200px;
+  }
 }
 
 .noticeTitle {
@@ -47,6 +47,7 @@
   line-height: 24px;
 
   @media (max-width: 767px) {
+    margin-top: 8px;
     font-size: 14px;
   }
 }
@@ -54,4 +55,8 @@
 .offerBtn {
   margin-top: 16px;
   width: 100%;
+
+  @media (max-width: 767px) {
+    margin-top: 8px;
+  }
 }

@@ -12,6 +12,22 @@
     }
     .ant-modal-content {
       height: 705px;
+      @media (max-width: 767px) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        height: 655px;
+      }
+    }
+    .ant-modal-body {
+      @media (max-width: 767px) {
+        padding: 16px;
+      }
+    }
+    .ant-tabs-nav-list {
+      margin-right: 45px;
+    }
+    .ant-modal-close {
+      top: 25px;
     }
   }
 }
@@ -20,6 +36,10 @@
   height: 67px;
   position: relative;
   max-width: 100%;
+
+  @media (max-width: 767px) {
+    height: 59px;
+  }
 }
 
 .title {
