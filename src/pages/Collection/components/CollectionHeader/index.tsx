@@ -115,7 +115,7 @@ export const CollectionHeader: FC = () => {
           <div className={styles.buttonsWrapper}>
             <CreatePoolButton />
             <Button onClick={openCreateOfferModal} outlined>
-              <span>oneprice order</span>
+              <span>limit order</span>
             </Button>
           </div>
         </>

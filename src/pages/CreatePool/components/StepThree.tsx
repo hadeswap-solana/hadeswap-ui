@@ -1,5 +1,6 @@
 import { FC, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   BondingCurveType,
   PairType,
@@ -30,6 +31,7 @@ export const StepThree: FC<StepThreeProps> = ({
   chosenMarketKey,
 }) => {
   useFetchAllMarkets();
+  const history = useHistory();
   const markets = useSelector(selectAllMarkets);
   const marketsLoading = useSelector(selectAllMarketsLoading);
 
@@ -78,6 +80,7 @@ export const StepThree: FC<StepThreeProps> = ({
     rawSpotPrice,
     rawDelta,
     rawFee,
+    onRedirect: () => history.push('/my-pools'),
   });
 
   const assetsBlockRef = useRef<HTMLDivElement>();

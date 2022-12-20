@@ -14,10 +14,12 @@ import { AssetsBlock } from '../../PoolSettings/AssetsBlock';
 import { Spinner } from '../../Spinner/Spinner';
 import styles from './SellTab.module.scss';
 import Button from '../../Buttons/Button';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const SellTab: FC = () => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
   const marketsLoading = useSelector(selectAllMarketsLoading);
+  const { connected } = useWallet();
 
   const {
     nfts,
@@ -54,7 +56,9 @@ const SellTab: FC = () => {
 
   return (
     <>
-      {isLoading ? (
+      {!connected ? (
+        <h2 className={styles.notConnectWallet}>connect your wallet</h2>
+      ) : isLoading ? (
         <Spinner />
       ) : (
         <>
@@ -88,7 +92,11 @@ const SellTab: FC = () => {
             your NFTs will be escrowed into your pool. you can withdraw at any
             time by going to my pools
           </p>
-          <Button onClick={onCreatePoolClick} className={styles.offerBtn}>
+          <Button
+            isDisabled={!priceValue}
+            onClick={onCreatePoolClick}
+            className={styles.offerBtn}
+          >
             <span>direct listing</span>
           </Button>
         </>

@@ -30,7 +30,7 @@ const CreateOfferModal: FC<CreateOfferModalProps> = ({ visible, onCancel }) => {
       destroyOnClose
     >
       <div className={styles.header}>
-        <div className={styles.title}>oneprice order</div>
+        <div className={styles.title}>limit order</div>
         <Tabs defaultActiveKey="buy" centered className={styles.tabs}>
           <TabPane key="buy" tab="buy">
             <BuyTab />
