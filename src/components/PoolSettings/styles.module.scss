@@ -125,6 +125,7 @@
   padding: 16px;
   border-radius: var(--border-radius-base);
   background: var(--component-third-background);
+  min-height: 90px;
 }
 
 .noticeRow {
@@ -159,4 +160,20 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+}
+
+.notify {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 14px;
+  width: 100%;
+  margin-top: 16px;
+
+  @media (max-width: 768px) {
+    margin-top: 8px;
+    font-size: 10px;
+  }
 }

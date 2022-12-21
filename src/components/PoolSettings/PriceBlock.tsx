@@ -16,6 +16,7 @@ import { MarketInfo, Pair } from '../../state/core/types';
 
 import styles from './styles.module.scss';
 import { renamePairType } from '../../state/core/helpers';
+import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
 
 interface PriceBlockProps {
   editMode?: boolean;
@@ -79,6 +80,11 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       curveType,
       mathCounter: pool?.mathCounter,
     });
+
+    const isWarningVisible =
+      parseFloat(chosenMarket?.floorPrice) > spotPrice &&
+      !!spotPrice &&
+      pairType !== PairType.TokenForNFT;
 
     return (
       <div className={styles.priceBlockWrapper}>
@@ -198,6 +204,13 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                   <span className={styles.noticeValue}>
                     {priceIntoPool?.toFixed(3)} SOL
                   </span>
+                </div>
+              )}
+              {!!isWarningVisible && (
+                <div className={styles.notify}>
+                  <NotifyInfoIcon />
+                  make sure you are going to list your items below floor of{' '}
+                  {chosenMarket?.floorPrice} SOL
                 </div>
               )}
               {editMode && !!delta && (
