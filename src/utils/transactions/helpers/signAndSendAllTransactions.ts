@@ -5,11 +5,13 @@ import { notify } from '../..';
 import { NotifyType } from '../../solanaUtils';
 import { captureSentryError } from '../../sentry';
 
+interface TxnsAndSigners {
+  transaction: web3.Transaction;
+  signers?: web3.Signer[];
+}
+
 interface SignAndSendAllTransactionsProps {
-  txnsAndSigners: {
-    transaction: web3.Transaction;
-    signers?: web3.Signer[];
-  }[];
+  txnsAndSigners: TxnsAndSigners[];
   connection: web3.Connection;
   wallet: WalletContextState;
   commitment?: web3.Commitment;

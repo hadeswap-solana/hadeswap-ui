@@ -26,11 +26,13 @@ interface AssetsBlockProps {
   };
   buyOrdersAmount?: number;
   pool?: Pair;
+  className?: string;
 }
 
 export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
   (
     {
+      className,
       editMode = false,
       nfts,
       toggleNft,
@@ -50,9 +52,13 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
     return (
       <div ref={ref} className={styles.assetsBlockWrapper}>
         <Card
-          className={classNames(styles.card, {
-            [styles.height100]: pairType !== PairType.TokenForNFT,
-          })}
+          className={classNames(
+            styles.card,
+            {
+              [styles.height100]: pairType !== PairType.TokenForNFT,
+            },
+            className,
+          )}
         >
           <div className={styles.cardHeader}>
             <h2 className={styles.cardTitle}>assets</h2>

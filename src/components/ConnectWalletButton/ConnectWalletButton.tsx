@@ -1,14 +1,15 @@
 import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useDispatch } from 'react-redux';
-import { DisconnectOutlined, WalletOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
-import ChevronIcon from '../../icons/ChevronIcon';
-import PhantomIcon from '../../icons/PhantomIcon';
 import Button from '../Buttons/Button';
 import { commonActions } from '../../state/common/actions';
 import { shortenAddress } from '../../utils/solanaUtils';
 
+import ChevronIcon from '../../icons/ChevronIcon';
+import PhantomIcon from '../../icons/PhantomIcon';
+import { DisconnectIcon } from '../../icons/DisconnectIcon';
+import { WalletIcon } from '../../icons/WalletIcon';
 import styles from './ConnectWalletButton.module.scss';
 
 export interface ConnectButtonProps {
@@ -37,14 +38,14 @@ export const ConnectWalletButton: FC<ConnectButtonProps> = ({ className }) => {
             {
               label: 'change wallet',
               key: '1',
-              icon: <WalletOutlined />,
+              icon: <WalletIcon />,
               onClick: () =>
                 dispatch(commonActions.setWalletModal({ isVisible: true })),
             },
             {
               label: 'disconnect',
               key: '2',
-              icon: <DisconnectOutlined />,
+              icon: <DisconnectIcon />,
               onClick: disconnect,
             },
           ]}
