@@ -101,7 +101,7 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
             {!!isWarningVisible && (
               <div className={styles.notify}>
                 <NotifyInfoIcon />
-                do you really want to list your items below floor of{' '}
+                make sure you are going to list your items below floor of{' '}
                 {chosenMarket?.floorPrice} SOL?
               </div>
             )}
