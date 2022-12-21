@@ -102,7 +102,7 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
               <div className={styles.notify}>
                 <NotifyInfoIcon />
                 make sure you are going to list your items below floor of{' '}
-                {chosenMarket?.floorPrice} SOL?
+                {chosenMarket?.floorPrice} SOL
               </div>
             )}
           </div>
