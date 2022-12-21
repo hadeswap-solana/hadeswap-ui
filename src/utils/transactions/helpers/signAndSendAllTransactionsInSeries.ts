@@ -3,11 +3,12 @@ import { web3 } from 'hadeswap-sdk';
 
 import { signAndSendAllTransactions } from './signAndSendAllTransactions';
 
+interface TxnsAndSigners {
+  transaction: web3.Transaction;
+  signers?: web3.Signer[];
+}
 interface TxnDataWithHandlers {
-  txnsAndSigners: {
-    transaction: web3.Transaction;
-    signers?: web3.Signer[];
-  }[];
+  txnsAndSigners: TxnsAndSigners[];
   onBeforeApprove?: () => void;
   onAfterSend?: () => void;
   onSuccess?: () => void;

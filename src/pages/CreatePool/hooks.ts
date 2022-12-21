@@ -41,7 +41,6 @@ export const useCreatePool: UseCreatePool = (props) => {
   const dispatch = useDispatch();
   const connection = useConnection();
   const wallet = useWallet();
-  const history = useHistory();
 
   const create = async () => {
     try {
@@ -124,7 +123,7 @@ export const useCreatePool: UseCreatePool = (props) => {
         });
       }
 
-      history.push('/my-pools');
+      props?.onAfterTxn();
     } catch (error) {
       console.error(error);
       captureSentryError({
@@ -161,6 +160,7 @@ interface CreateTxnSplittedDataProps {
   rawFee: number;
   connection: web3.Connection;
   wallet: WalletContextState;
+  onAfterTxn?: () => void;
 }
 
 type CreateTxnSplittedData = (

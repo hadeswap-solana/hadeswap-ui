@@ -16,6 +16,7 @@ import { MarketInfo, Pair } from '../../state/core/types';
 
 import styles from './styles.module.scss';
 import { renamePairType } from '../../state/core/helpers';
+import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
 
 interface PriceBlockProps {
   editMode?: boolean;
@@ -80,6 +81,11 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       mathCounter: pool?.mathCounter,
     });
 
+    const isWarningVisible =
+      parseFloat(chosenMarket?.floorPrice) > sellingPrice &&
+      !!spotPrice &&
+      pairType !== PairType.TokenForNFT;
+
     return (
       <div className={styles.priceBlockWrapper}>
         <div ref={ref}>
@@ -116,20 +122,20 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
               <Form.Item name="spotPrice">
                 <InputNumber
                   disabled={editMode && isDisableFields}
-                  min={
-                    pairType !== PairType.TokenForNFT
-                      ? chosenMarket?.bestoffer === '0.000'
-                        ? 0
-                        : chosenMarket?.bestoffer
-                      : 0
-                  }
-                  max={
-                    pairType !== PairType.NftForToken
-                      ? chosenMarket?.floorPrice === '0.000'
-                        ? 100000000
-                        : chosenMarket?.floorPrice
-                      : 100000000
-                  }
+                  // min={
+                  //   pairType !== PairType.TokenForNFT
+                  //     ? chosenMarket?.bestoffer === '0.000'
+                  //       ? 0
+                  //       : chosenMarket?.bestoffer
+                  //     : 0
+                  // }
+                  // max={
+                  //   pairType !== PairType.NftForToken
+                  //     ? chosenMarket?.floorPrice === '0.000'
+                  //       ? 100000000
+                  //       : chosenMarket?.floorPrice
+                  //     : 100000000
+                  // }
                   addonAfter="SOL"
                 />
               </Form.Item>
@@ -198,6 +204,13 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                   <span className={styles.noticeValue}>
                     {priceIntoPool?.toFixed(3)} SOL
                   </span>
+                </div>
+              )}
+              {!!isWarningVisible && (
+                <div className={styles.notify}>
+                  <NotifyInfoIcon />
+                  make sure you are going to list your items below floor of{' '}
+                  {sellingPrice?.toFixed(3)} SOL
                 </div>
               )}
               {editMode && !!delta && (
