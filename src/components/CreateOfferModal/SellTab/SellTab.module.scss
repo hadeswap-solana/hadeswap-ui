@@ -1,0 +1,102 @@
+.cardSubTitle {
+  margin: 16px 0 8px 0;
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+
+  @media (max-width: 1024px) {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+}
+
+.card {
+  border: 0 !important;
+  height: 300px !important;
+  padding: 0 !important;
+
+  @media (max-width: 768px) {
+    height: 280px !important;
+  }
+}
+
+.noticeTitle {
+  font-family: var(--font-family-rubik);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--dark-grey-color);
+}
+
+.noticeValue {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.noticeText {
+  margin-top: 16px;
+  font-family: var(--font-family-montserrat);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  height: 48px;
+
+  @media (max-width: 768px) {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+}
+
+.noticeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+
+  @media (max-width: 1024px) {
+    margin-top: 24px;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 16px;
+  }
+}
+
+.offerBtn {
+  margin-top: 16px;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    margin-top: 8px;
+  }
+}
+
+.notConnectWallet {
+  text-align: center;
+}
+
+.notifyWrapper {
+  margin-top: 16px;
+  display: flex;
+  height: 34px;
+}
+
+.notify {
+  display: flex;
+  align-items: center;
+  background-color: var(--component-third-background);
+  gap: 10px;
+  border-radius: 12px;
+  padding: 8px;
+  font-size: 12px;
+  line-height: 14px;
+  height: 34px;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    margin-top: 8px;
+  }
+}

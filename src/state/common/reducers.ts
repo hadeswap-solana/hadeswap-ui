@@ -156,6 +156,19 @@ const setExchangeModalReducer = createReducer<ModalState>(initialModalState, {
   }),
 });
 
+const setCreateOfferModalReducer = createReducer<ModalState>(
+  initialModalState,
+  {
+    [commonTypes.SET_CREATE_OFFER_MODAL]: (
+      state,
+      action: ReturnType<typeof commonActions.setCreateOfferModal>,
+    ) => ({
+      ...state,
+      ...action.payload,
+    }),
+  },
+);
+
 export default combineReducers({
   connection: setConnectionReducer,
   socket: setSocketReducer,
@@ -170,4 +183,5 @@ export default combineReducers({
   cartSider: composeReducers(setCartSiderReducer, toggleCartSiderReducer),
   screenMode: setScreenModeReducer,
   exchangeModal: setExchangeModalReducer,
+  createOfferModal: setCreateOfferModalReducer,
 });

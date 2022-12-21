@@ -69,6 +69,11 @@ export const selectExchangeModalVisible = createSelector(
   identity,
 );
 
+export const selectCreateOfferModalVisible = createSelector(
+  [pathOr(false, ['common', 'createOfferModal', 'isVisible'])],
+  identity,
+);
+
 export const selectScreeMode = createSelector(
   (store: any) => store?.common?.screenMode as ScreenTypes,
   (screenType: ScreenTypes) => screenType,
