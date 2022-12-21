@@ -40,8 +40,12 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
     ref,
   ) => {
     const selectedNftsAmount = selectedNfts.length;
-    const actualBuyOrders =
-      buyOrdersAmount + (selectedNftsAmount - sellOrdersAmount);
+
+    const calcActualBuyOrders = () => {
+      const res = buyOrdersAmount + (selectedNftsAmount - sellOrdersAmount);
+      return res > 0 ? res : 0;
+    };
+    const actualBuyOrders = calcActualBuyOrders();
 
     return (
       <div ref={ref} className={styles.assetsBlockWrapper}>
