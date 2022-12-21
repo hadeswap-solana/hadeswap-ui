@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -7,6 +7,7 @@ import { useFetchWalletPairs, useFetchAllMarkets } from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
 import { CreatePoolButton } from '../../components/CreatePoolButton/CreatePoolButton';
+import Button from '../../components/Buttons/Button';
 import { Spinner } from '../../components/Spinner/Spinner';
 import ItemsList from '../../components/ItemsList';
 import Sorting from '../../components/Sorting/mobile/Sorting';
@@ -19,10 +20,12 @@ import {
   selectAllMarketsLoading,
   selectWalletPairsLoading,
   selectMyPoolsPageTableInfo,
+  selectWalletPairs,
 } from '../../state/core/selectors';
 import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
 import { createPoolTableRow } from '../../state/core/helpers';
+import { useWithdrawAllFees } from './hooks/useWithdrawAllFees';
 
 import styles from './MyPools.module.scss';
 
@@ -52,10 +55,14 @@ export const MyPools: FC = () => {
   useFetchWalletPairs();
 
   const walletPairs = useSelector(selectMyPoolsPageTableInfo);
-
+  const pairs = useSelector(selectWalletPairs);
   const marketsLoading = useSelector(selectAllMarketsLoading);
   const pairsLoading = useSelector(selectWalletPairsLoading);
   const isLoading = marketsLoading || pairsLoading;
+
+  const { onWithdrawClick, isWithdrawAllAvailable } = useWithdrawAllFees({
+    pairs,
+  });
 
   useEffect(() => {
     const [name, order] = sortValue.split('_');
@@ -76,6 +83,15 @@ export const MyPools: FC = () => {
           <div className={styles.buttonWrapper}>
             <div className={styles.poolButtonWrapper}>
               <CreatePoolButton />
+              {connected && !isLoading && !!walletPairs.length && (
+                <Button
+                  outlined
+                  isDisabled={!isWithdrawAllAvailable}
+                  onClick={onWithdrawClick}
+                >
+                  <span>withdraw all fees</span>
+                </Button>
+              )}
             </div>
             {isMobile && !!pools.length && (
               <div className={styles.sortButtonWrapper}>
