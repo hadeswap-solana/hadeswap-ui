@@ -289,9 +289,15 @@ export const calcPriceWithFee = (
 };
 
 export const parseDelta = (rawDelta: number, curveType: string): string => {
-  return curveType === 'exponential'
-    ? `${(rawDelta / 100).toFixed(2)}%`
-    : `${formatBNToString(new BN(rawDelta))} SOL`;
+  if (curveType === BondingCurveType.Exponential) {
+    return `${(rawDelta / 100).toFixed(2)}%`;
+  }
+
+  if (curveType === BondingCurveType.Linear) {
+    return `${formatBNToString(new BN(rawDelta))} SOL`;
+  }
+
+  return `${rawDelta - 1}`;
 };
 
 enum PairType {

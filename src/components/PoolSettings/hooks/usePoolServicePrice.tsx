@@ -7,7 +7,9 @@ type UsePoolServicePrice = ({ pool }: { pool?: Pair }) => {
   formPrice: FormInstance;
   fee: number;
   spotPrice: number;
+  rawSpotPrice: number;
   delta: number;
+  rawDelta: number;
   curveType: BondingCurveType;
   setCurveType: React.Dispatch<BondingCurveType>;
 };
@@ -22,11 +24,23 @@ export const usePoolServicePrice: UsePoolServicePrice = ({ pool }) => {
   const spotPrice: number = Form.useWatch('spotPrice', formPrice);
   const delta: number = Form.useWatch('delta', formPrice);
 
+  const rawSpotPrice = spotPrice * 1e9;
+
+  const calcRawDelta = (): number => {
+    if (curveType === BondingCurveType.Exponential) return delta * 100;
+    if (curveType === BondingCurveType.Linear) return delta * 1e9;
+    return delta - 1;
+  };
+
+  const rawDelta = calcRawDelta();
+
   return {
     formPrice,
     fee,
     spotPrice,
+    rawSpotPrice,
     delta,
+    rawDelta,
     curveType,
     setCurveType,
   };
