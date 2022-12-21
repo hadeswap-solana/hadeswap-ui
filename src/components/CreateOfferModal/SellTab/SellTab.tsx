@@ -55,6 +55,8 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
   const initialValuesAssets = { nftAmount: 0 };
   const initialValuesPrice = { price: 0 };
 
+  const isDisabled = !priceValue || !selectedNfts?.length;
+
   return (
     <>
       {!connected ? (
@@ -94,7 +96,7 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
             time by going to my pools
           </p>
           <Button
-            isDisabled={!priceValue}
+            isDisabled={isDisabled}
             onClick={onCreatePoolClick}
             className={styles.offerBtn}
           >
