@@ -48,7 +48,8 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
 
   const rawSpotPrice = priceValue * 1e9;
 
-  const isWarningVisible = parseFloat(chosenMarket?.floorPrice) < priceValue;
+  const isWarningVisible =
+    parseFloat(chosenMarket?.floorPrice) > priceValue && !!priceValue;
 
   const { create: onCreatePoolClick } = useCreatePool({
     pairType: PairType.NftForToken,
@@ -97,7 +98,7 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
             </Form>
           </div>
           <div className={styles.notifyWrapper}>
-            {isWarningVisible && (
+            {!!isWarningVisible && (
               <div className={styles.notify}>
                 <NotifyInfoIcon />
                 do you really want to list your items below floor of{' '}
