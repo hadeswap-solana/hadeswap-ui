@@ -82,7 +82,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
     });
 
     const isWarningVisible =
-      parseFloat(chosenMarket?.floorPrice) > spotPrice &&
+      parseFloat(chosenMarket?.floorPrice) > sellingPrice &&
       !!spotPrice &&
       pairType !== PairType.TokenForNFT;
 
@@ -210,7 +210,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                 <div className={styles.notify}>
                   <NotifyInfoIcon />
                   make sure you are going to list your items below floor of{' '}
-                  {chosenMarket?.floorPrice} SOL
+                  {sellingPrice?.toFixed(3)} SOL
                 </div>
               )}
               {editMode && !!delta && (
