@@ -19,20 +19,47 @@ const calcStartingPriceWithFees = ({
     : price + (price / 100) * fee;
 };
 
+const calcDelta = (curveType: BondingCurveType, delta: number): number => {
+  if (curveType === BondingCurveType.Exponential) return delta * 100;
+  if (curveType === BondingCurveType.XYK) return delta + 1;
+  return delta;
+};
+
 const calcStartingSellingPrice = ({
   delta,
+  nftsCount,
   curveType,
   spotPrice,
   mathCounter = 0,
 }: {
   delta: number;
+  nftsCount: number;
   curveType: BondingCurveType;
   spotPrice: number;
   mathCounter: number;
 }): number => {
+  // const price = helpers.calculateNextSpotPrice({
+  //   orderType: OrderType.Buy,
+  //   delta: calcDelta(curveType, delta),
+  //   spotPrice: spotPrice,
+  //   bondingCurveType: curveType,
+  //   counter: mathCounter,
+  // });
+  // console.log('orderType', OrderType.Buy);
+  // console.log('delta', calcDelta(curveType, delta));
+  // console.log('spotPrice', spotPrice);
+  // console.log('bondingCurveType', curveType);
+  // console.log('mathCounter', mathCounter);
+
+  // const orderType = curveType === BondingCurveType.XYK ? OrderType.Sell : OrderType.Buy;
+  const deltaValue =
+    curveType === BondingCurveType.XYK
+      ? nftsCount + 1
+      : calcDelta(curveType, delta);
+
   return helpers.calculateNextSpotPrice({
     orderType: OrderType.Buy,
-    delta: curveType === BondingCurveType.Exponential ? delta * 100 : delta,
+    delta: deltaValue,
     spotPrice: spotPrice,
     bondingCurveType: curveType,
     counter: mathCounter,
@@ -43,11 +70,26 @@ export const startingBuyingPrice = ({
   pairType,
   fee,
   spotPrice,
+  nftsCount,
+  curveType,
+  mathCounter = 0,
 }: {
   pairType: PairType;
   fee: number;
   spotPrice: number;
+  nftsCount: number;
+  curveType: BondingCurveType;
+  mathCounter: number;
 }): number => {
+  if (curveType === BondingCurveType.XYK) {
+    return helpers.calculateNextSpotPrice({
+      orderType: OrderType.Sell,
+      delta: nftsCount + 1,
+      spotPrice: spotPrice,
+      bondingCurveType: curveType,
+      counter: mathCounter,
+    });
+  }
   return pairType === PairType.LiquidityProvision
     ? calcStartingPriceWithFees({
         price: spotPrice,
@@ -62,6 +104,7 @@ export const startingSellingPrice = ({
   curveType,
   fee,
   delta,
+  nftsCount,
   spotPrice,
   mathCounter,
 }: {
@@ -69,13 +112,17 @@ export const startingSellingPrice = ({
   curveType: BondingCurveType;
   fee: number;
   delta: number;
+  nftsCount: number;
   spotPrice: number;
   mathCounter: number;
 }): number => {
+  if (curveType === BondingCurveType.XYK && !nftsCount) return 0;
+
   return pairType === PairType.LiquidityProvision
     ? calcStartingPriceWithFees({
         price: calcStartingSellingPrice({
           delta,
+          nftsCount,
           curveType,
           spotPrice,
           mathCounter,
@@ -83,7 +130,13 @@ export const startingSellingPrice = ({
         orderType: OrderType.Sell,
         fee,
       })
-    : calcStartingSellingPrice({ delta, curveType, spotPrice, mathCounter });
+    : calcStartingSellingPrice({
+        delta,
+        nftsCount,
+        curveType,
+        spotPrice,
+        mathCounter,
+      });
 };
 
 export const priceLockedIntoPool = ({
@@ -106,9 +159,17 @@ export const priceLockedIntoPool = ({
   const amount =
     pairType === PairType.TokenForNFT ? buyOrdersAmount : nftsCount;
 
+  const calcDeltaValue = () => {
+    if (pairType === PairType.TokenForNFT) {
+      return curveType === BondingCurveType.XYK ? buyOrdersAmount + 1 : delta;
+    }
+    return curveType === BondingCurveType.XYK ? nftsCount + 1 : delta;
+  };
+  const deltaValue = calcDeltaValue();
+
   const { total } = helpers.calculatePricesArray({
     starting_spot_price: spotPrice,
-    delta,
+    delta: deltaValue,
     amount,
     bondingCurveType: curveType,
     orderType: OrderType.Sell,

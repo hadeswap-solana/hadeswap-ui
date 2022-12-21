@@ -1,9 +1,6 @@
 import { FC, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  BondingCurveType,
-  PairType,
-} from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
@@ -48,8 +45,16 @@ export const StepThree: FC<StepThreeProps> = ({
     buyOrdersAmount,
   } = usePoolServiceAssets({ marketPublicKey: chosenMarketKey });
 
-  const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
-    usePoolServicePrice({});
+  const {
+    formPrice,
+    fee,
+    spotPrice,
+    rawSpotPrice,
+    delta,
+    rawDelta,
+    curveType,
+    setCurveType,
+  } = usePoolServicePrice({});
 
   const initialValuesPrice = {
     fee: 0,
@@ -57,9 +62,6 @@ export const StepThree: FC<StepThreeProps> = ({
     delta: 0,
   };
 
-  const rawSpotPrice = spotPrice * 1e9;
-  const rawDelta =
-    curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
   const rawFee = fee * 100;
 
   const isCreateButtonDisabled =

@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BondingCurveType,
@@ -51,26 +51,33 @@ export const EditPool: FC = () => {
   const buyOrdersAmount = pool?.buyOrdersAmount;
   const sellOrdersAmount = pool?.sellOrders.length;
 
-  const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
-    usePoolServicePrice({ pool });
+  const {
+    formPrice,
+    fee,
+    spotPrice,
+    rawSpotPrice,
+    delta,
+    rawDelta,
+    curveType,
+    setCurveType,
+  } = usePoolServicePrice({ pool });
+
+  const calcInitialDelta = useCallback(() => {
+    if (curveType === BondingCurveType.Exponential) return pool?.delta / 100;
+    if (curveType === BondingCurveType.Linear) return pool?.delta / 1e9;
+    return pool?.delta;
+  }, [curveType, pool?.delta]);
 
   const initialValuesPrice = useMemo(
     () => ({
       fee: pool?.fee / 100,
       spotPrice: pool?.currentSpotPrice / 1e9,
-      delta:
-        curveType === BondingCurveType.Exponential
-          ? pool?.delta / 100
-          : pool?.delta / 1e9,
+      delta: calcInitialDelta(),
     }),
-    [pool, curveType],
+    [pool?.fee, pool?.currentSpotPrice, calcInitialDelta],
   );
 
   const pairType = pool?.type;
-
-  const rawSpotPrice = spotPrice * 1e9;
-  const rawDelta =
-    curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
 
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({

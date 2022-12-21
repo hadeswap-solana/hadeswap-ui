@@ -50,10 +50,7 @@ export const usePriceGraph: UsePriceGraph = ({
     starting_spot_price: baseSpotPrice,
     delta: delta,
     amount: buyOrdersAmount,
-    bondingCurveType:
-      bondingCurve === 'linear'
-        ? BondingCurveType.Linear
-        : BondingCurveType.Exponential,
+    bondingCurveType: bondingCurve,
     orderType: OrderType.Sell,
     counter: mathCounter + 1,
   }) as { array: number[]; total: number };
@@ -62,10 +59,7 @@ export const usePriceGraph: UsePriceGraph = ({
     starting_spot_price: baseSpotPrice,
     delta: delta,
     amount: nftsCount,
-    bondingCurveType:
-      bondingCurve === 'linear'
-        ? BondingCurveType.Linear
-        : BondingCurveType.Exponential,
+    bondingCurveType: bondingCurve,
     orderType: OrderType.Buy,
     counter: mathCounter,
   }) as { array: number[]; total: number };
@@ -75,10 +69,7 @@ export const usePriceGraph: UsePriceGraph = ({
       starting_spot_price: baseSpotPrice,
       delta: delta,
       amount: buyOrdersAmount + nftsCount,
-      bondingCurveType:
-        bondingCurve === 'linear'
-          ? BondingCurveType.Linear
-          : BondingCurveType.Exponential,
+      bondingCurveType: bondingCurve,
       orderType: OrderType.Sell,
       counter: mathCounter + 1,
     }) as { array: number[]; total: number };
