@@ -116,20 +116,20 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
               <Form.Item name="spotPrice">
                 <InputNumber
                   disabled={editMode && isDisableFields}
-                  min={
-                    pairType !== PairType.TokenForNFT
-                      ? chosenMarket?.bestoffer === '0.000'
-                        ? 0
-                        : chosenMarket?.bestoffer
-                      : 0
-                  }
-                  max={
-                    pairType !== PairType.NftForToken
-                      ? chosenMarket?.floorPrice === '0.000'
-                        ? 100000000
-                        : chosenMarket?.floorPrice
-                      : 100000000
-                  }
+                  // min={
+                  //   pairType !== PairType.TokenForNFT
+                  //     ? chosenMarket?.bestoffer === '0.000'
+                  //       ? 0
+                  //       : chosenMarket?.bestoffer
+                  //     : 0
+                  // }
+                  // max={
+                  //   pairType !== PairType.NftForToken
+                  //     ? chosenMarket?.floorPrice === '0.000'
+                  //       ? 100000000
+                  //       : chosenMarket?.floorPrice
+                  //     : 100000000
+                  // }
                   addonAfter="SOL"
                 />
               </Form.Item>
