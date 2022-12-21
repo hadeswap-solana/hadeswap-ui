@@ -22,10 +22,10 @@
 }
 
 .notice {
-  padding-top: 220px;
+  padding-top: 270px;
 
-  @media (max-width: 767px) {
-    padding-top: 200px;
+  @media (max-width: 768px) {
+    padding-top: 242px;
   }
 }
 
@@ -49,6 +49,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+  height: 48px;
 
   @media (max-width: 767px) {
     margin-top: 8px;

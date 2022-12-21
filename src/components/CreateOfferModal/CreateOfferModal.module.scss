@@ -11,11 +11,11 @@
       width: 100% !important;
     }
     .ant-modal-content {
-      height: 705px;
+      height: 760px;
       @media (max-width: 767px) {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
-        height: 655px;
+        height: 665px;
       }
     }
     .ant-modal-body {
@@ -55,10 +55,18 @@
   :global {
     .ant-tabs-content {
       margin-top: 24px;
+
+      @media screen and (max-width: 768px) {
+        margin-top: 0;
+      }
     }
     .ant-tabs-nav-wrap {
       height: 67px;
       justify-content: flex-end !important;
+
+      @media screen and (max-width: 768px) {
+        height: 59px;
+      }
     }
     .ant-tabs-tab {
       width: 105px;
