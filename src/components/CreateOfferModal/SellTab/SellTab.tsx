@@ -2,7 +2,7 @@ import { FC, useRef } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Form, InputNumber, Tooltip } from 'antd';
+import { Form, InputNumber } from 'antd';
 import {
   BondingCurveType,
   PairType,
@@ -32,7 +32,7 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
 
   const {
     nfts,
-    nftAmount,
+    buyOrdersAmount,
     selectedNfts,
     toggleNft,
     selectAll,
@@ -53,7 +53,7 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
 
   const { create: onCreatePoolClick } = useCreatePool({
     pairType: PairType.NftForToken,
-    nftsAmount: nftAmount,
+    buyOrdersAmount,
     marketPubkey: marketPublicKey,
     selectedNfts,
     curveType: BondingCurveType.Linear,
@@ -64,7 +64,6 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
   });
 
   const assetsBlockRef = useRef<HTMLDivElement>();
-  const initialValuesAssets = { nftAmount: 0 };
   const initialValuesPrice = { price: 0 };
 
   const isDisabled = !priceValue || !selectedNfts?.length;
@@ -86,7 +85,6 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
             form={formAssets}
             selectAll={selectAll}
             deselectAll={deselectAll}
-            formInitialValues={initialValuesAssets}
             className={styles.card}
           />
           <div>

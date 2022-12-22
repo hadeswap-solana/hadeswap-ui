@@ -16,7 +16,7 @@ const BuyTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
   const { connected } = useWallet();
 
-  const { selectedNfts, nftAmount, formAssets } = usePoolServiceAssets({
+  const { selectedNfts, buyOrdersAmount, formAssets } = usePoolServiceAssets({
     marketPublicKey,
   });
 
@@ -26,14 +26,14 @@ const BuyTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
   const initialValuesAssets = { nftAmount: 0 };
   const initialValuesPrice = { price: 0 };
 
-  const totalValues = priceValue * nftAmount;
+  const totalValues = priceValue * buyOrdersAmount;
   const rawSpotPrice = priceValue * 1e9;
 
-  const isDisabled = !priceValue || !nftAmount;
+  const isDisabled = !priceValue || !buyOrdersAmount;
 
   const { create: onCreatePoolClick } = useCreatePool({
     pairType: PairType.TokenForNFT,
-    nftsAmount: nftAmount,
+    buyOrdersAmount,
     marketPubkey: marketPublicKey,
     selectedNfts,
     curveType: BondingCurveType.Linear,

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
-import { useHistory } from 'react-router-dom';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 import {
   OrderType,
