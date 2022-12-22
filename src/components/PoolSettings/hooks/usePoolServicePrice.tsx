@@ -3,9 +3,16 @@ import { Form, FormInstance } from 'antd';
 import { BondingCurveType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Pair } from '../../../state/core/types';
 
-type UsePoolServicePrice = ({ pool }: { pool?: Pair }) => {
+type UsePoolServicePrice = ({
+  pool,
+  selectedNftsAmount,
+}: {
+  pool?: Pair;
+  selectedNftsAmount: number;
+}) => {
   formPrice: FormInstance;
   fee: number;
+  rawFee: number;
   spotPrice: number;
   rawSpotPrice: number;
   delta: number;
@@ -14,7 +21,10 @@ type UsePoolServicePrice = ({ pool }: { pool?: Pair }) => {
   setCurveType: React.Dispatch<BondingCurveType>;
 };
 
-export const usePoolServicePrice: UsePoolServicePrice = ({ pool }) => {
+export const usePoolServicePrice: UsePoolServicePrice = ({
+  pool,
+  selectedNftsAmount,
+}) => {
   const [curveType, setCurveType] = useState<BondingCurveType>(
     () => pool?.bondingCurve || BondingCurveType.Exponential,
   );
@@ -24,12 +34,13 @@ export const usePoolServicePrice: UsePoolServicePrice = ({ pool }) => {
   const spotPrice: number = Form.useWatch('spotPrice', formPrice);
   const delta: number = Form.useWatch('delta', formPrice);
 
+  const rawFee = fee * 100;
   const rawSpotPrice = spotPrice * 1e9;
 
   const calcRawDelta = (): number => {
     if (curveType === BondingCurveType.Exponential) return delta * 100;
     if (curveType === BondingCurveType.Linear) return delta * 1e9;
-    return delta - 1;
+    return selectedNftsAmount;
   };
 
   const rawDelta = calcRawDelta();
@@ -37,9 +48,10 @@ export const usePoolServicePrice: UsePoolServicePrice = ({ pool }) => {
   return {
     formPrice,
     fee,
+    rawFee,
     spotPrice,
     rawSpotPrice,
-    delta,
+    delta: curveType === BondingCurveType.XYK ? selectedNftsAmount : delta,
     rawDelta,
     curveType,
     setCurveType,

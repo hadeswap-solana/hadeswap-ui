@@ -74,19 +74,20 @@ export const EditPool: FC = () => {
   const {
     formPrice,
     fee,
+    rawFee,
     spotPrice,
     rawSpotPrice,
     delta,
     rawDelta,
     curveType,
     setCurveType,
-  } = usePoolServicePrice({ pool });
+  } = usePoolServicePrice({ pool, selectedNftsAmount });
 
   const calcInitialDelta = useCallback(() => {
     if (curveType === BondingCurveType.Exponential) return pool?.delta / 100;
     if (curveType === BondingCurveType.Linear) return pool?.delta / 1e9;
-    return pool?.delta;
-  }, [curveType, pool?.delta]);
+    return pool?.nftsCount;
+  }, [curveType, pool?.nftsCount, pool?.delta]);
 
   const initialValuesAssets = useMemo(
     () => ({
@@ -109,7 +110,7 @@ export const EditPool: FC = () => {
       pool,
       selectedNfts,
       buyOrdersAmount: actualBuyOrders,
-      rawFee: fee * 100,
+      rawFee,
       rawDelta,
       rawSpotPrice,
     });

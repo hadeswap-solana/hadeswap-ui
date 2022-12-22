@@ -50,13 +50,14 @@ export const StepThree: FC<StepThreeProps> = ({
   const {
     formPrice,
     fee,
+    rawFee,
     spotPrice,
     rawSpotPrice,
     delta,
     rawDelta,
     curveType,
     setCurveType,
-  } = usePoolServicePrice({});
+  } = usePoolServicePrice({ selectedNftsAmount: selectedNfts.length });
 
   const initialValuesAssets = useMemo(
     () => ({
@@ -73,8 +74,6 @@ export const StepThree: FC<StepThreeProps> = ({
     }),
     [],
   );
-
-  const rawFee = fee * 100;
 
   const isCreateButtonDisabled =
     (pairType !== PairType.TokenForNFT && !selectedNfts.length) ||
@@ -134,9 +133,9 @@ export const StepThree: FC<StepThreeProps> = ({
               setCurveType={setCurveType}
               spotPrice={spotPrice}
               delta={delta}
+              nftsCount={selectedNfts.length}
               fee={fee}
               buyOrdersAmount={buyOrdersAmount}
-              nftsCount={selectedNfts.length}
               formInitialValues={initialValuesPrice}
             />
             <AssetsBlock

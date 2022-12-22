@@ -297,7 +297,7 @@ export const parseDelta = (rawDelta: number, curveType: string): string => {
     return `${formatBNToString(new BN(rawDelta))} SOL`;
   }
 
-  return `${rawDelta - 1}`;
+  return `${rawDelta}`;
 };
 
 enum PairType {

@@ -27,9 +27,9 @@ interface PriceBlockProps {
   setCurveType: React.Dispatch<BondingCurveType>;
   spotPrice: number;
   delta: number;
+  nftsCount: number;
   fee: number;
   buyOrdersAmount: number;
-  nftsCount: number;
   formInitialValues: {
     fee: number;
     spotPrice: number;
@@ -49,9 +49,9 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       setCurveType,
       spotPrice,
       delta,
+      nftsCount,
       fee,
       buyOrdersAmount,
-      nftsCount,
       formInitialValues,
       pool,
     },
@@ -70,8 +70,8 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
     const buyingPrice = startingBuyingPrice({
       pairType,
       fee,
+      delta,
       spotPrice,
-      nftsCount,
       curveType,
       mathCounter: pool?.mathCounter,
     });
@@ -82,7 +82,6 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       fee,
       spotPrice,
       delta,
-      nftsCount,
       mathCounter: 0,
     });
 
@@ -168,7 +167,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
               {curveType === BondingCurveType.XYK ? (
                 <>
                   <h3 className={styles.cardSubTitle}>nfts amount</h3>
-                  <InputNumber disabled value={nftsCount} addonAfter="NFTs" />
+                  <InputNumber disabled value={delta} addonAfter="NFTs" />
                 </>
               ) : (
                 <>
