@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC, useMemo, useRef } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -40,6 +40,13 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
     formAssets,
     nftsLoading,
   } = usePoolServiceAssets({ marketPublicKey });
+
+  const initialValuesAssets = useMemo(
+    () => ({
+      buyOrdersAmount: 0,
+    }),
+    [],
+  );
 
   const isLoading = nftsLoading || marketsLoading;
 
@@ -86,6 +93,7 @@ const SellTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
             selectAll={selectAll}
             deselectAll={deselectAll}
             className={styles.card}
+            formInitialValues={initialValuesAssets}
           />
           <div>
             <h3 className={styles.cardSubTitle}>price per NFT</h3>
