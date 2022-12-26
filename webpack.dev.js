@@ -58,8 +58,10 @@ module.exports = (env) => {
             {
               loader: 'css-loader',
               options: {
-                modules: true,
-              },
+                modules: {
+                  localIdentName: '[name]__[local]--[hash:base64:5]',
+                },
+              }
             },
             {
               loader: 'sass-loader',

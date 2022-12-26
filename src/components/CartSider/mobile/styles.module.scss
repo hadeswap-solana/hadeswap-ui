@@ -27,7 +27,7 @@
 
 .showModalToTop {
   top: 0;
-  height: 100vh;
+  height: calc(100vh + 1px);
   animation: showToTop var(--base-animation-time);
 }
 
