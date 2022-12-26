@@ -18,10 +18,12 @@ interface AssetsBlockProps {
   toggleNft: (mint: string) => void;
   selectAll: () => void;
   deselectAll: () => void;
-  form?: FormInstance;
+  form: FormInstance;
   buyOrdersAmount?: number;
-  sellOrdersAmount?: number;
   className?: string;
+  formInitialValues: {
+    buyOrdersAmount: number;
+  };
 }
 
 export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
@@ -37,18 +39,10 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
       pairType,
       form,
       buyOrdersAmount,
-      sellOrdersAmount,
+      formInitialValues,
     },
     ref,
   ) => {
-    const selectedNftsAmount = selectedNfts.length;
-
-    const calcActualBuyOrders = () => {
-      const res = buyOrdersAmount + (selectedNftsAmount - sellOrdersAmount);
-      return res > 0 ? res : 0;
-    };
-    const actualBuyOrders = calcActualBuyOrders();
-
     return (
       <div ref={ref} className={styles.assetsBlockWrapper}>
         <Card
@@ -85,7 +79,7 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
           {pairType === PairType.TokenForNFT && (
             <>
               <h3 className={styles.cardSubTitle}>amount of NFTs</h3>
-              <Form form={form} initialValues={{ buyOrdersAmount: 0 }}>
+              <Form form={form} initialValues={formInitialValues}>
                 <Form.Item name="buyOrdersAmount">
                   <InputNumber min={0} addonAfter="NFTs" />
                 </Form.Item>
@@ -95,12 +89,7 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
           {pairType === PairType.LiquidityProvision && editMode && (
             <>
               <h3 className={styles.cardSubTitle}>buy orders amount</h3>
-              <InputNumber
-                disabled
-                value={actualBuyOrders}
-                defaultValue={buyOrdersAmount}
-                addonAfter="NFTs"
-              />
+              <InputNumber disabled value={buyOrdersAmount} addonAfter="NFTs" />
             </>
           )}
           {pairType !== PairType.TokenForNFT && (

@@ -19,7 +19,7 @@ interface UsePoolServiceAssets {
   deselectAll: () => void;
   nftsLoading: boolean;
   formAssets: FormInstance;
-  buyOrdersAmount?: number;
+  buyOrdersAmount: number;
 }
 
 const createNftsByMint = (nfts: Nft[] = [], isSelected: boolean) => {

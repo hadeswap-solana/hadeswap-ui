@@ -1,4 +1,4 @@
-import { FC, useRef, useEffect } from 'react';
+import { FC, useRef, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -53,11 +53,21 @@ export const StepThree: FC<StepThreeProps> = ({
   const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
     usePoolServicePrice({});
 
-  const initialValuesPrice = {
-    fee: 0,
-    spotPrice: 0,
-    delta: 0,
-  };
+  const initialValuesAssets = useMemo(
+    () => ({
+      buyOrdersAmount: 0,
+    }),
+    [],
+  );
+
+  const initialValuesPrice = useMemo(
+    () => ({
+      fee: 0,
+      spotPrice: 0,
+      delta: 0,
+    }),
+    [],
+  );
 
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
@@ -136,6 +146,7 @@ export const StepThree: FC<StepThreeProps> = ({
               form={formAssets}
               selectAll={selectAll}
               deselectAll={deselectAll}
+              formInitialValues={initialValuesAssets}
             />
           </div>
           {!!chartData && !!chartData?.length && (
