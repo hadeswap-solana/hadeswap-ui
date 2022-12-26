@@ -23,6 +23,7 @@ import { signAndSendTransactionsInSeries } from '../../utils/transactions';
 import { CartOrder } from '../../state/core/types';
 
 export interface CrossMintConfig {
+  type: string;
   mintHash: string;
   pairPublicKey: string;
 }
@@ -63,6 +64,7 @@ export const useCartSider: UseCartSider = () => {
 
   const isOneBuyNft = cartItems.buy.length === 1;
   const crossmintConfig = {
+    type: cartItems?.buy[0]?.name,
     mintHash: cartItems?.buy[0]?.mint,
     pairPublicKey: cartItems?.buy[0]?.targetPairPukey,
   };
