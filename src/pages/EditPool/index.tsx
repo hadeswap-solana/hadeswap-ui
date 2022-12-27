@@ -38,6 +38,8 @@ export const EditPool: FC = () => {
   const marketLoading = useSelector(selectAllMarketsLoading);
   const poolLoading = useSelector(selectCertainPairLoading);
 
+  const pairType = pool?.type;
+
   const chosenMarket = markets.find(
     (item) => item.marketPubkey === pool?.market,
   );
@@ -50,15 +52,34 @@ export const EditPool: FC = () => {
     deselectAll,
     nftsLoading,
     formAssets,
-    nftAmount,
     buyOrdersAmount,
   } = usePoolServiceAssets({
     marketPublicKey: chosenMarket?.marketPubkey,
     preSelectedNfts: pool?.sellOrders,
   });
 
+  const selectedNftsAmount = selectedNfts.length;
+  const sellOrdersAmount = pool?.sellOrders.length;
+
+  const calcActualBuyOrders = () => {
+    if (pairType === PairType.LiquidityProvision) {
+      const res =
+        pool?.buyOrdersAmount + (selectedNftsAmount - sellOrdersAmount);
+      return res > 0 ? res : 0;
+    }
+    return buyOrdersAmount;
+  };
+  const actualBuyOrders = calcActualBuyOrders();
+
   const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
     usePoolServicePrice({ pool });
+
+  const initialValuesAssets = useMemo(
+    () => ({
+      buyOrdersAmount: pool?.buyOrdersAmount,
+    }),
+    [pool?.buyOrdersAmount],
+  );
 
   const initialValuesPrice = useMemo(
     () => ({
@@ -72,16 +93,6 @@ export const EditPool: FC = () => {
     [pool, curveType],
   );
 
-  const initialValuesAssets = useMemo(
-    () => ({
-      nftAmount: pool?.buyOrdersAmount,
-      buyOrdersAmount: pool?.buyOrdersAmount,
-    }),
-    [pool],
-  );
-
-  const pairType = pool?.type;
-
   const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
     curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
@@ -90,7 +101,7 @@ export const EditPool: FC = () => {
     usePoolChange({
       pool,
       selectedNfts,
-      buyOrdersAmount: nftAmount,
+      buyOrdersAmount: actualBuyOrders,
       rawFee: fee * 100,
       rawDelta,
       rawSpotPrice,
@@ -101,7 +112,15 @@ export const EditPool: FC = () => {
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
-  const isLoading = marketLoading || poolLoading || nftsLoading;
+  const chartData = usePriceGraph({
+    baseSpotPrice: spotPrice * 1e9,
+    delta: rawDelta,
+    fee: fee || 0,
+    buyOrdersAmount: actualBuyOrders,
+    nftsCount: selectedNfts.length,
+    bondingCurve: curveType,
+    type: pairType,
+  });
 
   const assetsBlockRef = useRef<HTMLDivElement>();
   const priceBlockRef = useRef<HTMLDivElement>();
@@ -116,15 +135,7 @@ export const EditPool: FC = () => {
     }
   });
 
-  const chartData = usePriceGraph({
-    baseSpotPrice: spotPrice * 1e9,
-    delta: rawDelta,
-    fee: fee || 0,
-    bondingCurve: curveType,
-    buyOrdersAmount: nftAmount,
-    nftsCount: selectedNfts.length,
-    type: pairType,
-  });
+  const isLoading = marketLoading || poolLoading || nftsLoading;
 
   return (
     <AppLayout>
@@ -155,7 +166,7 @@ export const EditPool: FC = () => {
                 spotPrice={spotPrice}
                 delta={delta}
                 fee={fee}
-                nftAmount={nftAmount}
+                buyOrdersAmount={actualBuyOrders}
                 nftsCount={selectedNfts.length}
                 formInitialValues={initialValuesPrice}
                 pool={pool}
@@ -165,17 +176,15 @@ export const EditPool: FC = () => {
                 editMode
                 selectedNfts={selectedNfts}
                 pairType={pairType}
+                form={formAssets}
                 nfts={nfts}
                 toggleNft={toggleNft}
                 selectAll={selectAll}
                 deselectAll={deselectAll}
-                form={formAssets}
+                buyOrdersAmount={actualBuyOrders}
                 formInitialValues={initialValuesAssets}
-                pool={pool}
-                buyOrdersAmount={buyOrdersAmount}
               />
             </div>
-
             {!!chartData && !!chartData?.length && (
               <div className={styles.chartWrapper}>
                 <Chart title="price graph" data={chartData} />

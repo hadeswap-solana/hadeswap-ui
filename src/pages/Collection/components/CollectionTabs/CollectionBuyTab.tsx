@@ -76,7 +76,7 @@ export const CollectionBuyTab: FC = () => {
 
       setSelectedBuyOrder(order);
     },
-    [dispatch, marketPairs, cartItems, openExchangeModal],
+    [dispatch, cartItems, openExchangeModal],
   );
 
   return (

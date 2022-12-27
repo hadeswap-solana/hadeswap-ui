@@ -18,7 +18,7 @@ import { NotifyType } from '../../../utils/solanaUtils';
 export type UsePoolChange = (props: {
   pool: Pair;
   selectedNfts: Nft[];
-  buyOrdersAmount: number;
+  buyOrdersAmount?: number;
   rawFee: number;
   rawSpotPrice: number;
   rawDelta: number;
