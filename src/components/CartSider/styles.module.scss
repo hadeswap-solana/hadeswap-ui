@@ -12,26 +12,27 @@
 }
 
 .openCart {
+  display: flex;
+  flex-direction: column;
   width: var(--cart-sider-width);
 }
 
 .cartBody {
+  flex-grow: 1;
   overflow-x: hidden;
   overflow-y: auto;
-  height: calc(100% - 80px - 16px);
-  width: calc(100% + 16px);
+  margin-right: -16px;
   padding: 32px 0 0 32px;
 }
 
 .submitWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin: 32px;
   width: 260px;
 
   button {
     width: 100%;
-  }
-
-  button:first-child {
-    margin-bottom: 16px;
   }
 }

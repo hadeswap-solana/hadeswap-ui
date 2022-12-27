@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import CartSection from './components/CartSection';
 import CartSectionInvalid from './components/CartSectionInvalid';
 import Button from '../Buttons/Button';
+import { CrossmintButton } from './components/CrossmintButton';
 import { CartSiderProps } from './index';
 
 import styles from './styles.module.scss';
@@ -19,6 +20,8 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
   totalSell,
   invalidItems,
   isExchangeMode,
+  isOneBuyNft,
+  crossmintConfig,
 }) => {
   const dispatch = useDispatch();
   const titleBuy = `buy ${cartItems.buy.length} ${
@@ -53,9 +56,10 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
         <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
           <span>swap</span>
         </Button>
-        {/* <Button outlined isDisabled={isSwapButtonDisabled} onClick={() => null}>
-          <span>swap by credit card</span>
-        </Button> */}
+        <CrossmintButton
+          isOneBuyNft={isOneBuyNft}
+          crossmintConfig={crossmintConfig}
+        />
       </div>
     </div>
   );
