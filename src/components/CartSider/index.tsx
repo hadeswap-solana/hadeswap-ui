@@ -6,7 +6,7 @@ import {
 } from '../../state/common/selectors';
 import CartSiderDesktop from './CartSider';
 import CartSiderMobile from './mobile/CartSider';
-import { useCartSider, useSwap } from './hooks';
+import { useCartSider, useSwap, CrossMintConfig } from './hooks';
 import { ScreenTypes } from '../../state/common/types';
 import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
@@ -29,6 +29,8 @@ export interface CartSiderProps {
   totalBuy: number;
   totalSell: number;
   isExchangeMode?: boolean;
+  isOneBuyNft: boolean;
+  crossmintConfig: CrossMintConfig;
 }
 
 const CartSider: FC = () => {
@@ -44,6 +46,8 @@ const CartSider: FC = () => {
     itemsAmount,
     totalBuy,
     totalSell,
+    isOneBuyNft,
+    crossmintConfig,
   } = useCartSider();
 
   const isSwapButtonDisabled = !itemsAmount;
@@ -75,6 +79,8 @@ const CartSider: FC = () => {
       itemsAmount={itemsAmount}
       totalBuy={totalBuy}
       totalSell={totalSell}
+      isOneBuyNft={isOneBuyNft}
+      crossmintConfig={crossmintConfig}
     />
   ) : (
     <CartSiderDesktop
@@ -90,6 +96,8 @@ const CartSider: FC = () => {
       totalBuy={totalBuy}
       totalSell={totalSell}
       isExchangeMode={exchangeModalVisible}
+      isOneBuyNft={isOneBuyNft}
+      crossmintConfig={crossmintConfig}
     />
   );
 };

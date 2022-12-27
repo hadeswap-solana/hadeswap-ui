@@ -6,6 +6,7 @@ import BadgeButton from '../../Buttons/BadgeButton';
 import CartSection from '../components/CartSection';
 import CartSectionInvalid from '../components/CartSectionInvalid';
 import Button from '../../Buttons/Button';
+import { CrossmintButton } from '../components/CrossmintButton';
 import { CartSiderProps } from '../index';
 
 import styles from './styles.module.scss';
@@ -23,6 +24,8 @@ const CartSiderMobile: FC<CartSiderProps> = ({
   itemsAmount,
   totalBuy,
   totalSell,
+  isOneBuyNft,
+  crossmintConfig,
 }) => {
   const dispatch = useDispatch();
 
@@ -88,9 +91,10 @@ const CartSiderMobile: FC<CartSiderProps> = ({
               <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
                 <span>swap</span>
               </Button>
-              {/* <Button outlined isDisabled={isSwapButtonDisabled} onClick={() => null}>
-                     <span>swap by credit card</span>
-                  </Button> */}
+              <CrossmintButton
+                isOneBuyNft={isOneBuyNft}
+                crossmintConfig={crossmintConfig}
+              />
             </div>
           </div>
         </Modal>
