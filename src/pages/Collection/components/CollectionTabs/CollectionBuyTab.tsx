@@ -57,11 +57,11 @@ export const CollectionBuyTab: FC = () => {
     close: closeExchangeModal,
   } = useExchangeModal();
 
-  const onCancelExchangeModal = (): void => {
+  const onCancelExchangeModal = useCallback(() => {
     closeExchangeModal();
     dispatch(commonActions.setCartSider({ isVisible: false }));
     dispatch(coreActions.clearCart());
-  };
+  }, [dispatch, closeExchangeModal]);
 
   const addBuyOrderToExchange = useCallback(
     (order: MarketOrder) => () => {
@@ -76,7 +76,12 @@ export const CollectionBuyTab: FC = () => {
 
       setSelectedBuyOrder(order);
     },
-    [dispatch, cartItems, openExchangeModal],
+    [
+      dispatch,
+      cartItems?.buy.length,
+      cartItems?.sell.length,
+      openExchangeModal,
+    ],
   );
 
   return (

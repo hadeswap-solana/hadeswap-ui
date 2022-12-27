@@ -22,6 +22,12 @@ import { NotifyType } from '../../utils/solanaUtils';
 import { signAndSendTransactionsInSeries } from '../../utils/transactions';
 import { CartOrder } from '../../state/core/types';
 
+export interface CrossMintConfig {
+  type: string;
+  mintHash: string;
+  pairPublicKey: string;
+}
+
 type UseCartSider = () => {
   cartItems: {
     buy: CartOrder[];
@@ -33,6 +39,8 @@ type UseCartSider = () => {
   itemsAmount: number;
   totalBuy: number;
   totalSell: number;
+  isOneBuyNft: boolean;
+  crossmintConfig: CrossMintConfig;
 };
 
 type UseSwap = (params: {
@@ -54,6 +62,13 @@ export const useCartSider: UseCartSider = () => {
   const totalBuy = cartItems.buy.reduce((acc, item) => acc + item.price, 0);
   const totalSell = cartItems.sell.reduce((acc, item) => acc + item.price, 0);
 
+  const isOneBuyNft = cartItems.buy.length === 1;
+  const crossmintConfig = {
+    type: cartItems?.buy[0]?.name,
+    mintHash: cartItems?.buy[0]?.mint,
+    pairPublicKey: cartItems?.buy[0]?.targetPairPukey,
+  };
+
   return {
     cartItems,
     cartOpened,
@@ -62,6 +77,8 @@ export const useCartSider: UseCartSider = () => {
     itemsAmount,
     totalBuy,
     totalSell,
+    isOneBuyNft,
+    crossmintConfig,
   };
 };
 
