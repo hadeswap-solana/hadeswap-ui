@@ -16,24 +16,24 @@ const BuyTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
   const { connected } = useWallet();
 
-  const { selectedNfts, nftAmount, formAssets } = usePoolServiceAssets({
+  const { selectedNfts, buyOrdersAmount, formAssets } = usePoolServiceAssets({
     marketPublicKey,
   });
 
   const [formPrice] = Form.useForm();
   const priceValue: number = Form.useWatch('price', formPrice);
 
-  const initialValuesAssets = { nftAmount: 0 };
+  const initialValuesAssets = { buyOrdersAmount: 0 };
   const initialValuesPrice = { price: 0 };
 
-  const totalValues = priceValue * nftAmount;
+  const totalValues = priceValue * buyOrdersAmount;
   const rawSpotPrice = priceValue * 1e9;
 
-  const isDisabled = !priceValue || !nftAmount;
+  const isDisabled = !priceValue || !buyOrdersAmount;
 
   const { create: onCreatePoolClick } = useCreatePool({
     pairType: PairType.TokenForNFT,
-    nftsAmount: nftAmount,
+    buyOrdersAmount,
     marketPubkey: marketPublicKey,
     selectedNfts,
     curveType: BondingCurveType.Linear,
@@ -51,7 +51,7 @@ const BuyTab: FC<{ onCancel: () => void }> = ({ onCancel }) => {
         <>
           <h3 className={styles.cardSubTitle}>amount of NFTs</h3>
           <Form form={formAssets} initialValues={initialValuesAssets}>
-            <Form.Item name="nftAmount">
+            <Form.Item name="buyOrdersAmount">
               <InputNumber min="0" addonAfter="NFTs" />
             </Form.Item>
           </Form>
