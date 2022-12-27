@@ -1,0 +1,44 @@
+.sortModalMobile {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: calc(100vh - var(--mobile-header-height) + 1px);
+  width: 100vw;
+  border-radius: 20px 20px 0px 0px;
+  border: 1px solid #3e4854;
+  background: #242a30;
+  overflow: hidden;
+  transition: transform var(--base-transition);
+  z-index: 2;
+  padding: 24px;
+}
+.sortModalMobileVisible {
+  transform: translateY(0);
+}
+
+.sortButtons {
+  display: flex;
+  flex-direction: column;
+}
+
+.sortButton {
+  display: flex;
+  width: 100%;
+}
+
+.label {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.row {
+  display: flex;
+}
+
+.activeSortButton {
+  background: var(--border-color-base);
+}
+
+.blackButton {
+  min-width: 136px;
+}

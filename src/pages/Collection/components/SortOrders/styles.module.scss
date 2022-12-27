@@ -1,0 +1,43 @@
+.sortContainer {
+  width: 136px;
+}
+
+.sortContent {
+  border: var(--border-base);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 184px;
+  height: 162px;
+  z-index: 1;
+}
+
+.sortButton {
+  border: 0;
+  border-radius: 0;
+
+  &:hover {
+    background: var(--border-color-base);
+    opacity: 1 !important;
+  }
+
+  &:first-child {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  &:last-child {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+}
+
+.activeSortButton {
+  background: var(--border-color-base);
+}
+
+.blackButton {
+  min-width: 136px;
+}

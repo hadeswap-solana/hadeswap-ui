@@ -14,3 +14,4 @@ export { useScrollRestore } from './useScrollRestore';
 export { useWalletInit } from './useWalletInit';
 export { useIntersection } from './useIntersection';
 export { useScreenMode } from './useScreenMode';
+export { useOnClickOutside } from './useOnClickOutside';
