@@ -65,7 +65,7 @@ export const useOrdersSort: UseOrdersSort = ({ orders }) => {
     }
 
     return [];
-  }, [sort, setValue]);
+  }, [sort, setValue, orders]);
 
   return {
     sortedOrders,
