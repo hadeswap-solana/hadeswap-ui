@@ -1,77 +1,74 @@
-import classNames from 'classnames';
-import { FC, useRef, useState } from 'react';
+import { FC } from 'react';
 import { Control, Controller } from 'react-hook-form';
+import classNames from 'classnames';
+
 import { BlackButton } from '../../../../components/Buttons/BlackButton';
-import { useOnClickOutside } from '../../../../hooks';
 import {
   FilterFormInputsNames,
   OrderSortValue,
   SORT_VALUES_MOBILE,
-} from '../CollectionTabs/useOrdersSort';
+} from './hooks/useOrdersSort';
 import styles from './styles.module.scss';
+import { CloseOutlined } from '@ant-design/icons';
 
 interface SortOrdersMobileProps {
-  setValue: any;
+  onChange: (label: JSX.Element, value: string) => void;
   options?: OrderSortValue[];
   sort: OrderSortValue;
   control: Control<{ sort: OrderSortValue }>;
+  close: () => void;
+  toggle: () => void;
+  visible: boolean;
 }
 
 const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
-  setValue,
+  onChange,
   options = SORT_VALUES_MOBILE,
   sort,
   control,
+  visible,
+  close,
+  toggle,
 }) => {
-  const [sortModalVisible, setSortModalVisible] = useState<boolean>(false);
-
-  const ref = useRef();
-  useOnClickOutside(ref, () => setSortModalVisible(false));
-
   return (
-    <div ref={ref}>
-      <BlackButton
-        className={styles.blackButton}
-        onClick={() => setSortModalVisible(!sortModalVisible)}
-      >
-        {sort.label}
+    <>
+      <BlackButton className={styles.blackButton} onClick={toggle}>
+        <>{sort.label}</>
       </BlackButton>
-      {sortModalVisible && (
+      {visible && (
         <Controller
           control={control}
           name={FilterFormInputsNames.SORT}
           render={() => (
             <div className={styles.sortModalMobile}>
-              <div>sorting x</div>
-              <div className={styles.sortButtons}>
+              <div className={styles.sortModalClose} onClick={close}>
+                sorting <CloseOutlined />
+              </div>
+              <div className={styles.sortMobileButtons}>
                 {options.map(({ value, label }) => {
+                  const ASC_SORT = value + '_asc';
+                  const DESC_SORT = value + '_desc';
+
+                  const isActiveASC = sort.value === ASC_SORT;
+                  const isActiveDESC = sort.value === DESC_SORT;
+
                   return (
                     <>
                       <span className={styles.label}>{value}</span>
                       <div className={styles.row}>
                         <BlackButton
-                          className={classNames(styles.sortButton, {
-                            [styles.activeSortButton]: sort.value === value,
+                          className={classNames(styles.sortButtonAsc, {
+                            [styles.activeSortMobileButton]: isActiveASC,
                           })}
-                          onClick={() =>
-                            setValue(FilterFormInputsNames.SORT, {
-                              label,
-                              value,
-                            })
-                          }
+                          onClick={() => onChange(label, ASC_SORT)}
                         >
                           {label}
                         </BlackButton>
                         <BlackButton
-                          className={classNames(styles.sortButton, {
-                            [styles.activeSortButton]: sort.value === value,
+                          className={classNames(styles.sortButtonDesc, {
+                            [styles.activeSortMobileButton]: isActiveDESC,
                           })}
-                          onClick={() =>
-                            setValue(FilterFormInputsNames.SORT, {
-                              label,
-                              value,
-                            })
-                          }
+                          onClick={() => onChange(label, DESC_SORT)}
                         >
                           {label}
                         </BlackButton>
@@ -84,7 +81,7 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
           )}
         />
       )}
-    </div>
+    </>
   );
 };
 

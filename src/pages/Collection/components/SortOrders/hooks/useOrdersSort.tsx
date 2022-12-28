@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { Control, useForm } from 'react-hook-form';
 
-import { MarketOrder } from '../../../../state/core/types';
-import { compareNumbers } from '../../../../utils';
+import { MarketOrder } from '../../../../../state/core/types';
+import { compareNumbers } from '../../../../../utils';
 
 export enum SORT_ORDER {
   ASC = 'asc',
@@ -112,11 +112,21 @@ export const SORT_VALUES: OrderSortValue[] = [
 
 export const SORT_VALUES_MOBILE: OrderSortValue[] = [
   {
-    label: <ArrowUpOutlined />,
+    label: (
+      <>
+        <p>moonrank</p>
+        <ArrowUpOutlined />
+      </>
+    ),
     value: 'moonrank',
   },
   {
-    label: <ArrowDownOutlined />,
+    label: (
+      <>
+        <p>howrare</p>
+        <ArrowDownOutlined />
+      </>
+    ),
     value: 'howrare',
   },
 ];

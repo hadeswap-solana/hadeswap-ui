@@ -24,9 +24,8 @@ import ExchangeNftModal, {
   useExchangeModal,
 } from '../../../../components/ExchangeNftModal';
 import { commonActions } from '../../../../state/common/actions';
-import { useOrdersSort } from './useOrdersSort';
-import SortOrders from '../SortOrders/SortOrders';
-import SortOrdersMobile from '../SortOrdersMobile/SortOrdersMobile';
+import { useOrdersSort } from '../SortOrders/hooks/useOrdersSort';
+import SortOrdersControll from '../SortOrders/SortOrdersControll';
 
 export const CollectionBuyTab: FC = () => {
   const dispatch = useDispatch();
@@ -99,7 +98,7 @@ export const CollectionBuyTab: FC = () => {
         <>
           <div className={styles.sortWrapper}>
             {/* <SweepButton /> */}
-            <SortOrdersMobile
+            <SortOrdersControll
               control={control}
               setValue={setValue}
               sort={sort}

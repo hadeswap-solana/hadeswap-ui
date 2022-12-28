@@ -1,60 +1,50 @@
-import classNames from 'classnames';
-import { FC, useRef, useState } from 'react';
+import { FC } from 'react';
 import { Control, Controller } from 'react-hook-form';
+import classNames from 'classnames';
 
 import { BlackButton } from '../../../../components/Buttons/BlackButton';
-import { useOnClickOutside } from '../../../../hooks';
 import {
   FilterFormInputsNames,
   OrderSortValue,
   SORT_VALUES,
-} from '../CollectionTabs/useOrdersSort';
+} from './hooks/useOrdersSort';
 import styles from './styles.module.scss';
 
 interface SortOrdersProps {
-  setValue: any;
+  onChange: (label: JSX.Element, value: string) => void;
+  control: Control<{ sort: OrderSortValue }>;
   options?: OrderSortValue[];
   sort: OrderSortValue;
-  control: Control<{ sort: OrderSortValue }>;
+  toggle: () => void;
+  visible: boolean;
 }
 
 const SortOrders: FC<SortOrdersProps> = ({
-  control,
-  setValue,
+  onChange,
   options = SORT_VALUES,
   sort,
+  control,
+  visible,
+  toggle,
 }) => {
-  const [sortModalVisible, setSortModalVisible] = useState<boolean>(false);
-
-  const ref = useRef();
-  useOnClickOutside(ref, () => setSortModalVisible(false));
-
   return (
-    <div className={styles.sortContainer} ref={ref}>
-      <BlackButton
-        className={styles.blackButton}
-        onClick={() => setSortModalVisible(!sortModalVisible)}
-      >
+    <>
+      <BlackButton className={styles.blackButton} onClick={toggle}>
         {sort.label}
       </BlackButton>
-      {sortModalVisible && (
+      {visible && (
         <Controller
           control={control}
           name={FilterFormInputsNames.SORT}
           render={() => (
-            <div className={styles.sortContent}>
+            <div className={styles.sortModal}>
               {options.map(({ value, label }, idx) => (
                 <BlackButton
                   key={idx}
                   className={classNames(styles.sortButton, {
                     [styles.activeSortButton]: sort.value === value,
                   })}
-                  onClick={() =>
-                    setValue(FilterFormInputsNames.SORT, {
-                      label,
-                      value,
-                    })
-                  }
+                  onClick={() => onChange(label, value)}
                 >
                   {label}
                 </BlackButton>
@@ -63,7 +53,7 @@ const SortOrders: FC<SortOrdersProps> = ({
           )}
         />
       )}
-    </div>
+    </>
   );
 };
 
