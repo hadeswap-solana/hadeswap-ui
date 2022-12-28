@@ -9,7 +9,11 @@ import {
   SORT_VALUES_MOBILE,
 } from './hooks/useOrdersSort';
 import styles from './styles.module.scss';
-import { CloseOutlined } from '@ant-design/icons';
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  CloseOutlined,
+} from '@ant-design/icons';
 
 interface SortOrdersMobileProps {
   onChange: (label: JSX.Element, value: string) => void;
@@ -62,7 +66,10 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
                           })}
                           onClick={() => onChange(label, ASC_SORT)}
                         >
-                          {label}
+                          <>
+                            <ArrowUpOutlined />
+                            {label}
+                          </>
                         </BlackButton>
                         <BlackButton
                           className={classNames(styles.sortButtonDesc, {
@@ -70,7 +77,10 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
                           })}
                           onClick={() => onChange(label, DESC_SORT)}
                         >
-                          {label}
+                          <>
+                            <ArrowDownOutlined />
+                            {label}
+                          </>
                         </BlackButton>
                       </div>
                     </>
