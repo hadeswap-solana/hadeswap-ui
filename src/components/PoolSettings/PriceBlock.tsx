@@ -68,7 +68,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       fee,
       spotPrice,
       delta,
-      mathCounter: pool?.mathCounter,
+      mathCounter: 0,
     });
 
     const priceIntoPool = priceLockedIntoPool({
