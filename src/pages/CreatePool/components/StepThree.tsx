@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useRef } from 'react';
+import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
@@ -7,6 +7,7 @@ import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/usePoolServiceAssets';
+import { useAssetsSetHeight } from '../../../components/PoolSettings/hooks/useAssetsSetHeight';
 import { Chart, usePriceGraph } from '../../../components/Chart';
 import Button from '../../../components/Buttons/Button';
 import { useCreatePool } from '../hooks';
@@ -85,17 +86,6 @@ export const StepThree: FC<StepThreeProps> = ({
     (pairType === PairType.TokenForNFT && !actualBuyOrdersAmount) ||
     !spotPrice;
 
-  console.log('Create', {
-    pairType,
-    buyOrdersAmount: actualBuyOrdersAmount,
-    marketPubkey: chosenMarketKey,
-    selectedNfts,
-    curveType,
-    rawSpotPrice,
-    rawDelta,
-    rawFee,
-  });
-
   const { create: onCreatePoolClick } = useCreatePool({
     pairType,
     buyOrdersAmount: actualBuyOrdersAmount,
@@ -108,21 +98,6 @@ export const StepThree: FC<StepThreeProps> = ({
     onAfterTxn: () => history.push('/my-pools'),
   });
 
-  const assetsBlockRef = useRef<HTMLDivElement>();
-  const priceBlockRef = useRef<HTMLDivElement>();
-
-  useEffect(() => {
-    if (
-      assetsBlockRef.current &&
-      priceBlockRef.current &&
-      pairType !== PairType.TokenForNFT
-    ) {
-      assetsBlockRef.current.style.height = `${priceBlockRef.current.offsetHeight}px`;
-    }
-  }, [pairType]);
-
-  const isLoading = marketsLoading || nftsLoading;
-
   const chartData = usePriceGraph({
     baseSpotPrice: spotPrice * 1e9,
     delta: rawDelta,
@@ -132,6 +107,10 @@ export const StepThree: FC<StepThreeProps> = ({
     nftsCount: selectedNfts.length,
     type: pairType,
   });
+
+  const { assetsBlockRef, priceBlockRef } = useAssetsSetHeight(pairType);
+
+  const isLoading = marketsLoading || nftsLoading;
 
   return (
     <div className={styles.settingsBlockWrapper}>
