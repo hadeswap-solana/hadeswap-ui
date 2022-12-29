@@ -1,4 +1,4 @@
-import { FC, useRef, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
@@ -44,9 +44,13 @@ export const StepThree: FC<StepThreeProps> = ({
     deselectAll,
     nftsLoading,
     formAssets,
+    buyOrdersAmount,
   } = usePoolServiceAssets({ marketPublicKey: chosenMarketKey });
 
-  const actualBuyOrdersAmount = selectedNfts.length;
+  const actualBuyOrdersAmount =
+    pairType === PairType.LiquidityProvision
+      ? selectedNfts.length
+      : buyOrdersAmount;
 
   const {
     formPrice,
@@ -80,6 +84,17 @@ export const StepThree: FC<StepThreeProps> = ({
     (pairType !== PairType.TokenForNFT && !selectedNfts.length) ||
     (pairType === PairType.TokenForNFT && !actualBuyOrdersAmount) ||
     !spotPrice;
+
+  console.log('Create', {
+    pairType,
+    buyOrdersAmount: actualBuyOrdersAmount,
+    marketPubkey: chosenMarketKey,
+    selectedNfts,
+    curveType,
+    rawSpotPrice,
+    rawDelta,
+    rawFee,
+  });
 
   const { create: onCreatePoolClick } = useCreatePool({
     pairType,
