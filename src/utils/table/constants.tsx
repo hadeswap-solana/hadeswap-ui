@@ -132,7 +132,9 @@ export const POOL_TABLE_COLUMNS: ColumnsType<
     ),
     dataIndex: 'delta',
     showSorterTooltip: false,
-    render: (text) => <Text>{text}</Text>,
+    render: (text) => {
+      return <Text>{isNaN(Number(text)) ? text : '--'}</Text>;
+    },
   },
   {
     key: 'ownerPublicKey',
