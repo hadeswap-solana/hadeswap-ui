@@ -97,6 +97,28 @@
 .sortButtonAsc,
 .sortButtonDesc {
   width: 100%;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  p {
+    display: none;
+  }
+}
+
+.rotate {
+  svg {
+    transform: rotate(-180deg);
+  }
+}
+
+.sortButtonDesc {
+  span > svg {
+    transform: rotate(-180deg);
+  }
 }
 
 .sortButtonAsc {

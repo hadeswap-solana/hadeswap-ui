@@ -112,11 +112,21 @@ export const SORT_VALUES: OrderSortValue[] = [
 
 export const SORT_VALUES_MOBILE: OrderSortValue[] = [
   {
-    label: <span>moonrank</span>,
+    label: (
+      <>
+        <p>moonrank</p>
+        <ArrowUpOutlined />
+      </>
+    ),
     value: 'moonrank',
   },
   {
-    label: <span>howrare</span>,
+    label: (
+      <>
+        <p>howrare</p>
+        <ArrowUpOutlined />
+      </>
+    ),
     value: 'howrare',
   },
 ];

@@ -34,10 +34,14 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
   close,
   toggle,
 }) => {
+  const isDescSort = sort.value.split('_')[1] === 'desc';
+
   return (
     <>
       <BlackButton className={styles.blackButton} onClick={toggle}>
-        <>{sort.label}</>
+        <span className={(styles.label, isDescSort && styles.rotate)}>
+          {sort.label}
+        </span>
       </BlackButton>
       {visible && (
         <Controller
@@ -66,10 +70,7 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
                           })}
                           onClick={() => onChange(label, ASC_SORT)}
                         >
-                          <>
-                            <ArrowUpOutlined />
-                            {label}
-                          </>
+                          {label}
                         </BlackButton>
                         <BlackButton
                           className={classNames(styles.sortButtonDesc, {
@@ -77,10 +78,7 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
                           })}
                           onClick={() => onChange(label, DESC_SORT)}
                         >
-                          <>
-                            <ArrowDownOutlined />
-                            {label}
-                          </>
+                          {label}
                         </BlackButton>
                       </div>
                     </>
