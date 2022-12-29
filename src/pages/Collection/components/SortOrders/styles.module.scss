@@ -5,13 +5,14 @@
 .sortModal {
   border: var(--border-base);
   border-radius: 12px;
+  background: var(--component-base-background);
   display: flex;
   flex-direction: column;
   position: absolute;
   top: 48px;
   right: 0;
   width: 184px;
-  height: 162px;
+  height: 240px;
   z-index: 1;
 }
 
@@ -140,4 +141,8 @@
 .activeSortMobileButton {
   border-color: var(--blue-color);
   border-width: 1px;
+
+  svg {
+    fill: var(--blue-color);
+  }
 }

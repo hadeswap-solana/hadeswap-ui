@@ -13,6 +13,7 @@ export enum SORT_ORDER {
 enum SortField {
   MOON_RANK = 'moonrank',
   HOW_RARE = 'howrare',
+  PRICE = 'price',
 }
 
 export enum FilterFormInputsNames {
@@ -60,6 +61,14 @@ export const useOrdersSort: UseOrdersSort = ({ orders }) => {
           );
         }
 
+        if (sortField === SortField.PRICE) {
+          return compareNumbers(
+            orderA.price,
+            orderB.price,
+            sortOrder === SORT_ORDER.ASC,
+          );
+        }
+
         return 0;
       });
     }
@@ -76,6 +85,22 @@ export const useOrdersSort: UseOrdersSort = ({ orders }) => {
 };
 
 export const SORT_VALUES: OrderSortValue[] = [
+  {
+    label: (
+      <>
+        price <ArrowUpOutlined />
+      </>
+    ),
+    value: 'price_asc',
+  },
+  {
+    label: (
+      <>
+        price <ArrowDownOutlined />
+      </>
+    ),
+    value: 'price_desc',
+  },
   {
     label: (
       <>
@@ -111,6 +136,15 @@ export const SORT_VALUES: OrderSortValue[] = [
 ];
 
 export const SORT_VALUES_MOBILE: OrderSortValue[] = [
+  {
+    label: (
+      <>
+        <p>price</p>
+        <ArrowUpOutlined />
+      </>
+    ),
+    value: 'price',
+  },
   {
     label: (
       <>

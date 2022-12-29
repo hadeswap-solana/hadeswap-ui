@@ -9,11 +9,7 @@ import {
   SORT_VALUES_MOBILE,
 } from './hooks/useOrdersSort';
 import styles from './styles.module.scss';
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  CloseOutlined,
-} from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 
 interface SortOrdersMobileProps {
   onChange: (label: JSX.Element, value: string) => void;
