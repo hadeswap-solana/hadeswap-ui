@@ -44,8 +44,9 @@ export const StepThree: FC<StepThreeProps> = ({
     deselectAll,
     nftsLoading,
     formAssets,
-    buyOrdersAmount,
   } = usePoolServiceAssets({ marketPublicKey: chosenMarketKey });
+
+  const actualBuyOrdersAmount = selectedNfts.length;
 
   const {
     formPrice,
@@ -77,12 +78,12 @@ export const StepThree: FC<StepThreeProps> = ({
 
   const isCreateButtonDisabled =
     (pairType !== PairType.TokenForNFT && !selectedNfts.length) ||
-    (pairType === PairType.TokenForNFT && !buyOrdersAmount) ||
+    (pairType === PairType.TokenForNFT && !actualBuyOrdersAmount) ||
     !spotPrice;
 
   const { create: onCreatePoolClick } = useCreatePool({
     pairType,
-    buyOrdersAmount,
+    buyOrdersAmount: actualBuyOrdersAmount,
     marketPubkey: chosenMarketKey,
     selectedNfts,
     curveType,
@@ -112,7 +113,7 @@ export const StepThree: FC<StepThreeProps> = ({
     delta: rawDelta,
     fee: rawFee || 0,
     bondingCurve: curveType,
-    buyOrdersAmount,
+    buyOrdersAmount: actualBuyOrdersAmount,
     nftsCount: selectedNfts.length,
     type: pairType,
   });
@@ -135,7 +136,7 @@ export const StepThree: FC<StepThreeProps> = ({
               delta={delta}
               nftsCount={selectedNfts.length}
               fee={fee}
-              buyOrdersAmount={buyOrdersAmount}
+              buyOrdersAmount={actualBuyOrdersAmount}
               formInitialValues={initialValuesPrice}
             />
             <AssetsBlock
