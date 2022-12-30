@@ -3,11 +3,7 @@ import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
 
 import { BlackButton } from '../../../../components/Buttons/BlackButton';
-import {
-  FilterFormInputsNames,
-  OrderSortValue,
-  SORT_VALUES_MOBILE,
-} from './hooks/useOrdersSort';
+import { FilterFormInputsNames, OrderSortValue } from './hooks/useOrdersSort';
 import styles from './styles.module.scss';
 import { CloseOutlined } from '@ant-design/icons';
 
@@ -23,7 +19,7 @@ interface SortOrdersMobileProps {
 
 const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
   onChange,
-  options = SORT_VALUES_MOBILE,
+  options,
   sort,
   control,
   visible,
@@ -49,7 +45,7 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
                 sorting <CloseOutlined />
               </div>
               <div className={styles.sortMobileButtons}>
-                {options.map(({ value, label }) => {
+                {options.map(({ value, label, isDisabled }) => {
                   const ASC_SORT = value + '_asc';
                   const DESC_SORT = value + '_desc';
 
@@ -61,18 +57,26 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
                       <span className={styles.label}>{value}</span>
                       <div className={styles.row}>
                         <BlackButton
+                          isDisabled={isDisabled}
                           className={classNames(styles.sortButtonAsc, {
                             [styles.activeSortMobileButton]: isActiveASC,
                           })}
-                          onClick={() => onChange(label, ASC_SORT)}
+                          onClick={
+                            !isDisabled ? () => onChange(label, ASC_SORT) : null
+                          }
                         >
                           {label}
                         </BlackButton>
                         <BlackButton
+                          isDisabled={isDisabled}
                           className={classNames(styles.sortButtonDesc, {
                             [styles.activeSortMobileButton]: isActiveDESC,
                           })}
-                          onClick={() => onChange(label, DESC_SORT)}
+                          onClick={
+                            !isDisabled
+                              ? () => onChange(label, DESC_SORT)
+                              : null
+                          }
                         >
                           {label}
                         </BlackButton>

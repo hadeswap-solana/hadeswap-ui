@@ -23,19 +23,28 @@ export enum FilterFormInputsNames {
 export type OrderSortValue = {
   label: JSX.Element;
   value: string;
+  isDisabled?: boolean;
 };
 
 type UseOrdersSort = ({ orders }: { orders: MarketOrder[] }) => {
   sortedOrders: MarketOrder[];
   control: Control<{ sort: OrderSortValue }>;
   sort: OrderSortValue;
+  optionsMobile: OrderSortValue[];
+  options: OrderSortValue[];
   setValue: any;
 };
 
 export const useOrdersSort: UseOrdersSort = ({ orders }) => {
+  const isExistHowRarity = !orders.find(({ rarity }) => rarity.howRareIs);
+  const isExistMoonRarity = !orders.find(({ rarity }) => rarity.moonRank);
+
+  const optionsMobile = sortValuesMobile(isExistHowRarity, isExistMoonRarity);
+  const options = sortValues(isExistHowRarity, isExistMoonRarity);
+
   const { control, watch, setValue } = useForm({
     defaultValues: {
-      [FilterFormInputsNames.SORT]: SORT_VALUES[0],
+      [FilterFormInputsNames.SORT]: options[0],
     },
   });
 
@@ -81,86 +90,134 @@ export const useOrdersSort: UseOrdersSort = ({ orders }) => {
     control,
     setValue,
     sort,
+    optionsMobile,
+    options,
   };
 };
 
-export const SORT_VALUES: OrderSortValue[] = [
-  {
-    label: (
-      <>
-        price <ArrowUpOutlined />
-      </>
-    ),
-    value: 'price_asc',
-  },
-  {
-    label: (
-      <>
-        price <ArrowDownOutlined />
-      </>
-    ),
-    value: 'price_desc',
-  },
-  {
-    label: (
-      <>
-        moonrank <ArrowUpOutlined />
-      </>
-    ),
-    value: 'moonrank_asc',
-  },
-  {
-    label: (
-      <>
-        moonrank <ArrowDownOutlined />
-      </>
-    ),
-    value: 'moonrank_desc',
-  },
-  {
-    label: (
-      <>
-        howrare <ArrowUpOutlined />
-      </>
-    ),
-    value: 'howrare_asc',
-  },
-  {
-    label: (
-      <>
-        howrare <ArrowDownOutlined />
-      </>
-    ),
-    value: 'howrare_desc',
-  },
-];
+const sortValues = (
+  isExistHowRarity: boolean,
+  isExistMoonRarity: boolean,
+): OrderSortValue[] => {
+  return [
+    {
+      label: (
+        <>
+          price <ArrowUpOutlined />
+        </>
+      ),
+      value: 'price_asc',
+    },
+    {
+      label: (
+        <>
+          price <ArrowDownOutlined />
+        </>
+      ),
+      value: 'price_desc',
+    },
+    {
+      label: (
+        <>
+          moonrank <ArrowUpOutlined />
+        </>
+      ),
+      value: 'moonrank_asc',
+      isDisabled: isExistMoonRarity,
+    },
+    {
+      label: (
+        <>
+          moonrank <ArrowDownOutlined />
+        </>
+      ),
+      value: 'moonrank_desc',
+      isDisabled: isExistMoonRarity,
+    },
+    {
+      label: (
+        <>
+          howrare <ArrowUpOutlined />
+        </>
+      ),
+      value: 'howrare_asc',
+      isDisabled: isExistHowRarity,
+    },
+    {
+      label: (
+        <>
+          howrare <ArrowDownOutlined />
+        </>
+      ),
+      value: 'howrare_desc',
+      isDisabled: isExistHowRarity,
+    },
+  ];
+};
 
-export const SORT_VALUES_MOBILE: OrderSortValue[] = [
-  {
-    label: (
-      <>
-        <p>price</p>
-        <ArrowUpOutlined />
-      </>
-    ),
-    value: 'price',
-  },
-  {
-    label: (
-      <>
-        <p>moonrank</p>
-        <ArrowUpOutlined />
-      </>
-    ),
-    value: 'moonrank',
-  },
-  {
-    label: (
-      <>
-        <p>howrare</p>
-        <ArrowUpOutlined />
-      </>
-    ),
-    value: 'howrare',
-  },
-];
+const sortValuesMobile = (
+  isExistHowRarity: boolean,
+  isExistMoonRarity: boolean,
+) => {
+  return [
+    {
+      label: (
+        <>
+          <p>price</p>
+          <ArrowUpOutlined />
+        </>
+      ),
+      value: 'price',
+    },
+    {
+      label: (
+        <>
+          <p>moonrank</p>
+          <ArrowUpOutlined />
+        </>
+      ),
+      isDisabled: isExistMoonRarity,
+      value: 'moonrank',
+    },
+    {
+      label: (
+        <>
+          <p>howrare</p>
+          <ArrowUpOutlined />
+        </>
+      ),
+      value: 'howrare',
+      isDisabled: isExistHowRarity,
+    },
+  ];
+};
+
+// export const SORT_VALUES_MOBILE: OrderSortValue[] = [
+//   {
+//     label: (
+//       <>
+//         <p>price</p>
+//         <ArrowUpOutlined />
+//       </>
+//     ),
+//     value: 'price',
+//   },
+//   {
+//     label: (
+//       <>
+//         <p>moonrank</p>
+//         <ArrowUpOutlined />
+//       </>
+//     ),
+//     value: 'moonrank',
+//   },
+//   {
+//     label: (
+//       <>
+//         <p>howrare</p>
+//         <ArrowUpOutlined />
+//       </>
+//     ),
+//     value: 'howrare',
+//   },
+// ];

@@ -3,11 +3,7 @@ import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
 
 import { BlackButton } from '../../../../components/Buttons/BlackButton';
-import {
-  FilterFormInputsNames,
-  OrderSortValue,
-  SORT_VALUES,
-} from './hooks/useOrdersSort';
+import { FilterFormInputsNames, OrderSortValue } from './hooks/useOrdersSort';
 import styles from './styles.module.scss';
 
 interface SortOrdersProps {
@@ -21,7 +17,7 @@ interface SortOrdersProps {
 
 const SortOrders: FC<SortOrdersProps> = ({
   onChange,
-  options = SORT_VALUES,
+  options,
   sort,
   control,
   visible,
@@ -38,13 +34,14 @@ const SortOrders: FC<SortOrdersProps> = ({
           name={FilterFormInputsNames.SORT}
           render={() => (
             <div className={styles.sortModal}>
-              {options.map(({ value, label }, idx) => (
+              {options.map(({ value, label, isDisabled }, idx) => (
                 <BlackButton
                   key={idx}
+                  isDisabled={isDisabled}
                   className={classNames(styles.sortButton, {
                     [styles.activeSortButton]: sort.value === value,
                   })}
-                  onClick={() => onChange(label, value)}
+                  onClick={!isDisabled ? () => onChange(label, value) : null}
                 >
                   {label}
                 </BlackButton>

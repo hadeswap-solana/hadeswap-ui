@@ -36,9 +36,10 @@ export const CollectionBuyTab: FC = () => {
   const cartItems = useSelector(selectCartItems);
   const [selectedBuyOrder, setSelectedBuyOrder] = useState<CartOrder>(null);
 
-  const { sortedOrders, sort, control, setValue } = useOrdersSort({
-    orders: buyOrders,
-  });
+  const { sortedOrders, sort, control, setValue, options, optionsMobile } =
+    useOrdersSort({
+      orders: buyOrders,
+    });
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
@@ -101,6 +102,8 @@ export const CollectionBuyTab: FC = () => {
             <SortOrdersControll
               control={control}
               setValue={setValue}
+              optionsMobile={optionsMobile}
+              options={options}
               sort={sort}
             />
           </div>

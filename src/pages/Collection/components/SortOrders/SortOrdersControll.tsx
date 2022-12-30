@@ -15,12 +15,16 @@ interface SortOrdersControllProps {
   setValue: any;
   sort: OrderSortValue;
   control: Control<{ sort: OrderSortValue }>;
+  optionsMobile: OrderSortValue[];
+  options: OrderSortValue[];
 }
 
 const SortOrdersControll: FC<SortOrdersControllProps> = ({
   setValue,
   sort,
   control,
+  optionsMobile,
+  options,
 }) => {
   const screenMode = useSelector(selectScreeMode);
   const isMobile = screenMode !== ScreenTypes.DESKTOP;
@@ -42,6 +46,7 @@ const SortOrdersControll: FC<SortOrdersControllProps> = ({
     <div className={styles.sortWrapper} ref={ref}>
       {isMobile ? (
         <SortOrdersMobile
+          options={optionsMobile}
           onChange={onChangeSortOrder}
           sort={sort}
           control={control}
@@ -51,6 +56,7 @@ const SortOrdersControll: FC<SortOrdersControllProps> = ({
         />
       ) : (
         <SortOrders
+          options={options}
           onChange={onChangeSortOrder}
           sort={sort}
           control={control}
