@@ -140,3 +140,11 @@
     }
   }
 }
+
+.sortWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  position: relative;
+  width: 100%;
+}
