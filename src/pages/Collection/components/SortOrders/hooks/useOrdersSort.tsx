@@ -83,7 +83,7 @@ export const useOrdersSort: UseOrdersSort = ({ orders }) => {
     }
 
     return [];
-  }, [sort, setValue, orders]);
+  }, [sort, orders]);
 
   return {
     sortedOrders,
