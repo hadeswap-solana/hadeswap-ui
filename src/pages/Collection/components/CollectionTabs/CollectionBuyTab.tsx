@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from 'react';
-import BN from 'bn.js';
 import { useDispatch, useSelector } from 'react-redux';
+import BN from 'bn.js';
 // import { SweepButton } from '../SweepButton';
 import { NFTCard } from '../../../../components/NFTCard/NFTCard';
 import { Spinner } from '../../../../components/Spinner/Spinner';
@@ -24,6 +24,8 @@ import ExchangeNftModal, {
   useExchangeModal,
 } from '../../../../components/ExchangeNftModal';
 import { commonActions } from '../../../../state/common/actions';
+import { useOrdersSort } from '../SortOrders/hooks/useOrdersSort';
+import SortOrdersControll from '../SortOrders/SortOrdersControll';
 
 export const CollectionBuyTab: FC = () => {
   const dispatch = useDispatch();
@@ -33,6 +35,11 @@ export const CollectionBuyTab: FC = () => {
   const buyOrders = useSelector(selectAllBuyOrdersForMarket);
   const cartItems = useSelector(selectCartItems);
   const [selectedBuyOrder, setSelectedBuyOrder] = useState<CartOrder>(null);
+
+  const { sortedOrders, sort, control, setValue, options, optionsMobile } =
+    useOrdersSort({
+      orders: buyOrders,
+    });
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
@@ -90,9 +97,19 @@ export const CollectionBuyTab: FC = () => {
         <Spinner />
       ) : (
         <>
-          {/* <SweepButton /> */}
+          <div className={styles.sortWrapper}>
+            {/* <SweepButton /> */}
+            <SortOrdersControll
+              control={control}
+              setValue={setValue}
+              optionsMobile={optionsMobile}
+              options={options}
+              sort={sort}
+            />
+          </div>
+
           <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
-            {buyOrders.map((order) => (
+            {sortedOrders.map((order) => (
               <NFTCard
                 key={order.mint}
                 imageUrl={order.imageUrl}
