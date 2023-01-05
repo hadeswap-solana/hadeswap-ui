@@ -2,6 +2,7 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
+import { PUBKEY_PLACEHOLDER } from '..';
 
 const { depositLiquidityToPair } =
   hadeswap.functions.marketFactory.pair.virtual.deposits;
@@ -32,10 +33,16 @@ export const createDepositLiquidityToPairTxns: CreateDepositLiquidityToPairTxns 
           depositLiquidityToPair({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
+            args: {
+              proof: nft?.validProof,
+            },
             accounts: {
               nftValidationAdapter: new web3.PublicKey(
-                nft.nftValidationAdapter,
+                nft?.nftValidationAdapter || PUBKEY_PLACEHOLDER,
               ),
+              nftValidationAdapterV2:
+                nft?.nftValidationAdapterV2 &&
+                new web3.PublicKey(nft.nftValidationAdapterV2),
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),
               userPubkey: wallet.publicKey,

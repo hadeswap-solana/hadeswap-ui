@@ -262,3 +262,5 @@ export const formatBNToString = (
 export const getFormattedPrice = (price: number): string => {
   return price > 0 ? formatBNToString(new BN(price)) : '';
 };
+
+export const PUBKEY_PLACEHOLDER = '11111111111111111111111111111111';
