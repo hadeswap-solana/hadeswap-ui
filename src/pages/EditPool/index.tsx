@@ -119,7 +119,6 @@ export const EditPool: FC = () => {
     buyOrdersAmount: actualBuyOrders,
     nftsCount: selectedNfts.length,
     bondingCurve: curveType,
-    type: pairType,
   });
 
   const assetsBlockRef = useRef<HTMLDivElement>();

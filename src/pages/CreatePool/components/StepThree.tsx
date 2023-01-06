@@ -113,7 +113,6 @@ export const StepThree: FC<StepThreeProps> = ({
     bondingCurve: curveType,
     buyOrdersAmount,
     nftsCount: selectedNfts.length,
-    type: pairType,
   });
 
   return (
