@@ -5,6 +5,7 @@ import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 import {
   BondingCurveType,
   OrderType,
+  PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Point } from './types';
 
@@ -42,13 +43,14 @@ export const usePriceGraph: UsePriceGraph = ({
   buyOrdersAmount = 0,
   nftsCount = 0,
   mathCounter = 0,
+  type,
 }) => {
   if (!bondingCurve || !baseSpotPrice) return null;
 
   const { array: priceArrayBuy } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
     delta: delta,
-    amount: buyOrdersAmount ? buyOrdersAmount : nftsCount,
+    amount: buyOrdersAmount,
     bondingCurveType: bondingCurve,
     orderType: OrderType.Sell,
     counter: mathCounter + 1,
