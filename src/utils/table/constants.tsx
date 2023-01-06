@@ -212,7 +212,7 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
     dataIndex: 'nftName',
     showSorterTooltip: false,
     render: (value, item) => (
-      <LinkCell link={`https://solscan.io/token/${item.nftMint}`}>
+      <LinkCell link={`https://solana.fm/address/${item.nftMint}`}>
         <TitleCell title={value} imgSrc={item.nftImageUrl} />
       </LinkCell>
     ),
@@ -233,7 +233,7 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
     dataIndex: 'userTaker',
     showSorterTooltip: false,
     render: (value, item) => (
-      <LinkCell link={`https://solscan.io/account/${item.userTaker}`}>
+      <LinkCell link={`https://solana.fm/address/${item.userTaker}`}>
         <Text>{shortenAddress(value)}</Text>
       </LinkCell>
     ),
@@ -263,7 +263,7 @@ export const ACTIVITY_COLUMNS: ColumnsType<NftActivityData> = [
     dataIndex: 'timestamp',
     showSorterTooltip: false,
     render: (value, item) => (
-      <LinkCell link={`https://solscan.io/tx/${item.signature}`}>
+      <LinkCell link={`https://solana.fm/tx/${item.signature}`}>
         <Text>{moment(value).fromNow()}</Text>
       </LinkCell>
     ),
@@ -277,7 +277,7 @@ export const POOL_TRADE_COLUMNS: ColumnsType<NftTradeData> = [
     dataIndex: 'nftName',
     showSorterTooltip: false,
     render: (value, item) => (
-      <LinkCell link={`https://solscan.io/token/${item.nftMint}`}>
+      <LinkCell link={`https://solana.fm/address/${item.nftMint}`}>
         <TitleCell title={value} imgSrc={item.nftImageUrl} />
       </LinkCell>
     ),
@@ -301,7 +301,7 @@ export const POOL_TRADE_COLUMNS: ColumnsType<NftTradeData> = [
     dataIndex: 'userTaker',
     showSorterTooltip: false,
     render: (value, item) => (
-      <LinkCell link={`https://solscan.io/account/${item.userTaker}`}>
+      <LinkCell link={`https://solana.fm/address/${item.userTaker}`}>
         <Text>{shortenAddress(value)}</Text>
       </LinkCell>
     ),
@@ -320,7 +320,7 @@ export const POOL_TRADE_COLUMNS: ColumnsType<NftTradeData> = [
     dataIndex: 'timestamp',
     showSorterTooltip: false,
     render: (value, item) => (
-      <LinkCell link={`https://solscan.io/tx/${item.signature}`}>
+      <LinkCell link={`https://solana.fm/tx/${item.signature}`}>
         <Text>{moment(value).fromNow()}</Text>
       </LinkCell>
     ),
