@@ -44,7 +44,7 @@ export const usePriceGraph: UsePriceGraph = ({
   mathCounter = 0,
   type,
 }) => {
-  if (!delta || !bondingCurve || !baseSpotPrice) return null;
+  if (!bondingCurve || !baseSpotPrice) return null;
 
   const { array: priceArrayBuy } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
@@ -70,19 +70,6 @@ export const usePriceGraph: UsePriceGraph = ({
     counter: mathCounter,
   }) as { array: number[]; total: number };
 
-  const { array: priceArrayBuyLiquidityProvision } =
-    helpers.calculatePricesArray({
-      starting_spot_price: baseSpotPrice,
-      delta: delta,
-      amount: buyOrdersAmount + nftsCount,
-      bondingCurveType:
-        bondingCurve === 'linear'
-          ? BondingCurveType.Linear
-          : BondingCurveType.Exponential,
-      orderType: OrderType.Sell,
-      counter: mathCounter + 1,
-    }) as { array: number[]; total: number };
-
   const pointsBuy: Point[] = priceArrayBuy
     .map((price, i) => {
       const newPrice = price / 1e9;
@@ -103,18 +90,5 @@ export const usePriceGraph: UsePriceGraph = ({
     };
   });
 
-  const pointsLiquidityProvision: Point[] = priceArrayBuyLiquidityProvision
-    .map((price, i) => {
-      const newPrice = price / 1e9;
-      return {
-        order: 1 + i,
-        price: newPrice - newPrice * (fee / 10000),
-        type: 'buy',
-      };
-    })
-    .reverse() as Point[];
-
-  return type === 'liquidityProvision'
-    ? [...pointsLiquidityProvision, ...pointsSell]
-    : [...pointsBuy, ...pointsSell];
+  return [...pointsBuy, ...pointsSell];
 };
