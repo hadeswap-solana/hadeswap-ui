@@ -19,6 +19,12 @@ const calcStartingPriceWithFees = ({
     : price + (price / 100) * fee;
 };
 
+const calcDelta = (curveType: BondingCurveType, delta: number): number => {
+  if (curveType === BondingCurveType.Exponential) return delta * 100;
+  if (curveType === BondingCurveType.XYK) return delta + 1;
+  return delta;
+};
+
 const calcStartingSellingPrice = ({
   delta,
   curveType,
@@ -32,7 +38,7 @@ const calcStartingSellingPrice = ({
 }): number => {
   return helpers.calculateNextSpotPrice({
     orderType: OrderType.Buy,
-    delta: curveType === BondingCurveType.Exponential ? delta * 100 : delta,
+    delta: calcDelta(curveType, delta),
     spotPrice: spotPrice,
     bondingCurveType: curveType,
     counter: mathCounter,
@@ -42,12 +48,27 @@ const calcStartingSellingPrice = ({
 export const startingBuyingPrice = ({
   pairType,
   fee,
+  delta,
   spotPrice,
+  curveType,
+  mathCounter = 0,
 }: {
   pairType: PairType;
   fee: number;
+  delta: number;
   spotPrice: number;
+  curveType: BondingCurveType;
+  mathCounter: number;
 }): number => {
+  if (curveType === BondingCurveType.XYK) {
+    return helpers.calculateNextSpotPrice({
+      orderType: OrderType.Sell,
+      delta: delta + 1,
+      spotPrice: spotPrice,
+      bondingCurveType: curveType,
+      counter: mathCounter,
+    });
+  }
   return pairType === PairType.LiquidityProvision
     ? calcStartingPriceWithFees({
         price: spotPrice,
@@ -72,6 +93,8 @@ export const startingSellingPrice = ({
   spotPrice: number;
   mathCounter: number;
 }): number => {
+  if (curveType === BondingCurveType.XYK && !delta) return 0;
+
   return pairType === PairType.LiquidityProvision
     ? calcStartingPriceWithFees({
         price: calcStartingSellingPrice({
@@ -83,7 +106,12 @@ export const startingSellingPrice = ({
         orderType: OrderType.Sell,
         fee,
       })
-    : calcStartingSellingPrice({ delta, curveType, spotPrice, mathCounter });
+    : calcStartingSellingPrice({
+        delta,
+        curveType,
+        spotPrice,
+        mathCounter,
+      });
 };
 
 export const priceLockedIntoPool = ({
@@ -106,9 +134,17 @@ export const priceLockedIntoPool = ({
   const amount =
     pairType === PairType.TokenForNFT ? buyOrdersAmount : nftsCount;
 
+  const calcDeltaValue = () => {
+    if (pairType === PairType.TokenForNFT) {
+      return curveType === BondingCurveType.XYK ? buyOrdersAmount + 1 : delta;
+    }
+    return curveType === BondingCurveType.XYK ? delta + 1 : delta;
+  };
+  const deltaValue = calcDeltaValue();
+
   const { total } = helpers.calculatePricesArray({
     starting_spot_price: spotPrice,
-    delta,
+    delta: deltaValue,
     amount,
     bondingCurveType: curveType,
     orderType: OrderType.Sell,

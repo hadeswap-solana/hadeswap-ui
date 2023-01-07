@@ -7,10 +7,13 @@ interface PairButtonsProps {
   className?: string;
   onClickLeft?: (arg: any) => void;
   onClickRight?: (arg: any) => void;
+  onClickCenter?: (arg: any) => void;
   valueButtonLeft: string | JSX.Element;
   valueButtonRight: string | JSX.Element;
+  valueButtonCenter?: string | JSX.Element;
   isActiveRight: boolean;
   isActiveLeft: boolean;
+  isActiveCenter?: boolean;
   isDisabled?: boolean;
 }
 
@@ -18,10 +21,13 @@ export const PairButtons: FC<PairButtonsProps> = ({
   className,
   onClickLeft,
   onClickRight,
+  onClickCenter,
   valueButtonLeft,
   valueButtonRight,
+  valueButtonCenter,
   isActiveLeft,
   isActiveRight,
+  isActiveCenter,
   isDisabled = false,
 }) => (
   <div className={classNames(styles.pairButtonsWrapper, className)}>
@@ -38,9 +44,32 @@ export const PairButtons: FC<PairButtonsProps> = ({
     </button>
     <div
       className={classNames(styles.separator, {
-        [styles.active]: isActiveLeft || isActiveRight,
+        [styles.active]:
+          isActiveLeft ||
+          isActiveCenter ||
+          (isActiveRight && !valueButtonCenter),
       })}
     />
+    {valueButtonCenter && (
+      <>
+        <button
+          className={classNames(
+            styles.rootButton,
+            styles.pairButtonCenter,
+            { [styles.active]: isActiveCenter },
+            { [styles.disabled]: isDisabled },
+          )}
+          onClick={!isDisabled ? onClickCenter : null}
+        >
+          {valueButtonCenter}
+        </button>
+        <div
+          className={classNames(styles.separator, {
+            [styles.active]: isActiveCenter || isActiveRight,
+          })}
+        />
+      </>
+    )}
     <button
       className={classNames(
         styles.rootButton,

@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useMemo } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BondingCurveType,
@@ -18,6 +18,7 @@ import { PriceBlock } from '../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
+import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WithdrawFees } from '../../components/WithdrawFees';
 import { Chart, usePriceGraph } from '../../components/Chart';
@@ -71,8 +72,23 @@ export const EditPool: FC = () => {
   };
   const actualBuyOrders = calcActualBuyOrders();
 
-  const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
-    usePoolServicePrice({ pool });
+  const {
+    formPrice,
+    fee,
+    rawFee,
+    spotPrice,
+    rawSpotPrice,
+    delta,
+    rawDelta,
+    curveType,
+    setCurveType,
+  } = usePoolServicePrice({ pool, selectedNftsAmount });
+
+  const calcInitialDelta = useCallback(() => {
+    if (curveType === BondingCurveType.Exponential) return pool?.delta / 100;
+    if (curveType === BondingCurveType.Linear) return pool?.delta / 1e9;
+    return pool?.nftsCount;
+  }, [curveType, pool?.nftsCount, pool?.delta]);
 
   const initialValuesAssets = useMemo(
     () => ({
@@ -85,24 +101,17 @@ export const EditPool: FC = () => {
     () => ({
       fee: pool?.fee / 100,
       spotPrice: pool?.currentSpotPrice / 1e9,
-      delta:
-        curveType === BondingCurveType.Exponential
-          ? pool?.delta / 100
-          : pool?.delta / 1e9,
+      delta: calcInitialDelta(),
     }),
-    [pool, curveType],
+    [pool?.fee, pool?.currentSpotPrice, calcInitialDelta],
   );
-
-  const rawSpotPrice = spotPrice * 1e9;
-  const rawDelta =
-    curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
 
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({
       pool,
       selectedNfts,
       buyOrdersAmount: actualBuyOrders,
-      rawFee: fee * 100,
+      rawFee,
       rawDelta,
       rawSpotPrice,
     });
@@ -122,18 +131,7 @@ export const EditPool: FC = () => {
     type: pairType,
   });
 
-  const assetsBlockRef = useRef<HTMLDivElement>();
-  const priceBlockRef = useRef<HTMLDivElement>();
-
-  useEffect(() => {
-    if (
-      assetsBlockRef.current &&
-      priceBlockRef.current &&
-      pairType !== PairType.TokenForNFT
-    ) {
-      assetsBlockRef.current.style.height = `${priceBlockRef.current.offsetHeight}px`;
-    }
-  });
+  const { assetsBlockRef, priceBlockRef } = useAssetsSetHeight(pairType);
 
   const isLoading = marketLoading || poolLoading || nftsLoading;
 

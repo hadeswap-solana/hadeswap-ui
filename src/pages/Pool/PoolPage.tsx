@@ -16,6 +16,7 @@ import {
 import { Chart, usePriceGraph } from '../../components/Chart';
 import styles from './PoolPage.module.scss';
 import { PoolTradeTable } from './components/PoolTradeTable';
+import { BondingCurveType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 
 export const PoolPage: FC = () => {
   const market = useSelector(selectCertainMarket);
@@ -30,7 +31,10 @@ export const PoolPage: FC = () => {
 
   const chartData = usePriceGraph({
     baseSpotPrice: pool?.baseSpotPrice,
-    delta: pool?.delta,
+    delta:
+      pool?.bondingCurve === BondingCurveType.XYK
+        ? pool?.nftsCount
+        : pool?.delta,
     fee: pool?.fee,
     bondingCurve: pool?.bondingCurve,
     buyOrdersAmount: pool?.buyOrdersAmount,

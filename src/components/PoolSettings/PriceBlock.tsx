@@ -8,9 +8,9 @@ import {
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { PairButtons } from '../Buttons/PairButtons';
 import {
+  priceLockedIntoPool,
   startingBuyingPrice,
   startingSellingPrice,
-  priceLockedIntoPool,
 } from './utils';
 import { MarketInfo, Pair } from '../../state/core/types';
 
@@ -27,9 +27,9 @@ interface PriceBlockProps {
   setCurveType: React.Dispatch<BondingCurveType>;
   spotPrice: number;
   delta: number;
+  nftsCount: number;
   fee: number;
   buyOrdersAmount: number;
-  nftsCount: number;
   formInitialValues: {
     fee: number;
     spotPrice: number;
@@ -49,19 +49,33 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       setCurveType,
       spotPrice,
       delta,
+      nftsCount,
       fee,
       buyOrdersAmount,
-      nftsCount,
       formInitialValues,
       pool,
     },
     ref,
   ) => {
-    const deltaType = curveType === BondingCurveType.Exponential ? '%' : 'SOL';
+    const calcDeltaType = () => {
+      if (curveType === BondingCurveType.Exponential) return '%';
+      if (curveType === BondingCurveType.Linear) return 'SOL';
+      return '';
+    };
+    const deltaType = calcDeltaType();
+
     const isDisableFields =
       !(pairType === PairType.NftForToken) && pool?.buyOrdersAmount > 20;
 
-    const buyingPrice = startingBuyingPrice({ pairType, fee, spotPrice });
+    const buyingPrice = startingBuyingPrice({
+      pairType,
+      fee,
+      delta,
+      spotPrice,
+      curveType,
+      mathCounter: pool?.mathCounter,
+    });
+
     const sellingPrice = startingSellingPrice({
       pairType,
       curveType,
@@ -80,6 +94,9 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       curveType,
       mathCounter: pool?.mathCounter,
     });
+
+    const spotPriceFieldName =
+      curveType === BondingCurveType.XYK ? 'pool size' : 'spot price';
 
     const isWarningVisible =
       parseFloat(chosenMarket?.floorPrice) > sellingPrice &&
@@ -107,7 +124,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                 </>
               )}
               <h3 className={styles.cardSubTitle}>
-                {`spot price ${
+                {`${spotPriceFieldName} ${
                   chosenMarket
                     ? `(current best offer: ${chosenMarket?.bestoffer} SOL, current floor price: ${chosenMarket?.floorPrice} SOL)`
                     : ''
@@ -122,20 +139,6 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
               <Form.Item name="spotPrice">
                 <InputNumber
                   disabled={editMode && isDisableFields}
-                  // min={
-                  //   pairType !== PairType.TokenForNFT
-                  //     ? chosenMarket?.bestoffer === '0.000'
-                  //       ? 0
-                  //       : chosenMarket?.bestoffer
-                  //     : 0
-                  // }
-                  // max={
-                  //   pairType !== PairType.NftForToken
-                  //     ? chosenMarket?.floorPrice === '0.000'
-                  //       ? 100000000
-                  //       : chosenMarket?.floorPrice
-                  //     : 100000000
-                  // }
                   addonAfter="SOL"
                 />
               </Form.Item>
@@ -152,28 +155,40 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                 isDisabled={editMode}
                 className={styles.pairButtonsWrapper}
                 onClickLeft={() => setCurveType(BondingCurveType.Linear)}
-                onClickRight={() => setCurveType(BondingCurveType.Exponential)}
+                onClickCenter={() => setCurveType(BondingCurveType.Exponential)}
+                onClickRight={() => setCurveType(BondingCurveType.XYK)}
                 valueButtonLeft="linear curve"
-                valueButtonRight="exponential curve"
+                valueButtonCenter="exponential curve"
+                valueButtonRight="xyk"
                 isActiveLeft={curveType === BondingCurveType.Linear}
-                isActiveRight={curveType === BondingCurveType.Exponential}
+                isActiveCenter={curveType === BondingCurveType.Exponential}
+                isActiveRight={curveType === BondingCurveType.XYK}
               />
-              <h3 className={styles.cardSubTitle}>
-                delta
-                <Tooltip
-                  placement="top"
-                  title="how much your pool price changes with each sell/buy"
-                >
-                  <InfoCircleOutlined />
-                </Tooltip>
-              </h3>
-              <Form.Item name="delta">
-                <InputNumber
-                  disabled={editMode && isDisableFields}
-                  addonAfter={deltaType}
-                  min="0"
-                />
-              </Form.Item>
+              {curveType === BondingCurveType.XYK ? (
+                <>
+                  <h3 className={styles.cardSubTitle}>nfts amount</h3>
+                  <InputNumber disabled value={delta} addonAfter="NFTs" />
+                </>
+              ) : (
+                <>
+                  <h3 className={styles.cardSubTitle}>
+                    delta
+                    <Tooltip
+                      placement="top"
+                      title="how much your pool price changes with each sell/buy"
+                    >
+                      <InfoCircleOutlined />
+                    </Tooltip>
+                  </h3>
+                  <Form.Item name="delta">
+                    <InputNumber
+                      disabled={editMode && isDisableFields}
+                      addonAfter={deltaType}
+                      min="0"
+                    />
+                  </Form.Item>
+                </>
+              )}
             </Form>
             <div className={styles.priceCardNotice}>
               {pairType !== PairType.NftForToken && (

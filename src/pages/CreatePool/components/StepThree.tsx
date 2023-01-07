@@ -1,15 +1,13 @@
-import { FC, useRef, useEffect, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  BondingCurveType,
-  PairType,
-} from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/usePoolServiceAssets';
+import { useAssetsSetHeight } from '../../../components/PoolSettings/hooks/useAssetsSetHeight';
 import { Chart, usePriceGraph } from '../../../components/Chart';
 import Button from '../../../components/Buttons/Button';
 import { useCreatePool } from '../hooks';
@@ -50,8 +48,22 @@ export const StepThree: FC<StepThreeProps> = ({
     buyOrdersAmount,
   } = usePoolServiceAssets({ marketPublicKey: chosenMarketKey });
 
-  const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
-    usePoolServicePrice({});
+  const actualBuyOrdersAmount =
+    pairType === PairType.LiquidityProvision
+      ? selectedNfts.length
+      : buyOrdersAmount;
+
+  const {
+    formPrice,
+    fee,
+    rawFee,
+    spotPrice,
+    rawSpotPrice,
+    delta,
+    rawDelta,
+    curveType,
+    setCurveType,
+  } = usePoolServicePrice({ selectedNftsAmount: selectedNfts.length });
 
   const initialValuesAssets = useMemo(
     () => ({
@@ -69,19 +81,14 @@ export const StepThree: FC<StepThreeProps> = ({
     [],
   );
 
-  const rawSpotPrice = spotPrice * 1e9;
-  const rawDelta =
-    curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
-  const rawFee = fee * 100;
-
   const isCreateButtonDisabled =
     (pairType !== PairType.TokenForNFT && !selectedNfts.length) ||
-    (pairType === PairType.TokenForNFT && !buyOrdersAmount) ||
+    (pairType === PairType.TokenForNFT && !actualBuyOrdersAmount) ||
     !spotPrice;
 
   const { create: onCreatePoolClick } = useCreatePool({
     pairType,
-    buyOrdersAmount,
+    buyOrdersAmount: actualBuyOrdersAmount,
     marketPubkey: chosenMarketKey,
     selectedNfts,
     curveType,
@@ -91,30 +98,19 @@ export const StepThree: FC<StepThreeProps> = ({
     onAfterTxn: () => history.push('/my-pools'),
   });
 
-  const assetsBlockRef = useRef<HTMLDivElement>();
-  const priceBlockRef = useRef<HTMLDivElement>();
-
-  useEffect(() => {
-    if (
-      assetsBlockRef.current &&
-      priceBlockRef.current &&
-      pairType !== PairType.TokenForNFT
-    ) {
-      assetsBlockRef.current.style.height = `${priceBlockRef.current.offsetHeight}px`;
-    }
-  }, [pairType]);
-
-  const isLoading = marketsLoading || nftsLoading;
-
   const chartData = usePriceGraph({
     baseSpotPrice: spotPrice * 1e9,
     delta: rawDelta,
     fee: rawFee || 0,
     bondingCurve: curveType,
-    buyOrdersAmount,
+    buyOrdersAmount: actualBuyOrdersAmount,
     nftsCount: selectedNfts.length,
     type: pairType,
   });
+
+  const { assetsBlockRef, priceBlockRef } = useAssetsSetHeight(pairType);
+
+  const isLoading = marketsLoading || nftsLoading;
 
   return (
     <div className={styles.settingsBlockWrapper}>
@@ -132,9 +128,9 @@ export const StepThree: FC<StepThreeProps> = ({
               setCurveType={setCurveType}
               spotPrice={spotPrice}
               delta={delta}
-              fee={fee}
-              buyOrdersAmount={buyOrdersAmount}
               nftsCount={selectedNfts.length}
+              fee={fee}
+              buyOrdersAmount={actualBuyOrdersAmount}
               formInitialValues={initialValuesPrice}
             />
             <AssetsBlock
