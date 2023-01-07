@@ -32,7 +32,6 @@ type UsePriceGraph = (props: {
   buyOrdersAmount?: number;
   nftsCount?: number;
   mathCounter?: number;
-  type?: string;
 }) => Point[] | null;
 
 export const usePriceGraph: UsePriceGraph = ({
@@ -43,7 +42,6 @@ export const usePriceGraph: UsePriceGraph = ({
   buyOrdersAmount = 0,
   nftsCount = 0,
   mathCounter = 0,
-  type,
 }) => {
   if (!bondingCurve || !baseSpotPrice) return null;
 
