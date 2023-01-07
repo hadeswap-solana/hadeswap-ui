@@ -5,7 +5,6 @@ import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 import {
   BondingCurveType,
   OrderType,
-  PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Point } from './types';
 
