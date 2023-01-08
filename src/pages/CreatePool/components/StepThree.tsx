@@ -116,6 +116,7 @@ export const StepThree: FC<StepThreeProps> = ({
         ? selectedNfts.length
         : buyOrdersAmount,
     nftsCount: selectedNfts.length,
+    type: pairType,
   });
 
   return (
