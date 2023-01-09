@@ -36,8 +36,8 @@ type UseOrdersSort = ({ orders }: { orders: MarketOrder[] }) => {
 };
 
 export const useOrdersSort: UseOrdersSort = ({ orders }) => {
-  const isExistHowRarity = !orders.find(({ rarity }) => rarity.howRareIs);
-  const isExistMoonRarity = !orders.find(({ rarity }) => rarity.moonRank);
+  const isExistHowRarity = !orders.find(({ rarity }) => rarity?.howRareIs);
+  const isExistMoonRarity = !orders.find(({ rarity }) => rarity?.moonRank);
 
   const optionsMobile = sortValuesMobile(isExistHowRarity, isExistMoonRarity);
   const options = sortValues(isExistHowRarity, isExistMoonRarity);
