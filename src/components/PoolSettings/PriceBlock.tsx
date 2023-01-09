@@ -209,8 +209,9 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
               {!!isWarningVisible && (
                 <div className={styles.notify}>
                   <NotifyInfoIcon />
-                  make sure you are going to list your items below floor of{' '}
-                  {sellingPrice?.toFixed(3)} SOL
+                  make sure you are going to list your items for{' '}
+                  {sellingPrice?.toFixed(3)} SOL which is below floor of{' '}
+                  {chosenMarket?.floorPrice} SOL
                 </div>
               )}
               {editMode && !!delta && (
