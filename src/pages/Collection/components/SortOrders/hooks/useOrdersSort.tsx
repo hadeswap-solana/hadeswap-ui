@@ -36,8 +36,8 @@ type UseOrdersSort = ({ orders }: { orders: MarketOrder[] }) => {
 };
 
 export const useOrdersSort: UseOrdersSort = ({ orders }) => {
-  const isExistHowRarity = !orders.find(({ rarity }) => rarity.howRareIs);
-  const isExistMoonRarity = !orders.find(({ rarity }) => rarity.moonRank);
+  const isExistHowRarity = !orders.find(({ rarity }) => rarity?.howRareIs);
+  const isExistMoonRarity = !orders.find(({ rarity }) => rarity?.moonRank);
 
   const optionsMobile = sortValuesMobile(isExistHowRarity, isExistMoonRarity);
   const options = sortValues(isExistHowRarity, isExistMoonRarity);
@@ -51,21 +51,21 @@ export const useOrdersSort: UseOrdersSort = ({ orders }) => {
   const sort = watch(FilterFormInputsNames.SORT);
 
   const sortedOrders = useMemo(() => {
-    if (orders?.length) {
+    if (orders.length) {
       const [sortField, sortOrder] = sort.value.split('_');
       return orders.sort((orderA, orderB) => {
         if (sortField === SortField.MOON_RANK) {
           return compareNumbers(
-            orderA.rarity.moonRank,
-            orderB.rarity.moonRank,
+            orderA.rarity?.moonRank,
+            orderB.rarity?.moonRank,
             sortOrder === SORT_ORDER.DESC,
           );
         }
 
         if (sortField === SortField.HOW_RARE) {
           return compareNumbers(
-            orderA.rarity.howRareIs,
-            orderB.rarity.howRareIs,
+            orderA.rarity?.howRareIs,
+            orderB.rarity?.howRareIs,
             sortOrder === SORT_ORDER.DESC,
           );
         }
@@ -83,7 +83,7 @@ export const useOrdersSort: UseOrdersSort = ({ orders }) => {
     }
 
     return [];
-  }, [sort, setValue, orders]);
+  }, [sort, orders]);
 
   return {
     sortedOrders,

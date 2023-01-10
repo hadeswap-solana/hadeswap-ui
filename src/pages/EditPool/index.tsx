@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BondingCurveType,
@@ -18,6 +18,7 @@ import { PriceBlock } from '../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
+import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WithdrawFees } from '../../components/WithdrawFees';
 import { Chart, usePriceGraph } from '../../components/Chart';
@@ -122,18 +123,7 @@ export const EditPool: FC = () => {
     type: pairType,
   });
 
-  const assetsBlockRef = useRef<HTMLDivElement>();
-  const priceBlockRef = useRef<HTMLDivElement>();
-
-  useEffect(() => {
-    if (
-      assetsBlockRef.current &&
-      priceBlockRef.current &&
-      pairType !== PairType.TokenForNFT
-    ) {
-      assetsBlockRef.current.style.height = `${priceBlockRef.current.offsetHeight}px`;
-    }
-  });
+  const { assetsBlockRef, priceBlockRef } = useAssetsSetHeight(pairType);
 
   const isLoading = marketLoading || poolLoading || nftsLoading;
 
