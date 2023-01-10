@@ -21,6 +21,7 @@ import styles from './styles.module.scss';
 import Button from '../../../../components/Buttons/Button';
 import { useCreateOfferModal } from '../../../../components/CreateOfferModal/hooks';
 import CreateOfferModal from '../../../../components/CreateOfferModal/CreateOfferModal';
+import { style } from 'd3';
 
 export const CollectionHeader: FC = () => {
   const market = useSelector(selectCertainMarket);
@@ -114,7 +115,11 @@ export const CollectionHeader: FC = () => {
           </div>
           <div className={styles.buttonsWrapper}>
             <CreatePoolButton />
-            <Button onClick={openCreateOfferModal} outlined>
+            <Button
+              className={styles.limitOrder}
+              onClick={openCreateOfferModal}
+              outlined
+            >
               <span>buy/sell</span>
             </Button>
           </div>
