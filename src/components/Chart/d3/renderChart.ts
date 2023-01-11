@@ -48,6 +48,6 @@ export const renderChart: RenderChart =
       .call((g) => {
         drawAxes(g, { xScale, yScale });
         drawLinePath(g, { xScale, yScale, points });
-        drawPoints(g, { points, xScale, yScale });
+        drawPoints(g, { points, xScale, yScale, width: INNER_WIDTH });
       });
   };

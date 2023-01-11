@@ -38,7 +38,11 @@ export const Chart: FC<ChartProps> = ({ title, className, data }) => {
   );
 
   return (
-    <div ref={containerRef} className={`${styles.root} ${className || ''}`}>
+    <div
+      id="chartArea"
+      ref={containerRef}
+      className={`${styles.root} ${className || ''}`}
+    >
       {!!title && <p className={styles.title}>{title}</p>}
       <svg ref={svgRef} preserveAspectRatio="xMinYMin meet" />
     </div>
