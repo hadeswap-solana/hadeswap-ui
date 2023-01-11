@@ -59,7 +59,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
   ) => {
     const deltaType = curveType === BondingCurveType.Exponential ? '%' : 'SOL';
     const isDisableFields =
-      !(pairType === PairType.NftForToken) && pool?.buyOrdersAmount > 20;
+      !(pairType === PairType.NftForToken) && pool?.buyOrdersAmount > 15;
 
     const buyingPrice = startingBuyingPrice({ pairType, fee, spotPrice });
     const sellingPrice = startingSellingPrice({
@@ -90,19 +90,18 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       <div className={styles.priceBlockWrapper}>
         <div ref={ref}>
           <Card className={styles.card}>
-            {editMode && isDisableFields && (
-              <p className={styles.h2}>
-                you can edit &quot;spot price&quot; and &quot;delta&quot; only
-                if you have less than 20 buy orders
-              </p>
-            )}
             <h2 className={styles.cardTitle}>pricing</h2>
             <Form form={form} initialValues={formInitialValues}>
               {pairType === PairType.LiquidityProvision && (
                 <>
                   <h3 className={styles.cardSubTitle}>fee</h3>
                   <Form.Item name="fee">
-                    <InputNumber min={0} max={99.5} addonAfter="%" />
+                    <InputNumber
+                      min={0}
+                      max={99.5}
+                      addonAfter="%"
+                      disabled={editMode && isDisableFields}
+                    />
                   </Form.Item>
                 </>
               )}
@@ -209,8 +208,9 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
               {!!isWarningVisible && (
                 <div className={styles.notify}>
                   <NotifyInfoIcon />
-                  make sure you are going to list your items below floor of{' '}
-                  {sellingPrice?.toFixed(3)} SOL
+                  make sure you are going to list your items for{' '}
+                  {sellingPrice?.toFixed(3)} SOL which is below floor of{' '}
+                  {chosenMarket?.floorPrice} SOL
                 </div>
               )}
               {editMode && !!delta && (
@@ -218,6 +218,11 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                   each time your pool {renamePairType(pairType)}s an NFT, your{' '}
                   {renamePairType(pairType)} price will adjust up by {delta}{' '}
                   {deltaType}
+                </p>
+              )}
+              {editMode && isDisableFields && (
+                <p className={styles.noticeText}>
+                  {`you can edit "spot price", "delta" and "fee" only if you have less than 15 buy orders`}
                 </p>
               )}
             </div>

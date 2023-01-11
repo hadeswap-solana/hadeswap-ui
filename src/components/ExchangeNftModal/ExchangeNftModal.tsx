@@ -65,7 +65,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
 
   const { swap } = useSwap({
     onAfterTxn,
-    ixsPerTxn: 2,
+    ixsPerTxn: 1,
     onSuccessTxn: () =>
       dispatch(commonActions.setExchangeModal({ isVisible: false })),
   });

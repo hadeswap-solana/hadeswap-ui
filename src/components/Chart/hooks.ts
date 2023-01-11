@@ -5,6 +5,7 @@ import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 import {
   BondingCurveType,
   OrderType,
+  PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Point } from './types';
 
@@ -44,16 +45,13 @@ export const usePriceGraph: UsePriceGraph = ({
   mathCounter = 0,
   type,
 }) => {
-  if (!delta || !bondingCurve || !baseSpotPrice) return null;
+  if (!bondingCurve || !baseSpotPrice) return null;
 
   const { array: priceArrayBuy } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
     delta: delta,
     amount: buyOrdersAmount,
-    bondingCurveType:
-      bondingCurve === 'linear'
-        ? BondingCurveType.Linear
-        : BondingCurveType.Exponential,
+    bondingCurveType: bondingCurve,
     orderType: OrderType.Sell,
     counter: mathCounter + 1,
   }) as { array: number[]; total: number };
@@ -62,59 +60,33 @@ export const usePriceGraph: UsePriceGraph = ({
     starting_spot_price: baseSpotPrice,
     delta: delta,
     amount: nftsCount,
-    bondingCurveType:
-      bondingCurve === 'linear'
-        ? BondingCurveType.Linear
-        : BondingCurveType.Exponential,
+    bondingCurveType: bondingCurve,
     orderType: OrderType.Buy,
     counter: mathCounter,
   }) as { array: number[]; total: number };
 
-  const { array: priceArrayBuyLiquidityProvision } =
-    helpers.calculatePricesArray({
-      starting_spot_price: baseSpotPrice,
-      delta: delta,
-      amount: buyOrdersAmount + nftsCount,
-      bondingCurveType:
-        bondingCurve === 'linear'
-          ? BondingCurveType.Linear
-          : BondingCurveType.Exponential,
-      orderType: OrderType.Sell,
-      counter: mathCounter + 1,
-    }) as { array: number[]; total: number };
+  const pointsBuy = priceArrayBuy.map((price, i) => {
+    const newPrice = price / 1e9;
+    return {
+      order: 1 + i,
+      price: newPrice - newPrice * (fee / 10000),
+      type: 'buy',
+    };
+  }) as Point[];
 
-  const pointsBuy: Point[] = priceArrayBuy
-    .map((price, i) => {
-      const newPrice = price / 1e9;
-      return {
-        order: 1 + i,
-        price: newPrice - newPrice * (fee / 10000),
-        type: 'buy',
-      };
-    })
-    .reverse() as Point[];
-
-  const pointsSell: Point[] = priceArraySell.map((price, i) => {
+  const pointsSell = priceArraySell.map((price, i) => {
     const newPrice = price / 1e9;
     return {
       order: 1 + i,
       price: newPrice - newPrice * (fee / 10000),
       type: 'sell',
     };
-  });
+  }) as Point[];
 
-  const pointsLiquidityProvision: Point[] = priceArrayBuyLiquidityProvision
-    .map((price, i) => {
-      const newPrice = price / 1e9;
-      return {
-        order: 1 + i,
-        price: newPrice - newPrice * (fee / 10000),
-        type: 'buy',
-      };
-    })
-    .reverse() as Point[];
+  const pointsArr =
+    type === PairType.TokenForNFT
+      ? [...pointsBuy, ...pointsSell]
+      : [...pointsBuy.reverse(), ...pointsSell];
 
-  return type === 'liquidityProvision'
-    ? [...pointsLiquidityProvision, ...pointsSell]
-    : [...pointsBuy, ...pointsSell];
+  return pointsArr;
 };

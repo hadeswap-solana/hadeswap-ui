@@ -179,7 +179,7 @@ export const ACTIVITY_ITEM: ActivityItem = {
       valueKey: 'userTaker',
       render: (value: string, item) => (
         <LinkCell
-          link={`https://solscan.io/account/${item.userTaker}`}
+          link={`https://solana.fm/address/${item.userTaker}`}
           align={TableCellAlign.left}
         >
           <Text>{shortenAddress(value)}</Text>
@@ -209,7 +209,7 @@ export const ACTIVITY_ITEM: ActivityItem = {
       valueKey: 'timestamp',
       render: (value: string, item) => (
         <LinkCell
-          link={`https://solscan.io/tx/${item.signature}`}
+          link={`https://solana.fm/tx/${item.signature}`}
           align={TableCellAlign.left}
         >
           <Text>{moment(value).fromNow()}</Text>
@@ -239,7 +239,7 @@ export const TRADE_ITEM: TradeItem = {
       valueKey: 'userTaker',
       render: (value: string, item) => (
         <LinkCell
-          link={`https://solscan.io/account/${item.userTaker}`}
+          link={`https://solana.fm/address/${item.userTaker}`}
           align={TableCellAlign.left}
         >
           <Text>{shortenAddress(value)}</Text>
@@ -256,7 +256,7 @@ export const TRADE_ITEM: TradeItem = {
       valueKey: 'timestamp',
       render: (value: string, item) => (
         <LinkCell
-          link={`https://solscan.io/tx/${item.signature}`}
+          link={`https://solana.fm/tx/${item.signature}`}
           align={TableCellAlign.left}
         >
           <Text>{moment(value).fromNow()}</Text>
