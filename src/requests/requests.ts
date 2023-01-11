@@ -71,7 +71,16 @@ export const fetchMarketWalletNfts = async ({
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
-  return await response.json();
+
+  const nfts = await response.json();
+
+  return nfts.map((nft) => ({
+    ...nft,
+    validProof: nft?.validProof?.map(
+      (buffer: { type: 'Buffer'; data: Array<number> }) =>
+        Buffer.from(buffer.data),
+    ),
+  }));
 };
 
 export const fetchAllStats = async (): Promise<AllStats> => {

@@ -160,8 +160,11 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
       nftPairBox: isBuyOrder ? payloadOrder.nftPairBox : null,
       vaultTokenAccount: isBuyOrder ? payloadOrder.vaultTokenAccount : null,
       nftValidationAdapter: !isBuyOrder
-        ? payloadOrder.nftValidationAdapter
+        ? payloadOrder?.nftValidationAdapter
         : null,
+      nftValidationAdapterV2:
+        !isBuyOrder && payloadOrder?.nftValidationAdapterV2,
+      validProof: !isBuyOrder && payloadOrder?.validProof,
     };
 
     const affectedPairAfterChanges: CartPair = changePairOnOrderAdd(

@@ -1,5 +1,6 @@
 import { hadeswap, web3 } from 'hadeswap-sdk';
 import { CartOrder, CartPair, OrderType } from '../../state/core/types';
+import { PUBKEY_PLACEHOLDER } from '../../utils';
 
 const {
   buyNftFromPair: createBuyNftFromPairIxLib,
@@ -106,7 +107,12 @@ const createSellNftFromPairIx: CreateIx = async ({
       accounts: {
         assetReceiver: new web3.PublicKey(pair.assetReceiver),
         nftMint: new web3.PublicKey(order.mint),
-        nftValidationAdapter: new web3.PublicKey(order.nftValidationAdapter),
+        nftValidationAdapter: new web3.PublicKey(
+          order?.nftValidationAdapter || PUBKEY_PLACEHOLDER,
+        ),
+        nftValidationAdapterV2:
+          order?.nftValidationAdapterV2 &&
+          new web3.PublicKey(order.nftValidationAdapterV2),
         pair: new web3.PublicKey(pair.pairPubkey),
         userPubkey: walletPubkey,
         protocolFeeReceiver: new web3.PublicKey(
@@ -115,6 +121,7 @@ const createSellNftFromPairIx: CreateIx = async ({
       },
       args: {
         minAmountToGet: order.price - PRECISION_CORRECTION,
+        proof: order?.validProof,
         skipFailed: false,
       },
     });
@@ -126,7 +133,12 @@ const createSellNftFromPairIx: CreateIx = async ({
       accounts: {
         assetReceiver: new web3.PublicKey(pair.assetReceiver),
         nftMint: new web3.PublicKey(order.mint),
-        nftValidationAdapter: new web3.PublicKey(order.nftValidationAdapter),
+        nftValidationAdapter: new web3.PublicKey(
+          order?.nftValidationAdapter || PUBKEY_PLACEHOLDER,
+        ),
+        nftValidationAdapterV2:
+          order?.nftValidationAdapterV2 &&
+          new web3.PublicKey(order.nftValidationAdapterV2),
         pair: new web3.PublicKey(pair.pairPubkey),
         userPubkey: walletPubkey,
         protocolFeeReceiver: new web3.PublicKey(
@@ -135,6 +147,7 @@ const createSellNftFromPairIx: CreateIx = async ({
       },
       args: {
         minAmountToGet: order.price - PRECISION_CORRECTION,
+        proof: order?.validProof,
         skipFailed: false,
       },
     });

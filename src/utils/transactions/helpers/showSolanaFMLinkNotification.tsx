@@ -2,7 +2,7 @@ import { notify } from '../..';
 import { NotifyType } from '../../solanaUtils';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const showSolscanLinkNotification = (error: any): boolean => {
+export const showSolanaFMLinkNotification = (error: any): boolean => {
   const errorMessage = error?.message || '';
 
   if (errorMessage?.includes('Transaction was not confirmed in')) {
@@ -19,12 +19,12 @@ export const showSolscanLinkNotification = (error: any): boolean => {
           <br />
           Please check{' '}
           <a
-            href={`https://solscan.io/tx/${txnSignature}`}
+            href={`https://solana.fm/tx/${txnSignature}`}
             target="_blank"
             rel="noopener noreferrer"
             className="fraktion__notificationLink"
           >
-            Solscan
+            SolanaFM
           </a>{' '}
           for details.
         </p>
