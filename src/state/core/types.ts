@@ -98,6 +98,8 @@ export interface Nft {
   nftPairBox?: string; //? Exists for Buy orders
   vaultTokenAccount?: string; //? Exists for Buy orders
   nftValidationAdapter?: string; //? Exists for Sell orders
+  nftValidationAdapterV2?: string; //? Exists for Sell orders. Used for merkle tree validation
+  validProof?: Buffer[]; //? Used for validation by merkle tree
   disabled?: boolean;
   rarity?: NftRarity;
 }
