@@ -30,9 +30,9 @@ type UsePriceGraph = (props: {
   rawFee: number;
   bondingCurve: BondingCurveType;
   buyOrdersAmount?: number;
-  nftsCount?: number;
+  nftsCount: number;
   mathCounter?: number;
-  type?: string;
+  type: string;
 }) => Point[] | null;
 
 export const usePriceGraph: UsePriceGraph = ({

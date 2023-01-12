@@ -1,4 +1,5 @@
 import { ScaleLinear, select } from 'd3';
+import { chartID } from '../constants';
 
 import { Point } from '../types';
 
@@ -17,12 +18,21 @@ export const drawPoints: DrawPoints = (
   { points, xScale, yScale, width },
 ) => {
   const mouseover = (e: MouseEvent, d: Point) => {
-    const tooltip = select('#chartArea')
+    const getNumberWithOrdinal = (n: number): string => {
+      return (
+        n + (['st', 'nd', 'rd'][((((n + 90) % 100) - 10) % 10) - 1] || 'th')
+      );
+    };
+
+    const tooltip = select(`#${chartID}`)
       .append('div')
       .classed('tooltipPoint', true)
       .style('top', `${yScale(d.price) - 20}px`)
       .style('left', `${e.x > width - 100 ? e.x - 175 : e.x - 25}px`);
-    tooltip.append('div').classed('orderNumber', true).text(`${d.order}th NFT`);
+    tooltip
+      .append('div')
+      .classed('orderNumber', true)
+      .text(`${getNumberWithOrdinal(d.order)} NFT`);
 
     const price = tooltip.append('div').classed('price', true);
     price
