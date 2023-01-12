@@ -30,8 +30,8 @@ export const PoolPage: FC = () => {
 
   const chartData = usePriceGraph({
     baseSpotPrice: pool?.baseSpotPrice,
-    delta: pool?.delta,
-    fee: pool?.fee,
+    rawDelta: pool?.delta,
+    rawFee: pool?.fee,
     bondingCurve: pool?.bondingCurve,
     buyOrdersAmount: pool?.buyOrdersAmount,
     nftsCount: pool?.nftsCount,
