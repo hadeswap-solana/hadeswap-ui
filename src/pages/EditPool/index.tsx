@@ -115,8 +115,8 @@ export const EditPool: FC = () => {
 
   const chartData = usePriceGraph({
     baseSpotPrice: spotPrice * 1e9,
-    delta: rawDelta,
-    fee: fee || 0,
+    rawDelta,
+    rawFee: fee * 100 || 0,
     buyOrdersAmount: actualBuyOrders,
     nftsCount: selectedNfts.length,
     bondingCurve: curveType,
