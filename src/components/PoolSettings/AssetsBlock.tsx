@@ -43,8 +43,6 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
     },
     ref,
   ) => {
-    // console.log(buyOrdersAmount);
-
     return (
       <div ref={ref} className={styles.assetsBlockWrapper}>
         <Card

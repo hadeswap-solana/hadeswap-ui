@@ -362,7 +362,6 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
     nftsToDepositWithBuyOrders.length,
     selectedNfts.length,
   );
-  console.log(outstandingNfts, 'outstandingNfts');
 
   if (outstandingNfts.length > 0) {
     restTxns = [

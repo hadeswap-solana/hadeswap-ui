@@ -92,8 +92,6 @@ export const StepThree: FC<StepThreeProps> = ({
     onAfterTxn: () => history.push('/my-pools'),
   });
 
-  console.log(buyOrdersAmount, 'buyOrdersAmount');
-
   const chartData = usePriceGraph({
     baseSpotPrice: spotPrice * 1e9,
     rawDelta,

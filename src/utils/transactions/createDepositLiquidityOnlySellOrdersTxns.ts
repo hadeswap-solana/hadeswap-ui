@@ -1,12 +1,9 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { hadeswap, web3 } from 'hadeswap-sdk';
+import { web3 } from 'hadeswap-sdk';
 import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
 import { PUBKEY_PLACEHOLDER } from '..';
 import { depositLiquidityOnlySellOrdersToPair } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/deposits';
-
-const { depositLiquidityToPair } =
-  hadeswap.functions.marketFactory.pair.virtual.deposits;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);
@@ -25,13 +22,11 @@ type CreateDepositLiquidityOnlySellOrdersTxns = (params: {
 >;
 
 const IXNS_PER_CHUNK = 1; //? Maybe it will work with 3
-
 const NFTS_PER_CHUNK = 2;
 
 export const createDepositLiquidityOnlySellOrdersTxns: CreateDepositLiquidityOnlySellOrdersTxns =
   async ({ connection, wallet, pairPubkey, authorityAdapter, nfts }) => {
     const nftsPairs = chunk(nfts, NFTS_PER_CHUNK);
-    console.log(nftsPairs, 'nftsPairs');
 
     const ixsAndSigners = (
       await Promise.all(
