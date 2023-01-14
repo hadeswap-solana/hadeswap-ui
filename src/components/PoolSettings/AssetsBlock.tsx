@@ -43,6 +43,8 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
     },
     ref,
   ) => {
+    // console.log(buyOrdersAmount);
+
     return (
       <div ref={ref} className={styles.assetsBlockWrapper}>
         <Card
@@ -86,10 +88,15 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
               </Form>
             </>
           )}
-          {pairType === PairType.LiquidityProvision && editMode && (
+          {pairType === PairType.LiquidityProvision && (
             <>
               <h3 className={styles.cardSubTitle}>buy orders amount</h3>
-              <InputNumber disabled value={buyOrdersAmount} addonAfter="NFTs" />
+              {/* <InputNumber value={buyOrdersAmount} addonAfter="NFTs" /> */}
+              <Form form={form} initialValues={formInitialValues}>
+                <Form.Item name="buyOrdersAmount">
+                  <InputNumber min={0} addonAfter="NFTs" />
+                </Form.Item>
+              </Form>
             </>
           )}
           {pairType !== PairType.TokenForNFT && (
