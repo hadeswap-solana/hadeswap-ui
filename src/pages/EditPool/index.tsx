@@ -63,11 +63,11 @@ export const EditPool: FC = () => {
   const sellOrdersAmount = pool?.sellOrders.length;
 
   const calcActualBuyOrders = () => {
-    if (pairType === PairType.LiquidityProvision) {
-      const res =
-        pool?.buyOrdersAmount + (selectedNftsAmount - sellOrdersAmount);
-      return res > 0 ? res : 0;
-    }
+    // if (pairType === PairType.LiquidityProvision) {
+    //   const res =
+    //     pool?.buyOrdersAmount + (selectedNftsAmount - sellOrdersAmount);
+    //   return res > 0 ? res : 0;
+    // }
     return buyOrdersAmount;
   };
   const actualBuyOrders = calcActualBuyOrders();
