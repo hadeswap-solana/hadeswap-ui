@@ -2,6 +2,8 @@ import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import Logo from '../../icons/Logo';
+import { HomeIcon } from '../../icons/HomeIcon';
+import RoundIconButton from '../Buttons/RoundIconButton';
 // import InfoBlock from './InfoBlock';
 import CartBlock from './CartBlock';
 import MenuList from './MenuList';
@@ -18,6 +20,15 @@ const HeaderDesktop: FC = () => (
         <NavLink className={styles.logo} to={PATHS.ROOT}>
           <Logo />
         </NavLink>
+        <RoundIconButton className={styles.homeButton}>
+          <a
+            href="https://www.hadeswap.com/ "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <HomeIcon />
+          </a>
+        </RoundIconButton>
         {/*<Search />*/}
       </div>
       <div className={styles.buttonsWrapper}>

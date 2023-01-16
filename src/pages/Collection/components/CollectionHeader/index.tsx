@@ -21,7 +21,6 @@ import styles from './styles.module.scss';
 import Button from '../../../../components/Buttons/Button';
 import { useCreateOfferModal } from '../../../../components/CreateOfferModal/hooks';
 import CreateOfferModal from '../../../../components/CreateOfferModal/CreateOfferModal';
-import { style } from 'd3';
 
 export const CollectionHeader: FC = () => {
   const market = useSelector(selectCertainMarket);

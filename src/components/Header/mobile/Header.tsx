@@ -7,15 +7,28 @@ import { CloseCrossIcon } from '../../../icons/CloseCrossIcon';
 import Menu from './Menu';
 import { ConnectWalletButton } from '../../ConnectWalletButton/ConnectWalletButton';
 import styles from './Header.module.scss';
+import RoundIconButton from '../../Buttons/RoundIconButton';
+import { HomeIcon } from '../../../icons/HomeIcon';
 
 const HeaderMobile: FC = () => {
   const [isMenuVisible, setMenuVisible] = useState<boolean>(false);
 
   return (
     <header className={styles.header}>
-      <NavLink className={styles.logoLink} to={PATHS.ROOT}>
-        <Logo className={styles.logoIcon} />
-      </NavLink>
+      <div className={styles.logoWrapper}>
+        <NavLink className={styles.logoLink} to={PATHS.ROOT}>
+          <Logo className={styles.logoIcon} />
+        </NavLink>
+        <RoundIconButton className={styles.homeButton}>
+          <a
+            href="https://www.hadeswap.com/ "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <HomeIcon />
+          </a>
+        </RoundIconButton>
+      </div>
       <div className={styles.buttonsWrapper}>
         <ConnectWalletButton />
         <div

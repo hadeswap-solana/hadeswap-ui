@@ -5,7 +5,7 @@ import styles from './styles.module.scss';
 
 interface ButtonProps {
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
   children: JSX.Element;
 }
 
@@ -16,7 +16,7 @@ const RoundIconButton: FC<ButtonProps> = ({ className, onClick, children }) => (
       styles.roundIconWrapper,
       className,
     )}
-    onClick={onClick}
+    onClick={onClick ? onClick : null}
   >
     {children}
   </button>

@@ -5,7 +5,11 @@
   height: var(--header-height-mobile);
   padding: 0 16px;
   border-bottom: 1px solid var(--border-color-base);
-  background: var(--component-base-background);
+  background: var(--component-secondary-background);
+}
+
+.logoWrapper {
+  display: flex;
 }
 
 .logoLink {
@@ -14,7 +18,18 @@
 
 .logoIcon {
   width: 115px;
-  margin-right: 16px;
+}
+
+.homeButton {
+  margin: 0 24px;
+
+  svg {
+    width: 13px;
+  }
+
+  @media screen and (max-width: 768px) {
+    margin: 0 16px;
+  }
 }
 
 .buttonsWrapper {
