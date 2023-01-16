@@ -16,7 +16,7 @@ const RoundIconButton: FC<ButtonProps> = ({ className, onClick, children }) => (
       styles.roundIconWrapper,
       className,
     )}
-    onClick={onClick ? onClick : null}
+    onClick={onClick}
   >
     {children}
   </button>
