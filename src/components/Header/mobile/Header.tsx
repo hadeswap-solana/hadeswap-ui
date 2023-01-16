@@ -21,7 +21,7 @@ const HeaderMobile: FC = () => {
         </NavLink>
         <RoundIconButton className={styles.homeButton}>
           <a
-            href="https://www.hadeswap.com/ "
+            href="https://www.hadeswap.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
