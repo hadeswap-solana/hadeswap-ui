@@ -21,11 +21,7 @@ const HeaderDesktop: FC = () => (
           <Logo />
         </NavLink>
         <RoundIconButton className={styles.homeButton}>
-          <a
-            href="https://www.hadeswap.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://www.hadeswap.com/">
             <HomeIcon />
           </a>
         </RoundIconButton>
