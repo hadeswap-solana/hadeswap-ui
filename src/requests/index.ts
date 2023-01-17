@@ -19,6 +19,7 @@ import {
   fetchMarketPairs,
   fetchMarket,
   fetchMarketWalletNfts,
+  fetchSwapHistory,
 } from './requests';
 import { LoadingStatus, FetchingStatus } from './types';
 import { MarketInfo, Pair, Nft, NftActivityData } from '../state/core/types';
@@ -275,5 +276,27 @@ export const useTableData = (params: {
     fetchNextPage,
     isFetchingNextPage,
     isListEnded,
+  };
+};
+
+export const useSwapHistoryData = (
+  publicKey: string,
+): {
+  swapHistory: NftActivityData[];
+  swapHistoryLoading: boolean;
+} => {
+  const { data, isLoading, isFetching } = useQuery(
+    ['swapHistory', `${publicKey}`],
+    () => fetchSwapHistory(publicKey),
+    {
+      networkMode: 'offlineFirst',
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  return {
+    swapHistory: data || [],
+    swapHistoryLoading: isLoading || isFetching,
   };
 };

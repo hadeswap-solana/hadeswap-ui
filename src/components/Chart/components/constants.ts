@@ -1,4 +1,4 @@
-export const radio = [
+export const radioBtnPeriod = [
   {
     id: 'day',
     type: 'radio',
