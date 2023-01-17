@@ -29,6 +29,8 @@ import { useConnection } from '../../hooks';
 import { Nft } from '../../state/core/types';
 import { captureSentryError } from '../../utils/sentry';
 import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../../hadeswap';
+import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
+import { createDepositLiquidityOnlySellOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
 
 type UseCreatePool = (
   props: Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'>,
@@ -301,7 +303,17 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
   rawFee,
   connection,
   wallet,
+  buyOrdersAmount,
 }) => {
+  const amountOfBuyAndSellOrderPairs = Math.min(
+    buyOrdersAmount,
+    selectedNfts.length,
+  );
+  const nftsToDepositWithBuyOrders = selectedNfts.slice(
+    0,
+    amountOfBuyAndSellOrderPairs,
+  );
+
   const {
     pairPubkey,
     transaction: createTxn,
@@ -318,14 +330,51 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
     fee: rawFee,
   });
 
-  const restTxns = await createDepositLiquidityToPairTxns({
-    connection,
-    wallet,
-    pairPubkey: pairPubkey,
-    authorityAdapter: authorityAdapterPubkey,
-    nfts: selectedNfts,
-  });
+  let restTxns = [];
 
+  if (nftsToDepositWithBuyOrders.length > 0) {
+    restTxns = await createDepositLiquidityToPairTxns({
+      connection,
+      wallet,
+      pairPubkey: pairPubkey,
+      authorityAdapter: authorityAdapterPubkey,
+      nfts: nftsToDepositWithBuyOrders,
+    });
+  }
+
+  const outstandingBuyOrders =
+    buyOrdersAmount - nftsToDepositWithBuyOrders.length;
+
+  if (outstandingBuyOrders > 0) {
+    restTxns = [
+      ...restTxns,
+      ...(await createDepositLiquidityOnlyBuyOrdersTxns({
+        connection,
+        wallet,
+        pairPubkey: pairPubkey,
+        authorityAdapter: authorityAdapterPubkey,
+        buyOrdersAmount: outstandingBuyOrders,
+      })),
+    ];
+  }
+
+  const outstandingNfts = selectedNfts.slice(
+    nftsToDepositWithBuyOrders.length,
+    selectedNfts.length,
+  );
+
+  if (outstandingNfts.length > 0) {
+    restTxns = [
+      ...restTxns,
+      ...(await createDepositLiquidityOnlySellOrdersTxns({
+        connection,
+        wallet,
+        pairPubkey: pairPubkey,
+        authorityAdapter: authorityAdapterPubkey,
+        nfts: outstandingNfts,
+      })),
+    ];
+  }
   const { array: amounts }: { array: number[] } =
     hadeswap.helpers.calculatePricesArray({
       starting_spot_price: rawSpotPrice,
