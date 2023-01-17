@@ -2,7 +2,6 @@ import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 import Button from '../../Buttons/Button';
-import PhantomIcon from '../../../icons/PhantomIcon';
 import { WalletIcon } from '../../../icons/WalletIcon';
 import { DisconnectIcon } from '../../../icons/DisconnectIcon';
 import { shortenAddress } from '../../../utils/solanaUtils';
@@ -13,12 +12,12 @@ import styles from '../ConnectWalletButton.module.scss';
 
 export const ConnectedButtonMobile: FC = () => {
   const dispatch = useDispatch();
-  const { publicKey, disconnect } = useWallet();
+  const { publicKey, disconnect, wallet } = useWallet();
 
   return (
     <div className={styles.mobileButtonsWrapper}>
       <Button className={styles.button} outlined>
-        <PhantomIcon className={styles.phantomIcon} />
+        <img src={wallet.adapter.icon} className={styles.walletIcon} />
         <span>{shortenAddress(publicKey.toBase58())}</span>
       </Button>
       <button

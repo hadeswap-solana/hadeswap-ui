@@ -1,18 +1,19 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
-import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
-import { withdrawLiquiditySingleSellOrder } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/withdrawals';
+import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../../hadeswap';
+import { getArrayByNumber } from './helpers';
+import { depositLiquidityOnlyBuyOrdersToPair } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/deposits';
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);
 
-type CreateWithdrawLiquidityFromSellOrdersPair = (params: {
+type CreateDepositLiquidityOnlyBuyOrdersTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   pairPubkey: string;
   authorityAdapter: string;
-  nfts: Nft[];
+  buyOrdersAmount: number;
 }) => Promise<
   {
     transaction: web3.Transaction;
@@ -20,26 +21,37 @@ type CreateWithdrawLiquidityFromSellOrdersPair = (params: {
   }[]
 >;
 
-const IXNS_PER_CHUNK = 1;
+const IXNS_PER_CHUNK = 1; //? Maybe it will work with 3
 
-export const createWithdrawLiquidityFromSellOrdersPair: CreateWithdrawLiquidityFromSellOrdersPair =
-  async ({ connection, wallet, pairPubkey, authorityAdapter, nfts }) => {
+export const createDepositLiquidityOnlyBuyOrdersTxns: CreateDepositLiquidityOnlyBuyOrdersTxns =
+  async ({
+    connection,
+    wallet,
+    pairPubkey,
+    authorityAdapter,
+    buyOrdersAmount,
+  }) => {
+    const amountPerChunk = getArrayByNumber(
+      buyOrdersAmount,
+      SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
+    );
     const ixsAndSigners = (
       await Promise.all(
-        nfts.map((nft) => {
-          return withdrawLiquiditySingleSellOrder({
+        amountPerChunk.map((amount) =>
+          depositLiquidityOnlyBuyOrdersToPair({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
+            args: {
+              amountOfOrders: amount,
+            },
             accounts: {
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),
               userPubkey: wallet.publicKey,
-              nftMint: new web3.PublicKey(nft.mint),
-              nftPairBox: new web3.PublicKey(nft.nftPairBox),
             },
             sendTxn: sendTxnPlaceHolder,
-          });
-        }),
+          }),
+        ),
       )
     ).map(({ instructions, signers }) => ({ instructions, signers }));
 

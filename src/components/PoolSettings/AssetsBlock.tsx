@@ -11,7 +11,6 @@ import { NftWithSelect } from './hooks/usePoolServiceAssets';
 import styles from './styles.module.scss';
 
 interface AssetsBlockProps {
-  editMode?: boolean;
   pairType: PairType;
   nfts: NftWithSelect[];
   selectedNfts: NftWithSelect[];
@@ -19,7 +18,6 @@ interface AssetsBlockProps {
   selectAll: () => void;
   deselectAll: () => void;
   form: FormInstance;
-  buyOrdersAmount?: number;
   className?: string;
   formInitialValues: {
     buyOrdersAmount: number;
@@ -30,7 +28,6 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
   (
     {
       className,
-      editMode = false,
       nfts,
       toggleNft,
       selectedNfts,
@@ -38,7 +35,6 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
       deselectAll,
       pairType,
       form,
-      buyOrdersAmount,
       formInitialValues,
     },
     ref,
@@ -86,10 +82,15 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
               </Form>
             </>
           )}
-          {pairType === PairType.LiquidityProvision && editMode && (
+          {pairType === PairType.LiquidityProvision && (
             <>
               <h3 className={styles.cardSubTitle}>buy orders amount</h3>
-              <InputNumber disabled value={buyOrdersAmount} addonAfter="NFTs" />
+              {/* <InputNumber value={buyOrdersAmount} addonAfter="NFTs" /> */}
+              <Form form={form} initialValues={formInitialValues}>
+                <Form.Item name="buyOrdersAmount">
+                  <InputNumber min={0} addonAfter="NFTs" />
+                </Form.Item>
+              </Form>
             </>
           )}
           {pairType !== PairType.TokenForNFT && (

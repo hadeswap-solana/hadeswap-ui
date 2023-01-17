@@ -5,7 +5,6 @@ import { Dropdown, Menu } from 'antd';
 import Button from '../Buttons/Button';
 import { WalletIcon } from '../../icons/WalletIcon';
 import { DisconnectIcon } from '../../icons/DisconnectIcon';
-import PhantomIcon from '../../icons/PhantomIcon';
 import ChevronIcon from '../../icons/ChevronIcon';
 import { commonActions } from '../../state/common/actions';
 import { shortenAddress } from '../../utils/solanaUtils';
@@ -14,7 +13,7 @@ import styles from './ConnectWalletButton.module.scss';
 
 export const ConnectedButton: FC = () => {
   const dispatch = useDispatch();
-  const { publicKey, disconnect } = useWallet();
+  const { publicKey, disconnect, wallet } = useWallet();
 
   return (
     <Dropdown
@@ -40,7 +39,7 @@ export const ConnectedButton: FC = () => {
     >
       <div>
         <Button className={styles.button} outlined>
-          <PhantomIcon className={styles.phantomIcon} />
+          <img src={wallet.adapter.icon} className={styles.walletIcon} />
           <span>{shortenAddress(publicKey.toBase58())}</span>
           <ChevronIcon className={styles.chevronIcon} />
         </Button>

@@ -32,7 +32,7 @@ export type UsePoolChange = (props: {
 export const usePoolChange: UsePoolChange = ({
   pool,
   selectedNfts,
-  buyOrdersAmount, //? For TokenForNft pool only!
+  buyOrdersAmount, //? For TokenForNft and LiquidityProvision pool only!
   rawFee,
   rawDelta,
   rawSpotPrice,
@@ -62,7 +62,6 @@ export const usePoolChange: UsePoolChange = ({
       wallet,
       connection,
     });
-
     const txnsData = txnsDataArray.map(
       (txnsData, txnsDataIdx, txnsDataArray) => ({
         txnsAndSigners: txnsData.map(({ transaction, signers }) => ({

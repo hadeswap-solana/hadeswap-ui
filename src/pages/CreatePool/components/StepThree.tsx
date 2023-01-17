@@ -97,10 +97,7 @@ export const StepThree: FC<StepThreeProps> = ({
     rawDelta,
     rawFee: rawFee || 0,
     bondingCurve: curveType,
-    buyOrdersAmount:
-      pairType === PairType.LiquidityProvision
-        ? selectedNfts.length
-        : buyOrdersAmount,
+    buyOrdersAmount,
     nftsCount: selectedNfts.length,
     type: pairType,
   });
