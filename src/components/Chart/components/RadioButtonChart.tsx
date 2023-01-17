@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, useState } from 'react';
 import classNames from 'classnames';
-import { radio } from './constants';
+import { radioBtnPeriod } from './constants';
 import styles from './RadioButtonChart.module.scss';
 
 const RadioButtonChart: FC = () => {
@@ -12,7 +12,7 @@ const RadioButtonChart: FC = () => {
   return (
     <div className={styles.radioButtonChart}>
       <div className={styles.wrapper}>
-        {radio.map(({ id, type, name, value }) => (
+        {radioBtnPeriod.map(({ id, type, name, value }) => (
           <label
             key={id}
             className={classNames(styles.label, {

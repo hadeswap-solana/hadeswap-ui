@@ -1,6 +1,10 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { useFetchPair, useFetchMarket } from '../../requests';
+import {
+  useFetchPair,
+  useFetchMarket,
+  useSwapHistoryData,
+} from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
 import { PoolHeader } from './components/PoolHeader';
@@ -28,6 +32,13 @@ export const PoolPage: FC = () => {
   useFetchMarket(pool?.market);
 
   const isLoading = marketLoading || poolLoading;
+  console.log(pool, 'pool');
+
+  const publicKey = pool?.pairPubkey;
+
+  const { swapHistory, swapHistoryLoading } = useSwapHistoryData(publicKey);
+
+  console.log(swapHistory, 'swapHistory');
 
   const chartData = usePriceGraph({
     baseSpotPrice: pool?.baseSpotPrice,
@@ -53,6 +64,11 @@ export const PoolPage: FC = () => {
             {!!chartData && !!chartData?.length && (
               <div className={styles.chartWrapper}>
                 <Chart title="price graph" data={chartData} />
+              </div>
+            )}
+            {!!chartData && !!chartData?.length && (
+              <div className={styles.chartWrapper}>
+                <Chart title="swap history" data={chartData} />
               </div>
             )}
             <PoolTradeTable />
