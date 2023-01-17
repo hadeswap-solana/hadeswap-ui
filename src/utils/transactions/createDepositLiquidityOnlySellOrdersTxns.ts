@@ -3,10 +3,7 @@ import { web3 } from 'hadeswap-sdk';
 import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
 import { PUBKEY_PLACEHOLDER } from '..';
-import {
-  depositLiquidityOnlySellOrdersToPair,
-  depositLiquiditySingleSellOrder,
-} from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/deposits';
+import { depositLiquiditySingleSellOrder } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/deposits';
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);
