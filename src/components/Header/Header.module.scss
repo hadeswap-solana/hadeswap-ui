@@ -67,8 +67,12 @@
   }
 }
 
-.cartBlock {
+.buttonsBlock {
   display: flex;
-  margin: 0 16px 0 32px;
+  margin: 0 24px 0 32px;
   column-gap: 16px;
+
+  @media screen and (max-width: 1024px) {
+    margin: 0 24px;
+  }
 }

@@ -1,3 +1,35 @@
+.mobileButtonsWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.button {
+  @media screen and (max-width: 1024px) {
+    width: 150px;
+    height: 38px;
+
+    span {
+      font-size: 14px;
+      line-height: 17px;
+    }
+
+    svg {
+      width: 18px;
+    }
+  }
+}
+
+.outlinedButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+
+  span {
+    margin-left: 11px;
+  }
+}
+
 .phantomIcon {
   margin-right: 10px;
 }
