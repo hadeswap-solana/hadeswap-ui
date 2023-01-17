@@ -1,19 +1,19 @@
 import { useLayoutEffect, useRef, useState, FC, useEffect } from 'react';
 import { throttle } from 'lodash';
 
+import RadioButtonChart from './components/RadioButtonChart';
 import { renderChart } from './d3/renderChart';
-import { useD3 } from './hooks';
+import useD3 from './hooks/useD3';
 import { Point } from './types';
 import { chartID } from './constants';
 import styles from './Chart.module.scss';
-
 interface ChartProps {
   title?: string;
   className?: string;
   data: Point[] | null;
 }
 
-export const Chart: FC<ChartProps> = ({ title, className, data }) => {
+const Chart: FC<ChartProps> = ({ title, className, data }) => {
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
 
@@ -33,7 +33,7 @@ export const Chart: FC<ChartProps> = ({ title, className, data }) => {
 
   const svgRef = useD3(
     renderChart(data, {
-      canvasSize: { x: containerWidth, y: 250 },
+      canvasSize: { x: containerWidth, y: 320 },
     }),
     [data, containerWidth],
   );
@@ -45,7 +45,10 @@ export const Chart: FC<ChartProps> = ({ title, className, data }) => {
       className={`${styles.root} ${className || ''}`}
     >
       {!!title && <p className={styles.title}>{title}</p>}
+      {title === 'swap history' && <RadioButtonChart />}
       <svg ref={svgRef} preserveAspectRatio="xMinYMin meet" />
     </div>
   );
 };
+
+export default Chart;

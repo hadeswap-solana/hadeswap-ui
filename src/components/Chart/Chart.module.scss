@@ -1,6 +1,7 @@
 .root {
   width: 100%;
   position: relative;
+  background: var(--component-base-background);
   .title {
     text-align: center;
     color: var(--white-color);

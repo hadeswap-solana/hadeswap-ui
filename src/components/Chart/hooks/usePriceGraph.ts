@@ -1,28 +1,10 @@
-import { select } from 'd3';
-import { RefObject, useEffect, useRef } from 'react';
-
 import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 import {
   BondingCurveType,
   OrderType,
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
-import { Point } from './types';
-
-export const useD3 = <T extends SVGSVGElement = SVGSVGElement>(
-  renderChartFn: (selection: ReturnType<typeof select>) => void,
-  dependencies: Array<any>,
-): RefObject<T> => {
-  const ref = useRef();
-
-  useEffect(() => {
-    renderChartFn(select(ref.current) as ReturnType<typeof select>);
-    return () => {};
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, dependencies);
-
-  return ref;
-};
+import { Point } from '../types';
 
 type UsePriceGraph = (props: {
   baseSpotPrice: number;
@@ -35,7 +17,7 @@ type UsePriceGraph = (props: {
   type: string;
 }) => Point[] | null;
 
-export const usePriceGraph: UsePriceGraph = ({
+const usePriceGraph: UsePriceGraph = ({
   baseSpotPrice,
   rawDelta,
   rawFee = 0,
@@ -89,3 +71,5 @@ export const usePriceGraph: UsePriceGraph = ({
 
   return pointsArr;
 };
+
+export default usePriceGraph;

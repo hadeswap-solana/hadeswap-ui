@@ -7,14 +7,15 @@ import { PoolHeader } from './components/PoolHeader';
 import { PoolGeneralInfo } from './components/PoolGeneralInfo';
 import { NftList } from './components/NftList';
 import { Spinner } from '../../components/Spinner/Spinner';
+import { PoolTradeTable } from './components/PoolTradeTable';
+import Chart from '../../components/Chart/Chart';
+import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import {
   selectCertainMarket,
   selectCertainMarketLoading,
   selectCertainPair,
   selectCertainPairLoading,
 } from '../../state/core/selectors';
-import { Chart, usePriceGraph } from '../../components/Chart';
-import { PoolTradeTable } from './components/PoolTradeTable';
 import styles from './PoolPage.module.scss';
 
 export const PoolPage: FC = () => {
