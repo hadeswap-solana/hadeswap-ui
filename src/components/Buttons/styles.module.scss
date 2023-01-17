@@ -54,6 +54,20 @@
   height: 40px;
   border: var(--border-base);
   border-radius: 50%;
+  background: var(--component-base-background);
+
+  a {
+    display: flex;
+  }
+
+  @media screen and (max-width: 1024px) {
+    width: 38px;
+    height: 38px;
+
+    svg {
+      width: 16px;
+    }
+  }
 }
 
 .badgeButtonWrapper {
@@ -152,6 +166,7 @@
   svg {
     height: 20px;
     min-width: 20px;
+
     path {
       fill: var(--blue-color);
     }

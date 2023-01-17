@@ -2,11 +2,13 @@ import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import Logo from '../../icons/Logo';
+import { HomeIcon } from '../../icons/HomeIcon';
+import RoundIconButton from '../Buttons/RoundIconButton';
 // import InfoBlock from './InfoBlock';
-import CartBlock from './CartBlock';
+import ButtonsBlock from './ButtonsBlock';
 import MenuList from './MenuList';
 //import Search from '../Search';
-import { ConnectWalletButton } from '../ConnectWalletButton/ConnectWalletButton';
+import { ConnectWalletButton } from '../ConnectWalletButton';
 
 import styles from './Header.module.scss';
 
@@ -18,11 +20,16 @@ const HeaderDesktop: FC = () => (
         <NavLink className={styles.logo} to={PATHS.ROOT}>
           <Logo />
         </NavLink>
+        <RoundIconButton className={styles.homeButton}>
+          <a href="https://www.hadeswap.com/">
+            <HomeIcon />
+          </a>
+        </RoundIconButton>
         {/*<Search />*/}
       </div>
       <div className={styles.buttonsWrapper}>
         <MenuList classNames={styles} />
-        <CartBlock />
+        <ButtonsBlock />
         <ConnectWalletButton />
       </div>
     </div>

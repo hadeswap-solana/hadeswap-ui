@@ -8,13 +8,13 @@ import BadgeButton from '../Buttons/BadgeButton';
 
 import styles from './Header.module.scss';
 
-const CartBlock: FC = () => {
+const ButtonsBlock: FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
   const itemsAmount = cartItems.buy.length + cartItems.sell.length;
 
   return (
-    <div className={styles.cartBlock}>
+    <div className={styles.buttonsBlock}>
       {/* <RoundIconButton onClick={() => null}>
         <BellIcon />
       </RoundIconButton> */}
@@ -26,4 +26,4 @@ const CartBlock: FC = () => {
   );
 };
 
-export default CartBlock;
+export default ButtonsBlock;
