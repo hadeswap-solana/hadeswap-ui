@@ -379,44 +379,20 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
       buyOrdersQuantityToWithdraw,
     ]);
 
-    const sellOrdersToWithdrawDirty =
+    const sellOrdersToWithdrawUnbalancedCount =
       nftsToWithdraw.length > buyOrdersQuantityToWithdraw
         ? nftsToWithdraw.length - buyOrdersQuantityToWithdraw
         : 0;
-    const buyOrdersToWithdrawDirty =
+
+    const sellOrdersToWithdraw = nftsToWithdraw.slice(
+      balancedPairsAmount,
+      sellOrdersToWithdrawUnbalancedCount,
+    );
+
+    const buyOrdersToWithdraw =
       buyOrdersQuantityToWithdraw > nftsToWithdraw.length
         ? buyOrdersQuantityToWithdraw - nftsToWithdraw.length
         : 0;
-
-    const { sellOrdersToWithdraw, unevenSellOrdersAmountToWithdraw } =
-      sellOrdersToWithdrawDirty % 2 === 1
-        ? {
-            sellOrdersToWithdraw: nftsToWithdraw.slice(
-              balancedPairsAmount,
-              sellOrdersToWithdrawDirty - 1,
-            ),
-            unevenSellOrdersAmountToWithdraw: nftsToWithdraw.slice(
-              sellOrdersToWithdrawDirty - 1,
-              sellOrdersToWithdrawDirty,
-            ),
-          }
-        : {
-            sellOrdersToWithdraw: nftsToWithdraw.slice(
-              balancedPairsAmount,
-              sellOrdersToWithdrawDirty,
-            ),
-            unevenSellOrdersAmountToWithdraw: [],
-          };
-    const { buyOrdersToWithdraw, unevenBuyOrdersToWithdraw } =
-      buyOrdersToWithdrawDirty % 2 === 1
-        ? {
-            buyOrdersToWithdraw: buyOrdersToWithdrawDirty - 1,
-            unevenBuyOrdersToWithdraw: 1,
-          }
-        : {
-            buyOrdersToWithdraw: buyOrdersToWithdrawDirty,
-            unevenBuyOrdersToWithdraw: 0,
-          };
 
     const balancedNfts = nftsToWithdraw.slice(
       0,
@@ -506,19 +482,8 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
       });
     }
 
-    const outstandingBuyOrdersRaw =
+    const outstandingBuyOrders =
       buyOrdersToDeposit - nftsToDepositWithBuyOrders.length;
-
-    const { outstandingBuyOrders, unevenBuyOrderToDeposit } =
-      outstandingBuyOrdersRaw % 2 === 1
-        ? {
-            outstandingBuyOrders: outstandingBuyOrdersRaw - 1,
-            unevenBuyOrderToDeposit: 1,
-          }
-        : {
-            outstandingBuyOrders: outstandingBuyOrdersRaw,
-            unevenBuyOrderToDeposit: 0,
-          };
 
     if (outstandingBuyOrders > 0) {
       depositLiquidityTxnsData = [
@@ -533,24 +498,10 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
       ];
     }
 
-    const outstandingNftsRaw = nftsToDeposit.slice(
+    const outstandingNfts = nftsToDeposit.slice(
       nftsToDepositWithBuyOrders.length,
       nftsToDeposit.length,
     );
-
-    const { outstandingNfts, unevenNftsToDeposit } =
-      outstandingNftsRaw.length % 2 === 1
-        ? {
-            outstandingNfts: outstandingNftsRaw.slice(
-              0,
-              outstandingNftsRaw.length - 1,
-            ),
-            unevenNftsToDeposit: outstandingNftsRaw.slice(
-              outstandingNftsRaw.length - 1,
-              outstandingNftsRaw.length,
-            ),
-          }
-        : { outstandingNfts: outstandingNftsRaw, unevenNftsToDeposit: [] };
 
     if (outstandingNfts.length > 0) {
       depositLiquidityTxnsData = [
@@ -561,24 +512,6 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
           pairPubkey: pool.pairPubkey,
           authorityAdapter: pool.authorityAdapterPubkey,
           nfts: outstandingNfts,
-        })),
-      ];
-    }
-
-    if (
-      (unevenBuyOrderToDeposit === 1 &&
-        unevenSellOrdersAmountToWithdraw.length === 1) ||
-      (unevenBuyOrdersToWithdraw === 1 && unevenNftsToDeposit.length === 1)
-    ) {
-      depositLiquidityTxnsData = [
-        ...depositLiquidityTxnsData,
-        ...(await createReplaceLiquidityOrdersTxns({
-          connection,
-          wallet,
-          pairPubkey: pool.pairPubkey,
-          authorityAdapter: pool.authorityAdapterPubkey,
-          nftsToWithdraw: unevenSellOrdersAmountToWithdraw,
-          nftsToDeposit: unevenNftsToDeposit,
         })),
       ];
     }

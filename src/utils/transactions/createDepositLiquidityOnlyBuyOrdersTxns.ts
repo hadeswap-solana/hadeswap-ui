@@ -42,7 +42,7 @@ export const createDepositLiquidityOnlyBuyOrdersTxns: CreateDepositLiquidityOnly
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             args: {
-              amountOfOrderPairs: amount / 2,
+              amountOfOrders: amount,
             },
             accounts: {
               pair: new web3.PublicKey(pairPubkey),

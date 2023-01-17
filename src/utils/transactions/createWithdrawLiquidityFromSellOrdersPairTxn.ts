@@ -2,6 +2,7 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
 import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
+import { withdrawLiquiditySingleSellOrder } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/withdrawals';
 
 const { withdrawLiquidityFromSellOrdersPair } =
   hadeswap.functions.marketFactory.pair.virtual.withdrawals;
@@ -28,18 +29,16 @@ export const createWithdrawLiquidityFromSellOrdersPair: CreateWithdrawLiquidityF
   async ({ connection, wallet, pairPubkey, authorityAdapter, nfts }) => {
     const ixsAndSigners = (
       await Promise.all(
-        chunk(nfts, 2).map((nftsPair) => {
-          return withdrawLiquidityFromSellOrdersPair({
+        nfts.map((nft) => {
+          return withdrawLiquiditySingleSellOrder({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             accounts: {
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),
               userPubkey: wallet.publicKey,
-              nftMintFirst: new web3.PublicKey(nftsPair[0].mint),
-              nftPairBoxFirst: new web3.PublicKey(nftsPair[0].nftPairBox),
-              nftMintSecond: new web3.PublicKey(nftsPair[1].mint),
-              nftPairBoxSecond: new web3.PublicKey(nftsPair[1].nftPairBox),
+              nftMint: new web3.PublicKey(nft.mint),
+              nftPairBox: new web3.PublicKey(nft.nftPairBox),
             },
             sendTxn: sendTxnPlaceHolder,
           });

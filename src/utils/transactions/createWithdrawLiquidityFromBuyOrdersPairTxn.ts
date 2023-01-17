@@ -65,7 +65,7 @@ export const createWithdrawLiquidityFromBuyOrdersPair: CreateWithdrawLiquidityFr
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             args: {
-              amountOfOrderPairs: Math.ceil(amount / 2),
+              amountOfOrders: amount,
             },
             accounts: {
               pair: new web3.PublicKey(pairPubkey),
