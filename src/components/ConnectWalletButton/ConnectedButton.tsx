@@ -1,36 +1,22 @@
 import { FC } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useDispatch } from 'react-redux';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { Dropdown, Menu } from 'antd';
 import Button from '../Buttons/Button';
+import { WalletIcon } from '../../icons/WalletIcon';
+import { DisconnectIcon } from '../../icons/DisconnectIcon';
+import PhantomIcon from '../../icons/PhantomIcon';
+import ChevronIcon from '../../icons/ChevronIcon';
 import { commonActions } from '../../state/common/actions';
 import { shortenAddress } from '../../utils/solanaUtils';
 
-import ChevronIcon from '../../icons/ChevronIcon';
-import PhantomIcon from '../../icons/PhantomIcon';
-import { DisconnectIcon } from '../../icons/DisconnectIcon';
-import { WalletIcon } from '../../icons/WalletIcon';
 import styles from './ConnectWalletButton.module.scss';
 
-export interface ConnectButtonProps {
-  className?: string;
-}
-
-export const ConnectWalletButton: FC<ConnectButtonProps> = ({ className }) => {
+export const ConnectedButton: FC = () => {
   const dispatch = useDispatch();
-  const { connected, publicKey, disconnect } = useWallet();
+  const { publicKey, disconnect } = useWallet();
 
-  return !connected ? (
-    <Button
-      outlined
-      className={className}
-      onClick={() => {
-        dispatch(commonActions.toggleWalletModal());
-      }}
-    >
-      <span>connect wallet</span>
-    </Button>
-  ) : (
+  return (
     <Dropdown
       overlay={
         <Menu
@@ -53,7 +39,7 @@ export const ConnectWalletButton: FC<ConnectButtonProps> = ({ className }) => {
       }
     >
       <div>
-        <Button className={className} outlined>
+        <Button className={styles.button} outlined>
           <PhantomIcon className={styles.phantomIcon} />
           <span>{shortenAddress(publicKey.toBase58())}</span>
           <ChevronIcon className={styles.chevronIcon} />

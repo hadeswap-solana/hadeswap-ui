@@ -1,6 +1,6 @@
 .root {
   width: 100%;
-  overflow: hidden;
+  position: relative;
   .title {
     text-align: center;
     color: var(--white-color);
@@ -58,6 +58,65 @@
     }
     & text {
       color: #fff;
+    }
+    .tooltipPoint {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      z-index: 9;
+      padding: 12px 28px 12px 12px;
+
+      display: flex;
+      flex-direction: column;
+
+      background: #0f1720;
+      border: 1px solid #23303d;
+      border-radius: 12px;
+
+      svg {
+        width: 12px;
+        height: 12px;
+      }
+    }
+    .orderNumber {
+      padding: 0 2px;
+      font-family: var(--font-family-rubik);
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 22px;
+      color: var(--dark-grey-color);
+    }
+    .price {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .priceTitle {
+      font-family: var(--font-family-rubik);
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 120%;
+      color: var(--primary-white-color);
+    }
+    .priceValue {
+      position: relative;
+      font-family: var(--font-family-montserrat);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 120%;
+
+      color: var(--primary-white-color);
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -16px;
+        width: 16px;
+        height: 16px;
+        background: #257cff;
+        background: url('../../assets/solana.png') no-repeat center;
+        background-size: cover;
+      }
     }
   }
 }

@@ -94,8 +94,8 @@ export const StepThree: FC<StepThreeProps> = ({
 
   const chartData = usePriceGraph({
     baseSpotPrice: spotPrice * 1e9,
-    delta: rawDelta,
-    fee: rawFee || 0,
+    rawDelta,
+    rawFee: rawFee || 0,
     bondingCurve: curveType,
     buyOrdersAmount:
       pairType === PairType.LiquidityProvision

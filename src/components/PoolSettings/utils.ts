@@ -106,9 +106,12 @@ export const priceLockedIntoPool = ({
   const amount =
     pairType === PairType.TokenForNFT ? buyOrdersAmount : nftsCount;
 
+  const rawDelta =
+    curveType === BondingCurveType.Exponential ? delta * 100 : delta;
+
   const { total } = helpers.calculatePricesArray({
     starting_spot_price: spotPrice,
-    delta,
+    delta: rawDelta,
     amount,
     bondingCurveType: curveType,
     orderType: OrderType.Sell,
