@@ -35,25 +35,6 @@ export const createWithdrawLiquidityFromBuyOrdersPair: CreateWithdrawLiquidityFr
       buyOrdersAmountToDelete,
       SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
     );
-    // const trxs = [];
-
-    // for (let i = 0; i < buyOrdersAmountToDelete / 2; i++) {
-    //   trxs.push(
-    //     withdrawLiquidityOnlyBuyOrders({
-    //       programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
-    //       connection,
-    //       args: {
-    //         amountOfOrderPairs: 1
-    //       },
-    //       accounts: {
-    //         pair: new web3.PublicKey(pairPubkey),
-    //         authorityAdapter: new web3.PublicKey(authorityAdapter),
-    //         userPubkey: wallet.publicKey,
-    //       },
-    //       sendTxn: sendTxnPlaceHolder,
-    //     }),
-    //   );
-    // }
 
     const ixsAndSigners = (
       await Promise.all(
