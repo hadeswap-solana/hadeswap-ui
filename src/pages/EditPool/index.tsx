@@ -21,10 +21,11 @@ import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoo
 import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WithdrawFees } from '../../components/WithdrawFees';
-import { Chart, usePriceGraph } from '../../components/Chart';
 import Button from '../../components/Buttons/Button';
 import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
+import Chart from '../../components/Chart/Chart';
+import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import { usePoolChange } from '../../hadeswap/hooks';
 import styles from './styles.module.scss';
 

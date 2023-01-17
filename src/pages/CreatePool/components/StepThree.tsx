@@ -11,8 +11,9 @@ import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { useAssetsSetHeight } from '../../../components/PoolSettings/hooks/useAssetsSetHeight';
-import { Chart, usePriceGraph } from '../../../components/Chart';
 import Button from '../../../components/Buttons/Button';
+import Chart from '../../../components/Chart/Chart';
+import usePriceGraph from '../../../components/Chart/hooks/usePriceGraph';
 import { useCreatePool } from '../hooks';
 import { useFetchAllMarkets } from '../../../requests';
 import {
