@@ -55,7 +55,6 @@ export const createDepositLiquidityOnlySellOrdersTxns: CreateDepositLiquidityOnl
     const ixsAndSignersChunks = chunk(ixsAndSigners, IXNS_PER_CHUNK);
 
     return ixsAndSignersChunks.map((chunk) => {
-      console.log('this chunk: ', chunk);
       const transaction = new web3.Transaction();
       transaction.add(...chunk.map(({ instructions }) => instructions).flat());
 

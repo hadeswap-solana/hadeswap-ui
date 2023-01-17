@@ -59,19 +59,6 @@ export const EditPool: FC = () => {
     preSelectedNfts: pool?.sellOrders,
   });
 
-  const selectedNftsAmount = selectedNfts.length;
-  const sellOrdersAmount = pool?.sellOrders.length;
-
-  const calcActualBuyOrders = () => {
-    // if (pairType === PairType.LiquidityProvision) {
-    //   const res =
-    //     pool?.buyOrdersAmount + (selectedNftsAmount - sellOrdersAmount);
-    //   return res > 0 ? res : 0;
-    // }
-    return buyOrdersAmount;
-  };
-  const actualBuyOrders = calcActualBuyOrders();
-
   const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
     usePoolServicePrice({ pool });
 
@@ -102,7 +89,7 @@ export const EditPool: FC = () => {
     usePoolChange({
       pool,
       selectedNfts,
-      buyOrdersAmount: actualBuyOrders,
+      buyOrdersAmount,
       rawFee: fee * 100,
       rawDelta,
       rawSpotPrice,
@@ -117,7 +104,7 @@ export const EditPool: FC = () => {
     baseSpotPrice: spotPrice * 1e9,
     rawDelta,
     rawFee: fee * 100 || 0,
-    buyOrdersAmount: actualBuyOrders,
+    buyOrdersAmount,
     nftsCount: selectedNfts.length,
     bondingCurve: curveType,
     type: pairType,
@@ -156,7 +143,7 @@ export const EditPool: FC = () => {
                 spotPrice={spotPrice}
                 delta={delta}
                 fee={fee}
-                buyOrdersAmount={actualBuyOrders}
+                buyOrdersAmount={buyOrdersAmount}
                 nftsCount={selectedNfts.length}
                 formInitialValues={initialValuesPrice}
                 pool={pool}
@@ -171,7 +158,7 @@ export const EditPool: FC = () => {
                 toggleNft={toggleNft}
                 selectAll={selectAll}
                 deselectAll={deselectAll}
-                buyOrdersAmount={actualBuyOrders}
+                buyOrdersAmount={buyOrdersAmount}
                 formInitialValues={initialValuesAssets}
               />
             </div>

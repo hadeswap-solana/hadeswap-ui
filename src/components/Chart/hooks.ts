@@ -56,8 +56,6 @@ export const usePriceGraph: UsePriceGraph = ({
     counter: mathCounter + 1,
   }) as { array: number[]; total: number };
 
-  console.log(priceArrayBuy, 'priceArrayBuy');
-
   const { array: priceArraySell } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
     delta: rawDelta,
