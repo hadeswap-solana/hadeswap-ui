@@ -66,9 +66,7 @@ export const checkIsPoolChanged: CheckIsPoolChanged = ({
     rawDelta,
   });
 
-  const buyOrdersAmountChanged =
-    pool?.buyOrdersAmount !== buyOrdersAmount &&
-    pool.type === PairType.TokenForNFT;
+  const buyOrdersAmountChanged = pool?.buyOrdersAmount !== buyOrdersAmount;
 
   const nftsToRemove = differenceBy(
     pool?.sellOrders,
