@@ -67,7 +67,7 @@ const CartSider: FC = () => {
     );
   };
 
-  return screenMode !== ScreenTypes.DESKTOP ? (
+  return screenMode === ScreenTypes.TABLET ? (
     <CartSiderMobile
       createOnDeselectHandler={createOnDeselectHandler}
       onDeselectBulkHandler={onDeselectBulkHandler}

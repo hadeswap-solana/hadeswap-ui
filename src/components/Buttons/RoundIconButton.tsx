@@ -5,7 +5,7 @@ import styles from './styles.module.scss';
 
 interface ButtonProps {
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
   children: JSX.Element;
 }
 

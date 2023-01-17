@@ -26,19 +26,19 @@ export const useD3 = <T extends SVGSVGElement = SVGSVGElement>(
 
 type UsePriceGraph = (props: {
   baseSpotPrice: number;
-  delta: number;
-  fee?: number;
+  rawDelta: number;
+  rawFee: number;
   bondingCurve: BondingCurveType;
   buyOrdersAmount?: number;
-  nftsCount?: number;
+  nftsCount: number;
   mathCounter?: number;
-  type?: string;
+  type: string;
 }) => Point[] | null;
 
 export const usePriceGraph: UsePriceGraph = ({
   baseSpotPrice,
-  delta,
-  fee = 0,
+  rawDelta,
+  rawFee = 0,
   bondingCurve,
   buyOrdersAmount = 0,
   nftsCount = 0,
@@ -49,7 +49,7 @@ export const usePriceGraph: UsePriceGraph = ({
 
   const { array: priceArrayBuy } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
-    delta: delta,
+    delta: rawDelta,
     amount: buyOrdersAmount,
     bondingCurveType: bondingCurve,
     orderType: OrderType.Sell,
@@ -58,7 +58,7 @@ export const usePriceGraph: UsePriceGraph = ({
 
   const { array: priceArraySell } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
-    delta: delta,
+    delta: rawDelta,
     amount: nftsCount,
     bondingCurveType: bondingCurve,
     orderType: OrderType.Buy,
@@ -69,7 +69,7 @@ export const usePriceGraph: UsePriceGraph = ({
     const newPrice = price / 1e9;
     return {
       order: 1 + i,
-      price: newPrice - newPrice * (fee / 10000),
+      price: newPrice - newPrice * (rawFee / 10000),
       type: 'buy',
     };
   }) as Point[];
@@ -78,7 +78,7 @@ export const usePriceGraph: UsePriceGraph = ({
     const newPrice = price / 1e9;
     return {
       order: 1 + i,
-      price: newPrice - newPrice * (fee / 10000),
+      price: newPrice + newPrice * (rawFee / 10000),
       type: 'sell',
     };
   }) as Point[];

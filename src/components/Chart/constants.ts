@@ -1,3 +1,5 @@
+export const chartID = 'chartArea';
+
 export const MARGIN = {
   TOP: 10,
   RIGHT: 10,

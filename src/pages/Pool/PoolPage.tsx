@@ -14,8 +14,8 @@ import {
   selectCertainPairLoading,
 } from '../../state/core/selectors';
 import { Chart, usePriceGraph } from '../../components/Chart';
-import styles from './PoolPage.module.scss';
 import { PoolTradeTable } from './components/PoolTradeTable';
+import styles from './PoolPage.module.scss';
 
 export const PoolPage: FC = () => {
   const market = useSelector(selectCertainMarket);
@@ -30,8 +30,8 @@ export const PoolPage: FC = () => {
 
   const chartData = usePriceGraph({
     baseSpotPrice: pool?.baseSpotPrice,
-    delta: pool?.delta,
-    fee: pool?.fee,
+    rawDelta: pool?.delta,
+    rawFee: pool?.fee,
     bondingCurve: pool?.bondingCurve,
     buyOrdersAmount: pool?.buyOrdersAmount,
     nftsCount: pool?.nftsCount,

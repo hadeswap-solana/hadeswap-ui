@@ -3,6 +3,7 @@
   top: 0;
   right: 0;
   border-bottom: var(--border-base);
+  background: var(--component-secondary-background);
   z-index: 11;
 }
 
@@ -35,6 +36,10 @@
   width: 180px;
 }
 
+.homeButton {
+  margin: 0 32px;
+}
+
 .buttonsWrapper {
   display: flex;
   align-items: center;
@@ -62,8 +67,12 @@
   }
 }
 
-.cartBlock {
+.buttonsBlock {
   display: flex;
-  margin: 0 16px 0 32px;
+  margin: 0 24px 0 32px;
   column-gap: 16px;
+
+  @media screen and (max-width: 1024px) {
+    margin: 0 24px;
+  }
 }
