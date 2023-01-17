@@ -11,7 +11,6 @@ import { NftWithSelect } from './hooks/usePoolServiceAssets';
 import styles from './styles.module.scss';
 
 interface AssetsBlockProps {
-  editMode?: boolean;
   pairType: PairType;
   nfts: NftWithSelect[];
   selectedNfts: NftWithSelect[];
@@ -19,7 +18,6 @@ interface AssetsBlockProps {
   selectAll: () => void;
   deselectAll: () => void;
   form: FormInstance;
-  buyOrdersAmount?: number;
   className?: string;
   formInitialValues: {
     buyOrdersAmount: number;
@@ -30,7 +28,6 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
   (
     {
       className,
-      editMode = false,
       nfts,
       toggleNft,
       selectedNfts,
@@ -38,7 +35,6 @@ export const AssetsBlock = forwardRef<HTMLDivElement, AssetsBlockProps>(
       deselectAll,
       pairType,
       form,
-      buyOrdersAmount,
       formInitialValues,
     },
     ref,

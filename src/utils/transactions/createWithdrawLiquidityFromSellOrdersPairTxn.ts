@@ -1,11 +1,8 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { hadeswap, web3 } from 'hadeswap-sdk';
+import { web3 } from 'hadeswap-sdk';
 import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
 import { withdrawLiquiditySingleSellOrder } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/withdrawals';
-
-const { withdrawLiquidityFromSellOrdersPair } =
-  hadeswap.functions.marketFactory.pair.virtual.withdrawals;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);

@@ -1,12 +1,9 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { hadeswap, web3 } from 'hadeswap-sdk';
+import { web3 } from 'hadeswap-sdk';
 import { withdrawLiquidityOnlyBuyOrders } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/withdrawals';
 import { chunk } from 'lodash';
 import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../../hadeswap';
 import { getArrayByNumber } from './helpers';
-
-const { withdrawLiquidityFromBuyOrdersPair } =
-  hadeswap.functions.marketFactory.pair.virtual.withdrawals;
 
 const sendTxnPlaceHolder = async (): Promise<null> =>
   await Promise.resolve(null);

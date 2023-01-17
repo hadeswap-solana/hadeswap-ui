@@ -22,8 +22,6 @@ import { TxnData } from './types';
 import { createDepositSolToPairTxn } from '../../../utils/transactions/createDepositSolToPairTxn';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
-import { replaceSellOrderWithBuyOrder } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/withdrawals';
-import { createReplaceLiquidityOrdersTxns } from '../../../utils/transactions/createReplaceLiquidityOrdersTxns';
 
 type CheckIsPricingChanged = (props: {
   pool: Pair;
@@ -286,50 +284,50 @@ export const createDepositNftsToPairTxnsData: CreateDepositNftsToPairTxnsData =
     }));
   };
 
-type CreateDepositLiquidityToPairTxnsData = (props: {
-  pool: Pair;
-  nftsToDeposit: Nft[];
-  buyOrdersToDeposit: number;
-  rawSpotPrice: number;
-  rawDelta: number;
-  connection: web3.Connection;
-  wallet: WalletContextState;
-}) => Promise<TxnData[]>;
-export const createDepositLiquidityToPairTxnsData: CreateDepositLiquidityToPairTxnsData =
-  async ({
-    pool,
-    nftsToDeposit,
-    buyOrdersToDeposit,
-    rawSpotPrice,
-    rawDelta,
-    connection,
-    wallet,
-  }) => {
-    const txnsAndSigners = await createDepositLiquidityToPairTxns({
-      connection,
-      wallet,
-      pairPubkey: pool.pairPubkey,
-      authorityAdapter: pool.authorityAdapterPubkey,
-      nfts: nftsToDeposit,
-    });
-
-    const { array: solDepositAmounts } = hadeswap.helpers.calculatePricesArray({
-      starting_spot_price: rawSpotPrice,
-      delta: rawDelta,
-      amount: nftsToDeposit.length,
-      bondingCurveType: pool.bondingCurve,
-      orderType: OrderType.Sell,
-      counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1,
-    });
-
-    return txnsAndSigners.map(({ transaction, signers }, idx) => ({
-      transaction,
-      signers,
-      loadingModalCard: createIxCardFuncs[
-        IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
-      ](nftsToDeposit[idx], solDepositAmounts[idx]),
-    }));
-  };
+// type CreateDepositLiquidityToPairTxnsData = (props: {
+//   pool: Pair;
+//   nftsToDeposit: Nft[];
+//   buyOrdersToDeposit: number;
+//   rawSpotPrice: number;
+//   rawDelta: number;
+//   connection: web3.Connection;
+//   wallet: WalletContextState;
+// }) => Promise<TxnData[]>;
+// export const createDepositLiquidityToPairTxnsData: CreateDepositLiquidityToPairTxnsData =
+//   async ({
+//     pool,
+//     nftsToDeposit,
+//     buyOrdersToDeposit,
+//     rawSpotPrice,
+//     rawDelta,
+//     connection,
+//     wallet,
+//   }) => {
+//     const txnsAndSigners = await createDepositLiquidityToPairTxns({
+//       connection,
+//       wallet,
+//       pairPubkey: pool.pairPubkey,
+//       authorityAdapter: pool.authorityAdapterPubkey,
+//       nfts: nftsToDeposit,
+//     });
+//
+//     const { array: solDepositAmounts } = hadeswap.helpers.calculatePricesArray({
+//       starting_spot_price: rawSpotPrice,
+//       delta: rawDelta,
+//       amount: nftsToDeposit.length,
+//       bondingCurveType: pool.bondingCurve,
+//       orderType: OrderType.Sell,
+//       counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1,
+//     });
+//
+//     return txnsAndSigners.map(({ transaction, signers }, idx) => ({
+//       transaction,
+//       signers,
+//       loadingModalCard: createIxCardFuncs[
+//         IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
+//       ](nftsToDeposit[idx], solDepositAmounts[idx]),
+//     }));
+//   };
 
 type CreateWithdrawAndDepositLiquidityFromPairTxnsData = (props: {
   pool: Pair;
@@ -357,7 +355,6 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
     connection,
     wallet,
   }) => {
-    console.log('pool: ', pool);
     const nftsToWithdraw = withdrawAll ? pool?.sellOrders : withdrawableNfts;
     const buyOrdersQuantityToWithdraw = withdrawAll
       ? pool?.buyOrdersAmount
