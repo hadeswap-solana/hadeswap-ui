@@ -1,34 +1,40 @@
-import { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, Dispatch, FC, SetStateAction } from 'react';
 import classNames from 'classnames';
 import { radioBtnPeriod } from './constants';
 import styles from './RadioButtonChart.module.scss';
 
-const RadioButtonChart: FC = () => {
-  const [currentPeriod, setCurrentPeriod] = useState<string>('day');
+interface RadioButtonChartProps {
+  currentPeriod: string;
+  setCurrentPeriod: Dispatch<SetStateAction<string>>;
+}
 
+const RadioButtonChart: FC<RadioButtonChartProps> = ({
+  currentPeriod,
+  setCurrentPeriod,
+}) => {
   const periodHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setCurrentPeriod(e.target.value);
   };
   return (
     <div className={styles.radioButtonChart}>
       <div className={styles.wrapper}>
-        {radioBtnPeriod.map(({ id, type, name, value }) => (
+        {radioBtnPeriod.map(({ period, type, name, value }) => (
           <label
-            key={id}
+            key={period}
             className={classNames(styles.label, {
               [styles.checked]: currentPeriod === value,
             })}
-            htmlFor={id}
+            htmlFor={period}
           >
             <input
-              id={id}
+              id={period}
               type={type}
               name={name}
               value={value}
               checked={currentPeriod === value}
               onChange={periodHandler}
             />
-            {value}
+            {period}
           </label>
         ))}
       </div>

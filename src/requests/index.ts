@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   useInfiniteQuery,
   useQuery,
@@ -21,6 +21,7 @@ import {
   fetchMarketWalletNfts,
   fetchSwapHistory,
 } from './requests';
+import moment from 'moment';
 import { LoadingStatus, FetchingStatus } from './types';
 import { MarketInfo, Pair, Nft, NftActivityData } from '../state/core/types';
 import { coreActions } from '../state/core/actions';
@@ -280,11 +281,13 @@ export const useTableData = (params: {
 };
 
 export const useSwapHistoryData = (
-  publicKey: string,
+  currentPeriod: string,
 ): {
   swapHistory: NftActivityData[];
   swapHistoryLoading: boolean;
 } => {
+  const { poolPubkey: publicKey } = useParams<{ poolPubkey: string }>();
+
   const { data, isLoading, isFetching } = useQuery(
     ['swapHistory', `${publicKey}`],
     () => fetchSwapHistory(publicKey),
@@ -295,8 +298,49 @@ export const useSwapHistoryData = (
     },
   );
 
+  const sortedData = useMemo(() => {
+    const millisecondInPeriod = {
+      day: 86400000,
+      week: 604800000,
+      month: moment().daysInMonth() * 86400000,
+    };
+
+    if (currentPeriod === 'day') {
+      const res = data?.filter((nftActivityData) => {
+        const timestamp = Date.parse(nftActivityData.timestamp);
+        const dateNow = Date.now();
+        const calc = dateNow - timestamp;
+
+        if (calc <= millisecondInPeriod.day) return nftActivityData;
+      });
+      return res;
+    }
+
+    if (currentPeriod === 'week') {
+      const res = data?.filter((nftActivityData) => {
+        const timestamp = Date.parse(nftActivityData.timestamp);
+        const dateNow = Date.now();
+        const calc = dateNow - timestamp;
+
+        if (calc <= millisecondInPeriod.week) return nftActivityData;
+      });
+      return res;
+    }
+    if (currentPeriod === 'month') {
+      const res = data?.filter((nftActivityData) => {
+        const timestamp = Date.parse(nftActivityData.timestamp);
+        const dateNow = Date.now();
+        const calc = dateNow - timestamp;
+
+        if (calc <= millisecondInPeriod.month) return nftActivityData;
+      });
+      return res;
+    }
+    return data;
+  }, [data, currentPeriod]);
+
   return {
-    swapHistory: data || [],
+    swapHistory: sortedData || [],
     swapHistoryLoading: isLoading || isFetching,
   };
 };

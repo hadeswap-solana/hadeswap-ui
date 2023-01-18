@@ -64,12 +64,12 @@ const usePriceGraph: UsePriceGraph = ({
     };
   }) as Point[];
 
-  const pointsArr =
+  const chartData =
     type === PairType.TokenForNFT
       ? [...pointsBuy, ...pointsSell]
       : [...pointsBuy.reverse(), ...pointsSell];
 
-  return pointsArr;
+  return chartData;
 };
 
 export default usePriceGraph;

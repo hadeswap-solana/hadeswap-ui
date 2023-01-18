@@ -1,4 +1,7 @@
-export const chartID = 'chartArea';
+export const chartIDs = {
+  priceGraph: 'chartAreaPriceGraph',
+  swapHistory: 'chartAreaSwapHistory',
+};
 
 export const MARGIN = {
   TOP: 30,

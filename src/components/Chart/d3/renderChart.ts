@@ -3,8 +3,8 @@ import { max, scaleLinear, select } from 'd3';
 import { Point } from '../types';
 import { MARGIN } from '../constants';
 import { drawAxes } from './drawAxes';
-import { drawPoints } from './drawPoints';
 import { drawLinePath } from './drawLinePath';
+import { drawPoints } from './drawPoints';
 
 type RenderChart = (
   points: Point[],
@@ -13,11 +13,12 @@ type RenderChart = (
       x: number;
       y: number;
     };
+    chartID: string;
   },
 ) => (selection: ReturnType<typeof select>) => void;
 
 export const renderChart: RenderChart =
-  (points, { canvasSize }) =>
+  (points, { canvasSize, chartID }) =>
   (selection) => {
     const INNER_WIDTH = canvasSize.x - MARGIN.LEFT - MARGIN.RIGHT;
     const INNER_HEIGHT = canvasSize.y - MARGIN.TOP - MARGIN.BOTTOM;
@@ -48,6 +49,12 @@ export const renderChart: RenderChart =
       .call((g) => {
         drawAxes(g, { xScale, yScale });
         drawLinePath(g, { xScale, yScale, points });
-        drawPoints(g, { points, xScale, yScale, width: INNER_WIDTH });
+        drawPoints(g, {
+          points,
+          xScale,
+          yScale,
+          width: INNER_WIDTH,
+          chartID,
+        });
       });
   };

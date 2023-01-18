@@ -1,5 +1,6 @@
 import { ScaleLinear, select } from 'd3';
-import { chartID } from '../constants';
+import moment from 'moment';
+import { chartIDs } from '../constants';
 
 import { Point } from '../types';
 
@@ -10,12 +11,13 @@ type DrawPoints = (
     xScale: ScaleLinear<number, number, never>;
     yScale: ScaleLinear<number, number, never>;
     width: number;
+    chartID: string;
   },
 ) => void;
 
 export const drawPoints: DrawPoints = (
   selection,
-  { points, xScale, yScale, width },
+  { points, xScale, yScale, width, chartID },
 ) => {
   const mouseover = (e: MouseEvent, d: Point) => {
     const getNumberWithOrdinal = (n: number): string => {
@@ -32,7 +34,11 @@ export const drawPoints: DrawPoints = (
     tooltip
       .append('div')
       .classed('orderNumber', true)
-      .text(`${getNumberWithOrdinal(d.order)} NFT`);
+      .text(
+        chartID === chartIDs.priceGraph
+          ? `${getNumberWithOrdinal(d.order)} NFT`
+          : moment(d.order).format('DD MMMM, YYYY, hh:mm:ss A'),
+      );
 
     const price = tooltip.append('div').classed('price', true);
     price
@@ -48,7 +54,9 @@ export const drawPoints: DrawPoints = (
     price
       .append('span')
       .classed('priceValue', true)
-      .text(`${d.price.toFixed(2)}`);
+      .text(
+        chartID === chartIDs.priceGraph ? `${d.price.toFixed(2)}` : d.price,
+      );
   };
 
   const pointsGroup = selection.append('g');
