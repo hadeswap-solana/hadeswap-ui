@@ -59,25 +59,27 @@ const Chart: FC<ChartProps> = ({
   );
 
   return (
-    <div
-      id={chartID}
-      ref={containerRef}
-      className={`${styles.root} ${className || ''}`}
-    >
-      {!!title && <p className={styles.title}>{title}</p>}
-      {chartID === chartIDs.swapHistory && (
-        <RadioButtonChart
-          currentPeriod={currentPeriod}
-          setCurrentPeriod={setCurrentPeriod}
-        />
-      )}
-      {!data.length ? (
-        <div className={styles.noData}>
-          <span>there is no activity yet</span>
-        </div>
-      ) : (
-        <svg ref={svgRef} preserveAspectRatio="xMinYMin meet" />
-      )}
+    <div className={styles.chartFrame}>
+      <div
+        id={chartID}
+        ref={containerRef}
+        className={`${styles.root} ${className || ''}`}
+      >
+        {!!title && <p className={styles.title}>{title}</p>}
+        {chartID === chartIDs.swapHistory && (
+          <RadioButtonChart
+            currentPeriod={currentPeriod}
+            setCurrentPeriod={setCurrentPeriod}
+          />
+        )}
+        {!data.length ? (
+          <div className={styles.noData}>
+            <span>there is no activity yet</span>
+          </div>
+        ) : (
+          <svg ref={svgRef} preserveAspectRatio="xMinYMin meet" />
+        )}
+      </div>
     </div>
   );
 };

@@ -1,21 +1,30 @@
+.chartFrame {
+  margin-top: 16px;
+  background: var(--component-base-background);
+  border: var(--border-base);
+  border-radius: var(--border-radius-base);
+  padding: 25px 15px 25px 0;
+}
+
+.title {
+  text-align: center;
+  color: var(--white-color);
+  font: 500 24px var(--font-family-rubik);
+  margin-bottom: 16px;
+}
+
+.noData {
+  width: 100%;
+  height: 326px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .root {
   width: 100%;
   position: relative;
   background: var(--component-base-background);
-  .title {
-    text-align: center;
-    color: var(--white-color);
-    font: 500 24px var(--font-family-rubik);
-    margin-bottom: 16px;
-  }
-
-  .noData {
-    width: 100%;
-    height: 326px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 
   :global {
     .xAxis {
