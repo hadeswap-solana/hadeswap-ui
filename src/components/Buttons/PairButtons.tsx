@@ -9,10 +9,10 @@ interface PairButtonsProps {
   onClickCenter?: (arg: any) => void;
   onClickRight?: (arg: any) => void;
   valueButtonLeft: string | JSX.Element;
-  valueButtonCenter: string | JSX.Element;
+  valueButtonCenter?: string | JSX.Element;
   valueButtonRight: string | JSX.Element;
   isActiveRight: boolean;
-  isActiveCenter: boolean;
+  isActiveCenter?: boolean;
   isActiveLeft: boolean;
   isDisabled?: boolean;
 }
