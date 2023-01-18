@@ -16,10 +16,12 @@ import Chart from '../../../components/Chart/Chart';
 import usePriceGraph from '../../../components/Chart/hooks/usePriceGraph';
 import { useCreatePool } from '../hooks';
 import { useFetchAllMarkets } from '../../../requests';
+
 import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../../state/core/selectors';
+import { chartIDs } from '../../../components/Chart/constants';
 
 import styles from './styles.module.scss';
 
@@ -142,7 +144,11 @@ export const StepThree: FC<StepThreeProps> = ({
           </div>
           {!!chartData && !!chartData?.length && (
             <div className={styles.chartWrapper}>
-              <Chart title="price graph" data={chartData} />
+              <Chart
+                title="price graph"
+                data={chartData}
+                chartID={chartIDs.priceGraph}
+              />
             </div>
           )}
           <div className={styles.settingsButtonsWrapper}>
