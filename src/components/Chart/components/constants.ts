@@ -1,26 +1,26 @@
 export const radioBtnPeriod = [
   {
-    id: 'day',
+    period: 'day',
     type: 'radio',
     name: 'period',
     value: 'day',
   },
   {
-    id: 'week',
+    period: 'week',
     type: 'radio',
     name: 'period',
     value: 'week',
   },
   {
-    id: 'month',
+    period: 'month',
     type: 'radio',
     name: 'period',
     value: 'month',
   },
   {
-    id: 'allTime',
+    period: 'all time',
     type: 'radio',
     name: 'period',
-    value: 'all time',
+    value: 'allTime',
   },
 ];

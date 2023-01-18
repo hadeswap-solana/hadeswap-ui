@@ -9,6 +9,14 @@
     margin-bottom: 16px;
   }
 
+  .noData {
+    width: 100%;
+    height: 326px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   :global {
     .xAxis {
       .tick {
@@ -65,11 +73,10 @@
       top: 0px;
       left: 0px;
       z-index: 9;
-      padding: 12px 28px 12px 12px;
+      padding: 12px;
 
       display: flex;
       flex-direction: column;
-
       background: #0f1720;
       border: 1px solid #23303d;
       border-radius: 12px;

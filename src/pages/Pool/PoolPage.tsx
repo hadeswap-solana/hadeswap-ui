@@ -1,10 +1,6 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  useFetchPair,
-  useFetchMarket,
-  useSwapHistoryData,
-} from '../../requests';
+import { useFetchPair, useFetchMarket } from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
 import { PoolHeader } from './components/PoolHeader';
@@ -12,7 +8,7 @@ import { PoolGeneralInfo } from './components/PoolGeneralInfo';
 import { NftList } from './components/NftList';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { PoolTradeTable } from './components/PoolTradeTable';
-import Chart from '../../components/Chart/Chart';
+import useSwapHistory from '../../components/Chart/hooks/useSwapHistory';
 import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import {
   selectCertainMarket,
@@ -20,6 +16,8 @@ import {
   selectCertainPair,
   selectCertainPairLoading,
 } from '../../state/core/selectors';
+import { chartIDs } from '../../components/Chart/constants';
+import Chart from '../../components/Chart/Chart';
 import styles from './PoolPage.module.scss';
 
 export const PoolPage: FC = () => {
@@ -32,13 +30,9 @@ export const PoolPage: FC = () => {
   useFetchMarket(pool?.market);
 
   const isLoading = marketLoading || poolLoading;
-  console.log(pool, 'pool');
 
-  const publicKey = pool?.pairPubkey;
-
-  const { swapHistory, swapHistoryLoading } = useSwapHistoryData(publicKey);
-
-  console.log(swapHistory, 'swapHistory');
+  const { chartDataActivity, currentPeriod, setCurrentPeriod } =
+    useSwapHistory();
 
   const chartData = usePriceGraph({
     baseSpotPrice: pool?.baseSpotPrice,
@@ -62,13 +56,23 @@ export const PoolPage: FC = () => {
             <PoolGeneralInfo pool={pool} />
             <NftList pool={pool} />
             {!!chartData && !!chartData?.length && (
-              <div className={styles.chartWrapper}>
-                <Chart title="price graph" data={chartData} />
+              <div className={styles.chartFrame}>
+                <Chart
+                  title="price graph"
+                  data={chartData}
+                  chartID={chartIDs.priceGraph}
+                />
               </div>
             )}
-            {!!chartData && !!chartData?.length && (
-              <div className={styles.chartWrapper}>
-                <Chart title="swap history" data={chartData} />
+            {!!chartDataActivity && (
+              <div className={styles.chartFrame}>
+                <Chart
+                  title="swap history"
+                  data={chartDataActivity}
+                  chartID={chartIDs.swapHistory}
+                  currentPeriod={currentPeriod}
+                  setCurrentPeriod={setCurrentPeriod}
+                />
               </div>
             )}
             <PoolTradeTable />
