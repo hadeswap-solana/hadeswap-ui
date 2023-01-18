@@ -57,6 +57,8 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
     },
     ref,
   ) => {
+    console.log(curveType);
+
     const deltaType = curveType === BondingCurveType.Exponential ? '%' : 'SOL';
     const isDisableFields =
       !(pairType === PairType.NftForToken) && pool?.buyOrdersAmount > 15;
@@ -151,11 +153,14 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                 isDisabled={editMode}
                 className={styles.pairButtonsWrapper}
                 onClickLeft={() => setCurveType(BondingCurveType.Linear)}
-                onClickRight={() => setCurveType(BondingCurveType.Exponential)}
+                onClickCenter={() => setCurveType(BondingCurveType.Exponential)}
+                onClickRight={() => setCurveType(BondingCurveType.XYK)}
                 valueButtonLeft="linear curve"
-                valueButtonRight="exponential curve"
+                valueButtonCenter="exponential curve"
+                valueButtonRight="xyk"
                 isActiveLeft={curveType === BondingCurveType.Linear}
-                isActiveRight={curveType === BondingCurveType.Exponential}
+                isActiveCenter={curveType === BondingCurveType.Exponential}
+                isActiveRight={curveType === BondingCurveType.XYK}
               />
               <h3 className={styles.cardSubTitle}>
                 delta
