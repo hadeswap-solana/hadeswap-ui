@@ -154,23 +154,28 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                 setCurveType={setCurveType}
               />
 
-              <h3 className={styles.cardSubTitle}>
-                delta
-                <Tooltip
-                  placement="top"
-                  title="how much your pool price changes with each sell/buy"
-                >
-                  <InfoCircleOutlined />
-                </Tooltip>
-              </h3>
-              <Form.Item name="delta">
-                <InputNumber
-                  disabled={editMode && isDisableFields}
-                  addonAfter={deltaType}
-                  min="0"
-                />
-              </Form.Item>
+              {curveType !== BondingCurveType.XYK && (
+                <>
+                  <h3 className={styles.cardSubTitle}>
+                    delta
+                    <Tooltip
+                      placement="top"
+                      title="how much your pool price changes with each sell/buy"
+                    >
+                      <InfoCircleOutlined />
+                    </Tooltip>
+                  </h3>
+                  <Form.Item name="delta">
+                    <InputNumber
+                      disabled={editMode && isDisableFields}
+                      addonAfter={deltaType}
+                      min="0"
+                    />
+                  </Form.Item>
+                </>
+              )}
             </Form>
+
             <div className={styles.priceCardNotice}>
               {pairType !== PairType.NftForToken && (
                 <div className={styles.noticeRow}>

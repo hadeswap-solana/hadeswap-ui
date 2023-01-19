@@ -47,9 +47,17 @@ export const usePriceGraph: UsePriceGraph = ({
 }) => {
   if (!bondingCurve || !baseSpotPrice) return null;
 
+  const delta =
+    bondingCurve === BondingCurveType.XYK
+      ? Math.ceil(
+          (buyOrdersAmount + nftsCount) /
+            (type === PairType.LiquidityProvision ? 2 : 1),
+        )
+      : rawDelta;
+
   const { array: priceArrayBuy } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
-    delta: rawDelta,
+    delta,
     amount: buyOrdersAmount,
     bondingCurveType: bondingCurve,
     orderType: OrderType.Sell,
@@ -58,7 +66,7 @@ export const usePriceGraph: UsePriceGraph = ({
 
   const { array: priceArraySell } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
-    delta: rawDelta,
+    delta,
     amount: nftsCount,
     bondingCurveType: bondingCurve,
     orderType: OrderType.Buy,
