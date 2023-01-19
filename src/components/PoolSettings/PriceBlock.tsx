@@ -50,9 +50,9 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       setCurveType,
       spotPrice,
       delta,
-      fee,
-      buyOrdersAmount,
-      nftsCount,
+      fee = 0,
+      buyOrdersAmount = 0,
+      nftsCount = 0,
       formInitialValues,
       pool,
     },
@@ -62,20 +62,28 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
     const isDisableFields =
       !(pairType === PairType.NftForToken) && pool?.buyOrdersAmount > 15;
 
+    const deltaParsed =
+      curveType === BondingCurveType.XYK
+        ? Math.ceil(
+            (buyOrdersAmount + nftsCount) /
+              (pairType === PairType.LiquidityProvision ? 2 : 1),
+          )
+        : delta;
+
     const buyingPrice = startingBuyingPrice({ pairType, fee, spotPrice });
     const sellingPrice = startingSellingPrice({
       pairType,
       curveType,
       fee,
       spotPrice,
-      delta,
+      delta: deltaParsed,
       mathCounter: 0,
     });
 
     const priceIntoPool = priceLockedIntoPool({
       pairType,
       spotPrice,
-      delta,
+      delta: deltaParsed,
       buyOrdersAmount,
       nftsCount,
       curveType,
@@ -98,6 +106,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                   <h3 className={styles.cardSubTitle}>fee</h3>
                   <Form.Item name="fee">
                     <InputNumber
+                      // defaultValue={0}
                       min={0}
                       max={99.5}
                       addonAfter="%"
@@ -122,6 +131,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
               <Form.Item name="spotPrice">
                 <InputNumber
                   disabled={editMode && isDisableFields}
+                  defaultValue={pool?.baseSpotPrice}
                   // min={
                   //   pairType !== PairType.TokenForNFT
                   //     ? chosenMarket?.bestoffer === '0.000'

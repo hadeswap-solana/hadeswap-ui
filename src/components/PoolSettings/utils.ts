@@ -72,6 +72,8 @@ export const startingSellingPrice = ({
   spotPrice: number;
   mathCounter: number;
 }): number => {
+  console.log({ pairType, curveType, fee, delta, spotPrice, mathCounter });
+
   return pairType === PairType.LiquidityProvision
     ? calcStartingPriceWithFees({
         price: calcStartingSellingPrice({
@@ -104,7 +106,9 @@ export const priceLockedIntoPool = ({
   mathCounter: number;
 }): number => {
   const amount =
-    pairType === PairType.TokenForNFT ? buyOrdersAmount : nftsCount;
+    pairType === PairType.LiquidityProvision
+      ? buyOrdersAmount
+      : buyOrdersAmount + nftsCount;
 
   const rawDelta =
     curveType === BondingCurveType.Exponential ? delta * 100 : delta;

@@ -68,29 +68,23 @@ export const EditPool: FC = () => {
     }),
     [pool?.buyOrdersAmount],
   );
+  const deltaSerializer = (delta: number, curveType: BondingCurveType) => {
+    if (curveType === BondingCurveType.Exponential) return delta * 100;
+    if (curveType === BondingCurveType.Linear) return delta * 1e9;
+    if (curveType === BondingCurveType.XYK) return delta;
+  };
+  const rawDelta = deltaSerializer(delta, curveType);
 
   const initialValuesPrice = useMemo(
     () => ({
       fee: pool?.fee / 100,
-      spotPrice: pool?.currentSpotPrice / 1e9,
-      delta:
-        curveType === BondingCurveType.Exponential
-          ? pool?.delta / 100
-          : pool?.delta / 1e9,
+      spotPrice: pool?.baseSpotPrice / 1e9,
+      delta: rawDelta,
     }),
-    [pool, curveType],
+    [pool, rawDelta],
   );
 
   const rawSpotPrice = spotPrice * 1e9;
-
-  const deltaSerializer = (delta: number, curveType: BondingCurveType) => {
-    if (curveType === BondingCurveType.Exponential) return delta * 100;
-
-    if (curveType === BondingCurveType.Linear) return delta + 1e9;
-
-    if (curveType === BondingCurveType.XYK) return delta;
-  };
-  const rawDelta = deltaSerializer(delta, curveType);
 
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({
@@ -108,13 +102,13 @@ export const EditPool: FC = () => {
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
   const chartData = usePriceGraph({
-    baseSpotPrice: pool.baseSpotPrice,
+    baseSpotPrice: spotPrice * 1e9,
     rawDelta,
     rawFee: fee * 100 || 0,
     buyOrdersAmount,
     nftsCount: selectedNfts.length,
     bondingCurve: curveType,
-    mathCounter: pool.mathCounter,
+    mathCounter: pool?.mathCounter,
     type: pairType,
   });
 
