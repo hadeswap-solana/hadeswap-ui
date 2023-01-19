@@ -72,8 +72,6 @@ export const startingSellingPrice = ({
   spotPrice: number;
   mathCounter: number;
 }): number => {
-  console.log({ pairType, curveType, fee, delta, spotPrice, mathCounter });
-
   return pairType === PairType.LiquidityProvision
     ? calcStartingPriceWithFees({
         price: calcStartingSellingPrice({
