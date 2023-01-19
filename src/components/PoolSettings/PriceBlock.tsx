@@ -5,18 +5,19 @@ import {
   BondingCurveType,
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import BondingCurveButtons from '../Buttons/BondingCurveButtons/BondingCurveButtons';
+
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { PairButtons } from '../Buttons/PairButtons';
 import {
   startingBuyingPrice,
   startingSellingPrice,
   priceLockedIntoPool,
 } from './utils';
 import { MarketInfo, Pair } from '../../state/core/types';
-
-import styles from './styles.module.scss';
 import { renamePairType } from '../../state/core/helpers';
 import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
+
+import styles from './styles.module.scss';
 
 interface PriceBlockProps {
   editMode?: boolean;
@@ -57,8 +58,6 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
     },
     ref,
   ) => {
-    console.log(curveType);
-
     const deltaType = curveType === BondingCurveType.Exponential ? '%' : 'SOL';
     const isDisableFields =
       !(pairType === PairType.NftForToken) && pool?.buyOrdersAmount > 15;
@@ -149,19 +148,12 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                   <InfoCircleOutlined />
                 </Tooltip>
               </h3>
-              <PairButtons
+              <BondingCurveButtons
                 isDisabled={editMode}
-                className={styles.pairButtonsWrapper}
-                onClickLeft={() => setCurveType(BondingCurveType.Linear)}
-                onClickCenter={() => setCurveType(BondingCurveType.Exponential)}
-                onClickRight={() => setCurveType(BondingCurveType.XYK)}
-                valueButtonLeft="linear curve"
-                valueButtonCenter="exponential curve"
-                valueButtonRight="xyk"
-                isActiveLeft={curveType === BondingCurveType.Linear}
-                isActiveCenter={curveType === BondingCurveType.Exponential}
-                isActiveRight={curveType === BondingCurveType.XYK}
+                curveType={curveType}
+                setCurveType={setCurveType}
               />
+
               <h3 className={styles.cardSubTitle}>
                 delta
                 <Tooltip
