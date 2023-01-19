@@ -36,12 +36,13 @@ const BondingCurveButtons: FC<PairButtonsProps> = ({
           htmlFor={value}
         >
           <input
+            disabled={isDisabled}
             id={value}
             type="radio"
             name="curve"
             value={value}
             checked={curveType === value}
-            onChange={!isDisabled ? curveHandler : null}
+            onChange={curveHandler}
           />
           {name}
         </label>
