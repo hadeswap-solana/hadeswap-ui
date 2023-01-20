@@ -1,6 +1,4 @@
 .card {
-  // display: flex;
-  // flex-direction: column;
   position: relative;
   overflow: hidden;
   border: var(--border-base);
@@ -36,9 +34,6 @@
 }
 
 .cardImageWrapper {
-  // display: flex;
-  // flex-grow: 1;
-  // flex-shrink: 0;
   position: relative;
   overflow: hidden;
 }
