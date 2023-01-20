@@ -54,7 +54,7 @@ export const EditPool: FC = () => {
     deselectAll,
     nftsLoading,
     formAssets,
-    buyOrdersAmount,
+    buyOrdersAmount = 0,
   } = usePoolServiceAssets({
     marketPublicKey: chosenMarket?.marketPubkey,
     preSelectedNfts: pool?.sellOrders,
@@ -78,6 +78,7 @@ export const EditPool: FC = () => {
           (pairType === PairType.LiquidityProvision ? 2 : 1),
       );
   };
+
   const rawDelta = deltaSerializer(delta, curveType);
 
   const initialValuesPrice = useMemo(
@@ -88,8 +89,6 @@ export const EditPool: FC = () => {
     }),
     [pool, rawDelta],
   );
-
-  console.log({ pool });
 
   const rawSpotPrice =
     curveType === BondingCurveType.XYK

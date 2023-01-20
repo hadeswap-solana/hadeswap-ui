@@ -49,11 +49,17 @@ export const StepThree: FC<StepThreeProps> = ({
     deselectAll,
     nftsLoading,
     formAssets,
-    buyOrdersAmount,
+    buyOrdersAmount = 0,
   } = usePoolServiceAssets({ marketPublicKey: chosenMarketKey });
 
-  const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
-    usePoolServicePrice({});
+  const {
+    formPrice,
+    fee,
+    spotPrice,
+    delta = 0,
+    curveType,
+    setCurveType,
+  } = usePoolServicePrice({});
 
   const initialValuesAssets = useMemo(
     () => ({
@@ -70,8 +76,11 @@ export const StepThree: FC<StepThreeProps> = ({
     }),
     [],
   );
+
   const rawDelta =
-    curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
+    curveType === BondingCurveType.Exponential
+      ? delta * 100
+      : (delta || 0) * 1e9;
 
   const parsedDeltaForXyk =
     curveType === BondingCurveType.XYK
@@ -103,14 +112,14 @@ export const StepThree: FC<StepThreeProps> = ({
     selectedNfts,
     curveType,
     rawSpotPrice,
-    rawDelta,
+    rawDelta: parsedDeltaForXyk,
     rawFee,
     onAfterTxn: () => history.push('/my-pools'),
   });
 
   const chartData = usePriceGraph({
     baseSpotPrice: rawSpotPrice,
-    rawDelta,
+    rawDelta: parsedDeltaForXyk,
     rawFee: rawFee || 0,
     bondingCurve: curveType,
     buyOrdersAmount,

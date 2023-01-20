@@ -75,12 +75,13 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       curveType === BondingCurveType.XYK
         ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
             currentSpotPrice: spotPrice,
-            counter: pool?.mathCounter,
+            counter: pool?.mathCounter || 0,
             delta: deltaParsed,
           })
         : spotPrice;
 
     const buyingPrice = startingBuyingPrice({ pairType, fee, spotPrice });
+
     const sellingPrice = startingSellingPrice({
       pairType,
       curveType,
