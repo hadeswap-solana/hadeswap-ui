@@ -84,7 +84,7 @@ export const NFTCard: FC<NFTCardProps> = ({
         {!!rarity && <Rarity rarity={rarity} />}
       </div>
       <div className={styles.cardContent}>
-        <h5 className={styles.cardTitle}>{name}</h5>
+        <h5 className={styles.cardTitle}>{`#${name.split('#')[1]}`}</h5>
         {!simpleCard && (
           <SolPrice className={styles.cardPrice} price={parseFloat(price)} />
         )}
