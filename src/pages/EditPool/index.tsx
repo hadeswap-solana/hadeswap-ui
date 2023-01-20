@@ -27,6 +27,7 @@ import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
 import { usePoolChange } from '../../hadeswap/hooks';
 import styles from './styles.module.scss';
+import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
@@ -71,20 +72,33 @@ export const EditPool: FC = () => {
   const deltaSerializer = (delta: number, curveType: BondingCurveType) => {
     if (curveType === BondingCurveType.Exponential) return delta * 100;
     if (curveType === BondingCurveType.Linear) return delta * 1e9;
-    if (curveType === BondingCurveType.XYK) return delta;
+    if (curveType === BondingCurveType.XYK)
+      return Math.ceil(
+        (buyOrdersAmount + selectedNfts.length) /
+          (pairType === PairType.LiquidityProvision ? 2 : 1),
+      );
   };
   const rawDelta = deltaSerializer(delta, curveType);
 
   const initialValuesPrice = useMemo(
     () => ({
       fee: pool?.fee / 100,
-      spotPrice: pool?.baseSpotPrice / 1e9,
+      spotPrice: pool?.currentSpotPrice / 1e9,
       delta: rawDelta,
     }),
     [pool, rawDelta],
   );
 
-  const rawSpotPrice = spotPrice * 1e9;
+  console.log({ pool });
+
+  const rawSpotPrice =
+    curveType === BondingCurveType.XYK
+      ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
+          currentSpotPrice: spotPrice * 1e9,
+          counter: pool?.mathCounter,
+          delta: rawDelta,
+        })
+      : spotPrice * 1e9;
 
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({
@@ -102,7 +116,7 @@ export const EditPool: FC = () => {
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
   const chartData = usePriceGraph({
-    baseSpotPrice: spotPrice * 1e9,
+    baseSpotPrice: rawSpotPrice,
     rawDelta,
     rawFee: fee * 100 || 0,
     buyOrdersAmount,

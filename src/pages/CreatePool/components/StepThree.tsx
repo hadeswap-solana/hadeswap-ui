@@ -21,6 +21,7 @@ import {
 } from '../../../state/core/selectors';
 
 import styles from './styles.module.scss';
+import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 
 interface StepThreeProps {
   pairType: PairType;
@@ -69,10 +70,25 @@ export const StepThree: FC<StepThreeProps> = ({
     }),
     [],
   );
-
-  const rawSpotPrice = spotPrice * 1e9;
   const rawDelta =
     curveType === BondingCurveType.Exponential ? delta * 100 : delta * 1e9;
+
+  const parsedDeltaForXyk =
+    curveType === BondingCurveType.XYK
+      ? Math.ceil(
+          (buyOrdersAmount + selectedNfts.length) /
+            (pairType === PairType.LiquidityProvision ? 2 : 1),
+        )
+      : rawDelta;
+  const rawSpotPrice =
+    curveType === BondingCurveType.XYK
+      ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
+          currentSpotPrice: spotPrice * 1e9,
+          counter: 0,
+          delta: parsedDeltaForXyk,
+        })
+      : spotPrice * 1e9;
+
   const rawFee = fee * 100;
 
   const isCreateButtonDisabled =
@@ -93,7 +109,7 @@ export const StepThree: FC<StepThreeProps> = ({
   });
 
   const chartData = usePriceGraph({
-    baseSpotPrice: spotPrice * 1e9,
+    baseSpotPrice: rawSpotPrice,
     rawDelta,
     rawFee: rawFee || 0,
     bondingCurve: curveType,

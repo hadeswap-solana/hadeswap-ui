@@ -18,6 +18,7 @@ import { renamePairType } from '../../state/core/helpers';
 import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
 
 import styles from './styles.module.scss';
+import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 
 interface PriceBlockProps {
   editMode?: boolean;
@@ -70,19 +71,28 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
           )
         : delta;
 
+    const parsedSpotPrice =
+      curveType === BondingCurveType.XYK
+        ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
+            currentSpotPrice: spotPrice,
+            counter: pool?.mathCounter,
+            delta: deltaParsed,
+          })
+        : spotPrice;
+
     const buyingPrice = startingBuyingPrice({ pairType, fee, spotPrice });
     const sellingPrice = startingSellingPrice({
       pairType,
       curveType,
       fee,
-      spotPrice,
+      spotPrice: parsedSpotPrice,
       delta: deltaParsed,
       mathCounter: 0,
     });
 
     const priceIntoPool = priceLockedIntoPool({
       pairType,
-      spotPrice,
+      spotPrice: parsedSpotPrice,
       delta: deltaParsed,
       buyOrdersAmount,
       nftsCount,
@@ -131,7 +141,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
               <Form.Item name="spotPrice">
                 <InputNumber
                   disabled={editMode && isDisableFields}
-                  defaultValue={pool?.baseSpotPrice}
+                  defaultValue={pool?.currentSpotPrice}
                   // min={
                   //   pairType !== PairType.TokenForNFT
                   //     ? chosenMarket?.bestoffer === '0.000'
