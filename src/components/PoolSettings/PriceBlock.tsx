@@ -75,8 +75,8 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       curveType: formValue.curveType,
       fee: formValue.fee,
       spotPrice: parsedSpotPrice,
-      delta: formValue.delta,
-      mathCounter: 0,
+      delta: rawDelta,
+      mathCounter: pool?.mathCounter,
     });
 
     const priceIntoPool = priceLockedIntoPool({

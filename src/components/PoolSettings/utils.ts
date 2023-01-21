@@ -32,7 +32,7 @@ const calcStartingSellingPrice = ({
 }): number => {
   return helpers.calculateNextSpotPrice({
     orderType: OrderType.Buy,
-    delta: curveType === BondingCurveType.Exponential ? delta * 100 : delta,
+    delta: curveType === BondingCurveType.Linear ? delta / 1e9 : delta,
     spotPrice: spotPrice,
     bondingCurveType: curveType,
     counter: mathCounter,
@@ -63,7 +63,7 @@ export const startingSellingPrice = ({
   fee,
   delta,
   spotPrice,
-  mathCounter,
+  mathCounter = 0,
 }: {
   pairType: PairType;
   curveType: BondingCurveType;
