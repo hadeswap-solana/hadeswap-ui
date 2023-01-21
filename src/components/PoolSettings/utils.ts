@@ -83,7 +83,12 @@ export const startingSellingPrice = ({
         orderType: OrderType.Sell,
         fee,
       })
-    : calcStartingSellingPrice({ delta, curveType, spotPrice, mathCounter });
+    : calcStartingSellingPrice({
+        delta,
+        curveType,
+        spotPrice,
+        mathCounter,
+      });
 };
 
 export const priceLockedIntoPool = ({
@@ -108,8 +113,7 @@ export const priceLockedIntoPool = ({
       ? buyOrdersAmount
       : buyOrdersAmount + nftsCount;
 
-  const rawDelta =
-    curveType === BondingCurveType.Exponential ? delta * 100 : delta;
+  const rawDelta = curveType === BondingCurveType.Linear ? delta / 1e9 : delta;
 
   const { total } = helpers.calculatePricesArray({
     starting_spot_price: spotPrice,

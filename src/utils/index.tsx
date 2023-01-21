@@ -1,11 +1,15 @@
 import { notification } from 'antd';
 import { web3, BN } from 'hadeswap-sdk';
+import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
+import {
+  BondingCurveType,
+  PairType,
+} from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { formatNumber, Notify, NotifyType } from './solanaUtils';
 import { Dictionary } from 'lodash';
 import { NotifyErrorIcon } from '../icons/NotifyErrorIcon';
 import { NotifyInfoIcon } from '../icons/NotifyInfoIcon';
 import { NotifySuccessIcon } from '../icons/NotifySuccessIcon';
-
-import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
 export enum PoolType {
   tokenForNft = 'buy',
@@ -264,3 +268,45 @@ export const getFormattedPrice = (price: number): string => {
 };
 
 export const PUBKEY_PLACEHOLDER = '11111111111111111111111111111111';
+
+export const getRawDelta = ({
+  delta,
+  curveType,
+  buyOrdersAmount,
+  nftsAmount,
+  pairType,
+}: {
+  delta: number;
+  curveType: BondingCurveType;
+  buyOrdersAmount: number;
+  nftsAmount: number;
+  pairType: PairType;
+}): number => {
+  const deltaSerializer = {
+    [BondingCurveType.Exponential]: delta * 100,
+    [BondingCurveType.Linear]: delta * 1e9,
+    [BondingCurveType.XYK]: Math.ceil(
+      (buyOrdersAmount + nftsAmount) /
+        (pairType === PairType.LiquidityProvision ? 2 : 1),
+    ),
+  };
+  return deltaSerializer[curveType] || 0;
+};
+
+export const getRawSpotPrice = ({
+  rawDelta,
+  spotPrice,
+  curveType,
+}: {
+  rawDelta: number;
+  spotPrice: number;
+  curveType: BondingCurveType;
+}): number => {
+  return curveType === BondingCurveType.XYK
+    ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
+        currentSpotPrice: spotPrice * 1e9,
+        counter: 0,
+        delta: rawDelta,
+      })
+    : spotPrice * 1e9;
+};

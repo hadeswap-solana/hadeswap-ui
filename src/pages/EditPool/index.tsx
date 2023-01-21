@@ -1,9 +1,6 @@
 import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  BondingCurveType,
-  PairType,
-} from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useFetchAllMarkets, useFetchPair } from '../../requests';
 import {
@@ -26,8 +23,8 @@ import Button from '../../components/Buttons/Button';
 import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
 import { usePoolChange } from '../../hadeswap/hooks';
+import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
-import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
@@ -60,8 +57,7 @@ export const EditPool: FC = () => {
     preSelectedNfts: pool?.sellOrders,
   });
 
-  const { formPrice, fee, spotPrice, delta, curveType, setCurveType } =
-    usePoolServicePrice({ pool });
+  const { formValue, setFormValue } = usePoolServicePrice({ pool });
 
   const initialValuesAssets = useMemo(
     () => ({
@@ -69,42 +65,29 @@ export const EditPool: FC = () => {
     }),
     [pool?.buyOrdersAmount],
   );
-  const deltaSerializer = (delta: number, curveType: BondingCurveType) => {
-    if (curveType === BondingCurveType.Exponential) return delta * 100;
-    if (curveType === BondingCurveType.Linear) return delta * 1e9;
-    if (curveType === BondingCurveType.XYK)
-      return Math.ceil(
-        (buyOrdersAmount + selectedNfts.length) /
-          (pairType === PairType.LiquidityProvision ? 2 : 1),
-      );
-  };
 
-  const rawDelta = deltaSerializer(delta, curveType);
+  const rawDelta = getRawDelta({
+    delta: formValue.delta,
+    curveType: formValue.curveType,
+    buyOrdersAmount,
+    nftsAmount: selectedNfts.length,
+    pairType,
+  });
 
-  const initialValuesPrice = useMemo(
-    () => ({
-      fee: pool?.fee / 100,
-      spotPrice: pool?.currentSpotPrice / 1e9,
-      delta: rawDelta,
-    }),
-    [pool, rawDelta],
-  );
+  const rawSpotPrice = getRawSpotPrice({
+    rawDelta,
+    spotPrice: formValue.spotPrice,
+    curveType: formValue.curveType,
+  });
 
-  const rawSpotPrice =
-    curveType === BondingCurveType.XYK
-      ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
-          currentSpotPrice: spotPrice * 1e9,
-          counter: pool?.mathCounter,
-          delta: rawDelta,
-        })
-      : spotPrice * 1e9;
+  const rawFee = formValue.fee * 100;
 
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({
       pool,
       selectedNfts,
       buyOrdersAmount,
-      rawFee: fee * 100,
+      rawFee,
       rawDelta,
       rawSpotPrice,
     });
@@ -117,10 +100,10 @@ export const EditPool: FC = () => {
   const chartData = usePriceGraph({
     baseSpotPrice: rawSpotPrice,
     rawDelta,
-    rawFee: fee * 100 || 0,
+    rawFee,
     buyOrdersAmount,
     nftsCount: selectedNfts.length,
-    bondingCurve: curveType,
+    bondingCurve: formValue.curveType,
     mathCounter: pool?.mathCounter,
     type: pairType,
   });
@@ -150,18 +133,14 @@ export const EditPool: FC = () => {
               <PriceBlock
                 ref={priceBlockRef}
                 editMode
-                form={formPrice}
                 pairType={pairType}
                 chosenMarket={chosenMarket}
-                curveType={curveType}
-                setCurveType={setCurveType}
-                spotPrice={spotPrice}
-                delta={delta}
-                fee={fee}
+                formValue={formValue}
+                setFormValue={setFormValue}
                 buyOrdersAmount={buyOrdersAmount}
                 nftsCount={selectedNfts.length}
-                formInitialValues={initialValuesPrice}
                 pool={pool}
+                rawDelta={rawDelta}
               />
               <AssetsBlock
                 ref={assetsBlockRef}

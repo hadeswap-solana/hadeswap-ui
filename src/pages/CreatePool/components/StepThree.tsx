@@ -1,10 +1,7 @@
 import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  BondingCurveType,
-  PairType,
-} from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
@@ -19,9 +16,9 @@ import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../../state/core/selectors';
+import { getRawDelta, getRawSpotPrice } from '../../../utils';
 
 import styles from './styles.module.scss';
-import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 
 interface StepThreeProps {
   pairType: PairType;
@@ -52,14 +49,7 @@ export const StepThree: FC<StepThreeProps> = ({
     buyOrdersAmount = 0,
   } = usePoolServiceAssets({ marketPublicKey: chosenMarketKey });
 
-  const {
-    formPrice,
-    fee,
-    spotPrice,
-    delta = 0,
-    curveType,
-    setCurveType,
-  } = usePoolServicePrice({});
+  const { formValue, setFormValue } = usePoolServicePrice({});
 
   const initialValuesAssets = useMemo(
     () => ({
@@ -68,60 +58,44 @@ export const StepThree: FC<StepThreeProps> = ({
     [],
   );
 
-  const initialValuesPrice = useMemo(
-    () => ({
-      fee: 0,
-      spotPrice: 0,
-      delta: 0,
-    }),
-    [],
-  );
+  const rawDelta = getRawDelta({
+    delta: formValue.delta,
+    curveType: formValue.curveType,
+    buyOrdersAmount,
+    nftsAmount: selectedNfts.length,
+    pairType,
+  });
 
-  const rawDelta =
-    curveType === BondingCurveType.Exponential
-      ? delta * 100
-      : (delta || 0) * 1e9;
+  const rawSpotPrice = getRawSpotPrice({
+    rawDelta,
+    spotPrice: formValue.spotPrice,
+    curveType: formValue.curveType,
+  });
 
-  const parsedDeltaForXyk =
-    curveType === BondingCurveType.XYK
-      ? Math.ceil(
-          (buyOrdersAmount + selectedNfts.length) /
-            (pairType === PairType.LiquidityProvision ? 2 : 1),
-        )
-      : rawDelta;
-  const rawSpotPrice =
-    curveType === BondingCurveType.XYK
-      ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
-          currentSpotPrice: spotPrice * 1e9,
-          counter: 0,
-          delta: parsedDeltaForXyk,
-        })
-      : spotPrice * 1e9;
-
-  const rawFee = fee * 100;
+  const rawFee = formValue.fee * 100;
 
   const isCreateButtonDisabled =
     (pairType !== PairType.TokenForNFT && !selectedNfts.length) ||
     (pairType === PairType.TokenForNFT && !buyOrdersAmount) ||
-    !spotPrice;
+    !formValue.spotPrice;
 
   const { create: onCreatePoolClick } = useCreatePool({
     pairType,
     buyOrdersAmount,
     marketPubkey: chosenMarketKey,
     selectedNfts,
-    curveType,
+    curveType: formValue.curveType,
     rawSpotPrice,
-    rawDelta: parsedDeltaForXyk,
+    rawDelta: rawDelta,
     rawFee,
     onAfterTxn: () => history.push('/my-pools'),
   });
 
   const chartData = usePriceGraph({
     baseSpotPrice: rawSpotPrice,
-    rawDelta: parsedDeltaForXyk,
-    rawFee: rawFee || 0,
-    bondingCurve: curveType,
+    rawDelta: rawDelta,
+    rawFee,
+    bondingCurve: formValue.curveType,
     buyOrdersAmount,
     nftsCount: selectedNfts.length,
     type: pairType,
@@ -140,17 +114,13 @@ export const StepThree: FC<StepThreeProps> = ({
           <div className={styles.settingsBlock}>
             <PriceBlock
               ref={priceBlockRef}
-              form={formPrice}
+              formValue={formValue}
+              setFormValue={setFormValue}
               pairType={pairType}
               chosenMarket={chosenMarket}
-              curveType={curveType}
-              setCurveType={setCurveType}
-              spotPrice={spotPrice}
-              delta={delta}
-              fee={fee}
               buyOrdersAmount={buyOrdersAmount}
               nftsCount={selectedNfts.length}
-              formInitialValues={initialValuesPrice}
+              rawDelta={rawDelta}
             />
             <AssetsBlock
               ref={assetsBlockRef}

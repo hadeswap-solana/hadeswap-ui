@@ -1,6 +1,6 @@
-import React, { forwardRef } from 'react';
+import { forwardRef, MutableRefObject } from 'react';
 import { Card } from '../Card';
-import { Form, FormInstance, InputNumber, Tooltip } from 'antd';
+import { InputNumber, Tooltip } from 'antd';
 import {
   BondingCurveType,
   PairType,
@@ -19,91 +19,79 @@ import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
 
 import styles from './styles.module.scss';
 import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
+import { FormValuePriceBlock } from './hooks/usePoolServicePrice';
 
 interface PriceBlockProps {
+  pool?: Pair;
+  ref: MutableRefObject<HTMLDivElement>;
   editMode?: boolean;
-  form: FormInstance;
+  formValue: FormValuePriceBlock;
+  setFormValue: (prev: any) => void;
   pairType: PairType;
   chosenMarket: MarketInfo;
-  curveType: BondingCurveType;
-  setCurveType: React.Dispatch<BondingCurveType>;
-  spotPrice: number;
-  delta: number;
-  fee: number;
   buyOrdersAmount: number;
   nftsCount: number;
-  formInitialValues: {
-    fee: number;
-    spotPrice: number;
-    delta: number;
-  };
-  pool?: Pair;
+  rawDelta: number;
 }
 
 export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
   (
     {
+      formValue,
+      setFormValue,
       editMode = false,
-      form,
       pairType,
       chosenMarket,
-      curveType,
-      setCurveType,
-      spotPrice,
-      delta,
-      fee = 0,
       buyOrdersAmount = 0,
       nftsCount = 0,
-      formInitialValues,
       pool,
+      rawDelta,
     },
     ref,
   ) => {
-    const deltaType = curveType === BondingCurveType.Exponential ? '%' : 'SOL';
+    const deltaType =
+      formValue.curveType === BondingCurveType.Exponential ? '%' : 'SOL';
+
     const isDisableFields =
       !(pairType === PairType.NftForToken) && pool?.buyOrdersAmount > 15;
 
-    const deltaParsed =
-      curveType === BondingCurveType.XYK
-        ? Math.ceil(
-            (buyOrdersAmount + nftsCount) /
-              (pairType === PairType.LiquidityProvision ? 2 : 1),
-          )
-        : delta;
-
     const parsedSpotPrice =
-      curveType === BondingCurveType.XYK
+      formValue.curveType === BondingCurveType.XYK
         ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
-            currentSpotPrice: spotPrice,
+            currentSpotPrice: formValue.spotPrice,
             counter: pool?.mathCounter || 0,
-            delta: deltaParsed,
+            delta: rawDelta,
           })
-        : spotPrice;
+        : formValue.spotPrice;
 
-    const buyingPrice = startingBuyingPrice({ pairType, fee, spotPrice });
+    const buyingPrice = startingBuyingPrice({
+      pairType,
+      fee: formValue.fee,
+      spotPrice: formValue.spotPrice,
+    });
 
     const sellingPrice = startingSellingPrice({
       pairType,
-      curveType,
-      fee,
+      curveType: formValue.curveType,
+      fee: formValue.fee,
       spotPrice: parsedSpotPrice,
-      delta: deltaParsed,
+      delta: formValue.delta,
       mathCounter: 0,
     });
 
     const priceIntoPool = priceLockedIntoPool({
       pairType,
       spotPrice: parsedSpotPrice,
-      delta: deltaParsed,
+      delta: rawDelta,
       buyOrdersAmount,
       nftsCount,
-      curveType,
+      curveType: formValue.curveType,
       mathCounter: pool?.mathCounter,
     });
 
     const isWarningVisible =
       parseFloat(chosenMarket?.floorPrice) > sellingPrice &&
-      !!spotPrice &&
+      !!formValue.spotPrice &&
       pairType !== PairType.TokenForNFT;
 
     return (
@@ -111,91 +99,91 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
         <div ref={ref}>
           <Card className={styles.card}>
             <h2 className={styles.cardTitle}>pricing</h2>
-            <Form form={form} initialValues={formInitialValues}>
-              {pairType === PairType.LiquidityProvision && (
-                <>
-                  <h3 className={styles.cardSubTitle}>fee</h3>
-                  <Form.Item name="fee">
-                    <InputNumber
-                      // defaultValue={0}
-                      min={0}
-                      max={99.5}
-                      addonAfter="%"
-                      disabled={editMode && isDisableFields}
-                    />
-                  </Form.Item>
-                </>
-              )}
-              <h3 className={styles.cardSubTitle}>
-                {`spot price ${
-                  chosenMarket
-                    ? `(current best offer: ${chosenMarket?.bestoffer} SOL, current floor price: ${chosenMarket?.floorPrice} SOL)`
-                    : ''
-                }`}
-                <Tooltip
-                  placement="top"
-                  title="the starting price of your pool"
-                >
-                  <InfoCircleOutlined />
-                </Tooltip>
-              </h3>
-              <Form.Item name="spotPrice">
+            {pairType === PairType.LiquidityProvision && (
+              <>
+                <h3 className={styles.cardSubTitle}>fee</h3>
                 <InputNumber
+                  // type="number"
+                  min={0}
+                  max={99.5}
+                  addonAfter="%"
                   disabled={editMode && isDisableFields}
-                  defaultValue={pool?.currentSpotPrice}
-                  // min={
-                  //   pairType !== PairType.TokenForNFT
-                  //     ? chosenMarket?.bestoffer === '0.000'
-                  //       ? 0
-                  //       : chosenMarket?.bestoffer
-                  //     : 0
-                  // }
-                  // max={
-                  //   pairType !== PairType.NftForToken
-                  //     ? chosenMarket?.floorPrice === '0.000'
-                  //       ? 100000000
-                  //       : chosenMarket?.floorPrice
-                  //     : 100000000
-                  // }
-                  addonAfter="SOL"
+                  defaultValue={formValue.fee}
+                  onChange={(values) =>
+                    setFormValue((prev) => ({
+                      ...prev,
+                      fee: values ? values : 0,
+                    }))
+                  }
                 />
-              </Form.Item>
-              <h3 className={styles.cardSubTitle}>
-                bonding curve
-                <Tooltip
-                  placement="top"
-                  title="controls how your pool\'s price will change"
-                >
-                  <InfoCircleOutlined />
-                </Tooltip>
-              </h3>
-              <BondingCurveButtons
-                isDisabled={editMode}
-                curveType={curveType}
-                setCurveType={setCurveType}
-              />
+              </>
+            )}
+            <h3 className={styles.cardSubTitle}>
+              {`spot price ${
+                chosenMarket
+                  ? `(current best offer: ${chosenMarket?.bestoffer} SOL, current floor price: ${chosenMarket?.floorPrice} SOL)`
+                  : ''
+              }`}
+              <Tooltip placement="top" title="the starting price of your pool">
+                <InfoCircleOutlined />
+              </Tooltip>
+            </h3>
 
-              {curveType !== BondingCurveType.XYK && (
-                <>
-                  <h3 className={styles.cardSubTitle}>
-                    delta
-                    <Tooltip
-                      placement="top"
-                      title="how much your pool price changes with each sell/buy"
-                    >
-                      <InfoCircleOutlined />
-                    </Tooltip>
-                  </h3>
-                  <Form.Item name="delta">
-                    <InputNumber
-                      disabled={editMode && isDisableFields}
-                      addonAfter={deltaType}
-                      min="0"
-                    />
-                  </Form.Item>
-                </>
-              )}
-            </Form>
+            <InputNumber
+              // type="number"
+              min={0}
+              addonAfter="SOL"
+              disabled={editMode && isDisableFields}
+              defaultValue={formValue.spotPrice}
+              onChange={(values) =>
+                setFormValue((prev) => ({
+                  ...prev,
+                  spotPrice: values ? values : 0,
+                }))
+              }
+            />
+
+            <h3 className={styles.cardSubTitle}>
+              bonding curve
+              <Tooltip
+                placement="top"
+                title="controls how your pool\'s price will change"
+              >
+                <InfoCircleOutlined />
+              </Tooltip>
+            </h3>
+            <BondingCurveButtons
+              isDisabled={editMode}
+              formValue={formValue}
+              setFormValue={setFormValue}
+            />
+
+            {formValue.curveType !== BondingCurveType.XYK && (
+              <>
+                <h3 className={styles.cardSubTitle}>
+                  delta
+                  <Tooltip
+                    placement="top"
+                    title="how much your pool price changes with each sell/buy"
+                  >
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                </h3>
+                <InputNumber
+                  // type="number"
+                  min={0}
+                  disabled={editMode && isDisableFields}
+                  addonAfter={deltaType}
+                  defaultValue={formValue.delta}
+                  onChange={(values) =>
+                    setFormValue((prev) => ({
+                      ...prev,
+                      delta: values ? values : 0,
+                    }))
+                  }
+                />
+              </>
+            )}
 
             <div className={styles.priceCardNotice}>
               {pairType !== PairType.NftForToken && (
@@ -236,11 +224,11 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                   {chosenMarket?.floorPrice} SOL
                 </div>
               )}
-              {editMode && !!delta && (
+              {editMode && formValue.curveType !== BondingCurveType.XYK && (
                 <p className={styles.noticeText}>
                   each time your pool {renamePairType(pairType)}s an NFT, your{' '}
-                  {renamePairType(pairType)} price will adjust up by {delta}{' '}
-                  {deltaType}
+                  {renamePairType(pairType)} price will adjust up by{' '}
+                  {formValue.delta} {deltaType}
                 </p>
               )}
               {editMode && isDisableFields && (

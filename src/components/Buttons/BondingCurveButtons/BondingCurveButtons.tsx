@@ -1,7 +1,8 @@
-import { ChangeEvent, Dispatch, FC } from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 
 import { BondingCurveType } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { FormValuePriceBlock } from '../../PoolSettings/hooks/usePoolServicePrice';
 import styles from './BondingCurveButtons.module.scss';
 
 const bondingCurveButtons = [
@@ -11,26 +12,23 @@ const bondingCurveButtons = [
 ];
 
 interface PairButtonsProps {
-  curveType: string;
-  setCurveType: Dispatch<string>;
+  formValue: FormValuePriceBlock;
+  setFormValue: (prev: any) => void;
   isDisabled: boolean;
 }
 
 const BondingCurveButtons: FC<PairButtonsProps> = ({
-  curveType,
-  setCurveType,
+  formValue,
+  setFormValue,
   isDisabled = false,
 }) => {
-  const curveHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setCurveType(e.target.value);
-  };
   return (
     <div className={styles.wrapper}>
       {bondingCurveButtons.map(({ value, name }) => (
         <label
           key={value}
           className={classNames(styles.label, {
-            [styles.checked]: curveType === value,
+            [styles.checked]: formValue.curveType === value,
             [styles.disabled]: isDisabled,
           })}
           htmlFor={value}
@@ -41,8 +39,13 @@ const BondingCurveButtons: FC<PairButtonsProps> = ({
             type="radio"
             name="curve"
             value={value}
-            checked={curveType === value}
-            onChange={curveHandler}
+            checked={formValue.curveType === value}
+            onChange={(e) =>
+              setFormValue((prev: FormValuePriceBlock) => ({
+                ...prev,
+                curveType: e.target.value,
+              }))
+            }
           />
           {name}
         </label>

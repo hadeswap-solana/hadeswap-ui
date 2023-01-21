@@ -47,11 +47,9 @@ export const usePriceGraph: UsePriceGraph = ({
 }) => {
   if (!bondingCurve || !baseSpotPrice) return null;
 
-  const delta = rawDelta;
-
   const { array: priceArrayBuy } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
-    delta,
+    delta: rawDelta,
     amount: buyOrdersAmount,
     bondingCurveType: bondingCurve,
     orderType: OrderType.Sell,
@@ -60,7 +58,7 @@ export const usePriceGraph: UsePriceGraph = ({
 
   const { array: priceArraySell } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
-    delta,
+    delta: rawDelta,
     amount: nftsCount,
     bondingCurveType: bondingCurve,
     orderType: OrderType.Buy,
