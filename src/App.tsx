@@ -13,6 +13,7 @@ import {
   SolletWalletAdapter,
   BackpackWalletAdapter,
   StrikeWalletAdapter,
+  SafePalWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import {
   ConnectionProvider,
@@ -40,6 +41,7 @@ const wallets = [
   new MathWalletAdapter(),
   new BackpackWalletAdapter(),
   new StrikeWalletAdapter(),
+  new SafePalWalletAdapter(),
   new SolletWalletAdapter({ network: WalletAdapterNetwork.Mainnet }),
 ];
 
