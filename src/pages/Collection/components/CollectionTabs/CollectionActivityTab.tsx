@@ -8,6 +8,9 @@ import { PubKeys } from '../../../../types';
 import { useTableData } from '../../../../requests';
 
 import styles from './styles.module.scss';
+import Chart from '../../../../components/Chart/Chart';
+import useSwapHistory from '../../../../components/Chart/hooks/useSwapHistory';
+import { chartIDs } from '../../../../components/Chart/constants';
 
 const url = `https://${process.env.BACKEND_DOMAIN}/trades`;
 
@@ -34,15 +37,32 @@ export const CollectionActivityTab: FC = memo(() => {
   const activityData = useMemo(() => {
     return data?.pages
       ?.map((page) => {
-        return page.data.filter(
+        return page?.data?.filter(
           (activity) => activity.solAmount > 0 && activity.solAmount !== 0,
         );
       })
       .flat();
   }, [data]);
 
+  const {
+    chartDataActivity,
+    swapHistoryLoading,
+    currentPeriod,
+    setCurrentPeriod,
+  } = useSwapHistory(true);
+
   return (
     <div className={styles.tabContentWrapper}>
+      {!!chartDataActivity && (
+        <Chart
+          title="swap history"
+          data={chartDataActivity}
+          chartID={chartIDs.swapHistory}
+          swapHistoryLoading={swapHistoryLoading}
+          currentPeriod={currentPeriod}
+          setCurrentPeriod={setCurrentPeriod}
+        />
+      )}
       <ItemsList
         idKey="_id"
         data={activityData}
