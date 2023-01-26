@@ -24,7 +24,7 @@ interface ChartProps {
   chartID: string;
   currentPeriod?: string;
   setCurrentPeriod?: Dispatch<SetStateAction<string>>;
-  swapHistoryLoading: boolean;
+  swapHistoryLoading?: boolean;
 }
 
 const Chart: FC<ChartProps> = ({
