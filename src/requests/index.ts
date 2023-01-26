@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useInfiniteQuery,
   useQuery,
@@ -19,9 +19,9 @@ import {
   fetchMarketPairs,
   fetchMarket,
   fetchMarketWalletNfts,
-  fetchSwapHistory,
+  fetchSwapHistoryPool,
+  fetchSwapHistoryCollection,
 } from './requests';
-import moment from 'moment';
 import { LoadingStatus, FetchingStatus } from './types';
 import { MarketInfo, Pair, Nft, NftActivityData } from '../state/core/types';
 import { coreActions } from '../state/core/actions';
@@ -280,17 +280,15 @@ export const useTableData = (params: {
   };
 };
 
-export const useSwapHistoryData = (
-  currentPeriod: string,
-): {
-  swapHistory: NftActivityData[];
-  swapHistoryLoading: boolean;
+export const useSwapHistoryDataPool = (): {
+  swapHistoryDataPool: NftActivityData[];
+  swapHistoryLoadingPool: boolean;
 } => {
   const { poolPubkey: publicKey } = useParams<{ poolPubkey: string }>();
 
   const { data, isLoading, isFetching } = useQuery(
     ['swapHistory', `${publicKey}`],
-    () => fetchSwapHistory(publicKey),
+    () => fetchSwapHistoryPool(publicKey),
     {
       networkMode: 'offlineFirst',
       staleTime: Infinity,
@@ -298,49 +296,32 @@ export const useSwapHistoryData = (
     },
   );
 
-  const sortedData = useMemo(() => {
-    const millisecondInPeriod = {
-      day: 86400000,
-      week: 604800000,
-      month: moment().daysInMonth() * 86400000,
-    };
+  return {
+    swapHistoryDataPool: data || [],
+    swapHistoryLoadingPool: isLoading || isFetching,
+  };
+};
 
-    if (currentPeriod === 'day') {
-      const res = data?.filter((nftActivityData) => {
-        const timestamp = Date.parse(nftActivityData.timestamp);
-        const dateNow = Date.now();
-        const calc = dateNow - timestamp;
+export const useSwapHistoryDataCollection = (): {
+  swapHistoryCollection: NftActivityData[];
+  swapHistoryLoadingCollection: boolean;
+} => {
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-        if (calc <= millisecondInPeriod.day) return nftActivityData;
-      });
-      return res;
-    }
+  const { data, isLoading, isFetching } = useInfiniteQuery(
+    ['swapHistory', `${marketPublicKey}`],
+    () => fetchSwapHistoryCollection(marketPublicKey),
+    {
+      networkMode: 'offlineFirst',
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    },
+  );
 
-    if (currentPeriod === 'week') {
-      const res = data?.filter((nftActivityData) => {
-        const timestamp = Date.parse(nftActivityData.timestamp);
-        const dateNow = Date.now();
-        const calc = dateNow - timestamp;
-
-        if (calc <= millisecondInPeriod.week) return nftActivityData;
-      });
-      return res;
-    }
-    if (currentPeriod === 'month') {
-      const res = data?.filter((nftActivityData) => {
-        const timestamp = Date.parse(nftActivityData.timestamp);
-        const dateNow = Date.now();
-        const calc = dateNow - timestamp;
-
-        if (calc <= millisecondInPeriod.month) return nftActivityData;
-      });
-      return res;
-    }
-    return data;
-  }, [data, currentPeriod]);
+  const activityData = data?.pages?.flat();
 
   return {
-    swapHistory: sortedData || [],
-    swapHistoryLoading: isLoading || isFetching,
+    swapHistoryCollection: activityData || [],
+    swapHistoryLoadingCollection: isLoading || isFetching,
   };
 };

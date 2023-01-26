@@ -290,7 +290,8 @@ export const POOL_TRADE_COLUMNS: ColumnsType<NftTradeData> = [
     showSorterTooltip: false,
     render: (value) => (
       <ColoredTextCell
-        cellValue={value === OrderType.BUY ? OrderType.SELL : OrderType.BUY}
+        // cellValue={value === OrderType.BUY ? OrderType.SELL : OrderType.BUY}
+        cellValue={value}
         defaultValue={OrderType.BUY}
       />
     ),

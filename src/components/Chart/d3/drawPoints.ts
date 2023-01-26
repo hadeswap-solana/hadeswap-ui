@@ -29,7 +29,12 @@ export const drawPoints: DrawPoints = (
     const tooltip = select(`#${chartID}`)
       .append('div')
       .classed('tooltipPoint', true)
-      .style('top', `${yScale(d.price) - 20}px`)
+      .style(
+        'top',
+        chartID === chartIDs.priceGraph
+          ? `${yScale(+d.price) - 10}px`
+          : `${yScale(+d.price) + 20}px`,
+      )
       .style('left', `${e.x > width - 100 ? e.x - 175 : e.x - 25}px`);
     tooltip
       .append('div')

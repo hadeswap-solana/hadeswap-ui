@@ -15,6 +15,7 @@ import { renderChart } from './d3/renderChart';
 import { Point } from './types';
 import { chartIDs } from './constants';
 import styles from './Chart.module.scss';
+import { Spinner } from '../Spinner/Spinner';
 
 interface ChartProps {
   title?: string;
@@ -23,6 +24,7 @@ interface ChartProps {
   chartID: string;
   currentPeriod?: string;
   setCurrentPeriod?: Dispatch<SetStateAction<string>>;
+  swapHistoryLoading: boolean;
 }
 
 const Chart: FC<ChartProps> = ({
@@ -32,6 +34,7 @@ const Chart: FC<ChartProps> = ({
   chartID,
   currentPeriod,
   setCurrentPeriod,
+  swapHistoryLoading,
 }) => {
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -74,7 +77,11 @@ const Chart: FC<ChartProps> = ({
         )}
         {!data.length ? (
           <div className={styles.noData}>
-            <span>there is no activity yet</span>
+            {swapHistoryLoading ? (
+              <Spinner />
+            ) : (
+              <span>there is no activity yet</span>
+            )}
           </div>
         ) : (
           <svg ref={svgRef} preserveAspectRatio="xMinYMin meet" />
