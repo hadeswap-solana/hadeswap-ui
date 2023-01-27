@@ -75,7 +75,7 @@ const Chart: FC<ChartProps> = ({
             setCurrentPeriod={setCurrentPeriod}
           />
         )}
-        {!data.length ? (
+        {!data.length && (
           <div className={styles.noData}>
             {swapHistoryLoading ? (
               <Spinner />
@@ -83,7 +83,9 @@ const Chart: FC<ChartProps> = ({
               <span>there is no activity yet</span>
             )}
           </div>
-        ) : (
+        )}
+
+        {!!data.length && (
           <svg ref={svgRef} preserveAspectRatio="xMinYMin meet" />
         )}
       </div>
