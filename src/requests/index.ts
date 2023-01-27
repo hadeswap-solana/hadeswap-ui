@@ -286,7 +286,7 @@ export const useSwapHistoryDataPool = (): {
 } => {
   const { poolPubkey: publicKey } = useParams<{ poolPubkey: string }>();
 
-  const { data, isLoading, isFetching } = useQuery(
+  const { data, isLoading } = useQuery(
     ['swapHistory', `${publicKey}`],
     () => fetchSwapHistoryPool(publicKey),
     {
@@ -298,7 +298,7 @@ export const useSwapHistoryDataPool = (): {
 
   return {
     swapHistoryDataPool: data || [],
-    swapHistoryLoadingPool: isLoading || isFetching,
+    swapHistoryLoadingPool: isLoading,
   };
 };
 
@@ -308,7 +308,7 @@ export const useSwapHistoryDataCollection = (): {
 } => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-  const { data, isLoading, isFetching } = useInfiniteQuery(
+  const { data, isLoading } = useInfiniteQuery(
     ['swapHistory', `${marketPublicKey}`],
     () => fetchSwapHistoryCollection(marketPublicKey),
     {
@@ -322,6 +322,6 @@ export const useSwapHistoryDataCollection = (): {
 
   return {
     swapHistoryCollection: activityData || [],
-    swapHistoryLoadingCollection: isLoading || isFetching,
+    swapHistoryLoadingCollection: isLoading,
   };
 };
