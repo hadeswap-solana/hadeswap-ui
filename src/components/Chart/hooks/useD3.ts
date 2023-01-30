@@ -5,7 +5,7 @@ const useD3 = <T extends SVGSVGElement = SVGSVGElement>(
   renderChartFn: (selection: ReturnType<typeof select>) => void,
   dependencies: Array<any>,
 ): RefObject<T> => {
-  const ref = useRef();
+  const ref = useRef(null);
 
   useEffect(() => {
     renderChartFn(select(ref.current) as ReturnType<typeof select>);
