@@ -3,6 +3,7 @@ import {
   useSwapHistoryDataCollection,
   useSwapHistoryDataPool,
 } from '../../../requests';
+import { OrderType } from '../../../state/core/types';
 import { Point } from '../types';
 
 type UseSwapHistory = (market?: boolean) => {
@@ -52,13 +53,19 @@ const useSwapHistory: UseSwapHistory = (market = false) => {
     return swapHistory;
   }, [currentPeriod, swapHistory]);
 
-  const chartDataActivity = sortedData.map(
-    ({ solAmount, orderType, timestamp }): Point => ({
-      price: solAmount,
-      type: orderType,
-      order: Date.parse(timestamp),
-    }),
-  );
+  const valueForPool = (orderType: OrderType) => {
+    return orderType === OrderType.BUY ? OrderType.SELL : OrderType.BUY;
+  };
+
+  const chartDataActivity = sortedData
+    .map(
+      ({ solAmount, orderType, timestamp }): Point => ({
+        price: solAmount,
+        type: !market ? valueForPool(orderType) : orderType,
+        order: Date.parse(timestamp),
+      }),
+    )
+    .reverse();
 
   return {
     chartDataActivity,
