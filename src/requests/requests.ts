@@ -126,12 +126,12 @@ export const fetchSwapHistoryPool = async (
 };
 
 export const fetchSwapHistoryCollection = async (
-  publicKey: string,
-): Promise<any> => {
+  marketPublicKey: string,
+): Promise<NftActivityData[]> => {
   const LIMIT = 10000;
 
   const response = await fetch(
-    `https://api.hadeswap.com/trades/${publicKey}?sortBy=timestamp&sort=asc&limit=${LIMIT}&skip=0`,
+    `https://${process.env.BACKEND_DOMAIN}/trades/${marketPublicKey}?sortBy=timestamp&sort=asc&limit=${LIMIT}&skip=0`,
   );
 
   if (!response.ok) {

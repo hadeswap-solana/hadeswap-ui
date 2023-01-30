@@ -35,7 +35,7 @@ export const PoolPage: FC = () => {
     swapHistoryLoading,
     currentPeriod,
     setCurrentPeriod,
-  } = useSwapHistory();
+  } = useSwapHistory({});
 
   const chartData = usePriceGraph({
     baseSpotPrice: pool?.baseSpotPrice,
@@ -58,24 +58,20 @@ export const PoolPage: FC = () => {
             <PoolHeader market={market} pool={pool} />
             <PoolGeneralInfo pool={pool} />
             <NftList pool={pool} />
-            {!!chartData && (
-              <Chart
-                title="price graph"
-                data={chartData}
-                chartID={chartIDs.priceGraph}
-                swapHistoryLoading={swapHistoryLoading}
-              />
-            )}
-            {!!chartDataActivity && (
-              <Chart
-                title="swap history"
-                data={chartDataActivity}
-                chartID={chartIDs.swapHistory}
-                currentPeriod={currentPeriod}
-                setCurrentPeriod={setCurrentPeriod}
-                swapHistoryLoading={swapHistoryLoading}
-              />
-            )}
+            <Chart
+              title="price graph"
+              data={chartData}
+              chartID={chartIDs.priceGraph}
+              swapHistoryLoading={swapHistoryLoading}
+            />
+            <Chart
+              title="swap history"
+              data={chartDataActivity}
+              chartID={chartIDs.swapHistory}
+              currentPeriod={currentPeriod}
+              setCurrentPeriod={setCurrentPeriod}
+              swapHistoryLoading={swapHistoryLoading}
+            />
             <PoolTradeTable />
           </>
         )}

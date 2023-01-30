@@ -58,7 +58,7 @@ const Chart: FC<ChartProps> = ({
       canvasSize: { x: containerWidth, y: 320 },
       chartID,
     }),
-    [data, containerWidth],
+    [data, containerWidth, chartID],
   );
 
   return (

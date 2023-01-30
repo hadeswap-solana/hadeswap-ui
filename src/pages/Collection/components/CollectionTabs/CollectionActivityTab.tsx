@@ -49,20 +49,18 @@ export const CollectionActivityTab: FC = memo(() => {
     swapHistoryLoading,
     currentPeriod,
     setCurrentPeriod,
-  } = useSwapHistory(true);
+  } = useSwapHistory({ market: true });
 
   return (
     <div className={styles.tabContentWrapper}>
-      {!!chartDataActivity && (
-        <Chart
-          title="swap history"
-          data={chartDataActivity}
-          chartID={chartIDs.swapHistory}
-          swapHistoryLoading={swapHistoryLoading}
-          currentPeriod={currentPeriod}
-          setCurrentPeriod={setCurrentPeriod}
-        />
-      )}
+      <Chart
+        title="swap history"
+        data={chartDataActivity}
+        chartID={chartIDs.swapHistory}
+        swapHistoryLoading={swapHistoryLoading}
+        currentPeriod={currentPeriod}
+        setCurrentPeriod={setCurrentPeriod}
+      />
       <ItemsList
         idKey="_id"
         data={activityData}

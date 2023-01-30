@@ -308,20 +308,17 @@ export const useSwapHistoryDataCollection = (): {
 } => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
-  const { data, isLoading } = useInfiniteQuery(
+  const { data, isLoading } = useQuery(
     ['swapHistory', `${marketPublicKey}`],
     () => fetchSwapHistoryCollection(marketPublicKey),
     {
       networkMode: 'offlineFirst',
-      staleTime: Infinity,
       refetchOnWindowFocus: false,
     },
   );
 
-  const activityData = data?.pages?.flat();
-
   return {
-    swapHistoryCollection: activityData || [],
+    swapHistoryCollection: data || [],
     swapHistoryLoadingCollection: isLoading,
   };
 };
