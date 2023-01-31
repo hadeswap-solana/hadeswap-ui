@@ -14,6 +14,7 @@ import {
   selectCartPairs,
   selectCartPendingOrders,
   selectIsCartEmpty,
+  selectExchangeToken,
 } from '../../state/core/selectors';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
@@ -21,6 +22,7 @@ import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { signAndSendTransactionsInSeries } from '../../utils/transactions';
 import { CartOrder } from '../../state/core/types';
+import { Tokens } from '../../types';
 
 export interface CrossMintConfig {
   type: string;
@@ -41,6 +43,7 @@ type UseCartSider = () => {
   totalSell: number;
   isOneBuyNft: boolean;
   crossmintConfig: CrossMintConfig;
+  exchangeToken: Tokens;
 };
 
 type UseSwap = (params: {
@@ -57,6 +60,7 @@ export const useCartSider: UseCartSider = () => {
   const cartOpened = useSelector(selectCartSiderVisible);
   const invalidItems = useSelector(selectAllInvalidCartOrders);
   const isCartEmpty = useSelector(selectIsCartEmpty);
+  const exchangeToken = useSelector(selectExchangeToken);
 
   const itemsAmount = cartItems.buy.length + cartItems.sell.length;
   const totalBuy = cartItems.buy.reduce((acc, item) => acc + item.price, 0);
@@ -79,6 +83,7 @@ export const useCartSider: UseCartSider = () => {
     totalSell,
     isOneBuyNft,
     crossmintConfig,
+    exchangeToken,
   };
 };
 
@@ -109,7 +114,6 @@ export const useSwap: UseSwap = ({
         }),
       ),
     );
-
     const ixsDataChunks = chunk(ixsData, ixsPerTxn);
 
     const txnsData = ixsDataChunks.map((ixsAndSigners) =>

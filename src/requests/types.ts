@@ -28,3 +28,13 @@ export interface TopMarket {
   collectionName: string;
   volume24: number;
 }
+
+export interface Token {
+  chainId: number;
+  address: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  logoURI: string;
+  tags: string[];
+}

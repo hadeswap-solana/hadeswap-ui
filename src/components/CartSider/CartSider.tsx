@@ -5,6 +5,7 @@ import CartSection from './components/CartSection';
 import CartSectionInvalid from './components/CartSectionInvalid';
 import Button from '../Buttons/Button';
 import { CrossmintButton } from './components/CrossmintButton';
+import SwapExchangeButton from './components/SwapExchangeButton';
 import { CartSiderProps } from './index';
 
 import styles from './styles.module.scss';
@@ -22,6 +23,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
   isExchangeMode,
   isOneBuyNft,
   crossmintConfig,
+  exchangeToken,
 }) => {
   const dispatch = useDispatch();
   const titleBuy = `buy ${cartItems.buy.length} ${
@@ -53,9 +55,12 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
         <CartSectionInvalid invalidItems={invalidItems} dispatch={dispatch} />
       </div>
       <div className={styles.submitWrapper}>
-        <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
-          <span>swap</span>
-        </Button>
+        {exchangeToken && <SwapExchangeButton solAmount={totalBuy} inputToken={exchangeToken} swap={swap} />}
+        {!exchangeToken &&
+          <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
+            <span>swap</span>
+          </Button>
+        }
         <CrossmintButton
           isOneBuyNft={isOneBuyNft}
           crossmintConfig={crossmintConfig}

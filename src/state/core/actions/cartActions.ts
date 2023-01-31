@@ -1,5 +1,6 @@
 import { createCustomAction } from 'typesafe-actions';
 import { CartOrder, OrderType, Pair, PairUpdate } from '../types';
+import { Tokens } from '../../../types';
 
 export const cartTypes = {
   UPDATE_PAIRS: 'cart/UPDATE_PAIRS',
@@ -9,6 +10,7 @@ export const cartTypes = {
   CLEAR_INVALID_ORDERS: 'cart/CLEAR_INVALID_ORDERS',
   CLEAR_CART: 'cart/CLEAR_CART',
   REPLACE_BUY_ORDER: 'cart/REPLACE_BUY_ORDER',
+  EXCHANGE_TOKEN: 'cart/EXCHANGE_TOKEN',
 };
 
 export const cartActions = {
@@ -45,4 +47,10 @@ export const cartActions = {
       payload: { pairPublicKey, prevOrderMint, nextOrder },
     }),
   ),
+  exchangeToken: createCustomAction(
+    cartTypes.EXCHANGE_TOKEN,
+    (token: Tokens) => ({
+      payload: { token }
+    })
+  )
 };
