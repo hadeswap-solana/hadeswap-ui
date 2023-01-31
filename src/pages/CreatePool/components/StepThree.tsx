@@ -143,9 +143,11 @@ export const StepThree: FC<StepThreeProps> = ({
             />
           </div>
           {!!chartData && !!chartData?.length && (
-            <div className={styles.chartWrapper}>
-              <Chart title="price graph" data={chartData} />
-            </div>
+            <Chart
+              title="price graph"
+              data={chartData}
+              chartID={chartIDs.priceGraph}
+            />
           )}
           <div className={styles.settingsButtonsWrapper}>
             <Button
