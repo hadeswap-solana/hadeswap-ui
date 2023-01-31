@@ -50,7 +50,7 @@ export const useSwapHistory: UseSwapHistory = ({ market = false }) => {
       return res;
     }
 
-    // return swapHistory;
+    return swapHistory;
   }, [currentPeriod, swapHistoryDataPool, swapHistoryCollection, market]);
 
   const valueForPool = (orderType: OrderType) => {
