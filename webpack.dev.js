@@ -117,9 +117,6 @@ module.exports = (env) => {
           test: /.mjs$/,
           include: /node_modules/,
           type: 'javascript/auto',
-        },
-        {
-          test: /\.m?js/,
           resolve: {
             fullySpecified: false,
           },
