@@ -1,6 +1,10 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
-import { OrderType, PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import {
+  BondingCurveType,
+  OrderType,
+  PairType,
+} from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { min, differenceBy } from 'lodash';
 
 import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../..';
@@ -22,6 +26,8 @@ import { TxnData } from './types';
 import { createDepositSolToPairTxn } from '../../../utils/transactions/createDepositSolToPairTxn';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
+import { getRawSpotPrice } from '../../../utils';
+import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 
 type CheckIsPricingChanged = (props: {
   pool: Pair;
@@ -36,7 +42,12 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
   rawDelta,
 }) => {
   const isLiquidityProvisionPool = pool?.type === PairType.LiquidityProvision;
-  const spotPriceChanged = Math.abs(pool?.currentSpotPrice - rawSpotPrice) > 1;
+  const spotPriceChanged =
+    Math.abs(
+      (pool.bondingCurve === BondingCurveType.XYK
+        ? pool?.baseSpotPrice
+        : pool?.currentSpotPrice) - rawSpotPrice,
+    ) > 1;
   const deltaChanged = Math.abs(pool?.delta - rawDelta) > 1;
   const feeChanged = isLiquidityProvisionPool && pool?.fee !== rawFee;
 
@@ -558,7 +569,6 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
     rawDelta,
   });
 
-  console.log();
   //! Remove liquidity transactions:
   //? Buy
   if (isTokenForNFTPool && buyOrdersAmount < pool.buyOrdersAmount) {
