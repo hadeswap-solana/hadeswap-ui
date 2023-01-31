@@ -41,7 +41,7 @@ export const drawPoints: DrawPoints = (
       .classed('orderNumber', true)
       .text(
         chartID === chartIDs.priceGraph
-          ? `${getNumberWithOrdinal(d.order)} NFT`
+          ? `${getNumberWithOrdinal(Math.abs(d.order))} NFT`
           : moment(d.order).format('DD MMMM, YYYY, hh:mm:ss A'),
       );
 
@@ -74,8 +74,8 @@ export const drawPoints: DrawPoints = (
     .classed('point-buy', ({ type }) => type === 'buy')
     .classed('point-sell', ({ type }) => type === 'sell')
     .classed('point-empty', ({ type }) => type === 'empty')
-    .attr('cx', (_, idx) => xScale(idx))
-    .attr('cy', (d) => yScale(d.price))
+    .attr('cx', ({ order }) => xScale(order))
+    .attr('cy', ({ price }) => yScale(price))
     .attr('r', 6)
     .style('cursor', 'pointer')
     .on('mouseover', mouseover)

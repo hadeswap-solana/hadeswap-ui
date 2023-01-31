@@ -50,7 +50,7 @@ const usePriceGraph: UsePriceGraph = ({
   const pointsBuy = priceArrayBuy.map((price, i) => {
     const newPrice = price / 1e9;
     return {
-      order: 1 + i,
+      order: -1 - i,
       price: newPrice - newPrice * (rawFee / 10000),
       type: 'buy',
     };

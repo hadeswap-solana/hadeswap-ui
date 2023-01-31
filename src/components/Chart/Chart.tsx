@@ -57,6 +57,7 @@ const Chart: FC<ChartProps> = ({
     renderChart(data, {
       canvasSize: { x: containerWidth, y: 320 },
       chartID,
+      currentPeriod,
     }),
     [data, containerWidth, chartID],
   );
