@@ -274,21 +274,28 @@ export const getRawDelta = ({
   curveType,
   buyOrdersAmount,
   nftsAmount,
+  mathCounter,
   pairType,
 }: {
   delta: number;
   curveType: BondingCurveType;
   buyOrdersAmount: number;
   nftsAmount: number;
+  mathCounter: number;
+
   pairType: PairType;
 }): number => {
   const deltaSerializer = {
     [BondingCurveType.Exponential]: delta * 100,
     [BondingCurveType.Linear]: delta * 1e9,
-    [BondingCurveType.XYK]: Math.ceil(
-      (buyOrdersAmount + nftsAmount) /
-        (pairType === PairType.LiquidityProvision ? 2 : 1),
+    [BondingCurveType.XYK]: Math.max(
+      buyOrdersAmount - mathCounter,
+      nftsAmount + mathCounter,
     ),
+    //  Math.ceil(
+    //   (buyOrdersAmount + nftsAmount) /
+    //   (pairType === PairType.LiquidityProvision ? 2 : 1),
+    // ),
   };
   return deltaSerializer[curveType] || 0;
 };
@@ -296,16 +303,18 @@ export const getRawDelta = ({
 export const getRawSpotPrice = ({
   rawDelta,
   spotPrice,
+  mathCounter,
   curveType,
 }: {
   rawDelta: number;
   spotPrice: number;
+  mathCounter: number;
   curveType: BondingCurveType;
 }): number => {
   return curveType === BondingCurveType.XYK
     ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
         currentSpotPrice: spotPrice * 1e9,
-        counter: 0,
+        counter: mathCounter,
         delta: rawDelta,
       })
     : spotPrice * 1e9;

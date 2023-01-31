@@ -64,12 +64,14 @@ export const StepThree: FC<StepThreeProps> = ({
     buyOrdersAmount,
     nftsAmount: selectedNfts.length,
     pairType,
+    mathCounter: 0,
   });
 
   const rawSpotPrice = getRawSpotPrice({
     rawDelta,
     spotPrice: formValue.spotPrice,
     curveType: formValue.curveType,
+    mathCounter: 0,
   });
 
   const rawFee = formValue.fee * 100;

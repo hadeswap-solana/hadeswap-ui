@@ -99,13 +99,20 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   connection,
   wallet,
 }) => {
-  const startingSpotPrice = hadeswap.helpers.calculateNextSpotPrice({
-    orderType: OrderType.Buy,
-    delta: rawDelta,
-    bondingCurveType: pool?.bondingCurve,
-    spotPrice: rawSpotPrice,
-    counter: -pool?.mathCounter - 1,
-  });
+  // console.log({
+  //   rawSpotPrice,
+  //   rawFee,
+  //   rawDelta,
+  //   pool,
+
+  // })
+  // const startingSpotPrice = hadeswap.helpers.calculateNextSpotPrice({
+  //   orderType: OrderType.Buy,
+  //   delta: rawDelta,
+  //   bondingCurveType: pool?.bondingCurve,
+  //   spotPrice: rawSpotPrice,
+  //   counter: -pool?.mathCounter - 1,
+  // });
 
   const { transaction, signers } = await createModifyPairTxn({
     connection,
@@ -113,7 +120,7 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
     pairPubkey: pool.pairPubkey,
     authorityAdapter: pool.authorityAdapterPubkey,
     delta: rawDelta,
-    spotPrice: startingSpotPrice,
+    spotPrice: rawSpotPrice,
     fee: rawFee,
   });
 
@@ -551,6 +558,7 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
     rawDelta,
   });
 
+  console.log();
   //! Remove liquidity transactions:
   //? Buy
   if (isTokenForNFTPool && buyOrdersAmount < pool.buyOrdersAmount) {
