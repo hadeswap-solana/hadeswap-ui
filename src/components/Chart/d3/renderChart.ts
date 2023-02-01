@@ -49,7 +49,7 @@ export const renderChart: RenderChart =
       .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
       .call((g) => {
         drawAxes(g, { xScale, yScale, chartID, currentPeriod });
-        drawLinePath(g, { xScale, yScale, points });
+        drawLinePath(g, { xScale, yScale, points, chartID });
         drawPoints(g, {
           points,
           xScale,
