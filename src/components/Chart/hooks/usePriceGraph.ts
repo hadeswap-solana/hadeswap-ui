@@ -1,28 +1,10 @@
-import { select } from 'd3';
-import { RefObject, useEffect, useRef } from 'react';
-
 import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 import {
   BondingCurveType,
   OrderType,
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
-import { Point } from './types';
-
-export const useD3 = <T extends SVGSVGElement = SVGSVGElement>(
-  renderChartFn: (selection: ReturnType<typeof select>) => void,
-  dependencies: Array<any>,
-): RefObject<T> => {
-  const ref = useRef();
-
-  useEffect(() => {
-    renderChartFn(select(ref.current) as ReturnType<typeof select>);
-    return () => {};
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, dependencies);
-
-  return ref;
-};
+import { Point } from '../types';
 
 type UsePriceGraph = (props: {
   baseSpotPrice: number;
@@ -35,7 +17,7 @@ type UsePriceGraph = (props: {
   type: string;
 }) => Point[] | null;
 
-export const usePriceGraph: UsePriceGraph = ({
+const usePriceGraph: UsePriceGraph = ({
   baseSpotPrice,
   rawDelta,
   rawFee = 0,
@@ -68,7 +50,7 @@ export const usePriceGraph: UsePriceGraph = ({
   const pointsBuy = priceArrayBuy.map((price, i) => {
     const newPrice = price / 1e9;
     return {
-      order: 1 + i,
+      order: -1 - i,
       price: newPrice - newPrice * (rawFee / 10000),
       type: 'buy',
     };
@@ -83,10 +65,12 @@ export const usePriceGraph: UsePriceGraph = ({
     };
   }) as Point[];
 
-  const pointsArr =
+  const chartData =
     type === PairType.TokenForNFT
       ? [...pointsBuy, ...pointsSell]
       : [...pointsBuy.reverse(), ...pointsSell];
 
-  return pointsArr;
+  return chartData;
 };
+
+export default usePriceGraph;

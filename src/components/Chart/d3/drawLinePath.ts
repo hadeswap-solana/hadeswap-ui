@@ -1,4 +1,12 @@
-import { area, line, curveNatural, select, ScaleLinear } from 'd3';
+import {
+  area,
+  line,
+  select,
+  ScaleLinear,
+  curveCardinal,
+  curveLinear,
+} from 'd3';
+import { chartIDs } from '../constants';
 import { Point } from '../types';
 
 const GRADIENT_ID = 'svg-gradient';
@@ -9,12 +17,13 @@ type DrawLinePath = (
     points: Point[];
     xScale: ScaleLinear<number, number, never>;
     yScale: ScaleLinear<number, number, never>;
+    chartID: string;
   },
 ) => void;
 
 export const drawLinePath: DrawLinePath = (
   selection,
-  { xScale, yScale, points },
+  { xScale, yScale, points, chartID },
 ) => {
   selection.append('defs').call((selection) =>
     createGradient(selection, {
@@ -23,8 +32,8 @@ export const drawLinePath: DrawLinePath = (
   );
 
   const areaGenerator = area<Point>()
-    .curve(curveNatural)
-    .x((_, idx) => xScale(idx))
+    .curve(chartID === chartIDs.swapHistory ? curveLinear : curveCardinal)
+    .x((point) => xScale(point.order))
     .y((point) => yScale(point.price))
     .y1(yScale(0));
 
@@ -34,8 +43,8 @@ export const drawLinePath: DrawLinePath = (
     .attr('fill', `url(#${GRADIENT_ID})`);
 
   const lineGenerator = line<Point>()
-    .curve(curveNatural)
-    .x((_, idx) => xScale(idx))
+    .curve(chartID === chartIDs.swapHistory ? curveLinear : curveCardinal)
+    .x((point) => xScale(point.order))
     .y((point) => yScale(point.price));
 
   selection
