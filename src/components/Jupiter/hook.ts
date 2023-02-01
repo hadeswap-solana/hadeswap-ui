@@ -1,10 +1,9 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useJupiter } from '@jup-ag/react-hook';
 import { PublicKey } from '@solana/web3.js';
 import { useTokenInfo, useTokenRate } from '../../requests/exchangeToken';
 import JSBI from 'jsbi';
 import { Tokens } from '../../types';
-import { TokenInfo } from '../../requests/types';
 
 interface ExchangeTokensProps {
   rawSolAmount: number;
@@ -25,17 +24,14 @@ export const useExchangeData = ({
   isLoading: boolean;
   isFetching: boolean;
 } => {
-  const [inputTokenInfo, setInputTokenInfo] = useState<TokenInfo>();
-
   const inputMint = useMemo(() => new PublicKey(inputToken), [inputToken]);
   const outputMint = useMemo(() => new PublicKey(Tokens.SOL), []);
 
   const { tokensData, tokensLoading, tokensFetching } = useTokenInfo();
   const { tokenRate, rateLoading, rateFetching } = useTokenRate({ inputToken });
 
-  useEffect(() => {
-    tokensData &&
-      setInputTokenInfo(tokensData.find((item) => item.address === inputToken));
+  const inputTokenInfo = useMemo(() => {
+    return tokensData?.find((item) => item.address === inputToken);
   }, [tokensData, inputToken]);
 
   const amount: JSBI = useMemo(
