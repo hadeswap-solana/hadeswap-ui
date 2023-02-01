@@ -392,14 +392,9 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
       buyOrdersQuantityToWithdraw,
     ]);
 
-    const sellOrdersToWithdrawUnbalancedCount =
-      nftsToWithdraw.length > buyOrdersQuantityToWithdraw
-        ? nftsToWithdraw.length - buyOrdersQuantityToWithdraw
-        : 0;
-
     const sellOrdersToWithdraw = nftsToWithdraw.slice(
       balancedPairsAmount,
-      sellOrdersToWithdrawUnbalancedCount,
+      nftsToWithdraw.length,
     );
 
     const buyOrdersToWithdraw =
@@ -442,10 +437,7 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
               wallet,
               pairPubkey: pool.pairPubkey,
               authorityAdapter: pool.authorityAdapterPubkey,
-              nfts: nftsToWithdraw.slice(
-                balancedPairsAmount,
-                sellOrdersToWithdraw.length,
-              ),
+              nfts: sellOrdersToWithdraw,
             })
           : createWithdrawLiquidityFromBuyOrdersPair({
               connection,

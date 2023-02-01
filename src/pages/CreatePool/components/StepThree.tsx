@@ -1,7 +1,10 @@
 import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import {
+  BondingCurveType,
+  PairType,
+} from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
@@ -81,13 +84,15 @@ export const StepThree: FC<StepThreeProps> = ({
     (pairType === PairType.TokenForNFT && !buyOrdersAmount) ||
     !formValue.spotPrice;
 
+  const creationSpotPrice = Math.ceil(formValue.spotPrice * 1e9);
+
   const { create: onCreatePoolClick } = useCreatePool({
     pairType,
     buyOrdersAmount,
     marketPubkey: chosenMarketKey,
     selectedNfts,
     curveType: formValue.curveType,
-    rawSpotPrice,
+    rawSpotPrice: creationSpotPrice,
     rawDelta: rawDelta,
     rawFee,
     onAfterTxn: () => history.push('/my-pools'),

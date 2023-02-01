@@ -313,9 +313,9 @@ export const getRawSpotPrice = ({
 }): number => {
   return curveType === BondingCurveType.XYK
     ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
-        currentSpotPrice: spotPrice * 1e9,
+        currentSpotPrice: Math.ceil(spotPrice * 1e9),
         counter: mathCounter,
         delta: rawDelta,
       })
-    : spotPrice * 1e9;
+    : Math.ceil(spotPrice * 1e9);
 };
