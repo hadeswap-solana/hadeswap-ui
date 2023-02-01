@@ -81,7 +81,7 @@ const Chart: FC<ChartProps> = ({
             {swapHistoryLoading ? (
               <Spinner />
             ) : (
-              <span>there is no activity yet</span>
+              <span>there was no activity in the selected period</span>
             )}
           </div>
         )}
