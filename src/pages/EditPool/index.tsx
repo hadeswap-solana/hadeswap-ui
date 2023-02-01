@@ -89,6 +89,7 @@ export const EditPool: FC = () => {
     curveType: formValue.curveType,
     mathCounter: pool.mathCounter,
   });
+
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({
       pool,

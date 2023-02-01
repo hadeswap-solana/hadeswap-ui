@@ -47,7 +47,9 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
       (pool.bondingCurve === BondingCurveType.XYK
         ? pool?.baseSpotPrice
         : pool?.currentSpotPrice) - rawSpotPrice,
-    ) > 1;
+    ) > 100;
+  console.log('spotPriceChanged: ', spotPriceChanged);
+
   const deltaChanged = Math.abs(pool?.delta - rawDelta) > 1;
   const feeChanged = isLiquidityProvisionPool && pool?.fee !== rawFee;
 
@@ -430,6 +432,9 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
     const unbalancedOrdersAmount =
       sellOrdersToWithdraw.length || buyOrdersToWithdraw;
 
+    console.log('buyOrdersToWithdraw: ', buyOrdersToWithdraw);
+
+    console.log('sellOrdersToWithdraw: ', sellOrdersToWithdraw);
     const unbalancedTxnsAndSigners = unbalancedOrdersAmount
       ? await (sellOrdersToWithdraw.length
           ? createWithdrawLiquidityFromSellOrdersPair({
@@ -561,6 +566,20 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
     rawDelta,
   });
 
+  //! Pair modification transaction logic
+  //? Ignore when somehow rawSpotPrice === 0
+  if (isPricingChanged && rawSpotPrice !== 0) {
+    const modifyTxnData = await createModifyPairTxnData({
+      pool,
+      rawSpotPrice,
+      rawFee,
+      rawDelta,
+      connection,
+      wallet,
+    });
+    txnsData.push([modifyTxnData]);
+  }
+
   //! Remove liquidity transactions:
   //? Buy
   if (isTokenForNFTPool && buyOrdersAmount < pool.buyOrdersAmount) {
@@ -613,20 +632,6 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
 
     withdrawAndDepositLiquidityTxnsData.length &&
       txnsData.push(withdrawAndDepositLiquidityTxnsData);
-  }
-
-  //! Pair modification transaction logic
-  //? Ignore when somehow rawSpotPrice === 0
-  if (isPricingChanged && rawSpotPrice !== 0) {
-    const modifyTxnData = await createModifyPairTxnData({
-      pool,
-      rawSpotPrice,
-      rawFee,
-      rawDelta,
-      connection,
-      wallet,
-    });
-    txnsData.push([modifyTxnData]);
   }
 
   //! Add liquidity transactions
