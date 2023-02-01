@@ -29,10 +29,7 @@ export const calcNextSpotPrice = (
       orderType === OrderType.BUY ? HadeOrderType.Buy : HadeOrderType.Sell,
     spotPrice: pair.baseSpotPrice,
     delta: pair.delta,
-    bondingCurveType:
-      pair.bondingCurve === 'linear'
-        ? BondingCurveType.Linear
-        : BondingCurveType.Exponential,
+    bondingCurveType: pair.bondingCurve,
     counter: pair.mathCounter,
   });
 };
