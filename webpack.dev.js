@@ -121,6 +121,12 @@ module.exports = (env) => {
             fullySpecified: false,
           },
         },
+        {
+          test: /\.m?js/,
+          resolve: {
+            fullySpecified: false,
+          },
+        },
       ],
     },
     resolve: {

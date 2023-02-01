@@ -75,6 +75,6 @@ export const selectIsCartEmpty = createSelector(
 );
 
 export const selectExchangeToken = createSelector(
-  (store: any) => (store?.core?.cart.exchangeToken as Tokens || null),
+  (store: any) => (store?.core?.cart.exchangeToken as Tokens) || null,
   identity<Tokens>,
 );

@@ -50,7 +50,7 @@ export const cartActions = {
   exchangeToken: createCustomAction(
     cartTypes.EXCHANGE_TOKEN,
     (token: Tokens) => ({
-      payload: { token }
-    })
-  )
+      payload: { token },
+    }),
+  ),
 };

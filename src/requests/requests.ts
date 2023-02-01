@@ -1,6 +1,14 @@
 import { web3 } from 'hadeswap-sdk';
+import { TOKEN_LIST_URL } from '@jup-ag/core';
 import { Pair, MarketInfo, Nft, NftActivityData } from '../state/core/types';
-import { AllStats, TVLandVolumeStats, TopMarket } from './types';
+import {
+  AllStats,
+  TVLandVolumeStats,
+  TopMarket,
+  TokenInfo,
+  TokenRateData,
+} from './types';
+import { Tokens } from '../types';
 
 export const fetchAllMarkets = async (): Promise<MarketInfo[]> => {
   const response = await fetch(`https://${process.env.BACKEND_DOMAIN}/markets`);
@@ -113,16 +121,34 @@ export const fetchTopMarkets = async (): Promise<TopMarket[]> => {
   return await response.json();
 };
 
-export const fetchSwapHistoryPool = async (
-  publicKey: string,
-): Promise<NftActivityData[]> => {
+export const fetchTokensInfo = async (): Promise<TokenInfo[]> => {
+  const ENV =
+    process.env.SOLANA_NETWORK === 'devnet' ? 'devnet' : 'mainnet-beta';
+
+  const response = await fetch(TOKEN_LIST_URL[ENV]);
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+
+  return await response.json();
+};
+
+export const fetchTokensRate = async ({
+  inputToken,
+}: {
+  inputToken: Tokens;
+}): Promise<TokenRateData> => {
   const response = await fetch(
-    `https://${process.env.BACKEND_DOMAIN}/trades/pair/${publicKey}`,
+    `https://quote-api.jup.ag/v4/price?ids=SOL&vsToken=${inputToken}`,
   );
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
-  return await response.json();
+  const {
+    data: { SOL },
+  } = await response.json();
+  return SOL;
 };
 
 export const fetchSwapHistoryCollection = async (
@@ -134,6 +160,18 @@ export const fetchSwapHistoryCollection = async (
     `https://${process.env.BACKEND_DOMAIN}/trades/${marketPublicKey}?sortBy=timestamp&sort=asc&limit=${LIMIT}&skip=0`,
   );
 
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return await response.json();
+};
+
+export const fetchSwapHistoryPool = async (
+  publicKey: string,
+): Promise<NftActivityData[]> => {
+  const response = await fetch(
+    `https://${process.env.BACKEND_DOMAIN}/trades/pair/${publicKey}`,
+  );
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }

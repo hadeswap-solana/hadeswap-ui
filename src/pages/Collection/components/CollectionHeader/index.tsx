@@ -10,7 +10,10 @@ import { Cart } from './Cart';
 import { SolPrice } from '../../../../components/SolPrice/SolPrice';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { CreatePoolButton } from '../../../../components/CreatePoolButton/CreatePoolButton';
-import { selectCertainMarket, selectCertainMarketLoading, } from '../../../../state/core/selectors';
+import {
+  selectCertainMarket,
+  selectCertainMarketLoading,
+} from '../../../../state/core/selectors';
 import { marketStatList } from './CollectionHeader.constants';
 import Button from '../../../../components/Buttons/Button';
 import { useCreateOfferModal } from '../../../../components/CreateOfferModal/hooks';
@@ -71,10 +74,14 @@ export const CollectionHeader: FC = () => {
                 <p style={{ marginRight: '20px' }}>pay in SOL</p>
                 <select
                   style={{ backgroundColor: '#000' }}
-                  onChange={(event) => changeTokenHandler(event.target.value as Tokens)}
+                  onChange={(event) =>
+                    changeTokenHandler(event.target.value as Tokens)
+                  }
                 >
                   {options.map((option, index) => (
-                    <option key={index} value={option.value}>{option.label}</option>
+                    <option key={index} value={option.value}>
+                      {option.label}
+                    </option>
                   ))}
                 </select>
               </Cart>

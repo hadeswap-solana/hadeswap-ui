@@ -1,3 +1,5 @@
+import { Tokens } from '../types';
+
 export enum LoadingStatus {
   loading = 'loading',
   success = 'success',
@@ -29,7 +31,7 @@ export interface TopMarket {
   volume24: number;
 }
 
-export interface Token {
+export interface TokenInfo {
   chainId: number;
   address: string;
   symbol: string;
@@ -37,4 +39,12 @@ export interface Token {
   decimals: number;
   logoURI: string;
   tags: string[];
+}
+
+export interface TokenRateData {
+  id: string;
+  mintSymbol: Tokens.SOL;
+  price: number;
+  vsToken: Tokens;
+  vsTokenSymbol: string;
 }

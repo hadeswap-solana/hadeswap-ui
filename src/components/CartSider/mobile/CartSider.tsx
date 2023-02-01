@@ -10,6 +10,7 @@ import { CrossmintButton } from '../components/CrossmintButton';
 import { CartSiderProps } from '../index';
 
 import styles from './styles.module.scss';
+import SwapExchangeButton from '../components/SwapExchangeButton';
 
 const HEADER_HEIGHT = 56;
 
@@ -26,6 +27,7 @@ const CartSiderMobile: FC<CartSiderProps> = ({
   totalSell,
   isOneBuyNft,
   crossmintConfig,
+  exchangeToken,
 }) => {
   const dispatch = useDispatch();
 
@@ -88,9 +90,18 @@ const CartSiderMobile: FC<CartSiderProps> = ({
               />
             </div>
             <div className={styles.submitWrapper}>
-              <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
-                <span>swap</span>
-              </Button>
+              {exchangeToken && (
+                <SwapExchangeButton
+                  rawSolAmount={totalBuy}
+                  inputToken={exchangeToken}
+                  swap={swap}
+                />
+              )}
+              {!exchangeToken && (
+                <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
+                  <span>swap</span>
+                </Button>
+              )}
               <CrossmintButton
                 isOneBuyNft={isOneBuyNft}
                 crossmintConfig={crossmintConfig}

@@ -99,10 +99,10 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
           price: isTakerBuyOrder
             ? calcPriceWithFee(nextSpotPrice, mutablePair.fee, OrderType.BUY)
             : calcPriceWithFee(
-              mutablePair.currentSpotPrice,
-              mutablePair.fee,
-              OrderType.SELL,
-            ),
+                mutablePair.currentSpotPrice,
+                mutablePair.fee,
+                OrderType.SELL,
+              ),
         };
         changedOrders.push(changedOrder);
 
@@ -147,10 +147,10 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
       price: isBuyOrder
         ? calcPriceWithFee(nextSpotPrice, affectedPair.fee, OrderType.BUY)
         : calcPriceWithFee(
-          affectedPair.currentSpotPrice,
-          affectedPair.fee,
-          OrderType.SELL,
-        ),
+            affectedPair.currentSpotPrice,
+            affectedPair.fee,
+            OrderType.SELL,
+          ),
 
       mint: payloadOrder.mint,
       imageUrl: payloadOrder.imageUrl,
@@ -245,7 +245,7 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
 
     const pendingOrdersWithRemovedPrevOrder = state.pendingOrders[
       pairPublicKey
-      ].filter(({ mint }) => mint !== prevOrderMint);
+    ].filter(({ mint }) => mint !== prevOrderMint);
 
     return {
       ...state,
@@ -264,10 +264,13 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
       },
     };
   },
-  [coreTypes.EXCHANGE_TOKEN]: (state, { payload }: ReturnType<typeof coreActions.exchangeToken>) => {
+  [coreTypes.EXCHANGE_TOKEN]: (
+    state,
+    { payload }: ReturnType<typeof coreActions.exchangeToken>,
+  ) => {
     return {
       ...state,
       exchangeToken: payload.token,
     };
-  }
+  },
 });

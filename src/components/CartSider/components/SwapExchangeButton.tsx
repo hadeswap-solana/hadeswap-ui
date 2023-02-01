@@ -1,36 +1,41 @@
 import { FC, memo, useState } from 'react';
 import Button from '../../Buttons/Button';
 import { Spinner } from '../../Spinner/Spinner';
-import { exchangeTokens } from '../../Jupiter/utils';
+import { useExchangeData } from '../../Jupiter/hook';
+import { exchangeToken } from '../../Jupiter/utils';
 import { Tokens } from '../../../types';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 interface ExchangeButtonProps {
-  solAmount: number;
+  rawSolAmount: number;
   inputToken: Tokens;
   swap: () => Promise<void>;
 }
 
-const SwapExchangeButton: FC<ExchangeButtonProps> = ({ solAmount, inputToken, swap }) => {
+const SwapExchangeButton: FC<ExchangeButtonProps> = ({
+  rawSolAmount,
+  inputToken,
+  swap,
+}) => {
   const wallet = useWallet();
-  const { connection } = useConnection();
 
   const [loading, setLoading] = useState<boolean>(false);
 
+  const { jupiter, isLoading, isFetching } = useExchangeData({
+    rawSolAmount,
+    inputToken,
+  });
+
   const swapHandler = async () => {
     setLoading(true);
-    const swapResult = await exchangeTokens({ solAmount, inputToken, wallet, connection });
-    console.log('EXCHANGE DONE');
-    console.log('exchange Result', swapResult);
-    setLoading(false);
-
+    await exchangeToken({ jupiter, wallet });
     await swap();
-    console.log('SWAP DONE');
+    setLoading(false);
   };
 
   return (
     <Button onClick={swapHandler} isDisabled={loading}>
-      {loading ? <Spinner /> : <span>exchange swap</span>}
+      {loading || isFetching || isLoading ? <Spinner /> : <span>swap</span>}
     </Button>
   );
 };

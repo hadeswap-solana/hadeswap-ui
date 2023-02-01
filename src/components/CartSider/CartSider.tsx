@@ -55,12 +55,18 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
         <CartSectionInvalid invalidItems={invalidItems} dispatch={dispatch} />
       </div>
       <div className={styles.submitWrapper}>
-        {exchangeToken && <SwapExchangeButton solAmount={totalBuy} inputToken={exchangeToken} swap={swap} />}
-        {!exchangeToken &&
+        {exchangeToken && (
+          <SwapExchangeButton
+            rawSolAmount={totalBuy}
+            inputToken={exchangeToken}
+            swap={swap}
+          />
+        )}
+        {!exchangeToken && (
           <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
             <span>swap</span>
           </Button>
-        }
+        )}
         <CrossmintButton
           isOneBuyNft={isOneBuyNft}
           crossmintConfig={crossmintConfig}
