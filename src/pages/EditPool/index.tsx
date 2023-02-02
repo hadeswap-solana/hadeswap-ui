@@ -72,22 +72,22 @@ export const EditPool: FC = () => {
     buyOrdersAmount,
     nftsAmount: selectedNfts.length,
     pairType,
-    mathCounter: pool.mathCounter,
+    mathCounter: pool?.mathCounter,
   });
 
   const rawSpotPrice = getRawSpotPrice({
     rawDelta,
     spotPrice: formValue.spotPrice,
     curveType: formValue.curveType,
-    mathCounter: pool.mathCounter,
+    mathCounter: pool?.mathCounter,
   });
 
   const rawFee = formValue.fee * 100;
   const changeSpotPrice = getRawSpotPrice({
-    rawDelta: pool.delta,
+    rawDelta: pool?.delta,
     spotPrice: formValue.spotPrice,
     curveType: formValue.curveType,
-    mathCounter: pool.mathCounter,
+    mathCounter: pool?.mathCounter,
   });
 
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =

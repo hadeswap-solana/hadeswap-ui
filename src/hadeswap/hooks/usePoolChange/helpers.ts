@@ -26,8 +26,6 @@ import { TxnData } from './types';
 import { createDepositSolToPairTxn } from '../../../utils/transactions/createDepositSolToPairTxn';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
-import { getRawSpotPrice } from '../../../utils';
-import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 
 type CheckIsPricingChanged = (props: {
   pool: Pair;
@@ -44,11 +42,10 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
   const isLiquidityProvisionPool = pool?.type === PairType.LiquidityProvision;
   const spotPriceChanged =
     Math.abs(
-      (pool.bondingCurve === BondingCurveType.XYK
+      (pool?.bondingCurve === BondingCurveType.XYK
         ? pool?.baseSpotPrice
         : pool?.currentSpotPrice) - rawSpotPrice,
     ) > 100;
-  console.log('spotPriceChanged: ', spotPriceChanged);
 
   const deltaChanged = Math.abs(pool?.delta - rawDelta) > 1;
   const feeChanged = isLiquidityProvisionPool && pool?.fee !== rawFee;
@@ -112,21 +109,6 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   connection,
   wallet,
 }) => {
-  // console.log({
-  //   rawSpotPrice,
-  //   rawFee,
-  //   rawDelta,
-  //   pool,
-
-  // })
-  // const startingSpotPrice = hadeswap.helpers.calculateNextSpotPrice({
-  //   orderType: OrderType.Buy,
-  //   delta: rawDelta,
-  //   bondingCurveType: pool?.bondingCurve,
-  //   spotPrice: rawSpotPrice,
-  //   counter: -pool?.mathCounter - 1,
-  // });
-
   const { transaction, signers } = await createModifyPairTxn({
     connection,
     wallet,
@@ -302,51 +284,6 @@ export const createDepositNftsToPairTxnsData: CreateDepositNftsToPairTxnsData =
     }));
   };
 
-// type CreateDepositLiquidityToPairTxnsData = (props: {
-//   pool: Pair;
-//   nftsToDeposit: Nft[];
-//   buyOrdersToDeposit: number;
-//   rawSpotPrice: number;
-//   rawDelta: number;
-//   connection: web3.Connection;
-//   wallet: WalletContextState;
-// }) => Promise<TxnData[]>;
-// export const createDepositLiquidityToPairTxnsData: CreateDepositLiquidityToPairTxnsData =
-//   async ({
-//     pool,
-//     nftsToDeposit,
-//     buyOrdersToDeposit,
-//     rawSpotPrice,
-//     rawDelta,
-//     connection,
-//     wallet,
-//   }) => {
-//     const txnsAndSigners = await createDepositLiquidityToPairTxns({
-//       connection,
-//       wallet,
-//       pairPubkey: pool.pairPubkey,
-//       authorityAdapter: pool.authorityAdapterPubkey,
-//       nfts: nftsToDeposit,
-//     });
-//
-//     const { array: solDepositAmounts } = hadeswap.helpers.calculatePricesArray({
-//       starting_spot_price: rawSpotPrice,
-//       delta: rawDelta,
-//       amount: nftsToDeposit.length,
-//       bondingCurveType: pool.bondingCurve,
-//       orderType: OrderType.Sell,
-//       counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1,
-//     });
-//
-//     return txnsAndSigners.map(({ transaction, signers }, idx) => ({
-//       transaction,
-//       signers,
-//       loadingModalCard: createIxCardFuncs[
-//         IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
-//       ](nftsToDeposit[idx], solDepositAmounts[idx]),
-//     }));
-//   };
-
 type CreateWithdrawAndDepositLiquidityFromPairTxnsData = (props: {
   pool: Pair;
   withdrawableNfts?: Nft[];
@@ -404,11 +341,7 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
         ? buyOrdersQuantityToWithdraw - nftsToWithdraw.length
         : 0;
 
-    const balancedNfts = nftsToWithdraw.slice(
-      0,
-      balancedPairsAmount,
-      //+ (sellOrdersUnevenAmount || buyOrdersUnevenAmount)
-    );
+    const balancedNfts = nftsToWithdraw.slice(0, balancedPairsAmount);
 
     const { chunks: balancedTxnsAndSigners } =
       await createWithdrawLiquidityFromPairTxns({
@@ -432,9 +365,6 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
     const unbalancedOrdersAmount =
       sellOrdersToWithdraw.length || buyOrdersToWithdraw;
 
-    console.log('buyOrdersToWithdraw: ', buyOrdersToWithdraw);
-
-    console.log('sellOrdersToWithdraw: ', sellOrdersToWithdraw);
     const unbalancedTxnsAndSigners = unbalancedOrdersAmount
       ? await (sellOrdersToWithdraw.length
           ? createWithdrawLiquidityFromSellOrdersPair({
