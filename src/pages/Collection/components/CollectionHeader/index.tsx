@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Cart } from './Cart';
 // import { SocialLink } from './SocialLink';
 // import { GlobeIcon } from '../../../../icons/GlobeIcon';
@@ -10,6 +10,7 @@ import { Cart } from './Cart';
 import { SolPrice } from '../../../../components/SolPrice/SolPrice';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { CreatePoolButton } from '../../../../components/CreatePoolButton/CreatePoolButton';
+import { TokensMenu } from './TokensMenu';
 import {
   selectCertainMarket,
   selectCertainMarketLoading,
@@ -18,13 +19,10 @@ import { marketStatList } from './CollectionHeader.constants';
 import Button from '../../../../components/Buttons/Button';
 import { useCreateOfferModal } from '../../../../components/CreateOfferModal/hooks';
 import CreateOfferModal from '../../../../components/CreateOfferModal/CreateOfferModal';
-import { coreActions } from '../../../../state/core/actions';
-import { Tokens } from '../../../../types';
 
 import styles from './styles.module.scss';
 
 export const CollectionHeader: FC = () => {
-  const dispatch = useDispatch();
   const market = useSelector(selectCertainMarket);
   const isLoading = useSelector(selectCertainMarketLoading);
 
@@ -33,18 +31,6 @@ export const CollectionHeader: FC = () => {
     open: openCreateOfferModal,
     close: closeCreateOfferModal,
   } = useCreateOfferModal();
-
-  const options = [
-    { label: 'USDC', value: Tokens.USDC },
-    { label: 'MSOL', value: Tokens.MSOL },
-    { label: 'Hades', value: Tokens.Hades },
-    { label: 'Bonk', value: Tokens.Bonk },
-    { label: 'SAMO', value: Tokens.SAMO },
-  ];
-
-  const changeTokenHandler = (value: Tokens) => {
-    dispatch(coreActions.exchangeToken(value));
-  };
 
   return (
     <div className={styles.headerWrapper}>
@@ -70,21 +56,7 @@ export const CollectionHeader: FC = () => {
               <h2 className={styles.collectionTitle}>
                 {market.collectionName}
               </h2>
-              <Cart>
-                <p style={{ marginRight: '20px' }}>pay in SOL</p>
-                <select
-                  style={{ backgroundColor: '#000' }}
-                  onChange={(event) =>
-                    changeTokenHandler(event.target.value as Tokens)
-                  }
-                >
-                  {options.map((option, index) => (
-                    <option key={index} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </Cart>
+              <TokensMenu />
               {/* <div className={styles.collectionDescriptionWrapper}>
                 <p className={styles.collectionDescription}>
                   {mockData.collectionDescription}
