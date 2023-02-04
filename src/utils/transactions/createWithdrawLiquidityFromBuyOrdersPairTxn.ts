@@ -31,10 +31,7 @@ export const createWithdrawLiquidityFromBuyOrdersPair: CreateWithdrawLiquidityFr
     authorityAdapter,
     buyOrdersAmountToDelete,
   }) => {
-    const amountPerChunk = getArrayByNumber(
-      buyOrdersAmountToDelete,
-      SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
-    );
+    const amountPerChunk = [buyOrdersAmountToDelete];
 
     const ixsAndSigners = (
       await Promise.all(

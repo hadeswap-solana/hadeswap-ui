@@ -41,6 +41,7 @@ export const PairButtons: FC<PairButtonsProps> = ({
         [styles.active]: isActiveLeft || isActiveRight,
       })}
     />
+
     <button
       className={classNames(
         styles.rootButton,

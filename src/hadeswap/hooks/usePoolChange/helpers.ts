@@ -1,6 +1,10 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
-import { OrderType, PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import {
+  BondingCurveType,
+  OrderType,
+  PairType,
+} from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { min, differenceBy } from 'lodash';
 
 import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../..';
@@ -22,6 +26,7 @@ import { TxnData } from './types';
 import { createDepositSolToPairTxn } from '../../../utils/transactions/createDepositSolToPairTxn';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
+import { compareStrings } from '../../../utils';
 
 type CheckIsPricingChanged = (props: {
   pool: Pair;
@@ -36,8 +41,16 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
   rawDelta,
 }) => {
   const isLiquidityProvisionPool = pool?.type === PairType.LiquidityProvision;
-  const spotPriceChanged = Math.abs(pool?.currentSpotPrice - rawSpotPrice) > 1;
-  const deltaChanged = Math.abs(pool?.delta - rawDelta) > 1;
+  const spotPriceChanged =
+    Math.abs(
+      (pool?.bondingCurve === BondingCurveType.XYK
+        ? pool?.baseSpotPrice
+        : pool?.currentSpotPrice) - rawSpotPrice,
+    ) > 100;
+
+  const deltaChanged =
+    pool?.bondingCurve !== BondingCurveType.XYK &&
+    Math.abs(pool?.delta - rawDelta) > 1;
   const feeChanged = isLiquidityProvisionPool && pool?.fee !== rawFee;
 
   return spotPriceChanged || deltaChanged || feeChanged;
@@ -99,21 +112,13 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   connection,
   wallet,
 }) => {
-  const startingSpotPrice = hadeswap.helpers.calculateNextSpotPrice({
-    orderType: OrderType.Buy,
-    delta: rawDelta,
-    bondingCurveType: pool?.bondingCurve,
-    spotPrice: rawSpotPrice,
-    counter: -pool?.mathCounter - 1,
-  });
-
   const { transaction, signers } = await createModifyPairTxn({
     connection,
     wallet,
     pairPubkey: pool.pairPubkey,
     authorityAdapter: pool.authorityAdapterPubkey,
     delta: rawDelta,
-    spotPrice: startingSpotPrice,
+    spotPrice: rawSpotPrice,
     fee: rawFee,
   });
 
@@ -141,10 +146,7 @@ export const createWithdrawSOLFromPairTxnsData: CreateWithdrawSOLFromPairTxnsDat
     connection,
     wallet,
   }) => {
-    const amountPerChunk = getArrayByNumber(
-      withdrawOrdersAmount,
-      SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
-    );
+    const amountPerChunk = [withdrawOrdersAmount];
 
     const { total: withdrawAmount } = hadeswap.helpers.calculatePricesArray({
       starting_spot_price: rawSpotPrice,
@@ -155,9 +157,8 @@ export const createWithdrawSOLFromPairTxnsData: CreateWithdrawSOLFromPairTxnsDat
       counter: pool?.buyOrdersAmount * -1,
     });
 
-    const loadingModalCard = createIxCardFuncs[
-      IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL
-    ](withdrawAmount, true);
+    const loadingModalCard =
+      createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL_NO_SOL_AMOUNT]();
 
     const txnsAndSigners = await Promise.all(
       amountPerChunk.map((amount) =>
@@ -195,10 +196,7 @@ export const createDepositSOLToPairTxnsData: CreateDepositSOLToPairTxnsData =
     connection,
     wallet,
   }) => {
-    const amountPerChunk = getArrayByNumber(
-      ordersAmount,
-      SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
-    );
+    const amountPerChunk = [ordersAmount];
 
     const { total: depositAmount } = hadeswap.helpers.calculatePricesArray({
       starting_spot_price: rawSpotPrice,
@@ -210,7 +208,7 @@ export const createDepositSOLToPairTxnsData: CreateDepositSOLToPairTxnsData =
     });
 
     const loadingModalCard =
-      createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](depositAmount);
+      createIxCardFuncs[IX_TYPE.ADD_BUY_ORDERS_TO_POOL_NO_SOL_AMOUNT]();
 
     const txnsAndSigners = await Promise.all(
       amountPerChunk.map((amount) =>
@@ -282,51 +280,6 @@ export const createDepositNftsToPairTxnsData: CreateDepositNftsToPairTxnsData =
     }));
   };
 
-// type CreateDepositLiquidityToPairTxnsData = (props: {
-//   pool: Pair;
-//   nftsToDeposit: Nft[];
-//   buyOrdersToDeposit: number;
-//   rawSpotPrice: number;
-//   rawDelta: number;
-//   connection: web3.Connection;
-//   wallet: WalletContextState;
-// }) => Promise<TxnData[]>;
-// export const createDepositLiquidityToPairTxnsData: CreateDepositLiquidityToPairTxnsData =
-//   async ({
-//     pool,
-//     nftsToDeposit,
-//     buyOrdersToDeposit,
-//     rawSpotPrice,
-//     rawDelta,
-//     connection,
-//     wallet,
-//   }) => {
-//     const txnsAndSigners = await createDepositLiquidityToPairTxns({
-//       connection,
-//       wallet,
-//       pairPubkey: pool.pairPubkey,
-//       authorityAdapter: pool.authorityAdapterPubkey,
-//       nfts: nftsToDeposit,
-//     });
-//
-//     const { array: solDepositAmounts } = hadeswap.helpers.calculatePricesArray({
-//       starting_spot_price: rawSpotPrice,
-//       delta: rawDelta,
-//       amount: nftsToDeposit.length,
-//       bondingCurveType: pool.bondingCurve,
-//       orderType: OrderType.Sell,
-//       counter: ((pool?.nftsCount + pool?.buyOrdersAmount) / 2) * -1,
-//     });
-//
-//     return txnsAndSigners.map(({ transaction, signers }, idx) => ({
-//       transaction,
-//       signers,
-//       loadingModalCard: createIxCardFuncs[
-//         IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
-//       ](nftsToDeposit[idx], solDepositAmounts[idx]),
-//     }));
-//   };
-
 type CreateWithdrawAndDepositLiquidityFromPairTxnsData = (props: {
   pool: Pair;
   withdrawableNfts?: Nft[];
@@ -369,118 +322,49 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
       counter: ((pool.nftsCount + pool.buyOrdersAmount) / 2) * -1 - 1,
     });
 
-    const balancedPairsAmount = min([
-      nftsToWithdraw.length,
-      buyOrdersQuantityToWithdraw,
-    ]);
-
-    const sellOrdersToWithdrawUnbalancedCount =
-      nftsToWithdraw.length > buyOrdersQuantityToWithdraw
-        ? nftsToWithdraw.length - buyOrdersQuantityToWithdraw
-        : 0;
-
-    const sellOrdersToWithdraw = nftsToWithdraw.slice(
-      balancedPairsAmount,
-      sellOrdersToWithdrawUnbalancedCount,
+    const unbalancedTxnsAndSigners = (
+      nftsToWithdraw.length
+        ? await createWithdrawLiquidityFromSellOrdersPair({
+            connection,
+            wallet,
+            pairPubkey: pool.pairPubkey,
+            authorityAdapter: pool.authorityAdapterPubkey,
+            nfts: nftsToWithdraw,
+          })
+        : []
+    ).concat(
+      buyOrdersQuantityToWithdraw
+        ? await createWithdrawLiquidityFromBuyOrdersPair({
+            connection,
+            wallet,
+            pairPubkey: pool.pairPubkey,
+            authorityAdapter: pool.authorityAdapterPubkey,
+            buyOrdersAmountToDelete: buyOrdersQuantityToWithdraw,
+          })
+        : [],
     );
 
-    const buyOrdersToWithdraw =
-      buyOrdersQuantityToWithdraw > nftsToWithdraw.length
-        ? buyOrdersQuantityToWithdraw - nftsToWithdraw.length
-        : 0;
-
-    const balancedNfts = nftsToWithdraw.slice(
-      0,
-      balancedPairsAmount,
-      //+ (sellOrdersUnevenAmount || buyOrdersUnevenAmount)
-    );
-
-    const { chunks: balancedTxnsAndSigners } =
-      await createWithdrawLiquidityFromPairTxns({
-        connection,
-        wallet,
-        pairPubkey: pool.pairPubkey,
-        authorityAdapter: pool.authorityAdapterPubkey,
-        nfts: balancedNfts,
-      });
-
-    const balancedTxnsData = balancedTxnsAndSigners.map(
-      ({ transaction, signers }, idx) => ({
-        transaction,
-        signers,
-        loadingModalCard: createIxCardFuncs[
-          IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
-        ](balancedNfts[idx], solAmounts[idx], true),
-      }),
-    );
-
-    const unbalancedOrdersAmount =
-      sellOrdersToWithdraw.length || buyOrdersToWithdraw;
-
-    const unbalancedTxnsAndSigners = unbalancedOrdersAmount
-      ? await (sellOrdersToWithdraw.length
-          ? createWithdrawLiquidityFromSellOrdersPair({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              nfts: nftsToWithdraw.slice(
-                balancedPairsAmount,
-                sellOrdersToWithdraw.length,
-              ),
-            })
-          : createWithdrawLiquidityFromBuyOrdersPair({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              buyOrdersAmountToDelete: buyOrdersToWithdraw,
-            }))
-      : [];
-
-    const balancedTxnsAmount = balancedTxnsAndSigners?.length || 0;
+    // const balancedTxnsAmount = balancedTxnsAndSigners?.length || 0;
 
     const unbalancedTxnsData = unbalancedTxnsAndSigners.map(
       ({ transaction, signers }, idx) => ({
         transaction,
         signers,
-        loadingModalCard: sellOrdersToWithdraw.length
-          ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-              nftsToWithdraw?.[idx + balancedNfts?.length],
-              solAmounts?.[idx + balancedTxnsAmount],
-              true,
-            )
-          : createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](
-              solAmounts?.[idx + balancedTxnsAmount],
-            ),
+        loadingModalCard:
+          idx < nftsToWithdraw.length
+            ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](
+                nftsToWithdraw?.[idx],
+                true,
+              )
+            : createIxCardFuncs[
+                IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL_NO_SOL_AMOUNT
+              ](),
       }),
-    );
-
-    const amountOfBuyAndSellOrderPairs = Math.min(
-      buyOrdersToDeposit,
-      nftsToDeposit.length,
-    );
-    const nftsToDepositWithBuyOrders = nftsToDeposit.slice(
-      0,
-      amountOfBuyAndSellOrderPairs,
     );
 
     let depositLiquidityTxnsData = [];
 
-    if (nftsToDepositWithBuyOrders.length > 0) {
-      depositLiquidityTxnsData = await createDepositLiquidityToPairTxns({
-        connection,
-        wallet,
-        pairPubkey: pool.pairPubkey,
-        authorityAdapter: pool.authorityAdapterPubkey,
-        nfts: nftsToDepositWithBuyOrders,
-      });
-    }
-
-    const outstandingBuyOrders =
-      buyOrdersToDeposit - nftsToDepositWithBuyOrders.length;
-
-    if (outstandingBuyOrders > 0) {
+    if (buyOrdersToDeposit > 0) {
       depositLiquidityTxnsData = [
         ...depositLiquidityTxnsData,
         ...(await createDepositLiquidityOnlyBuyOrdersTxns({
@@ -488,17 +372,12 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
           wallet,
           pairPubkey: pool.pairPubkey,
           authorityAdapter: pool.authorityAdapterPubkey,
-          buyOrdersAmount: outstandingBuyOrders,
+          buyOrdersAmount: buyOrdersToDeposit,
         })),
       ];
     }
 
-    const outstandingNfts = nftsToDeposit.slice(
-      nftsToDepositWithBuyOrders.length,
-      nftsToDeposit.length,
-    );
-
-    if (outstandingNfts.length > 0) {
+    if (nftsToDeposit.length > 0) {
       depositLiquidityTxnsData = [
         ...depositLiquidityTxnsData,
         ...(await createDepositLiquidityOnlySellOrdersTxns({
@@ -506,14 +385,25 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
           wallet,
           pairPubkey: pool.pairPubkey,
           authorityAdapter: pool.authorityAdapterPubkey,
-          nfts: outstandingNfts,
+          nfts: nftsToDeposit,
         })),
       ];
     }
 
-    return balancedTxnsData
-      .concat(unbalancedTxnsData)
-      .concat(depositLiquidityTxnsData);
+    const depositLiquidityTxnsDataWithCards = depositLiquidityTxnsData.map(
+      ({ transaction, signers }, idx) => ({
+        transaction,
+        signers,
+        loadingModalCard: nftsToDeposit[idx]
+          ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](
+              nftsToDeposit?.[idx],
+              false,
+            )
+          : createIxCardFuncs[IX_TYPE.ADD_BUY_ORDERS_TO_POOL_NO_SOL_AMOUNT](),
+      }),
+    );
+
+    return unbalancedTxnsData.concat(depositLiquidityTxnsDataWithCards);
   };
 
 type BuildChangePoolTxnsData = (props: {
@@ -550,6 +440,28 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
     rawFee,
     rawDelta,
   });
+
+  console.log({
+    pool,
+    rawSpotPrice,
+    rawFee,
+    rawDelta,
+  });
+  console.log('isPricingChanged: ', isPricingChanged);
+
+  //! Pair modification transaction logic
+  //? Ignore when somehow rawSpotPrice === 0
+  if (isPricingChanged && rawSpotPrice !== 0) {
+    const modifyTxnData = await createModifyPairTxnData({
+      pool,
+      rawSpotPrice,
+      rawFee,
+      rawDelta,
+      connection,
+      wallet,
+    });
+    txnsData.push([modifyTxnData]);
+  }
 
   //! Remove liquidity transactions:
   //? Buy
@@ -603,20 +515,6 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
 
     withdrawAndDepositLiquidityTxnsData.length &&
       txnsData.push(withdrawAndDepositLiquidityTxnsData);
-  }
-
-  //! Pair modification transaction logic
-  //? Ignore when somehow rawSpotPrice === 0
-  if (isPricingChanged && rawSpotPrice !== 0) {
-    const modifyTxnData = await createModifyPairTxnData({
-      pool,
-      rawSpotPrice,
-      rawFee,
-      rawDelta,
-      connection,
-      wallet,
-    });
-    txnsData.push([modifyTxnData]);
   }
 
   //! Add liquidity transactions

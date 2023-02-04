@@ -53,9 +53,8 @@ export const usePriceGraph: UsePriceGraph = ({
     amount: buyOrdersAmount,
     bondingCurveType: bondingCurve,
     orderType: OrderType.Sell,
-    counter: mathCounter + 1,
+    counter: mathCounter,
   }) as { array: number[]; total: number };
-
   const { array: priceArraySell } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
     delta: rawDelta,

@@ -29,10 +29,7 @@ export const calcNextSpotPrice = (
       orderType === OrderType.BUY ? HadeOrderType.Buy : HadeOrderType.Sell,
     spotPrice: pair.baseSpotPrice,
     delta: pair.delta,
-    bondingCurveType:
-      pair.bondingCurve === 'linear'
-        ? BondingCurveType.Linear
-        : BondingCurveType.Exponential,
+    bondingCurveType: pair.bondingCurve,
     counter: pair.mathCounter,
   });
 };
@@ -289,9 +286,13 @@ export const calcPriceWithFee = (
 };
 
 export const parseDelta = (rawDelta: number, curveType: string): string => {
-  return curveType === 'exponential'
-    ? `${(rawDelta / 100).toFixed(2)}%`
-    : `${formatBNToString(new BN(rawDelta))} SOL`;
+  const getNeededDelta = {
+    [BondingCurveType.Exponential]: () => `${(rawDelta / 100).toFixed(2)}%`,
+    [BondingCurveType.Linear]: () =>
+      `${formatBNToString(new BN(rawDelta))} SOL`,
+    [BondingCurveType.XYK]: () => `xyk`,
+  };
+  return getNeededDelta[curveType]();
 };
 
 enum PairType {
