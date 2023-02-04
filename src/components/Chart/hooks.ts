@@ -64,7 +64,6 @@ export const usePriceGraph: UsePriceGraph = ({
     counter: mathCounter,
   }) as { array: number[]; total: number };
 
-  console.log('priceArrayBuy: ', priceArrayBuy);
   const pointsBuy = priceArrayBuy.map((price, i) => {
     const newPrice = price / 1e9;
     return {

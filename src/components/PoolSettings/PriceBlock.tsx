@@ -52,8 +52,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
     const deltaType =
       formValue.curveType === BondingCurveType.Exponential ? '%' : 'SOL';
 
-    const isDisableFields =
-      !(pairType === PairType.NftForToken) && pool?.buyOrdersAmount > 15;
+    const isDisableFields = false;
 
     const parsedSpotPrice =
       formValue.curveType === BondingCurveType.XYK

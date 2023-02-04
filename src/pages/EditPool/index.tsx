@@ -105,16 +105,6 @@ export const EditPool: FC = () => {
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
-  console.log({
-    baseSpotPrice: rawSpotPrice,
-    rawDelta,
-    rawFee,
-    buyOrdersAmount,
-    nftsCount: selectedNfts.length,
-    bondingCurve: formValue.curveType,
-    mathCounter: pool?.mathCounter,
-    type: pairType,
-  });
   const chartData = usePriceGraph({
     baseSpotPrice: rawSpotPrice,
     rawDelta,
