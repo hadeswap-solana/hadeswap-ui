@@ -26,6 +26,7 @@ import { TxnData } from './types';
 import { createDepositSolToPairTxn } from '../../../utils/transactions/createDepositSolToPairTxn';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
+import { compareStrings } from '../../../utils';
 
 type CheckIsPricingChanged = (props: {
   pool: Pair;
@@ -47,7 +48,9 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
         : pool?.currentSpotPrice) - rawSpotPrice,
     ) > 100;
 
-  const deltaChanged = Math.abs(pool?.delta - rawDelta) > 1;
+  const deltaChanged =
+    pool?.bondingCurve !== BondingCurveType.XYK &&
+    Math.abs(pool?.delta - rawDelta) > 1;
   const feeChanged = isLiquidityProvisionPool && pool?.fee !== rawFee;
 
   return spotPriceChanged || deltaChanged || feeChanged;
@@ -197,10 +200,7 @@ export const createDepositSOLToPairTxnsData: CreateDepositSOLToPairTxnsData =
     connection,
     wallet,
   }) => {
-    const amountPerChunk = getArrayByNumber(
-      ordersAmount,
-      SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
-    );
+    const amountPerChunk = [ordersAmount];
 
     const { total: depositAmount } = hadeswap.helpers.calculatePricesArray({
       starting_spot_price: rawSpotPrice,
@@ -495,6 +495,14 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
     rawFee,
     rawDelta,
   });
+
+  console.log({
+    pool,
+    rawSpotPrice,
+    rawFee,
+    rawDelta,
+  });
+  console.log('isPricingChanged: ', isPricingChanged);
 
   //! Pair modification transaction logic
   //? Ignore when somehow rawSpotPrice === 0

@@ -53,7 +53,7 @@ export const usePriceGraph: UsePriceGraph = ({
     amount: buyOrdersAmount,
     bondingCurveType: bondingCurve,
     orderType: OrderType.Sell,
-    counter: mathCounter + 1,
+    counter: mathCounter,
   }) as { array: number[]; total: number };
   const { array: priceArraySell } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
@@ -64,6 +64,7 @@ export const usePriceGraph: UsePriceGraph = ({
     counter: mathCounter,
   }) as { array: number[]; total: number };
 
+  console.log('priceArrayBuy: ', priceArrayBuy);
   const pointsBuy = priceArrayBuy.map((price, i) => {
     const newPrice = price / 1e9;
     return {

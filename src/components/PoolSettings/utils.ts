@@ -121,7 +121,7 @@ export const priceLockedIntoPool = ({
     amount,
     bondingCurveType: curveType,
     orderType: OrderType.Sell,
-    counter: mathCounter + 1,
+    counter: mathCounter,
   }) as { total: number };
 
   return total;

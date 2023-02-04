@@ -177,10 +177,7 @@ const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
   connection,
   wallet,
 }) => {
-  const amountPerChunk = getArrayByNumber(
-    buyOrdersAmount,
-    SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
-  );
+  const amountPerChunk = [buyOrdersAmount];
 
   const cards = amountPerChunk.map((ordersAmount, idx) => {
     const { total: amount }: { total: number } =
@@ -190,7 +187,7 @@ const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
         amount: ordersAmount,
         bondingCurveType: curveType,
         orderType: OrderType.Sell,
-        counter: idx + 1,
+        counter: idx,
       });
 
     return createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amount);
@@ -382,7 +379,7 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
       amount: selectedNfts.length,
       bondingCurveType: curveType,
       orderType: OrderType.Sell,
-      counter: 1,
+      counter: 0,
     });
 
   const restTxnsCards = selectedNfts.map((nft, idx) => {
