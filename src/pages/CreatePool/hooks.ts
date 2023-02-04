@@ -190,7 +190,7 @@ const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
         counter: idx,
       });
 
-    return createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amount);
+    return createIxCardFuncs[IX_TYPE.ADD_BUY_ORDERS_TO_POOL_NO_SOL_AMOUNT]();
   });
 
   const {
@@ -355,22 +355,15 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
       })),
     ];
   }
-  const { array: amounts }: { array: number[] } =
-    hadeswap.helpers.calculatePricesArray({
-      starting_spot_price: rawSpotPrice,
-      delta: rawDelta,
-      amount: selectedNfts.length,
-      bondingCurveType: curveType,
-      orderType: OrderType.Sell,
-      counter: 0,
-    });
 
-  const restTxnsCards = selectedNfts.map((nft, idx) => {
-    return createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-      nft,
-      amounts[idx],
-    );
-  });
+  const restTxnsCards = restTxns.map(({ transaction, signers }, idx) =>
+    selectedNfts[idx]
+      ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](
+          selectedNfts?.[idx],
+          false,
+        )
+      : createIxCardFuncs[IX_TYPE.ADD_BUY_ORDERS_TO_POOL_NO_SOL_AMOUNT](),
+  );
 
   return {
     firstTxnData: {
