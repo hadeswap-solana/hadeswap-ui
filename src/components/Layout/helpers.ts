@@ -32,7 +32,7 @@ interface TxnData {
 
 type CreateIx = (params: CreateIxParams) => Promise<IxnsData>;
 
-const PRECISION_CORRECTION = 100000;
+const PRECISION_CORRECTION = 1000000;
 
 const createBuyNftFromPairIx: CreateIx = async ({
   connection,
