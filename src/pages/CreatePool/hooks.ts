@@ -302,14 +302,7 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
   wallet,
   buyOrdersAmount,
 }) => {
-  const amountOfBuyAndSellOrderPairs = Math.min(
-    buyOrdersAmount,
-    selectedNfts.length,
-  );
-  const nftsToDepositWithBuyOrders = selectedNfts.slice(
-    0,
-    amountOfBuyAndSellOrderPairs,
-  );
+  const nftsToDepositWithBuyOrders = [];
 
   const {
     pairPubkey,
@@ -328,16 +321,6 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
   });
 
   let restTxns = [];
-
-  if (nftsToDepositWithBuyOrders.length > 0) {
-    restTxns = await createDepositLiquidityToPairTxns({
-      connection,
-      wallet,
-      pairPubkey: pairPubkey,
-      authorityAdapter: authorityAdapterPubkey,
-      nfts: nftsToDepositWithBuyOrders,
-    });
-  }
 
   const outstandingBuyOrders =
     buyOrdersAmount - nftsToDepositWithBuyOrders.length;

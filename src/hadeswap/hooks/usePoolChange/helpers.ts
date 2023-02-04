@@ -326,101 +326,45 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
       counter: ((pool.nftsCount + pool.buyOrdersAmount) / 2) * -1 - 1,
     });
 
-    const balancedPairsAmount = min([
-      nftsToWithdraw.length,
-      buyOrdersQuantityToWithdraw,
-    ]);
-
-    const sellOrdersToWithdraw = nftsToWithdraw.slice(
-      balancedPairsAmount,
-      nftsToWithdraw.length,
-    );
-
-    const buyOrdersToWithdraw =
-      buyOrdersQuantityToWithdraw > nftsToWithdraw.length
-        ? buyOrdersQuantityToWithdraw - nftsToWithdraw.length
-        : 0;
-
-    const balancedNfts = nftsToWithdraw.slice(0, balancedPairsAmount);
-
-    const { chunks: balancedTxnsAndSigners } =
-      await createWithdrawLiquidityFromPairTxns({
+    const unbalancedTxnsAndSigners = (
+      await createWithdrawLiquidityFromSellOrdersPair({
         connection,
         wallet,
         pairPubkey: pool.pairPubkey,
         authorityAdapter: pool.authorityAdapterPubkey,
-        nfts: balancedNfts,
-      });
-
-    const balancedTxnsData = balancedTxnsAndSigners.map(
-      ({ transaction, signers }, idx) => ({
-        transaction,
-        signers,
-        loadingModalCard: createIxCardFuncs[
-          IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL
-        ](balancedNfts[idx], solAmounts[idx], true),
+        nfts: nftsToWithdraw,
+      })
+    ).concat(
+      await createWithdrawLiquidityFromBuyOrdersPair({
+        connection,
+        wallet,
+        pairPubkey: pool.pairPubkey,
+        authorityAdapter: pool.authorityAdapterPubkey,
+        buyOrdersAmountToDelete: buyOrdersQuantityToWithdraw,
       }),
     );
 
-    const unbalancedOrdersAmount =
-      sellOrdersToWithdraw.length || buyOrdersToWithdraw;
-
-    const unbalancedTxnsAndSigners = unbalancedOrdersAmount
-      ? await (sellOrdersToWithdraw.length
-          ? createWithdrawLiquidityFromSellOrdersPair({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              nfts: sellOrdersToWithdraw,
-            })
-          : createWithdrawLiquidityFromBuyOrdersPair({
-              connection,
-              wallet,
-              pairPubkey: pool.pairPubkey,
-              authorityAdapter: pool.authorityAdapterPubkey,
-              buyOrdersAmountToDelete: buyOrdersToWithdraw,
-            }))
-      : [];
-
-    const balancedTxnsAmount = balancedTxnsAndSigners?.length || 0;
+    // const balancedTxnsAmount = balancedTxnsAndSigners?.length || 0;
 
     const unbalancedTxnsData = unbalancedTxnsAndSigners.map(
       ({ transaction, signers }, idx) => ({
         transaction,
         signers,
-        loadingModalCard: sellOrdersToWithdraw.length
+        loadingModalCard: nftsToWithdraw.length
           ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-              nftsToWithdraw?.[idx + balancedNfts?.length],
-              solAmounts?.[idx + balancedTxnsAmount],
+              nftsToWithdraw?.[idx],
+              solAmounts?.[idx],
               true,
             )
           : createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL](
-              solAmounts?.[idx + balancedTxnsAmount],
+              solAmounts?.[idx],
             ),
       }),
     );
 
-    const amountOfBuyAndSellOrderPairs = Math.min(
-      buyOrdersToDeposit,
-      nftsToDeposit.length,
-    );
-    const nftsToDepositWithBuyOrders = nftsToDeposit.slice(
-      0,
-      amountOfBuyAndSellOrderPairs,
-    );
+    const nftsToDepositWithBuyOrders = [];
 
     let depositLiquidityTxnsData = [];
-
-    if (nftsToDepositWithBuyOrders.length > 0) {
-      depositLiquidityTxnsData = await createDepositLiquidityToPairTxns({
-        connection,
-        wallet,
-        pairPubkey: pool.pairPubkey,
-        authorityAdapter: pool.authorityAdapterPubkey,
-        nfts: nftsToDepositWithBuyOrders,
-      });
-    }
 
     const outstandingBuyOrders =
       buyOrdersToDeposit - nftsToDepositWithBuyOrders.length;
@@ -456,9 +400,7 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
       ];
     }
 
-    return balancedTxnsData
-      .concat(unbalancedTxnsData)
-      .concat(depositLiquidityTxnsData);
+    return unbalancedTxnsData.concat(depositLiquidityTxnsData);
   };
 
 type BuildChangePoolTxnsData = (props: {
