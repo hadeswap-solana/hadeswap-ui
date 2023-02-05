@@ -30,6 +30,10 @@ export const createWithdrawLiquidityFromSellOrdersPair: CreateWithdrawLiquidityF
           return withdrawLiquiditySingleSellOrder({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
+            args: {
+              nameForRuleSet: process.env.NAME_FOR_RULE_SET,
+              payerRuleSet: new web3.PublicKey(process.env.PAYER_RULE_SET),
+            },
             accounts: {
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),

@@ -32,6 +32,10 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
           return withdrawLiquidityFromBalancedPair({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
+            args: {
+              nameForRuleSet: process.env.NAME_FOR_RULE_SET,
+              payerRuleSet: new web3.PublicKey(process.env.PAYER_RULE_SET),
+            },
             accounts: {
               nftPairBox: new web3.PublicKey(nft.nftPairBox),
               pair: new web3.PublicKey(pairPubkey),
