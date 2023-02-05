@@ -11,9 +11,8 @@ import {
   IX_TYPE,
 } from '../../components/TransactionsLoadingModal';
 import {
-  getArrayByNumber,
-  signAndSendAllTransactions,
-  signAndSendTransaction,
+  createAndSendAllTxns,
+  createAndSendTxn,
 } from '../../utils/transactions';
 import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenForNftPairTxn';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
@@ -55,11 +54,11 @@ export const useCreatePool: UseCreatePool = (props) => {
       const { firstTxnData, restTxnsData } = splittedTxnsData;
 
       //? Run First Txn
-      await signAndSendTransaction({
+      await createAndSendTxn({
         connection,
         wallet,
-        transaction: firstTxnData.transaction,
-        signers: firstTxnData.signers,
+        txInstructions: firstTxnData.transaction?.instructions,
+        additionalSigners: firstTxnData.signers,
         onBeforeApprove: () => {
           dispatch(
             txsLoadingModalActions.setState({
@@ -82,7 +81,7 @@ export const useCreatePool: UseCreatePool = (props) => {
 
       //? Run Rest Txns
       if (restTxnsData?.length) {
-        await signAndSendAllTransactions({
+        await createAndSendAllTxns({
           connection,
           wallet,
           txnsAndSigners: restTxnsData.map(({ transaction, signers }) => ({
