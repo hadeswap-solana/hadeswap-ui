@@ -4,9 +4,6 @@ import { hadeswap, web3 } from 'hadeswap-sdk';
 const { closeVirtualPair } =
   hadeswap.functions.marketFactory.pair.virtual.mutations;
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateClosePairTxn = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -26,7 +23,6 @@ export const createClosePairTxn: CreateClosePairTxn = async ({
   const { instructions, signers } = await closeVirtualPair({
     programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
     connection,
-    sendTxn: sendTxnPlaceHolder,
     accounts: {
       pair: new web3.PublicKey(pairPubkey),
       authorityAdapter: new web3.PublicKey(authorityAdapter),

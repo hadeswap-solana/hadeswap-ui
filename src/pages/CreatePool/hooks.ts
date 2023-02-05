@@ -12,7 +12,7 @@ import {
 } from '../../components/TransactionsLoadingModal';
 import {
   getArrayByNumber,
-  signAndSendAllTransactions,
+  createAndSendAllTxns,
   signAndSendTransaction,
 } from '../../utils/transactions';
 import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenForNftPairTxn';
@@ -82,7 +82,7 @@ export const useCreatePool: UseCreatePool = (props) => {
 
       //? Run Rest Txns
       if (restTxnsData?.length) {
-        await signAndSendAllTransactions({
+        await createAndSendAllTxns({
           connection,
           wallet,
           txnsAndSigners: restTxnsData.map(({ transaction, signers }) => ({

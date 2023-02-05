@@ -4,9 +4,6 @@ import { hadeswap, web3 } from 'hadeswap-sdk';
 const { depositSolToPair } =
   hadeswap.functions.marketFactory.pair.virtual.deposits;
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateDepositSolFromPairTxn = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -28,7 +25,6 @@ export const createDepositSolToPairTxn: CreateDepositSolFromPairTxn = async ({
   const { instructions, signers } = await depositSolToPair({
     programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
     connection,
-    sendTxn: sendTxnPlaceHolder,
     accounts: {
       pair: new web3.PublicKey(pairPubkey),
       authorityAdapter: new web3.PublicKey(authorityAdapter),

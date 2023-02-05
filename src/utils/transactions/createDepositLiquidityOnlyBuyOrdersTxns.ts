@@ -5,9 +5,6 @@ import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../../hadeswap';
 import { getArrayByNumber } from './helpers';
 import { depositLiquidityOnlyBuyOrdersToPair } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/deposits';
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateDepositLiquidityOnlyBuyOrdersTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -49,7 +46,6 @@ export const createDepositLiquidityOnlyBuyOrdersTxns: CreateDepositLiquidityOnly
               authorityAdapter: new web3.PublicKey(authorityAdapter),
               userPubkey: wallet.publicKey,
             },
-            sendTxn: sendTxnPlaceHolder,
           }),
         ),
       )

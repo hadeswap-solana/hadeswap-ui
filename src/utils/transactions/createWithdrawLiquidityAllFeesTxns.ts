@@ -6,9 +6,6 @@ import { BasePair } from '../../state/core/types';
 const { withdrawVirtualFees } =
   hadeswap.functions.marketFactory.pair.virtual.withdrawals;
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateWithdrawLiquidityAllFeesTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -30,7 +27,6 @@ export const createWithdrawLiquidityAllFeesTxns: CreateWithdrawLiquidityAllFeesT
           withdrawVirtualFees({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
-            sendTxn: sendTxnPlaceHolder,
             accounts: {
               pair: new web3.PublicKey(pool.pairPubkey),
               authorityAdapter: new web3.PublicKey(pool.authorityAdapterPubkey),

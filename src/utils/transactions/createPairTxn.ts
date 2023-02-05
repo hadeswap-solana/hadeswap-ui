@@ -8,9 +8,6 @@ import {
 const { initializePair, createClassicAuthorityAdapter, putPairOnMarket } =
   hadeswap.functions.marketFactory.pair.virtual.mutations;
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreatePairTxn = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -44,7 +41,6 @@ export const createPairTxn: CreatePairTxn = async ({
   } = await initializePair({
     programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
     connection,
-    sendTxn: sendTxnPlaceHolder,
     accounts: {
       hadoMarket: new web3.PublicKey(marketPubkey),
       userPubkey: wallet.publicKey,
@@ -69,7 +65,6 @@ export const createPairTxn: CreatePairTxn = async ({
       pair: pairPubkey,
       userPubkey: wallet.publicKey,
     },
-    sendTxn: sendTxnPlaceHolder,
   });
 
   const { instructions: activateIxns, signers: activateSigners } =
@@ -81,7 +76,6 @@ export const createPairTxn: CreatePairTxn = async ({
       },
       programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
       connection,
-      sendTxn: sendTxnPlaceHolder,
     });
 
   const transaction = new web3.Transaction();

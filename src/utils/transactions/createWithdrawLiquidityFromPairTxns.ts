@@ -6,9 +6,6 @@ import { chunk } from 'lodash';
 const { withdrawLiquidityFromBalancedPair } =
   hadeswap.functions.marketFactory.pair.virtual.withdrawals;
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateWithdrawLiquidityFromPairTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -39,7 +36,6 @@ export const createWithdrawLiquidityFromPairTxns: CreateWithdrawLiquidityFromPai
               userPubkey: wallet.publicKey,
               nftMint: new web3.PublicKey(nft.mint),
             },
-            sendTxn: sendTxnPlaceHolder,
           });
         }),
       )

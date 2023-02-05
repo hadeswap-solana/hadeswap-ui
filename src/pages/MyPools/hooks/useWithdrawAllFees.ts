@@ -6,7 +6,7 @@ import {
 } from '../../../components/TransactionsLoadingModal';
 import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
-import { signAndSendAllTransactions } from '../../../utils/transactions';
+import { createAndSendAllTxns } from '../../../utils/transactions';
 import { useConnection } from '../../../hooks';
 import { createWithdrawLiquidityAllFeesTxns } from '../../../utils/transactions/createWithdrawLiquidityAllFeesTxns';
 import { notify } from '../../../utils';
@@ -68,7 +68,7 @@ export const useWithdrawAllFees: UseWithdrawAllFees = ({ pairs }) => {
         }),
     };
 
-    await signAndSendAllTransactions({
+    await createAndSendAllTxns({
       ...txnsData,
       wallet,
       connection,

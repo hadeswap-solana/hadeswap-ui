@@ -5,9 +5,6 @@ import { chunk } from 'lodash';
 import { PUBKEY_PLACEHOLDER } from '..';
 import { depositLiquiditySingleSellOrder } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/deposits';
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateDepositLiquidityOnlySellOrdersTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -46,7 +43,6 @@ export const createDepositLiquidityOnlySellOrdersTxns: CreateDepositLiquidityOnl
               userPubkey: wallet.publicKey,
               nftMint: new web3.PublicKey(nft.mint),
             },
-            sendTxn: sendTxnPlaceHolder,
           }),
         ),
       )

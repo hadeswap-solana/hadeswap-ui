@@ -5,9 +5,6 @@ import { chunk } from 'lodash';
 import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../../hadeswap';
 import { getArrayByNumber } from './helpers';
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateWithdrawLiquidityFromBuyOrdersPair = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -50,7 +47,6 @@ export const createWithdrawLiquidityFromBuyOrdersPair: CreateWithdrawLiquidityFr
               authorityAdapter: new web3.PublicKey(authorityAdapter),
               userPubkey: wallet.publicKey,
             },
-            sendTxn: sendTxnPlaceHolder,
           }),
         ),
       )

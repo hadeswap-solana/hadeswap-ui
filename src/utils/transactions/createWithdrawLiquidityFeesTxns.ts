@@ -5,9 +5,6 @@ import { chunk } from 'lodash';
 const { withdrawLiquidityOrderVirtualFees, withdrawVirtualFees } =
   hadeswap.functions.marketFactory.pair.virtual.withdrawals;
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateWithdrawLiquidityFeesTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -39,7 +36,6 @@ export const createWithdrawLiquidityFeesTxns: CreateWithdrawLiquidityFeesTxns =
             withdrawLiquidityOrderVirtualFees({
               programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
               connection,
-              sendTxn: sendTxnPlaceHolder,
               accounts: {
                 pair: new web3.PublicKey(pairPubkey),
                 authorityAdapter: new web3.PublicKey(authorityAdapter),
@@ -56,7 +52,6 @@ export const createWithdrawLiquidityFeesTxns: CreateWithdrawLiquidityFeesTxns =
         await withdrawVirtualFees({
           programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
           connection,
-          sendTxn: sendTxnPlaceHolder,
           accounts: {
             pair: new web3.PublicKey(pairPubkey),
             authorityAdapter: new web3.PublicKey(authorityAdapter),

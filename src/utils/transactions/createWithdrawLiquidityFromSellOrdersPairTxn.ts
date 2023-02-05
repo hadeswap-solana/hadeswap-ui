@@ -4,9 +4,6 @@ import { Nft } from '../../state/core/types';
 import { chunk } from 'lodash';
 import { withdrawLiquiditySingleSellOrder } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/withdrawals';
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateWithdrawLiquidityFromSellOrdersPair = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -37,7 +34,6 @@ export const createWithdrawLiquidityFromSellOrdersPair: CreateWithdrawLiquidityF
               nftMint: new web3.PublicKey(nft.mint),
               nftPairBox: new web3.PublicKey(nft.nftPairBox),
             },
-            sendTxn: sendTxnPlaceHolder,
           });
         }),
       )

@@ -11,9 +11,6 @@ const { initializePair, createClassicAuthorityAdapter, putPairOnMarket } =
 const { depositSolToPair } =
   hadeswap.functions.marketFactory.pair.virtual.deposits;
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateTokenForNftPairTxn = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -47,7 +44,6 @@ export const createTokenForNftPairTxn: CreateTokenForNftPairTxn = async ({
   } = await initializePair({
     programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
     connection,
-    sendTxn: sendTxnPlaceHolder,
     accounts: {
       hadoMarket: new web3.PublicKey(marketPubkey),
       userPubkey: wallet.publicKey,
@@ -72,14 +68,12 @@ export const createTokenForNftPairTxn: CreateTokenForNftPairTxn = async ({
       pair: pairPubkey,
       userPubkey: wallet.publicKey,
     },
-    sendTxn: sendTxnPlaceHolder,
   });
 
   const { instructions: depositSolIxns, signers: depositSolSigners } =
     await depositSolToPair({
       programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
       connection,
-      sendTxn: sendTxnPlaceHolder,
       accounts: {
         authorityAdapter: authorityAdapterPubkey,
         pair: pairPubkey,
@@ -99,7 +93,6 @@ export const createTokenForNftPairTxn: CreateTokenForNftPairTxn = async ({
       },
       programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
       connection,
-      sendTxn: sendTxnPlaceHolder,
     });
 
   const transaction = new web3.Transaction();

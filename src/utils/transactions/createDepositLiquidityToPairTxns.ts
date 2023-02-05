@@ -7,9 +7,6 @@ import { PUBKEY_PLACEHOLDER } from '..';
 const { depositLiquidityToPair } =
   hadeswap.functions.marketFactory.pair.virtual.deposits;
 
-const sendTxnPlaceHolder = async (): Promise<null> =>
-  await Promise.resolve(null);
-
 type CreateDepositLiquidityToPairTxns = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -48,7 +45,6 @@ export const createDepositLiquidityToPairTxns: CreateDepositLiquidityToPairTxns 
               userPubkey: wallet.publicKey,
               nftMint: new web3.PublicKey(nft.mint),
             },
-            sendTxn: sendTxnPlaceHolder,
           }),
         ),
       )
