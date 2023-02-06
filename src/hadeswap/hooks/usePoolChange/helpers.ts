@@ -40,6 +40,15 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
   rawFee,
   rawDelta,
 }) => {
+  if (
+    !pool ||
+    !pool?.baseSpotPrice ||
+    !pool?.currentSpotPrice ||
+    !rawSpotPrice ||
+    !pool?.delta
+  ) {
+    return false;
+  }
   const isLiquidityProvisionPool = pool?.type === PairType.LiquidityProvision;
   const spotPriceChanged =
     Math.abs(
