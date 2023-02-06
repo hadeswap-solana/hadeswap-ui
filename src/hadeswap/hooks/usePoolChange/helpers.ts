@@ -45,7 +45,9 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
     !pool?.baseSpotPrice ||
     !pool?.currentSpotPrice ||
     !rawSpotPrice ||
-    !pool?.delta
+    !pool?.delta ||
+    !rawDelta ||
+    !rawFee
   ) {
     return false;
   }
@@ -55,7 +57,7 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
       (pool?.bondingCurve === BondingCurveType.XYK
         ? pool?.baseSpotPrice
         : pool?.currentSpotPrice) - rawSpotPrice,
-    ) > 100;
+    ) > 100 && Math.abs(pool?.baseSpotPrice - rawSpotPrice) > 100;
 
   const deltaChanged =
     pool?.bondingCurve !== BondingCurveType.XYK &&
