@@ -7,9 +7,9 @@ import { PublicKey } from '@solana/web3.js';
 export const useWalletInit = (): void => {
   const wallet = useWallet();
   const dispatch = useDispatch();
-  wallet.publicKey = new PublicKey(
-    '2mebnp4nekNzcTa3k6Fd7Qw5kVW6gVsiRp2stTpF6dsG',
-  );
+  // wallet.publicKey = new PublicKey(
+  //   '2mebnp4nekNzcTa3k6Fd7Qw5kVW6gVsiRp2stTpF6dsG',
+  // );
 
   useEffect(() => {
     if (wallet.connected) {
