@@ -104,7 +104,12 @@ export const EditPool: FC = () => {
     useWithdrawFees({ pool });
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
-
+  console.log({
+    pool,
+    rawSpotPrice,
+    changeSpotPrice,
+    rawDelta,
+  });
   const chartData = usePriceGraph({
     baseSpotPrice: rawSpotPrice,
     rawDelta,

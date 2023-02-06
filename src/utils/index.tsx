@@ -1,8 +1,12 @@
 import { notification } from 'antd';
 import { web3, BN } from 'hadeswap-sdk';
-import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
+import {
+  calculateNextSpotPrice,
+  deriveXykBaseSpotPriceFromCurrentSpotPrice,
+} from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 import {
   BondingCurveType,
+  OrderType,
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
@@ -311,11 +315,21 @@ export const getRawSpotPrice = ({
   mathCounter: number;
   curveType: BondingCurveType;
 }): number => {
+  const baseSpotPrice = Math.ceil(
+    calculateNextSpotPrice({
+      orderType: OrderType.Buy,
+      delta: rawDelta,
+      bondingCurveType: curveType,
+      spotPrice: spotPrice * 1e9,
+      counter: -mathCounter - 1,
+    }),
+  );
+
   return curveType === BondingCurveType.XYK
     ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
         currentSpotPrice: Math.ceil(spotPrice * 1e9),
         counter: mathCounter,
         delta: rawDelta,
       })
-    : Math.ceil(spotPrice * 1e9);
+    : baseSpotPrice;
 };

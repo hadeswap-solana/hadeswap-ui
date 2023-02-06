@@ -32,7 +32,7 @@ const calcStartingSellingPrice = ({
 }): number => {
   return helpers.calculateNextSpotPrice({
     orderType: OrderType.Buy,
-    delta: curveType === BondingCurveType.Linear ? delta / 1e9 : delta,
+    delta: delta,
     spotPrice: spotPrice,
     bondingCurveType: curveType,
     counter: mathCounter,

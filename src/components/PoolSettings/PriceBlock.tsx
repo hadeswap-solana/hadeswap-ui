@@ -20,6 +20,7 @@ import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
 import styles from './styles.module.scss';
 import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 import { FormValuePriceBlock } from './hooks/usePoolServicePrice';
+import { getRawSpotPrice } from '../../utils';
 
 interface PriceBlockProps {
   pool?: Pair;
@@ -54,14 +55,19 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
 
     const isDisableFields = false;
 
-    const parsedSpotPrice =
-      formValue.curveType === BondingCurveType.XYK
-        ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
-            currentSpotPrice: formValue.spotPrice,
-            counter: pool?.mathCounter || 0,
-            delta: rawDelta,
-          })
-        : formValue.spotPrice;
+    const parsedSpotPrice = getRawSpotPrice({
+      rawDelta,
+      spotPrice: formValue.spotPrice,
+      mathCounter: pool?.mathCounter,
+      curveType: formValue.curveType,
+    });
+    // formValue.curveType === BondingCurveType.XYK
+    //   ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
+    //       currentSpotPrice: formValue.spotPrice,
+    //       counter: pool?.mathCounter || 0,
+    //       delta: rawDelta,
+    //     })
+    //   : formValue.spotPrice;
 
     const buyingPrice = startingBuyingPrice({
       pairType,
@@ -69,18 +75,19 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       spotPrice: formValue.spotPrice,
     });
 
-    const sellingPrice = startingSellingPrice({
-      pairType,
-      curveType: formValue.curveType,
-      fee: formValue.fee,
-      spotPrice: parsedSpotPrice,
-      delta: rawDelta,
-      mathCounter: pool?.mathCounter,
-    });
+    const sellingPrice =
+      startingSellingPrice({
+        pairType,
+        curveType: formValue.curveType,
+        fee: formValue.fee,
+        spotPrice: parsedSpotPrice,
+        delta: rawDelta,
+        mathCounter: pool?.mathCounter,
+      }) / 1e9;
 
     const priceIntoPool = priceLockedIntoPool({
       pairType,
-      spotPrice: parsedSpotPrice,
+      spotPrice: parsedSpotPrice / 1e9,
       delta: rawDelta,
       buyOrdersAmount,
       nftsCount,
