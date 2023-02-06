@@ -46,7 +46,8 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
     !pool?.currentSpotPrice ||
     !rawSpotPrice ||
     !pool?.delta ||
-    !rawDelta
+    !rawDelta ||
+    !rawFee
   ) {
     return false;
   }
