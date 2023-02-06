@@ -40,13 +40,25 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
   rawFee,
   rawDelta,
 }) => {
+  if (
+    !pool ||
+    pool?.baseSpotPrice === undefined ||
+    pool?.currentSpotPrice === undefined ||
+    rawSpotPrice === undefined ||
+    rawSpotPrice === 0 ||
+    pool?.delta === undefined ||
+    rawDelta === undefined ||
+    rawFee === undefined
+  ) {
+    return false;
+  }
   const isLiquidityProvisionPool = pool?.type === PairType.LiquidityProvision;
   const spotPriceChanged =
     Math.abs(
       (pool?.bondingCurve === BondingCurveType.XYK
         ? pool?.baseSpotPrice
         : pool?.currentSpotPrice) - rawSpotPrice,
-    ) > 100;
+    ) > 100 && Math.abs(pool?.baseSpotPrice - rawSpotPrice) > 100;
 
   const deltaChanged =
     pool?.bondingCurve !== BondingCurveType.XYK &&
