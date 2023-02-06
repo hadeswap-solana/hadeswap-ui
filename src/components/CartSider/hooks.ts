@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { chunk, keyBy } from 'lodash';
@@ -14,15 +15,18 @@ import {
   selectCartPairs,
   selectCartPendingOrders,
   selectIsCartEmpty,
-  selectExchangeToken,
 } from '../../state/core/selectors';
+import { selectTokenExchange } from '../../state/tokenExchange/selectors';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { signAndSendTransactionsInSeries } from '../../utils/transactions';
 import { CartOrder } from '../../state/core/types';
-import { Tokens } from '../../types';
+import { TokenItem } from '../../constants/tokens';
+import { useTokenInfo, useTokenRate } from '../../requests/exchangeToken';
+import { calcAmount } from './utils';
+import JSBI from 'jsbi';
 
 export interface CrossMintConfig {
   type: string;
@@ -43,7 +47,6 @@ type UseCartSider = () => {
   totalSell: number;
   isOneBuyNft: boolean;
   crossmintConfig: CrossMintConfig;
-  exchangeToken: Tokens;
 };
 
 type UseSwap = (params: {
@@ -55,12 +58,20 @@ type UseSwap = (params: {
   swap: () => Promise<void>;
 };
 
+type UseExchangeData = (params: { rawSolAmount: number }) => {
+  amount: JSBI;
+  tokenFormattedAmount: string;
+  exchangeLoading: boolean;
+  exchangeFetching: boolean;
+  tokenExchange: TokenItem;
+  rate: number;
+};
+
 export const useCartSider: UseCartSider = () => {
   const cartItems = useSelector(selectCartItems);
   const cartOpened = useSelector(selectCartSiderVisible);
   const invalidItems = useSelector(selectAllInvalidCartOrders);
   const isCartEmpty = useSelector(selectIsCartEmpty);
-  const exchangeToken = useSelector(selectExchangeToken);
 
   const itemsAmount = cartItems.buy.length + cartItems.sell.length;
   const totalBuy = cartItems.buy.reduce((acc, item) => acc + item.price, 0);
@@ -83,7 +94,6 @@ export const useCartSider: UseCartSider = () => {
     totalSell,
     isOneBuyNft,
     crossmintConfig,
-    exchangeToken,
   };
 };
 
@@ -175,5 +185,34 @@ export const useSwap: UseSwap = ({
 
   return {
     swap,
+  };
+};
+
+export const useExchangeData: UseExchangeData = ({ rawSolAmount }) => {
+  const tokenExchange = useSelector(selectTokenExchange);
+
+  const { tokensData, tokensLoading, tokensFetching } = useTokenInfo({
+    tokenValue: tokenExchange?.value,
+  });
+  const { tokenRate, rateLoading, rateFetching } = useTokenRate({
+    tokenValue: tokenExchange?.value,
+  });
+
+  const inputTokenInfo = useMemo(() => {
+    return tokensData?.find((item) => item.address === tokenExchange?.value);
+  }, [tokensData, tokenExchange?.value]);
+
+  const { amount, tokenFormattedAmount, rate } = useMemo(
+    () => calcAmount(rawSolAmount, inputTokenInfo?.decimals, tokenRate?.price),
+    [rawSolAmount, inputTokenInfo, tokenRate],
+  );
+
+  return {
+    amount,
+    tokenFormattedAmount,
+    tokenExchange,
+    rate,
+    exchangeLoading: tokensLoading || rateLoading,
+    exchangeFetching: tokensFetching || rateFetching,
   };
 };

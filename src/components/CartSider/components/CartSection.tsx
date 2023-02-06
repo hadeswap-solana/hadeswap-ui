@@ -5,6 +5,8 @@ import Card from './Card';
 import { formatBNToString } from '../../../utils';
 import BN from 'bn.js';
 import { CartOrder } from '../../../state/core/types';
+import { TokenItem } from '../../../constants/tokens';
+import { TokenPrice } from '../../TokenPrice';
 
 import styles from './styles.module.scss';
 
@@ -14,6 +16,10 @@ interface CartSectionProps {
   onDeselectBulkHandler?: (arg: CartOrder[]) => void;
   createOnDeselectHandler?: (arg: CartOrder) => () => void;
   totalPrice: number;
+  tokenExchange?: TokenItem;
+  tokenRate?: number;
+  tokenFormattedAmount?: string;
+  tokenLoading?: boolean;
 }
 
 const CartSection: FC<CartSectionProps> = ({
@@ -22,6 +28,10 @@ const CartSection: FC<CartSectionProps> = ({
   onDeselectBulkHandler,
   createOnDeselectHandler,
   totalPrice,
+  tokenExchange,
+  tokenRate,
+  tokenFormattedAmount,
+  tokenLoading,
 }) => (
   <>
     {!!cartItems.length && (
@@ -36,7 +46,15 @@ const CartSection: FC<CartSectionProps> = ({
               <TrashIcon />
             </button>
           </div>
-          <SolPrice price={totalPrice} raw />
+          {tokenExchange ? (
+            <TokenPrice
+              token={tokenExchange}
+              tokenAmount={tokenFormattedAmount}
+              tokenLoading={tokenLoading}
+            />
+          ) : (
+            <SolPrice price={totalPrice} raw />
+          )}
         </div>
         <div className={styles.cartItems}>
           {cartItems.map((item) => (
@@ -46,6 +64,9 @@ const CartSection: FC<CartSectionProps> = ({
               imageUrl={item.imageUrl}
               price={formatBNToString(new BN(item.price))}
               onDeselect={createOnDeselectHandler(item)}
+              token={tokenExchange}
+              tokenRate={tokenRate}
+              tokenLoading={tokenLoading}
             />
           ))}
         </div>

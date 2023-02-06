@@ -8,7 +8,7 @@ import {
   TokenInfo,
   TokenRateData,
 } from './types';
-import { Tokens } from '../types';
+import { TokensValues } from '../types';
 
 export const fetchAllMarkets = async (): Promise<MarketInfo[]> => {
   const response = await fetch(`https://${process.env.BACKEND_DOMAIN}/markets`);
@@ -135,12 +135,12 @@ export const fetchTokensInfo = async (): Promise<TokenInfo[]> => {
 };
 
 export const fetchTokensRate = async ({
-  inputToken,
+  tokenValue,
 }: {
-  inputToken: Tokens;
+  tokenValue: TokensValues;
 }): Promise<TokenRateData> => {
   const response = await fetch(
-    `https://quote-api.jup.ag/v4/price?ids=SOL&vsToken=${inputToken}`,
+    `https://quote-api.jup.ag/v4/price?ids=SOL&vsToken=${tokenValue}`,
   );
   if (!response.ok) {
     throw new Error('Network response was not ok');

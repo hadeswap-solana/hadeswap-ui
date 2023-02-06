@@ -4,7 +4,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 
 const antIcon = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
-export const Spinner: FC = () => {
+export const Spinner: FC<{ className?: string }> = ({ className }) => {
   return (
     <div
       style={{
@@ -15,7 +15,7 @@ export const Spinner: FC = () => {
         height: '100%',
       }}
     >
-      <Spin size="large" indicator={antIcon} />
+      <Spin className={className} size="large" indicator={antIcon} />
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import { identity } from 'ramda';
 import { createSelector } from 'reselect';
 import { CartPair, CartOrder, OrderType } from '../types';
-import { Tokens } from '../../../types';
 import { Dictionary } from 'lodash';
 import { CartState } from '../reducers/cartReducer';
 
@@ -72,9 +71,4 @@ export const selectCartPendingOrdersAmount = createSelector(
 export const selectIsCartEmpty = createSelector(
   selectCartPendingOrdersAmount,
   (pendingOrdersAmount) => pendingOrdersAmount === 0,
-);
-
-export const selectExchangeToken = createSelector(
-  (store: any) => (store?.core?.cart.exchangeToken as Tokens) || null,
-  identity<Tokens>,
 );

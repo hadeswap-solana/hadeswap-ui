@@ -2,7 +2,6 @@ import { createReducer } from 'typesafe-actions';
 import { Dictionary, clone } from 'lodash';
 import { coreActions, coreTypes } from '../actions';
 import { CartOrder, CartPair, OrderType } from '../types';
-import { Tokens } from '../../../types';
 import {
   calcNextSpotPrice,
   calcPriceWithFee,
@@ -22,7 +21,6 @@ export type CartState = {
   pendingOrders: Dictionary<CartOrder[]>;
   invalidOrders: Dictionary<CartOrder[]>;
   finishedOrdersMints: string[];
-  exchangeToken: Tokens;
 };
 
 const initialCartState: CartState = {
@@ -30,7 +28,6 @@ const initialCartState: CartState = {
   pendingOrders: {},
   invalidOrders: {},
   finishedOrdersMints: [],
-  exchangeToken: null,
 };
 
 const removeInvalidMintsFromCartPair = (
@@ -262,15 +259,6 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
           },
         ],
       },
-    };
-  },
-  [coreTypes.EXCHANGE_TOKEN]: (
-    state,
-    { payload }: ReturnType<typeof coreActions.exchangeToken>,
-  ) => {
-    return {
-      ...state,
-      exchangeToken: payload.token,
     };
   },
 });

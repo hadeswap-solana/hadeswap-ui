@@ -1,11 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchTokensRate, fetchTokensInfo } from './requests';
 import { TokenInfo, TokenRateData } from './types';
-import { Tokens } from '../types';
+import { TokensValues } from '../types';
 
 export const SECOND_TO_REFRESH = 30 * 1000;
 
-export const useTokenInfo = (): {
+export const useTokenInfo = ({
+  tokenValue,
+}: {
+  tokenValue: TokensValues;
+}): {
   tokensData: TokenInfo[];
   tokensLoading: boolean;
   tokensFetching: boolean;
@@ -15,6 +19,7 @@ export const useTokenInfo = (): {
     fetchTokensInfo,
     {
       staleTime: SECOND_TO_REFRESH,
+      enabled: !!tokenValue,
     },
   );
 
@@ -26,19 +31,20 @@ export const useTokenInfo = (): {
 };
 
 export const useTokenRate = ({
-  inputToken,
+  tokenValue,
 }: {
-  inputToken: Tokens;
+  tokenValue: TokensValues;
 }): {
   tokenRate: TokenRateData;
   rateFetching: boolean;
   rateLoading: boolean;
 } => {
   const { data, isFetching, isLoading } = useQuery(
-    [inputToken],
-    () => fetchTokensRate({ inputToken }),
+    [tokenValue],
+    () => fetchTokensRate({ tokenValue }),
     {
       staleTime: SECOND_TO_REFRESH,
+      enabled: !!tokenValue,
     },
   );
 

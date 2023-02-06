@@ -1,0 +1,21 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.spinner {
+  span {
+    font-size: 16px !important;
+  }
+}
+
+.image {
+  width: 16px;
+}
+
+.text {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 32px;
+}

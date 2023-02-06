@@ -11,6 +11,7 @@ import { CartSiderProps } from '../index';
 
 import styles from './styles.module.scss';
 import SwapExchangeButton from '../components/SwapExchangeButton';
+import { useExchangeData } from '../hooks';
 
 const HEADER_HEIGHT = 56;
 
@@ -27,13 +28,20 @@ const CartSiderMobile: FC<CartSiderProps> = ({
   totalSell,
   isOneBuyNft,
   crossmintConfig,
-  exchangeToken,
 }) => {
   const dispatch = useDispatch();
 
   const [showModal, setShowModal] = useState<boolean>(null);
 
   const isHeaderVisible = window.scrollY < HEADER_HEIGHT;
+
+  const {
+    amount,
+    tokenFormattedAmount,
+    tokenExchange,
+    exchangeLoading,
+    exchangeFetching,
+  } = useExchangeData({ rawSolAmount: totalBuy });
 
   const onShowModalClick = () => {
     setShowModal((value: boolean) => !value);
@@ -90,14 +98,18 @@ const CartSiderMobile: FC<CartSiderProps> = ({
               />
             </div>
             <div className={styles.submitWrapper}>
-              {exchangeToken && (
+              {tokenExchange && (
                 <SwapExchangeButton
                   rawSolAmount={totalBuy}
-                  inputToken={exchangeToken}
+                  inputToken={tokenExchange}
                   swap={swap}
+                  amount={amount}
+                  tokenFormattedAmount={tokenFormattedAmount}
+                  exchangeLoading={exchangeLoading}
+                  exchangeFetching={exchangeFetching}
                 />
               )}
-              {!exchangeToken && (
+              {!tokenExchange && (
                 <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
                   <span>swap</span>
                 </Button>

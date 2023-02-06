@@ -6,20 +6,24 @@ import { Search } from '../../../../components/Search';
 import RoundIconButton from '../../../../components/Buttons/RoundIconButton';
 import ChevronIcon from '../../../../icons/ChevronIcon';
 import { SolanaLogo } from '../../../../icons/SolanaLogo';
-import { Tokens } from '../../../../types';
-import { coreActions } from '../../../../state/core/actions';
-import { tokensList, TokensList } from './constants';
+import { TokensValues } from '../../../../types';
+import { tokenExchangeActions } from '../../../../state/tokenExchange/actions';
+import { tokensList, TokenItem } from '../../../../constants/tokens';
 
 import styles from './styles.module.scss';
 
 export const TokensMenu: FC = () => {
   const dispatch = useDispatch();
 
-  const [list, setList] = useState<TokensList[]>(tokensList);
+  const [list, setList] = useState<TokenItem[]>(tokensList);
   const [listVisible, setListVisible] = useState<boolean>(false);
 
-  const changeTokenHandler = (value: Tokens) => {
-    dispatch(coreActions.exchangeToken(value));
+  const onSetToken = (value: TokensValues) => {
+    const token =
+      value === TokensValues.SOL
+        ? null
+        : tokensList.find((token) => token.value === value);
+    dispatch(tokenExchangeActions.setToken(token));
   };
 
   const onSearch = (e) => {
@@ -33,7 +37,7 @@ export const TokensMenu: FC = () => {
   };
 
   const clickListener = (e) => {
-    if (!e.target.closest('#tokens-menu')) {
+    if (e.target.closest('#item') || !e.target.closest('#tokens-menu')) {
       setListVisible(false);
     }
   };
@@ -84,10 +88,16 @@ export const TokensMenu: FC = () => {
               {list.map((token) => (
                 <li
                   key={token.label}
+                  id="item"
                   className={styles.listItem}
-                  onClick={() => changeTokenHandler(token.value)}
+                  onClick={() => onSetToken(token.value)}
                 >
-                  {token.label}
+                  <img
+                    className={styles.listImage}
+                    src={token.image}
+                    alt={token.label}
+                  />
+                  <span>{token.label}</span>
                 </li>
               ))}
             </ul>

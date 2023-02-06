@@ -1,4 +1,4 @@
-import { Tokens } from '../types';
+import { TokensValues } from '../types';
 
 export enum LoadingStatus {
   loading = 'loading',
@@ -43,8 +43,8 @@ export interface TokenInfo {
 
 export interface TokenRateData {
   id: string;
-  mintSymbol: Tokens.SOL;
+  mintSymbol: TokensValues.SOL;
   price: number;
-  vsToken: Tokens;
+  vsToken: TokensValues;
   vsTokenSymbol: string;
 }

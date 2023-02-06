@@ -12,7 +12,6 @@ import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { commonActions } from '../../state/common/actions';
-import { Tokens } from '../../types';
 
 export interface CartSiderProps {
   createOnDeselectHandler: (arg: CartOrder) => () => void;
@@ -32,7 +31,6 @@ export interface CartSiderProps {
   isExchangeMode?: boolean;
   isOneBuyNft: boolean;
   crossmintConfig: CrossMintConfig;
-  exchangeToken: Tokens;
 }
 
 const CartSider: FC = () => {
@@ -50,7 +48,6 @@ const CartSider: FC = () => {
     totalSell,
     isOneBuyNft,
     crossmintConfig,
-    exchangeToken,
   } = useCartSider();
 
   const isSwapButtonDisabled = !itemsAmount;
@@ -84,7 +81,6 @@ const CartSider: FC = () => {
       totalSell={totalSell}
       isOneBuyNft={isOneBuyNft}
       crossmintConfig={crossmintConfig}
-      exchangeToken={exchangeToken}
     />
   ) : (
     <CartSiderDesktop
@@ -102,7 +98,6 @@ const CartSider: FC = () => {
       isExchangeMode={exchangeModalVisible}
       isOneBuyNft={isOneBuyNft}
       crossmintConfig={crossmintConfig}
-      exchangeToken={exchangeToken}
     />
   );
 };

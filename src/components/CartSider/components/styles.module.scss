@@ -30,8 +30,10 @@
 }
 
 .cardPrice {
-  font-size: 14px;
-  line-height: 22px;
+  span {
+    font-size: 14px;
+    line-height: 22px;
+  }
 
   svg {
     width: 16px;
@@ -59,6 +61,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-height: 32px;
   margin-bottom: 16px;
 
   h4 {
@@ -140,5 +143,43 @@ button.xmintBtn {
 
   &:hover {
     background: var(--button-hover-outline);
+  }
+}
+
+.exchangeButtonSpinner {
+  span {
+    font-size: 18px !important;
+  }
+}
+
+.tokenExchangeLoadingModal {
+  .title {
+    margin: 16px 0 24px;
+    text-align: center;
+    font-size: 21px;
+  }
+
+  .card {
+    height: auto;
+    padding: 12px;
+    align-items: center;
+  }
+
+  .cardImage {
+    height: 48px;
+  }
+
+  .cardTextWrapper {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 16px;
+    font-size: 18px;
+  }
+
+  .solanaLogo {
+    width: 48px;
+    height: 48px;
   }
 }

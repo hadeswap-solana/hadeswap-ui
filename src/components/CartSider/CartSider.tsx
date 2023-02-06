@@ -6,6 +6,7 @@ import CartSectionInvalid from './components/CartSectionInvalid';
 import Button from '../Buttons/Button';
 import { CrossmintButton } from './components/CrossmintButton';
 import SwapExchangeButton from './components/SwapExchangeButton';
+import { useExchangeData } from './hooks';
 import { CartSiderProps } from './index';
 
 import styles from './styles.module.scss';
@@ -23,9 +24,18 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
   isExchangeMode,
   isOneBuyNft,
   crossmintConfig,
-  exchangeToken,
 }) => {
   const dispatch = useDispatch();
+
+  const {
+    amount,
+    tokenFormattedAmount,
+    tokenExchange,
+    rate,
+    exchangeLoading,
+    exchangeFetching,
+  } = useExchangeData({ rawSolAmount: totalBuy });
+
   const titleBuy = `buy ${cartItems.buy.length} ${
     cartItems.buy.length > 1 ? 'NFTs' : 'NFT'
   }`;
@@ -44,6 +54,10 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
           onDeselectBulkHandler={onDeselectBulkHandler}
           createOnDeselectHandler={createOnDeselectHandler}
           totalPrice={totalBuy}
+          tokenExchange={tokenExchange}
+          tokenRate={rate}
+          tokenFormattedAmount={tokenFormattedAmount}
+          tokenLoading={exchangeLoading || exchangeFetching}
         />
         <CartSection
           title={titleSell}
@@ -55,14 +69,18 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
         <CartSectionInvalid invalidItems={invalidItems} dispatch={dispatch} />
       </div>
       <div className={styles.submitWrapper}>
-        {exchangeToken && (
+        {!!tokenExchange && (
           <SwapExchangeButton
             rawSolAmount={totalBuy}
-            inputToken={exchangeToken}
+            inputToken={tokenExchange}
+            tokenFormattedAmount={tokenFormattedAmount}
             swap={swap}
+            amount={amount}
+            exchangeLoading={exchangeLoading}
+            exchangeFetching={exchangeFetching}
           />
         )}
-        {!exchangeToken && (
+        {!tokenExchange && (
           <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
             <span>swap</span>
           </Button>
