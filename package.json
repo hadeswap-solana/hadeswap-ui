@@ -52,7 +52,7 @@
     "bundle": "webpack build --config webpack.prod.js --env SOLANA_NETWORK=mainnet",
     "bundle-devnet": "webpack build --config webpack.prod.js --env SOLANA_NETWORK=devnet",
     "type-scss": "typed-scss-modules src --exportType default --nameFormat none",
-    "build": "npm run type-scss && npm run bundle",
+    "build": "npm run type-scss && npm run bundle-devnet",
     "build-devnet": "npm run type-scss && npm run bundle-devnet",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier-eslint --write $PWD/'**/*.{ts,tsx}'",
