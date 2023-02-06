@@ -26,12 +26,12 @@ export const tokensList: TokenItem[] = [
       'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So/logo.png',
   },
   {
-    label: 'Hades',
+    label: 'HADES',
     value: TokensValues.Hades,
     image: 'https://arweave.net/dvKu5BgpSo6j-iGzQOyVXYZ8OU7iyfhHNpkkJ_8qkkQ',
   },
   {
-    label: 'Bonk',
+    label: 'BONK',
     value: TokensValues.Bonk,
     image: 'https://arweave.net/hQiPZOsRZXGXBJd_82PhVdlM_hACsT_q6wqwf5cSY7I',
   },

@@ -1,19 +1,27 @@
 import { FC, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Cart } from './Cart';
 import { Search } from '../../../../components/Search';
 import RoundIconButton from '../../../../components/Buttons/RoundIconButton';
 import ChevronIcon from '../../../../icons/ChevronIcon';
-import { SolanaLogo } from '../../../../icons/SolanaLogo';
 import { TokensValues } from '../../../../types';
 import { tokenExchangeActions } from '../../../../state/tokenExchange/actions';
 import { tokensList, TokenItem } from '../../../../constants/tokens';
+import { selectTokenExchange } from '../../../../state/tokenExchange/selectors';
 
 import styles from './styles.module.scss';
 
 export const TokensMenu: FC = () => {
   const dispatch = useDispatch();
+
+  const selectedToken = useSelector(selectTokenExchange);
+  const displayTokenValue = !selectedToken
+    ? TokensValues.SOL
+    : selectedToken.value;
+  const displayToken = tokensList.find(
+    (token) => token.value === displayTokenValue,
+  );
 
   const [list, setList] = useState<TokenItem[]>(tokensList);
   const [listVisible, setListVisible] = useState<boolean>(false);
@@ -53,11 +61,17 @@ export const TokensMenu: FC = () => {
     <Cart className={styles.tokensSelectorWrapper}>
       <div className={styles.dPdMenuWrapper}>
         <div className={styles.tokensSelectorInner}>
-          <SolanaLogo className={styles.solanaIcon} />
+          <div className={styles.displayTokenLogoWrapper}>
+            <img
+              className={styles.displayTokenLogoImage}
+              src={displayToken.image}
+              alt={displayToken.label}
+            />
+          </div>
           <div className={styles.textWrapper}>
-            <p className={styles.selectorTitle}>pay in SOL</p>
+            <p className={styles.selectorTitle}>pay in {displayToken.label}</p>
             <p className={styles.selectorSubtitle}>
-              and in {tokensList.length} other tokens
+              and in {tokensList.length - 1} other tokens
             </p>
           </div>
           <RoundIconButton
