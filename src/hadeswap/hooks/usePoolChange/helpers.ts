@@ -42,12 +42,13 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
 }) => {
   if (
     !pool ||
-    !pool?.baseSpotPrice ||
-    !pool?.currentSpotPrice ||
-    !rawSpotPrice ||
-    !pool?.delta ||
-    !rawDelta ||
-    !rawFee
+    pool?.baseSpotPrice === undefined ||
+    pool?.currentSpotPrice === undefined ||
+    rawSpotPrice === undefined ||
+    rawSpotPrice === 0 ||
+    pool?.delta === undefined ||
+    rawDelta === undefined ||
+    rawFee === undefined
   ) {
     return false;
   }
