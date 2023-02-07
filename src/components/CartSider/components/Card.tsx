@@ -12,7 +12,7 @@ import styles from './styles.module.scss';
 interface CardProps {
   imageUrl: string;
   name: string;
-  price: string;
+  price: number;
   onDeselect?: () => void;
   rarity?: NftRarity;
   token?: TokenItem;
@@ -30,7 +30,7 @@ const Card: FC<CardProps> = ({
   tokenRate,
   tokenLoading,
 }) => {
-  const solAmount = (parseFloat(price) / 1e9).toFixed(3);
+  const solAmount = (price / 1e9).toFixed(3);
   const tokenAmount = calcTokenAmount(solAmount, tokenRate);
 
   return (
