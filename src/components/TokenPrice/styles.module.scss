@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  overflow: hidden;
 }
 
 .spinner {
@@ -18,4 +19,7 @@
   font-weight: 400;
   font-size: 20px;
   line-height: 32px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

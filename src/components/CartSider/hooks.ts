@@ -25,7 +25,7 @@ import { signAndSendTransactionsInSeries } from '../../utils/transactions';
 import { CartOrder } from '../../state/core/types';
 import { TokenItem } from '../../constants/tokens';
 import { useTokenInfo, useTokenRate } from '../../requests/exchangeToken';
-import { calcAmount } from './utils';
+import { calcAmount } from '../Jupiter/utils';
 import JSBI from 'jsbi';
 
 export interface CrossMintConfig {

@@ -14,6 +14,7 @@ import { Dictionary } from 'lodash';
 import { NotifyErrorIcon } from '../icons/NotifyErrorIcon';
 import { NotifyInfoIcon } from '../icons/NotifyInfoIcon';
 import { NotifySuccessIcon } from '../icons/NotifySuccessIcon';
+import { Notify, NotifyType } from './solanaUtils';
 
 export enum PoolType {
   tokenForNft = 'buy',
@@ -269,6 +270,38 @@ export const formatBNToString = (
 
 export const getFormattedPrice = (price: number): string => {
   return price > 0 ? formatBNToString(new BN(price)) : '';
+};
+
+export const formatNumericDigit = (number: number): string => {
+  const value = number.toFixed(2);
+  const integer = Math.trunc(number);
+  const integerStr = String(integer);
+  const tale = (Number(value) - integer).toFixed(2).substring(1) || '';
+
+  if (integerStr.length > 3) {
+    const numberArr = integerStr.split('');
+    let step = integerStr.length % 3;
+
+    const formattedArr = numberArr.map((item, index) => {
+      const value = index === step ? ` ${item}` : `${item}`;
+      if (index === step) {
+        step += 3;
+      }
+      return value;
+    });
+
+    return formattedArr.join('') + tale;
+  }
+  return value;
+};
+
+export const calcTokenAmount = (
+  solAmount: string,
+  tokenRate: number,
+): string => {
+  const amount = Number(solAmount) * tokenRate;
+  const slippageAmount = amount + amount / 200; // +0.5%
+  return (slippageAmount * tokenRate).toFixed(2);
 };
 
 export const PUBKEY_PLACEHOLDER = '11111111111111111111111111111111';

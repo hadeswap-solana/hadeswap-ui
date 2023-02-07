@@ -39,6 +39,7 @@ const CartSiderMobile: FC<CartSiderProps> = ({
     amount,
     tokenFormattedAmount,
     tokenExchange,
+    rate,
     exchangeLoading,
     exchangeFetching,
   } = useExchangeData({ rawSolAmount: totalBuy });
@@ -84,6 +85,10 @@ const CartSiderMobile: FC<CartSiderProps> = ({
                 onDeselectBulkHandler={onDeselectBulkHandler}
                 createOnDeselectHandler={createOnDeselectHandler}
                 totalPrice={totalBuy}
+                tokenExchange={tokenExchange}
+                tokenRate={rate}
+                tokenFormattedAmount={tokenFormattedAmount}
+                tokenLoading={exchangeLoading || exchangeFetching}
               />
               <CartSection
                 title={`sell ${cartItems.sell.length} nfts`}

@@ -6,6 +6,7 @@ import DeleteButton from '../../Buttons/DeleteButton';
 import { Rarity } from '../../NFTCard/NFTCard';
 import { NftRarity } from '../../../state/core/types';
 import { TokenItem } from '../../../constants/tokens';
+import { calcTokenAmount } from '../../../utils';
 
 import styles from './styles.module.scss';
 
@@ -30,6 +31,9 @@ const Card: FC<CardProps> = ({
   tokenRate,
   tokenLoading,
 }) => {
+  const solAmount = parseFloat(price).toFixed(2);
+  const tokenAmount = calcTokenAmount(solAmount, tokenRate);
+
   return (
     <div className={styles.card}>
       <img className={styles.cardImage} src={imageUrl} alt={name} />
@@ -41,7 +45,7 @@ const Card: FC<CardProps> = ({
         {token ? (
           <TokenPrice
             token={token}
-            tokenAmount={(parseFloat(price) * tokenRate).toFixed(3)}
+            tokenAmount={tokenAmount}
             tokenLoading={tokenLoading}
             className={styles.cardPrice}
           />

@@ -2,6 +2,7 @@ import { FC } from 'react';
 import cn from 'classnames';
 import { TokenItem } from '../../constants/tokens';
 import { Spinner } from '../Spinner/Spinner';
+import { formatNumericDigit } from '../../utils';
 import styles from './styles.module.scss';
 
 interface TokenPriceProps {
@@ -17,6 +18,8 @@ export const TokenPrice: FC<TokenPriceProps> = ({
   tokenLoading,
   className,
 }) => {
+  const value = formatNumericDigit(Number(tokenAmount));
+
   return (
     <div className={cn(styles.wrapper, className)}>
       {tokenLoading ? (
@@ -24,7 +27,7 @@ export const TokenPrice: FC<TokenPriceProps> = ({
       ) : (
         <>
           <img className={styles.image} src={token.image} alt={token.label} />
-          <span className={styles.text}>{tokenAmount}</span>
+          <span className={styles.text}>{value}</span>
         </>
       )}
     </div>
