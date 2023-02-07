@@ -37,7 +37,7 @@ const CartSection: FC<CartSectionProps> = ({
     {!!cartItems.length && (
       <div className={styles.cartSection}>
         <div className={styles.cartHeader}>
-          <div className={styles.cartTitle}>
+          <div className={styles.cartHeaderTitle}>
             <h4>{title}</h4>
             <button
               className={styles.trashAllButton}
@@ -46,17 +46,20 @@ const CartSection: FC<CartSectionProps> = ({
               <TrashIcon />
             </button>
           </div>
-          <div className={styles.cartHeaderPrice}>
-            {tokenExchange ? (
-              <TokenPrice
-                token={tokenExchange}
-                tokenAmount={tokenFormattedAmount}
-                tokenLoading={tokenLoading}
-              />
-            ) : (
-              <SolPrice price={totalPrice} raw />
-            )}
-          </div>
+          {tokenExchange ? (
+            <TokenPrice
+              token={tokenExchange}
+              tokenAmount={tokenFormattedAmount}
+              tokenLoading={tokenLoading}
+              className={styles.cartHeaderPrice}
+            />
+          ) : (
+            <SolPrice
+              className={styles.cartHeaderPrice}
+              price={totalPrice}
+              raw
+            />
+          )}
         </div>
         <div className={styles.cartItems}>
           {cartItems.map((item) => (

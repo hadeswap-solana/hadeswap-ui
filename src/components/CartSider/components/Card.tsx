@@ -1,5 +1,4 @@
 import { FC, memo } from 'react';
-import { Typography } from 'antd';
 import { SolPrice } from '../../SolPrice/SolPrice';
 import { TokenPrice } from '../../TokenPrice';
 import DeleteButton from '../../Buttons/DeleteButton';
@@ -39,9 +38,7 @@ const Card: FC<CardProps> = ({
       <img className={styles.cardImage} src={imageUrl} alt={name} />
       {!!rarity && <Rarity className={styles.rarityWrapper} rarity={rarity} />}
       <div className={styles.cardContent}>
-        <Typography.Title level={5} className={styles.cardTitle}>
-          {name}
-        </Typography.Title>
+        <h5 className={styles.cardTitle}>{name}</h5>
         {token ? (
           <TokenPrice
             token={token}
