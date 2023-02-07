@@ -299,8 +299,8 @@ export const calcTokenAmount = (
   solAmount: string,
   tokenRate: number,
 ): string => {
-  const amount = (Number(solAmount) + 0.005) * tokenRate;
-  return amount.toFixed(2);
+  const amount = Number(solAmount) * tokenRate;
+  return (amount + amount / 100).toFixed(2);
 };
 
 export const PUBKEY_PLACEHOLDER = '11111111111111111111111111111111';
