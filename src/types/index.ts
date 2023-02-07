@@ -16,4 +16,5 @@ export enum TokensValues {
   Hades = 'BWXrrYFhT7bMHmNBFoQFWdsSgA3yXoAnMhDK6Fn1eSEn',
   Bonk = 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
   SAMO = '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
+  DUST = 'DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ',
 }

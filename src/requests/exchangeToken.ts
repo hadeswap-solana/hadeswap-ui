@@ -20,6 +20,7 @@ export const useTokenInfo = ({
     {
       staleTime: SECOND_TO_REFRESH,
       enabled: !!tokenValue,
+      refetchOnWindowFocus: false,
     },
   );
 

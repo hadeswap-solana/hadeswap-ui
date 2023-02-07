@@ -41,4 +41,10 @@ export const tokensList: TokenItem[] = [
     image:
       'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU/logo.png',
   },
+  {
+    label: 'DUST',
+    value: TokensValues.DUST,
+    image:
+      'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ/logo.jpg',
+  },
 ];

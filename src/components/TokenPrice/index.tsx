@@ -22,13 +22,11 @@ export const TokenPrice: FC<TokenPriceProps> = ({
 
   return (
     <div className={cn(styles.wrapper, className)}>
+      <img className={styles.image} src={token.image} alt={token.label} />
       {tokenLoading ? (
         <Spinner className={styles.spinner} />
       ) : (
-        <>
-          <img className={styles.image} src={token.image} alt={token.label} />
-          <span className={styles.text}>{value}</span>
-        </>
+        <span className={styles.text}>{value}</span>
       )}
     </div>
   );

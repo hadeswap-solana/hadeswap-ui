@@ -7,6 +7,7 @@ const antIcon = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 export const Spinner: FC<{ className?: string }> = ({ className }) => {
   return (
     <div
+      className={className}
       style={{
         display: 'flex',
         justifyContent: 'center',
@@ -15,7 +16,7 @@ export const Spinner: FC<{ className?: string }> = ({ className }) => {
         height: '100%',
       }}
     >
-      <Spin className={className} size="large" indicator={antIcon} />
+      <Spin size="large" indicator={antIcon} />
     </div>
   );
 };

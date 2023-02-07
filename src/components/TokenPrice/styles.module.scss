@@ -6,6 +6,9 @@
 }
 
 .spinner {
+  display: block !important;
+  margin-inline: 8px;
+
   span {
     font-size: 16px !important;
   }
