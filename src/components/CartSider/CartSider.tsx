@@ -36,8 +36,12 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
     exchangeFetching,
   } = useExchangeData({ rawSolAmount: totalBuy });
 
-  const titleBuy = `buy ${cartItems.buy.length}`;
-  const titleSell = `sell ${cartItems.sell.length}`;
+  const titleBuy = `buy ${cartItems.buy.length} ${
+    cartItems.buy.length > 1 ? 'NFTs' : 'NFT'
+  }`;
+  const titleSell = `sell ${cartItems.sell.length} ${
+    cartItems.sell.length > 1 ? 'NFTs' : 'NFT'
+  }`;
 
   return (
     <div
