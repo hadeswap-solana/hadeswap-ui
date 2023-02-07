@@ -27,7 +27,7 @@ export const calcAmount = (
   tokenFormattedAmount: string;
   rate: number;
 } => {
-  const solAmount: string = (rawSolAmount / 1e9).toFixed(2);
+  const solAmount: string = (rawSolAmount / 1e9).toFixed(3);
   const inputAmount = calcTokenAmount(solAmount, rate);
 
   const rawAmount = Math.ceil(Number(inputAmount) * 10 ** decimals);

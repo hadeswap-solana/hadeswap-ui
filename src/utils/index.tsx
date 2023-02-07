@@ -273,10 +273,12 @@ export const getFormattedPrice = (price: number): string => {
 };
 
 export const formatNumericDigit = (number: number): string => {
-  const value = number.toFixed(2);
-  const integer = Math.trunc(number);
-  const integerStr = String(integer);
-  const tale = (Number(value) - integer).toFixed(2).substring(1) || '';
+  const value = number.toFixed(3);
+  const integerStr = String(Math.trunc(number));
+
+  const numberStr = String(Number(value));
+  const dotIndex = numberStr.lastIndexOf('.');
+  const tale = numberStr.substring(dotIndex);
 
   if (integerStr.length > 3) {
     const numberArr = integerStr.split('');
@@ -292,7 +294,8 @@ export const formatNumericDigit = (number: number): string => {
 
     return formattedArr.join('') + tale;
   }
-  return value;
+
+  return numberStr;
 };
 
 export const calcTokenAmount = (
@@ -300,7 +303,7 @@ export const calcTokenAmount = (
   tokenRate: number,
 ): string => {
   const amount = Number(solAmount) * tokenRate;
-  return (amount + amount / 100).toFixed(2);
+  return (amount + amount / 100).toFixed(3);
 };
 
 export const PUBKEY_PLACEHOLDER = '11111111111111111111111111111111';
