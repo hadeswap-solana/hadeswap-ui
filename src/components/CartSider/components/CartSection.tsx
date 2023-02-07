@@ -2,8 +2,6 @@ import { FC } from 'react';
 import { TrashIcon } from '../../../icons/TrashIcon';
 import { SolPrice } from '../../SolPrice/SolPrice';
 import Card from './Card';
-import { formatBNToString } from '../../../utils';
-import BN from 'bn.js';
 import { CartOrder } from '../../../state/core/types';
 import { TokenItem } from '../../../constants/tokens';
 import { TokenPrice } from '../../TokenPrice';
@@ -67,7 +65,7 @@ const CartSection: FC<CartSectionProps> = ({
               key={item.mint}
               name={item.name}
               imageUrl={item.imageUrl}
-              price={formatBNToString(new BN(item.price))}
+              price={String(item.price)}
               onDeselect={createOnDeselectHandler(item)}
               token={tokenExchange}
               tokenRate={tokenRate}

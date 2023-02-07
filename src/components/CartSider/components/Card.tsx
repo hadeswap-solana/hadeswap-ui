@@ -30,7 +30,7 @@ const Card: FC<CardProps> = ({
   tokenRate,
   tokenLoading,
 }) => {
-  const solAmount = parseFloat(price).toFixed(2);
+  const solAmount = (parseFloat(price) / 1e9).toFixed(3);
   const tokenAmount = calcTokenAmount(solAmount, tokenRate);
 
   return (
@@ -47,7 +47,7 @@ const Card: FC<CardProps> = ({
             className={styles.cardPrice}
           />
         ) : (
-          <SolPrice className={styles.cardPrice} price={parseFloat(price)} />
+          <SolPrice className={styles.cardPrice} price={Number(solAmount)} />
         )}
       </div>
       {onDeselect && (
