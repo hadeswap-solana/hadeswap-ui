@@ -46,15 +46,17 @@ const CartSection: FC<CartSectionProps> = ({
               <TrashIcon />
             </button>
           </div>
-          {tokenExchange ? (
-            <TokenPrice
-              token={tokenExchange}
-              tokenAmount={tokenFormattedAmount}
-              tokenLoading={tokenLoading}
-            />
-          ) : (
-            <SolPrice price={totalPrice} raw />
-          )}
+          <div className={styles.cartHeaderPrice}>
+            {tokenExchange ? (
+              <TokenPrice
+                token={tokenExchange}
+                tokenAmount={tokenFormattedAmount}
+                tokenLoading={tokenLoading}
+              />
+            ) : (
+              <SolPrice price={totalPrice} raw />
+            )}
+          </div>
         </div>
         <div className={styles.cartItems}>
           {cartItems.map((item) => (
