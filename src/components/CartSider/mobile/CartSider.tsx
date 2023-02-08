@@ -10,6 +10,8 @@ import { CrossmintButton } from '../components/CrossmintButton';
 import { CartSiderProps } from '../index';
 
 import styles from './styles.module.scss';
+import SwapExchangeButton from '../components/SwapExchangeButton';
+import { useExchangeData } from '../hooks';
 
 const HEADER_HEIGHT = 56;
 
@@ -32,6 +34,15 @@ const CartSiderMobile: FC<CartSiderProps> = ({
   const [showModal, setShowModal] = useState<boolean>(null);
 
   const isHeaderVisible = window.scrollY < HEADER_HEIGHT;
+
+  const {
+    amount,
+    tokenFormattedAmount,
+    tokenExchange,
+    rate,
+    exchangeLoading,
+    exchangeFetching,
+  } = useExchangeData({ rawSolAmount: totalBuy });
 
   const onShowModalClick = () => {
     setShowModal((value: boolean) => !value);
@@ -74,6 +85,10 @@ const CartSiderMobile: FC<CartSiderProps> = ({
                 onDeselectBulkHandler={onDeselectBulkHandler}
                 createOnDeselectHandler={createOnDeselectHandler}
                 totalPrice={totalBuy}
+                tokenExchange={tokenExchange}
+                tokenRate={rate}
+                tokenFormattedAmount={tokenFormattedAmount}
+                tokenLoading={exchangeLoading || exchangeFetching}
               />
               <CartSection
                 title={`sell ${cartItems.sell.length} nfts`}
@@ -88,9 +103,22 @@ const CartSiderMobile: FC<CartSiderProps> = ({
               />
             </div>
             <div className={styles.submitWrapper}>
-              <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
-                <span>swap</span>
-              </Button>
+              {tokenExchange && (
+                <SwapExchangeButton
+                  rawSolAmount={totalBuy}
+                  inputToken={tokenExchange}
+                  swap={swap}
+                  amount={amount}
+                  tokenFormattedAmount={tokenFormattedAmount}
+                  exchangeLoading={exchangeLoading}
+                  exchangeFetching={exchangeFetching}
+                />
+              )}
+              {!tokenExchange && (
+                <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
+                  <span>swap</span>
+                </Button>
+              )}
               <CrossmintButton
                 isOneBuyNft={isOneBuyNft}
                 crossmintConfig={crossmintConfig}

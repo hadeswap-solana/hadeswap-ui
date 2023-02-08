@@ -1,23 +1,18 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { hadeswap, web3 } from 'hadeswap-sdk';
+import { web3 } from 'hadeswap-sdk';
 import {
   BondingCurveType,
-  OrderType,
   PairType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
-import { min, differenceBy } from 'lodash';
+import { differenceBy } from 'lodash';
 
-import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../..';
 import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../../components/TransactionsLoadingModal';
 import { Nft, Pair } from '../../../state/core/types';
-import { getArrayByNumber } from '../../../utils/transactions';
-import { createDepositLiquidityToPairTxns } from '../../../utils/transactions/createDepositLiquidityToPairTxns';
 import { createDepositNftsToPairTxns } from '../../../utils/transactions/createDepositNftsToPairTxns';
 import { createModifyPairTxn } from '../../../utils/transactions/createModifyPairTxn';
-import { createWithdrawLiquidityFromPairTxns } from '../../../utils/transactions/createWithdrawLiquidityFromPairTxns';
 import { createWithdrawNftsFromPairTxns } from '../../../utils/transactions/createWithdrawNftsFromPairTxns';
 import { createWithdrawSolFromPairTxn } from '../../../utils/transactions/createWithdrawSolFromPairTxn';
 import { createWithdrawLiquidityFromBuyOrdersPair } from '../../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
@@ -26,7 +21,6 @@ import { TxnData } from './types';
 import { createDepositSolToPairTxn } from '../../../utils/transactions/createDepositSolToPairTxn';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
-import { compareStrings } from '../../../utils';
 
 type CheckIsPricingChanged = (props: {
   pool: Pair;
@@ -150,24 +144,8 @@ type CreateWithdrawSOLFromPairTxnsData = (props: {
   wallet: WalletContextState;
 }) => Promise<TxnData[]>;
 export const createWithdrawSOLFromPairTxnsData: CreateWithdrawSOLFromPairTxnsData =
-  async ({
-    pool,
-    rawSpotPrice,
-    rawDelta,
-    withdrawOrdersAmount,
-    connection,
-    wallet,
-  }) => {
+  async ({ pool, withdrawOrdersAmount, connection, wallet }) => {
     const amountPerChunk = [withdrawOrdersAmount];
-
-    const { total: withdrawAmount } = hadeswap.helpers.calculatePricesArray({
-      starting_spot_price: rawSpotPrice,
-      delta: rawDelta,
-      amount: withdrawOrdersAmount,
-      bondingCurveType: pool.bondingCurve,
-      orderType: OrderType.Buy,
-      counter: pool?.buyOrdersAmount * -1,
-    });
 
     const loadingModalCard =
       createIxCardFuncs[IX_TYPE.REMOVE_BUY_ORDERS_FROM_POOL_NO_SOL_AMOUNT]();
@@ -200,24 +178,8 @@ type CreateDepositSOLToPairTxnsData = (props: {
   wallet: WalletContextState;
 }) => Promise<TxnData[]>;
 export const createDepositSOLToPairTxnsData: CreateDepositSOLToPairTxnsData =
-  async ({
-    pool,
-    rawSpotPrice,
-    rawDelta,
-    ordersAmount,
-    connection,
-    wallet,
-  }) => {
+  async ({ pool, ordersAmount, connection, wallet }) => {
     const amountPerChunk = [ordersAmount];
-
-    const { total: depositAmount } = hadeswap.helpers.calculatePricesArray({
-      starting_spot_price: rawSpotPrice,
-      delta: rawDelta,
-      amount: ordersAmount,
-      bondingCurveType: pool.bondingCurve,
-      orderType: OrderType.Buy,
-      counter: pool?.buyOrdersAmount * -1,
-    });
 
     const loadingModalCard =
       createIxCardFuncs[IX_TYPE.ADD_BUY_ORDERS_TO_POOL_NO_SOL_AMOUNT]();
@@ -313,8 +275,6 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
     nftsToDepositOpt,
     buyOrdersToDepositOpt,
     withdrawAll = false,
-    rawSpotPrice,
-    rawDelta,
     connection,
     wallet,
   }) => {
@@ -324,15 +284,6 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
       : withdrawableBuyOrders;
     const nftsToDeposit = withdrawAll ? [] : nftsToDepositOpt;
     const buyOrdersToDeposit = withdrawAll ? 0 : buyOrdersToDepositOpt;
-
-    const { array: solAmounts } = hadeswap.helpers.calculatePricesArray({
-      starting_spot_price: rawSpotPrice,
-      delta: rawDelta,
-      amount: nftsToWithdraw?.length,
-      bondingCurveType: pool.bondingCurve,
-      orderType: OrderType.Buy,
-      counter: ((pool.nftsCount + pool.buyOrdersAmount) / 2) * -1 - 1,
-    });
 
     const unbalancedTxnsAndSigners = (
       nftsToWithdraw.length
@@ -355,8 +306,6 @@ export const createWithdrawAndDepositLiquidityFromPairTxnsData: CreateWithdrawAn
           })
         : [],
     );
-
-    // const balancedTxnsAmount = balancedTxnsAndSigners?.length || 0;
 
     const unbalancedTxnsData = unbalancedTxnsAndSigners.map(
       ({ transaction, signers }, idx) => ({
@@ -453,16 +402,6 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
     rawDelta,
   });
 
-  console.log({
-    pool,
-    rawSpotPrice,
-    rawFee,
-    rawDelta,
-  });
-  console.log('isPricingChanged: ', isPricingChanged);
-
-  //! Pair modification transaction logic
-  //? Ignore when somehow rawSpotPrice === 0
   if (isPricingChanged && rawSpotPrice !== 0) {
     const modifyTxnData = await createModifyPairTxnData({
       pool,

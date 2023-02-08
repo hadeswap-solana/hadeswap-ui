@@ -13,6 +13,10 @@
   border-radius: var(--border-radius-base);
   overflow: hidden;
   background: var(--component-base-background);
+
+  @media (max-width: 1024px) {
+    height: 38px;
+  }
 }
 
 .searchIcon {

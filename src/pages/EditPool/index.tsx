@@ -73,7 +73,6 @@ export const EditPool: FC = () => {
     curveType: formValue.curveType,
     buyOrdersAmount,
     nftsAmount: selectedNfts.length,
-    pairType,
     mathCounter: pool?.mathCounter,
   });
 
@@ -164,11 +163,15 @@ export const EditPool: FC = () => {
                 formInitialValues={initialValuesAssets}
               />
             </div>
-            <Chart
-              title="price graph"
-              data={chartData}
-              chartID={chartIDs.priceGraph}
-            />
+
+            {!!chartData.length && (
+              <Chart
+                title="price graph"
+                data={chartData}
+                chartID={chartIDs.priceGraph}
+              />
+            )}
+
             <div className={styles.buttonsWrapper}>
               <Button isDisabled={!isChanged} onClick={change}>
                 <span>save changes</span>

@@ -1,0 +1,30 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.spinner {
+  display: block !important;
+  width: initial !important;
+  height: unset !important;
+  margin-inline: 8px;
+
+  span {
+    font-size: 12px !important;
+  }
+}
+
+.image {
+  width: 16px;
+}
+
+.text {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 32px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

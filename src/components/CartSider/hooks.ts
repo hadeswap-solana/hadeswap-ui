@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { chunk, keyBy } from 'lodash';
@@ -15,12 +16,17 @@ import {
   selectCartPendingOrders,
   selectIsCartEmpty,
 } from '../../state/core/selectors';
+import { selectTokenExchange } from '../../state/tokenExchange/selectors';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { signAndSendTransactionsInSeries } from '../../utils/transactions';
 import { CartOrder } from '../../state/core/types';
+import { TokenItem } from '../../constants/tokens';
+import { useTokenInfo, useTokenRate } from '../../requests/exchangeToken';
+import { calcAmount } from '../Jupiter/utils';
+import JSBI from 'jsbi';
 
 export interface CrossMintConfig {
   type: string;
@@ -50,6 +56,15 @@ type UseSwap = (params: {
   onSuccessTxn?: () => void;
 }) => {
   swap: () => Promise<void>;
+};
+
+type UseExchangeData = (params: { rawSolAmount: number }) => {
+  amount: JSBI;
+  tokenFormattedAmount: string;
+  exchangeLoading: boolean;
+  exchangeFetching: boolean;
+  tokenExchange: TokenItem;
+  rate: number;
 };
 
 export const useCartSider: UseCartSider = () => {
@@ -109,7 +124,6 @@ export const useSwap: UseSwap = ({
         }),
       ),
     );
-
     const ixsDataChunks = chunk(ixsData, ixsPerTxn);
 
     const txnsData = ixsDataChunks.map((ixsAndSigners) =>
@@ -171,5 +185,34 @@ export const useSwap: UseSwap = ({
 
   return {
     swap,
+  };
+};
+
+export const useExchangeData: UseExchangeData = ({ rawSolAmount }) => {
+  const tokenExchange = useSelector(selectTokenExchange);
+
+  const { tokensData, tokensLoading, tokensFetching } = useTokenInfo({
+    tokenValue: tokenExchange?.value,
+  });
+  const { tokenRate, rateLoading, rateFetching } = useTokenRate({
+    tokenValue: tokenExchange?.value,
+  });
+
+  const inputTokenInfo = useMemo(() => {
+    return tokensData?.find((item) => item.address === tokenExchange?.value);
+  }, [tokensData, tokenExchange?.value]);
+
+  const { amount, tokenFormattedAmount, rate } = useMemo(
+    () => calcAmount(rawSolAmount, inputTokenInfo?.decimals, tokenRate?.price),
+    [rawSolAmount, inputTokenInfo, tokenRate],
+  );
+
+  return {
+    amount,
+    tokenFormattedAmount,
+    tokenExchange,
+    rate,
+    exchangeLoading: tokensLoading || rateLoading,
+    exchangeFetching: tokensFetching || rateFetching,
   };
 };

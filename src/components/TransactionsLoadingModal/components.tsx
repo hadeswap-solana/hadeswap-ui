@@ -1,6 +1,7 @@
+import { FC } from 'react';
 import { Typography } from 'antd';
 import { BN } from 'hadeswap-sdk';
-import { FC } from 'react';
+import classNames from 'classnames';
 import { formatBNToString } from '../../utils';
 import styles from './TransactionsLoadingModal.module.scss';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
@@ -14,8 +15,8 @@ export const SolAmount: FC<{ solAmount: number }> = ({ solAmount }) => {
   );
 };
 
-export const IxCard: FC = ({ children }) => {
-  return <div className={styles.card}>{children}</div>;
+export const IxCard: FC<{ className?: string }> = ({ children, className }) => {
+  return <div className={classNames(styles.card, className)}>{children}</div>;
 };
 
 export const IxCardText: FC = ({ children }) => (

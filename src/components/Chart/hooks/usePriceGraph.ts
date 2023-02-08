@@ -37,6 +37,7 @@ const usePriceGraph: UsePriceGraph = ({
     orderType: OrderType.Sell,
     counter: mathCounter,
   }) as { array: number[]; total: number };
+
   const { array: priceArraySell } = helpers.calculatePricesArray({
     starting_spot_price: baseSpotPrice,
     delta: rawDelta,
