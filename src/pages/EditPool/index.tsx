@@ -73,7 +73,6 @@ export const EditPool: FC = () => {
     curveType: formValue.curveType,
     buyOrdersAmount,
     nftsAmount: selectedNfts.length,
-    pairType,
     mathCounter: pool?.mathCounter,
   });
 
