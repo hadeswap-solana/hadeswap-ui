@@ -1,10 +1,7 @@
 import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  BondingCurveType,
-  PairType,
-} from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
@@ -20,6 +17,7 @@ import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../../state/core/selectors';
+import { chartIDs } from '../../../components/Chart/constants';
 import { getRawDelta, getRawSpotPrice } from '../../../utils';
 
 import styles from './styles.module.scss';
@@ -142,13 +140,11 @@ export const StepThree: FC<StepThreeProps> = ({
               formInitialValues={initialValuesAssets}
             />
           </div>
-          {!!chartData && !!chartData?.length && (
-            <Chart
-              title="price graph"
-              data={chartData}
-              chartID={chartIDs.priceGraph}
-            />
-          )}
+          <Chart
+            title="price graph"
+            data={chartData}
+            chartID={chartIDs.priceGraph}
+          />
           <div className={styles.settingsButtonsWrapper}>
             <Button
               isDisabled={isCreateButtonDisabled}
