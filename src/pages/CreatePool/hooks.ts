@@ -1,8 +1,7 @@
 import React from 'react';
 import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
-import { hadeswap, web3 } from 'hadeswap-sdk';
+import { web3 } from 'hadeswap-sdk';
 import {
-  OrderType,
   PairType,
   BondingCurveType,
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
@@ -18,7 +17,6 @@ import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenFo
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 import { createPairTxn } from '../../utils/transactions/createPairTxn';
 import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepositNftsToPairTxns';
-import { createDepositLiquidityToPairTxns } from '../../utils/transactions/createDepositLiquidityToPairTxns';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { notify } from '../../utils';
@@ -27,7 +25,6 @@ import { useDispatch } from 'react-redux';
 import { useConnection } from '../../hooks';
 import { Nft } from '../../state/core/types';
 import { captureSentryError } from '../../utils/sentry';
-import { SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN } from '../../hadeswap';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
 
@@ -178,17 +175,7 @@ const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
 }) => {
   const amountPerChunk = [buyOrdersAmount];
 
-  const cards = amountPerChunk.map((ordersAmount, idx) => {
-    const { total: amount }: { total: number } =
-      hadeswap.helpers.calculatePricesArray({
-        starting_spot_price: rawSpotPrice,
-        delta: rawDelta,
-        amount: ordersAmount,
-        bondingCurveType: curveType,
-        orderType: OrderType.Sell,
-        counter: idx,
-      });
-
+  const cards = amountPerChunk.map(() => {
     return createIxCardFuncs[IX_TYPE.ADD_BUY_ORDERS_TO_POOL_NO_SOL_AMOUNT]();
   });
 
@@ -355,7 +342,7 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
     ];
   }
 
-  const restTxnsCards = restTxns.map(({ transaction, signers }, idx) =>
+  const restTxnsCards = restTxns.map((_, idx) =>
     selectedNfts[idx]
       ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](
           selectedNfts?.[idx],

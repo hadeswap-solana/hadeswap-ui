@@ -172,7 +172,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
           key={selectedBuyNft?.mint}
           name={`#${selectedBuyNft?.name?.split('#')[1]}`}
           imageUrl={selectedBuyNft?.imageUrl}
-          price={formatBNToString(new BN(selectedBuyNft?.price))}
+          price={selectedBuyNft?.price}
           rarity={selectedBuyNft?.rarity}
           onDeselect={createDeselectHandler(selectedBuyNft)}
         />

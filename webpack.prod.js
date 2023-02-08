@@ -104,6 +104,9 @@ module.exports = (env) => {
           test: /.mjs$/,
           include: /node_modules/,
           type: 'javascript/auto',
+          resolve: {
+            fullySpecified: false,
+          },
         },
       ],
     },
@@ -113,6 +116,8 @@ module.exports = (env) => {
         os: require.resolve('os-browserify/browser'),
         crypto: require.resolve('crypto-browserify'),
         stream: require.resolve('stream-browserify'),
+        path: false,
+        fs: false,
       },
     },
     plugins: [

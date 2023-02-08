@@ -22,16 +22,28 @@
 }
 
 .cardTitle {
+  margin-bottom: 5px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  margin-bottom: 0 !important;
   text-align: left;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 120%;
 }
 
 .cardPrice {
-  font-size: 14px;
-  line-height: 22px;
+  height: 16px;
+
+  span {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 120%;
+  }
+
+  img {
+    width: 12px;
+  }
 
   svg {
     width: 16px;
@@ -56,23 +68,38 @@
 }
 
 .cartHeader {
+  margin-bottom: 16px;
+}
+
+.cartHeaderTitle {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  height: 24px;
+  margin-bottom: 8px;
 
   h4 {
     font-family: var(--font-family-rubik);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 20px;
-    line-height: 32px;
+    line-height: 120%;
   }
 }
 
-.cartTitle {
+.cartHeaderPrice {
   display: flex;
-  align-items: center;
-  margin-right: 8px;
+  justify-content: flex-end;
+  height: 17px;
+
+  span {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 120%;
+  }
+
+  svg {
+    width: 18px;
+  }
 }
 
 .trashAllButton {
@@ -140,5 +167,43 @@ button.xmintBtn {
 
   &:hover {
     background: var(--button-hover-outline);
+  }
+}
+
+.exchangeButtonSpinner {
+  span {
+    font-size: 18px !important;
+  }
+}
+
+.tokenExchangeLoadingModal {
+  .title {
+    margin: 16px 0 24px;
+    text-align: center;
+    font-size: 21px;
+  }
+
+  .card {
+    height: auto;
+    padding: 12px;
+    align-items: center;
+  }
+
+  .cardImage {
+    height: 48px;
+  }
+
+  .cardTextWrapper {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 16px;
+    font-size: 18px;
+  }
+
+  .solanaLogo {
+    width: 48px;
+    height: 48px;
   }
 }

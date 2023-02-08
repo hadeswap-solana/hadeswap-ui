@@ -17,6 +17,7 @@ export const ConnectedButton: FC = () => {
 
   return (
     <Dropdown
+      trigger={['click']}
       overlay={
         <Menu
           items={[
