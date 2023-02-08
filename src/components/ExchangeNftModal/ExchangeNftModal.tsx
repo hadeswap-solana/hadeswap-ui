@@ -170,7 +170,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
         <p className={styles.cardLabel}>you’ll get</p>
         <Card
           key={selectedBuyNft?.mint}
-          name={`#${selectedBuyNft?.name.split('#')[1]}`}
+          name={`#${selectedBuyNft?.name?.split('#')[1]}`}
           imageUrl={selectedBuyNft?.imageUrl}
           price={selectedBuyNft?.price}
           rarity={selectedBuyNft?.rarity}

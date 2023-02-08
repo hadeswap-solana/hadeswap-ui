@@ -33,6 +33,7 @@ export const createDepositLiquidityOnlySellOrdersTxns: CreateDepositLiquidityOnl
             connection,
             args: {
               proof: nft?.validProof,
+              pnft: {},
             },
             accounts: {
               nftValidationAdapter: new web3.PublicKey(

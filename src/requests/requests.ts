@@ -73,7 +73,7 @@ export const fetchMarketWalletNfts = async ({
   marketPubkey: string;
 }): Promise<Nft[]> => {
   const response = await fetch(
-    `https://${process.env.BACKEND_DOMAIN}/nfts/${walletPubkey}/${marketPubkey}`,
+    `https://${process.env.BACKEND_DOMAIN}/nfts/${walletPubkey}/${marketPubkey}?isFrozen=true`,
   );
 
   if (!response.ok) {

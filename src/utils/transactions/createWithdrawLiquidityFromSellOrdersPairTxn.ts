@@ -30,6 +30,9 @@ export const createWithdrawLiquidityFromSellOrdersPair: CreateWithdrawLiquidityF
           return withdrawLiquiditySingleSellOrder({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
+            args: {
+              pnft: {},
+            },
             accounts: {
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),
