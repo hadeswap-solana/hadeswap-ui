@@ -7,15 +7,17 @@ import { PoolHeader } from './components/PoolHeader';
 import { PoolGeneralInfo } from './components/PoolGeneralInfo';
 import { NftList } from './components/NftList';
 import { Spinner } from '../../components/Spinner/Spinner';
+import { chartIDs } from '../../components/Chart/constants';
+import Chart from '../../components/Chart/Chart';
+import { PoolTradeTable } from './components/PoolTradeTable';
+import useSwapHistory from '../../components/Chart/hooks/useSwapHistory';
+import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import {
   selectCertainMarket,
   selectCertainMarketLoading,
   selectCertainPair,
   selectCertainPairLoading,
 } from '../../state/core/selectors';
-import { Chart, usePriceGraph } from '../../components/Chart';
-import { PoolTradeTable } from './components/PoolTradeTable';
-import styles from './PoolPage.module.scss';
 
 export const PoolPage: FC = () => {
   const market = useSelector(selectCertainMarket);
@@ -27,6 +29,13 @@ export const PoolPage: FC = () => {
   useFetchMarket(pool?.market);
 
   const isLoading = marketLoading || poolLoading;
+
+  const {
+    chartDataActivity,
+    swapHistoryLoading,
+    currentPeriod,
+    setCurrentPeriod,
+  } = useSwapHistory({});
 
   const chartData = usePriceGraph({
     baseSpotPrice: pool?.baseSpotPrice,
@@ -49,11 +58,20 @@ export const PoolPage: FC = () => {
             <PoolHeader market={market} pool={pool} />
             <PoolGeneralInfo pool={pool} />
             <NftList pool={pool} />
-            {!!chartData && !!chartData?.length && (
-              <div className={styles.chartWrapper}>
-                <Chart title="price graph" data={chartData} />
-              </div>
-            )}
+            <Chart
+              title="price graph"
+              data={chartData}
+              chartID={chartIDs.priceGraph}
+              swapHistoryLoading={swapHistoryLoading}
+            />
+            <Chart
+              title="swap history"
+              data={chartDataActivity}
+              chartID={chartIDs.swapHistory}
+              currentPeriod={currentPeriod}
+              setCurrentPeriod={setCurrentPeriod}
+              swapHistoryLoading={swapHistoryLoading}
+            />
             <PoolTradeTable />
           </>
         )}

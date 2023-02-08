@@ -1,11 +1,19 @@
 import { notification } from 'antd';
 import { web3, BN } from 'hadeswap-sdk';
+import {
+  calculateNextSpotPrice,
+  deriveXykBaseSpotPriceFromCurrentSpotPrice,
+} from 'hadeswap-sdk/lib/hadeswap-core/helpers';
+import {
+  BondingCurveType,
+  OrderType,
+  PairType,
+} from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { formatNumber, Notify, NotifyType } from './solanaUtils';
 import { Dictionary } from 'lodash';
 import { NotifyErrorIcon } from '../icons/NotifyErrorIcon';
 import { NotifyInfoIcon } from '../icons/NotifyInfoIcon';
 import { NotifySuccessIcon } from '../icons/NotifySuccessIcon';
-
-import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
 export enum PoolType {
   tokenForNft = 'buy',
@@ -264,3 +272,64 @@ export const getFormattedPrice = (price: number): string => {
 };
 
 export const PUBKEY_PLACEHOLDER = '11111111111111111111111111111111';
+
+export const getRawDelta = ({
+  delta,
+  curveType,
+  buyOrdersAmount,
+  nftsAmount,
+  mathCounter,
+  pairType,
+}: {
+  delta: number;
+  curveType: BondingCurveType;
+  buyOrdersAmount: number;
+  nftsAmount: number;
+  mathCounter: number;
+
+  pairType: PairType;
+}): number => {
+  const deltaSerializer = {
+    [BondingCurveType.Exponential]: delta * 100,
+    [BondingCurveType.Linear]: delta * 1e9,
+    [BondingCurveType.XYK]: Math.max(
+      buyOrdersAmount - mathCounter,
+      nftsAmount + mathCounter,
+    ),
+    //  Math.ceil(
+    //   (buyOrdersAmount + nftsAmount) /
+    //   (pairType === PairType.LiquidityProvision ? 2 : 1),
+    // ),
+  };
+  return deltaSerializer[curveType] || 0;
+};
+
+export const getRawSpotPrice = ({
+  rawDelta,
+  spotPrice,
+  mathCounter,
+  curveType,
+}: {
+  rawDelta: number;
+  spotPrice: number;
+  mathCounter: number;
+  curveType: BondingCurveType;
+}): number => {
+  const baseSpotPrice = Math.ceil(
+    calculateNextSpotPrice({
+      orderType: OrderType.Buy,
+      delta: rawDelta,
+      bondingCurveType: curveType,
+      spotPrice: spotPrice * 1e9,
+      counter: -mathCounter - 1,
+    }),
+  );
+
+  return curveType === BondingCurveType.XYK
+    ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
+        currentSpotPrice: Math.ceil(spotPrice * 1e9),
+        counter: mathCounter,
+        delta: rawDelta,
+      })
+    : baseSpotPrice;
+};

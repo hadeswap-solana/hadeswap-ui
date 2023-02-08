@@ -177,10 +177,7 @@ const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
   connection,
   wallet,
 }) => {
-  const amountPerChunk = getArrayByNumber(
-    buyOrdersAmount,
-    SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
-  );
+  const amountPerChunk = [buyOrdersAmount];
 
   const cards = amountPerChunk.map((ordersAmount, idx) => {
     const { total: amount }: { total: number } =
@@ -190,10 +187,10 @@ const createTokenForNftTxnSplittedData: CreateTxnSplittedData = async ({
         amount: ordersAmount,
         bondingCurveType: curveType,
         orderType: OrderType.Sell,
-        counter: idx + 1,
+        counter: idx,
       });
 
-    return createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_SOL_FROM_POOL](amount);
+    return createIxCardFuncs[IX_TYPE.ADD_BUY_ORDERS_TO_POOL_NO_SOL_AMOUNT]();
   });
 
   const {
@@ -305,14 +302,7 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
   wallet,
   buyOrdersAmount,
 }) => {
-  const amountOfBuyAndSellOrderPairs = Math.min(
-    buyOrdersAmount,
-    selectedNfts.length,
-  );
-  const nftsToDepositWithBuyOrders = selectedNfts.slice(
-    0,
-    amountOfBuyAndSellOrderPairs,
-  );
+  const nftsToDepositWithBuyOrders = [];
 
   const {
     pairPubkey,
@@ -331,16 +321,6 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
   });
 
   let restTxns = [];
-
-  if (nftsToDepositWithBuyOrders.length > 0) {
-    restTxns = await createDepositLiquidityToPairTxns({
-      connection,
-      wallet,
-      pairPubkey: pairPubkey,
-      authorityAdapter: authorityAdapterPubkey,
-      nfts: nftsToDepositWithBuyOrders,
-    });
-  }
 
   const outstandingBuyOrders =
     buyOrdersAmount - nftsToDepositWithBuyOrders.length;
@@ -375,22 +355,15 @@ const createLiquidityProvisionTxnSplittedData: CreateTxnSplittedData = async ({
       })),
     ];
   }
-  const { array: amounts }: { array: number[] } =
-    hadeswap.helpers.calculatePricesArray({
-      starting_spot_price: rawSpotPrice,
-      delta: rawDelta,
-      amount: selectedNfts.length,
-      bondingCurveType: curveType,
-      orderType: OrderType.Sell,
-      counter: 1,
-    });
 
-  const restTxnsCards = selectedNfts.map((nft, idx) => {
-    return createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_LIQUIDITY_FROM_POOL](
-      nft,
-      amounts[idx],
-    );
-  });
+  const restTxnsCards = restTxns.map(({ transaction, signers }, idx) =>
+    selectedNfts[idx]
+      ? createIxCardFuncs[IX_TYPE.ADD_OR_REMOVE_NFT_FROM_POOL](
+          selectedNfts?.[idx],
+          false,
+        )
+      : createIxCardFuncs[IX_TYPE.ADD_BUY_ORDERS_TO_POOL_NO_SOL_AMOUNT](),
+  );
 
   return {
     firstTxnData: {

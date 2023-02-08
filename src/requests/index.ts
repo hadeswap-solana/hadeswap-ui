@@ -19,6 +19,8 @@ import {
   fetchMarketPairs,
   fetchMarket,
   fetchMarketWalletNfts,
+  fetchSwapHistoryPool,
+  fetchSwapHistoryCollection,
 } from './requests';
 import { LoadingStatus, FetchingStatus } from './types';
 import { MarketInfo, Pair, Nft, NftActivityData } from '../state/core/types';
@@ -275,5 +277,48 @@ export const useTableData = (params: {
     fetchNextPage,
     isFetchingNextPage,
     isListEnded,
+  };
+};
+
+export const useSwapHistoryDataPool = (): {
+  swapHistoryDataPool: NftActivityData[];
+  swapHistoryLoadingPool: boolean;
+} => {
+  const { poolPubkey: publicKey } = useParams<{ poolPubkey: string }>();
+
+  const { data, isLoading } = useQuery(
+    ['swapHistory', `${publicKey}`],
+    () => fetchSwapHistoryPool(publicKey),
+    {
+      networkMode: 'offlineFirst',
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  return {
+    swapHistoryDataPool: data || [],
+    swapHistoryLoadingPool: isLoading,
+  };
+};
+
+export const useSwapHistoryDataCollection = (): {
+  swapHistoryCollection: NftActivityData[];
+  swapHistoryLoadingCollection: boolean;
+} => {
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
+
+  const { data, isLoading } = useQuery(
+    ['swapHistory', `${marketPublicKey}`],
+    () => fetchSwapHistoryCollection(marketPublicKey),
+    {
+      networkMode: 'offlineFirst',
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  return {
+    swapHistoryCollection: data || [],
+    swapHistoryLoadingCollection: isLoading,
   };
 };

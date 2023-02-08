@@ -40,6 +40,7 @@ export const createTokenForNftPairTxn: CreateTokenForNftPairTxn = async ({
   spotPrice,
   amountOfOrders,
 }) => {
+  console.log('spotPrice: ', spotPrice);
   const {
     instructions: initializeIxns,
     signers: initializeSigners,

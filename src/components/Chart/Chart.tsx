@@ -1,19 +1,41 @@
-import { useLayoutEffect, useRef, useState, FC, useEffect } from 'react';
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  FC,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { throttle } from 'lodash';
 
+import RadioButtonChart from './components/RadioButtonChart';
+import useD3 from './hooks/useD3';
 import { renderChart } from './d3/renderChart';
-import { useD3 } from './hooks';
 import { Point } from './types';
-import { chartID } from './constants';
+import { chartIDs } from './constants';
 import styles from './Chart.module.scss';
+import { Spinner } from '../Spinner/Spinner';
 
 interface ChartProps {
   title?: string;
   className?: string;
   data: Point[] | null;
+  chartID: string;
+  currentPeriod?: string;
+  setCurrentPeriod?: Dispatch<SetStateAction<string>>;
+  swapHistoryLoading?: boolean;
 }
 
-export const Chart: FC<ChartProps> = ({ title, className, data }) => {
+const Chart: FC<ChartProps> = ({
+  title,
+  className,
+  data,
+  chartID,
+  currentPeriod,
+  setCurrentPeriod,
+  swapHistoryLoading,
+}) => {
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
 
@@ -33,19 +55,43 @@ export const Chart: FC<ChartProps> = ({ title, className, data }) => {
 
   const svgRef = useD3(
     renderChart(data, {
-      canvasSize: { x: containerWidth, y: 250 },
+      canvasSize: { x: containerWidth, y: 320 },
+      chartID,
+      currentPeriod,
     }),
-    [data, containerWidth],
+    [data, containerWidth, chartID],
   );
 
   return (
-    <div
-      id={chartID}
-      ref={containerRef}
-      className={`${styles.root} ${className || ''}`}
-    >
-      {!!title && <p className={styles.title}>{title}</p>}
-      <svg ref={svgRef} preserveAspectRatio="xMinYMin meet" />
+    <div className={styles.chartFrame}>
+      <div
+        id={chartID}
+        ref={containerRef}
+        className={`${styles.root} ${className || ''}`}
+      >
+        {!!title && <p className={styles.title}>{title}</p>}
+        {chartID === chartIDs.swapHistory && (
+          <RadioButtonChart
+            currentPeriod={currentPeriod}
+            setCurrentPeriod={setCurrentPeriod}
+          />
+        )}
+        {!data.length && (
+          <div className={styles.noData}>
+            {swapHistoryLoading ? (
+              <Spinner />
+            ) : (
+              <span>there was no activity in the selected period</span>
+            )}
+          </div>
+        )}
+
+        {!!data.length && (
+          <svg ref={svgRef} preserveAspectRatio="xMinYMin meet" />
+        )}
+      </div>
     </div>
   );
 };
+
+export default Chart;

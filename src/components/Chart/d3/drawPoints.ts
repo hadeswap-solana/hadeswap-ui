@@ -1,5 +1,6 @@
 import { ScaleLinear, select } from 'd3';
-import { chartID } from '../constants';
+import moment from 'moment';
+import { chartIDs } from '../constants';
 
 import { Point } from '../types';
 
@@ -10,12 +11,13 @@ type DrawPoints = (
     xScale: ScaleLinear<number, number, never>;
     yScale: ScaleLinear<number, number, never>;
     width: number;
+    chartID: string;
   },
 ) => void;
 
 export const drawPoints: DrawPoints = (
   selection,
-  { points, xScale, yScale, width },
+  { points, xScale, yScale, width, chartID },
 ) => {
   const mouseover = (e: MouseEvent, d: Point) => {
     const getNumberWithOrdinal = (n: number): string => {
@@ -27,12 +29,21 @@ export const drawPoints: DrawPoints = (
     const tooltip = select(`#${chartID}`)
       .append('div')
       .classed('tooltipPoint', true)
-      .style('top', `${yScale(d.price) - 20}px`)
+      .style(
+        'top',
+        chartID === chartIDs.priceGraph
+          ? `${yScale(+d.price) - 10}px`
+          : `${yScale(+d.price) + 20}px`,
+      )
       .style('left', `${e.x > width - 100 ? e.x - 175 : e.x - 25}px`);
     tooltip
       .append('div')
       .classed('orderNumber', true)
-      .text(`${getNumberWithOrdinal(d.order)} NFT`);
+      .text(
+        chartID === chartIDs.priceGraph
+          ? `${getNumberWithOrdinal(Math.abs(d.order))} NFT`
+          : moment(d.order).format('DD MMMM, YYYY, hh:mm:ss A'),
+      );
 
     const price = tooltip.append('div').classed('price', true);
     price
@@ -48,7 +59,9 @@ export const drawPoints: DrawPoints = (
     price
       .append('span')
       .classed('priceValue', true)
-      .text(`${d.price.toFixed(2)}`);
+      .text(
+        chartID === chartIDs.priceGraph ? `${d.price.toFixed(2)}` : d.price,
+      );
   };
 
   const pointsGroup = selection.append('g');
@@ -61,8 +74,8 @@ export const drawPoints: DrawPoints = (
     .classed('point-buy', ({ type }) => type === 'buy')
     .classed('point-sell', ({ type }) => type === 'sell')
     .classed('point-empty', ({ type }) => type === 'empty')
-    .attr('cx', (_, idx) => xScale(idx))
-    .attr('cy', (d) => yScale(d.price))
+    .attr('cx', ({ order }) => xScale(order))
+    .attr('cy', ({ price }) => yScale(price))
     .attr('r', 6)
     .style('cursor', 'pointer')
     .on('mouseover', mouseover)

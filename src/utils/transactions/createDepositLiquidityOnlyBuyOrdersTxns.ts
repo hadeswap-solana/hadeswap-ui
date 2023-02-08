@@ -31,10 +31,7 @@ export const createDepositLiquidityOnlyBuyOrdersTxns: CreateDepositLiquidityOnly
     authorityAdapter,
     buyOrdersAmount,
   }) => {
-    const amountPerChunk = getArrayByNumber(
-      buyOrdersAmount,
-      SOL_WITHDRAW_ORDERS_LIMIT__PER_TXN,
-    );
+    const amountPerChunk = [buyOrdersAmount];
     const ixsAndSigners = (
       await Promise.all(
         amountPerChunk.map((amount) =>
