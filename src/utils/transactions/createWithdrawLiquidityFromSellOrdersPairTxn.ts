@@ -31,8 +31,7 @@ export const createWithdrawLiquidityFromSellOrdersPair: CreateWithdrawLiquidityF
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             args: {
-              nameForRuleSet: process.env.NAME_FOR_RULE_SET,
-              payerRuleSet: new web3.PublicKey(process.env.PAYER_RULE_SET),
+              pnft: {},
             },
             accounts: {
               pair: new web3.PublicKey(pairPubkey),

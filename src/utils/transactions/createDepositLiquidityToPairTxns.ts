@@ -35,8 +35,7 @@ export const createDepositLiquidityToPairTxns: CreateDepositLiquidityToPairTxns 
             connection,
             args: {
               proof: nft?.validProof,
-              nameForRuleSet: process.env.NAME_FOR_RULE_SET,
-              payerRuleSet: new web3.PublicKey(process.env.PAYER_RULE_SET),
+              pnft: {},
             },
             accounts: {
               nftValidationAdapter: new web3.PublicKey(
