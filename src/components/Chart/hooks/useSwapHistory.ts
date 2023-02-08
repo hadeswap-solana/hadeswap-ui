@@ -66,9 +66,7 @@ export const useSwapHistory: UseSwapHistory = ({ market = false }) => {
   );
 
   return {
-    chartDataActivity: !market
-      ? chartDataActivity
-      : chartDataActivity?.reverse(),
+    chartDataActivity,
     swapHistoryLoading: swapHistoryLoadingPool || swapHistoryLoadingCollection,
     currentPeriod,
     setCurrentPeriod,

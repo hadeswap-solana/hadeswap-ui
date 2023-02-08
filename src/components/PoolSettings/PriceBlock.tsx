@@ -61,13 +61,6 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       mathCounter: pool?.mathCounter || 0,
       curveType: formValue.curveType,
     });
-    // formValue.curveType === BondingCurveType.XYK
-    //   ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
-    //       currentSpotPrice: formValue.spotPrice,
-    //       counter: pool?.mathCounter || 0,
-    //       delta: rawDelta,
-    //     })
-    //   : formValue.spotPrice;
 
     const buyingPrice = startingBuyingPrice({
       pairType,
@@ -75,14 +68,6 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       spotPrice: formValue.spotPrice,
     });
 
-    console.log({
-      pairType,
-      curveType: formValue.curveType,
-      fee: formValue.fee,
-      spotPrice: parsedSpotPrice,
-      delta: rawDelta,
-      mathCounter: pool?.mathCounter || 0,
-    });
     const sellingPrice =
       startingSellingPrice({
         pairType,

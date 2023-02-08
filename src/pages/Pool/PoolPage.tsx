@@ -58,12 +58,15 @@ export const PoolPage: FC = () => {
             <PoolHeader market={market} pool={pool} />
             <PoolGeneralInfo pool={pool} />
             <NftList pool={pool} />
-            <Chart
-              title="price graph"
-              data={chartData}
-              chartID={chartIDs.priceGraph}
-              swapHistoryLoading={swapHistoryLoading}
-            />
+
+            {!!chartData?.length && (
+              <Chart
+                title="price graph"
+                data={chartData}
+                chartID={chartIDs.priceGraph}
+                swapHistoryLoading={swapHistoryLoading}
+              />
+            )}
             <Chart
               title="swap history"
               data={chartDataActivity}

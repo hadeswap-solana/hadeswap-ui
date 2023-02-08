@@ -10,7 +10,6 @@ import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/use
 import { useAssetsSetHeight } from '../../../components/PoolSettings/hooks/useAssetsSetHeight';
 import Button from '../../../components/Buttons/Button';
 import Chart from '../../../components/Chart/Chart';
-import usePriceGraph from '../../../components/Chart/hooks/usePriceGraph';
 import { useCreatePool } from '../hooks';
 import { useFetchAllMarkets } from '../../../requests';
 import {
@@ -21,6 +20,7 @@ import { chartIDs } from '../../../components/Chart/constants';
 import { getRawDelta, getRawSpotPrice } from '../../../utils';
 
 import styles from './styles.module.scss';
+import usePriceGraph from '../../../components/Chart/hooks/usePriceGraph';
 
 interface StepThreeProps {
   pairType: PairType;
@@ -103,7 +103,7 @@ export const StepThree: FC<StepThreeProps> = ({
     rawFee,
     bondingCurve: formValue.curveType,
     buyOrdersAmount,
-    nftsCount: selectedNfts.length,
+    nftsCount: selectedNfts?.length,
     type: pairType,
   });
 
@@ -140,11 +140,15 @@ export const StepThree: FC<StepThreeProps> = ({
               formInitialValues={initialValuesAssets}
             />
           </div>
-          <Chart
-            title="price graph"
-            data={chartData}
-            chartID={chartIDs.priceGraph}
-          />
+
+          {!!chartData?.length && (
+            <Chart
+              title="price graph"
+              data={chartData}
+              chartID={chartIDs.priceGraph}
+            />
+          )}
+
           <div className={styles.settingsButtonsWrapper}>
             <Button
               isDisabled={isCreateButtonDisabled}
