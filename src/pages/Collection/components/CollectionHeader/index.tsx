@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
-
 import { Cart } from './Cart';
 // import { SocialLink } from './SocialLink';
 // import { GlobeIcon } from '../../../../icons/GlobeIcon';
@@ -11,16 +10,17 @@ import { Cart } from './Cart';
 import { SolPrice } from '../../../../components/SolPrice/SolPrice';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { CreatePoolButton } from '../../../../components/CreatePoolButton/CreatePoolButton';
+import { TokensMenu } from './TokensMenu';
 import {
   selectCertainMarket,
   selectCertainMarketLoading,
 } from '../../../../state/core/selectors';
 import { marketStatList } from './CollectionHeader.constants';
-
-import styles from './styles.module.scss';
 import Button from '../../../../components/Buttons/Button';
 import { useCreateOfferModal } from '../../../../components/CreateOfferModal/hooks';
 import CreateOfferModal from '../../../../components/CreateOfferModal/CreateOfferModal';
+
+import styles from './styles.module.scss';
 
 export const CollectionHeader: FC = () => {
   const market = useSelector(selectCertainMarket);
@@ -56,6 +56,7 @@ export const CollectionHeader: FC = () => {
               <h2 className={styles.collectionTitle}>
                 {market.collectionName}
               </h2>
+              <TokensMenu />
               {/* <div className={styles.collectionDescriptionWrapper}>
                 <p className={styles.collectionDescription}>
                   {mockData.collectionDescription}

@@ -18,13 +18,15 @@ import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoo
 import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WithdrawFees } from '../../components/WithdrawFees';
-import { Chart, usePriceGraph } from '../../components/Chart';
 import Button from '../../components/Buttons/Button';
 import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
+import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import { usePoolChange } from '../../hadeswap/hooks';
 import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
+import Chart from '../../components/Chart/Chart';
+import { chartIDs } from '../../components/Chart/constants';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
@@ -71,7 +73,6 @@ export const EditPool: FC = () => {
     curveType: formValue.curveType,
     buyOrdersAmount,
     nftsAmount: selectedNfts.length,
-    pairType,
     mathCounter: pool?.mathCounter,
   });
 
@@ -104,12 +105,7 @@ export const EditPool: FC = () => {
     useWithdrawFees({ pool });
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
-  console.log({
-    pool,
-    rawSpotPrice,
-    changeSpotPrice,
-    rawDelta,
-  });
+
   const chartData = usePriceGraph({
     baseSpotPrice: rawSpotPrice,
     rawDelta,
@@ -167,11 +163,15 @@ export const EditPool: FC = () => {
                 formInitialValues={initialValuesAssets}
               />
             </div>
-            {!!chartData && !!chartData?.length && (
-              <div className={styles.chartWrapper}>
-                <Chart title="price graph" data={chartData} />
-              </div>
+
+            {!!chartData.length && (
+              <Chart
+                title="price graph"
+                data={chartData}
+                chartID={chartIDs.priceGraph}
+              />
             )}
+
             <div className={styles.buttonsWrapper}>
               <Button isDisabled={!isChanged} onClick={change}>
                 <span>save changes</span>

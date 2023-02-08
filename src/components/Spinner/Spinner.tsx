@@ -4,9 +4,10 @@ import { LoadingOutlined } from '@ant-design/icons';
 
 const antIcon = <LoadingOutlined style={{ fontSize: 32 }} spin />;
 
-export const Spinner: FC = () => {
+export const Spinner: FC<{ className?: string }> = ({ className }) => {
   return (
     <div
+      className={className}
       style={{
         display: 'flex',
         justifyContent: 'center',

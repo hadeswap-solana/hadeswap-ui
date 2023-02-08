@@ -1,27 +1,26 @@
 import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  BondingCurveType,
-  PairType,
-} from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Spinner } from '../../../components/Spinner/Spinner';
 import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { useAssetsSetHeight } from '../../../components/PoolSettings/hooks/useAssetsSetHeight';
-import { Chart, usePriceGraph } from '../../../components/Chart';
 import Button from '../../../components/Buttons/Button';
+import Chart from '../../../components/Chart/Chart';
 import { useCreatePool } from '../hooks';
 import { useFetchAllMarkets } from '../../../requests';
 import {
   selectAllMarkets,
   selectAllMarketsLoading,
 } from '../../../state/core/selectors';
+import { chartIDs } from '../../../components/Chart/constants';
 import { getRawDelta, getRawSpotPrice } from '../../../utils';
 
 import styles from './styles.module.scss';
+import usePriceGraph from '../../../components/Chart/hooks/usePriceGraph';
 
 interface StepThreeProps {
   pairType: PairType;
@@ -66,7 +65,6 @@ export const StepThree: FC<StepThreeProps> = ({
     curveType: formValue.curveType,
     buyOrdersAmount,
     nftsAmount: selectedNfts.length,
-    pairType,
     mathCounter: 0,
   });
 
@@ -104,7 +102,7 @@ export const StepThree: FC<StepThreeProps> = ({
     rawFee,
     bondingCurve: formValue.curveType,
     buyOrdersAmount,
-    nftsCount: selectedNfts.length,
+    nftsCount: selectedNfts?.length,
     type: pairType,
   });
 
@@ -141,11 +139,15 @@ export const StepThree: FC<StepThreeProps> = ({
               formInitialValues={initialValuesAssets}
             />
           </div>
-          {!!chartData && !!chartData?.length && (
-            <div className={styles.chartWrapper}>
-              <Chart title="price graph" data={chartData} />
-            </div>
+
+          {!!chartData?.length && (
+            <Chart
+              title="price graph"
+              data={chartData}
+              chartID={chartIDs.priceGraph}
+            />
           )}
+
           <div className={styles.settingsButtonsWrapper}>
             <Button
               isDisabled={isCreateButtonDisabled}

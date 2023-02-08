@@ -2,6 +2,7 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
+import { Jupiter } from '../Jupiter';
 import Header from '../Header';
 import CartSider from '../CartSider';
 import { Footer } from '../Footer';
@@ -44,7 +45,9 @@ export const AppLayout: FC<LayoutProps> = ({ children, hideFooter = true }) => {
             <main>{children}</main>
             {!hideFooter && <Footer />}
           </div>
-          <CartSider />
+          <Jupiter>
+            <CartSider />
+          </Jupiter>
         </div>
       </div>
       <SelectWalletModal />

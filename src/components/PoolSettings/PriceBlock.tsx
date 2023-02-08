@@ -16,11 +16,10 @@ import {
 import { MarketInfo, Pair } from '../../state/core/types';
 import { renamePairType } from '../../state/core/helpers';
 import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
-
-import styles from './styles.module.scss';
-import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 import { FormValuePriceBlock } from './hooks/usePoolServicePrice';
 import { getRawSpotPrice } from '../../utils';
+
+import styles from './styles.module.scss';
 
 interface PriceBlockProps {
   pool?: Pair;
@@ -61,13 +60,6 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       mathCounter: pool?.mathCounter || 0,
       curveType: formValue.curveType,
     });
-    // formValue.curveType === BondingCurveType.XYK
-    //   ? deriveXykBaseSpotPriceFromCurrentSpotPrice({
-    //       currentSpotPrice: formValue.spotPrice,
-    //       counter: pool?.mathCounter || 0,
-    //       delta: rawDelta,
-    //     })
-    //   : formValue.spotPrice;
 
     const buyingPrice = startingBuyingPrice({
       pairType,
@@ -75,14 +67,6 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
       spotPrice: formValue.spotPrice,
     });
 
-    console.log({
-      pairType,
-      curveType: formValue.curveType,
-      fee: formValue.fee,
-      spotPrice: parsedSpotPrice,
-      delta: rawDelta,
-      mathCounter: pool?.mathCounter || 0,
-    });
     const sellingPrice =
       startingSellingPrice({
         pairType,
