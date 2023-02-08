@@ -16,11 +16,10 @@ import {
 import { MarketInfo, Pair } from '../../state/core/types';
 import { renamePairType } from '../../state/core/helpers';
 import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
-
-import styles from './styles.module.scss';
-import { deriveXykBaseSpotPriceFromCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/helpers';
 import { FormValuePriceBlock } from './hooks/usePoolServicePrice';
 import { getRawSpotPrice } from '../../utils';
+
+import styles from './styles.module.scss';
 
 interface PriceBlockProps {
   pool?: Pair;

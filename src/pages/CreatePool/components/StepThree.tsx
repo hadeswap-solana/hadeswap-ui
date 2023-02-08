@@ -65,7 +65,6 @@ export const StepThree: FC<StepThreeProps> = ({
     curveType: formValue.curveType,
     buyOrdersAmount,
     nftsAmount: selectedNfts.length,
-    pairType,
     mathCounter: 0,
   });
 
