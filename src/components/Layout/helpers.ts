@@ -68,6 +68,7 @@ const createBuyNftFromPairIx: CreateIx = async ({
       protocolFeeReceiver: new web3.PublicKey(process.env.PROTOCOL_FEE_PUBKEY),
     },
     args: {
+      pnft: {},
       maxAmountToPay:
         order.price +
         PRECISION_CORRECTION +
@@ -120,6 +121,7 @@ const createSellNftFromPairIx: CreateIx = async ({
         ),
       },
       args: {
+        pnft: {},
         minAmountToGet: order.price - PRECISION_CORRECTION,
         proof: order?.validProof,
         skipFailed: false,
@@ -146,6 +148,7 @@ const createSellNftFromPairIx: CreateIx = async ({
         ),
       },
       args: {
+        pnft: {},
         minAmountToGet: order.price - PRECISION_CORRECTION,
         proof: order?.validProof,
         skipFailed: false,

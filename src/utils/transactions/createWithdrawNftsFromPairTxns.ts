@@ -32,6 +32,9 @@ export const createWithdrawNftsFromPairTxns: CreateWithdrawNftsFromPairTxns =
           withdrawNftFromPair({
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
+            args: {
+              pnft: {},
+            },
             accounts: {
               nftPairBox: new web3.PublicKey(nft.nftPairBox),
               pair: new web3.PublicKey(pairPubkey),

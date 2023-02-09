@@ -19,12 +19,12 @@ export const tokensList: TokenItem[] = [
   //   image:
   //     'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png',
   // },
-  // {
-  //   label: 'MSOL',
-  //   value: TokensValues.mSOL,
-  //   image:
-  //     'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So/logo.png',
-  // },
+  {
+    label: 'MSOL',
+    value: TokensValues.mSOL,
+    image:
+      'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So/logo.png',
+  },
   // {
   //   label: 'HADES',
   //   value: TokensValues.Hades,
