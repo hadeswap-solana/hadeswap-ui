@@ -35,12 +35,12 @@ export const tokensList: TokenItem[] = [
     value: TokensValues.Bonk,
     image: 'https://arweave.net/hQiPZOsRZXGXBJd_82PhVdlM_hACsT_q6wqwf5cSY7I',
   },
-  // {
-  //   label: 'SAMO',
-  //   value: TokensValues.SAMO,
-  //   image:
-  //     'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU/logo.png',
-  // },
+  {
+    label: 'SAMO',
+    value: TokensValues.SAMO,
+    image:
+      'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU/logo.png',
+  },
   {
     label: 'DUST',
     value: TokensValues.DUST,
