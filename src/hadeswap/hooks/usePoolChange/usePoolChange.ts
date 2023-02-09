@@ -14,6 +14,8 @@ import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
 import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
+import { signAndConfirmTransaction } from '../../../utils/transactions';
+import { captureSentryError } from '../../../utils/sentry';
 
 export type UsePoolChange = (props: {
   pool: Pair;
@@ -114,7 +116,7 @@ export const usePoolChange: UsePoolChange = ({
     }
   };
 
-  const withdrawAllLiquidity = async () => {
+  const withdrawAllLiquidity = async (isVOTranaction?: boolean) => {
     const txnsDataArray = await buildWithdrawAllLiquidityFromPoolTxnsData({
       pool,
       rawDelta,
@@ -162,17 +164,50 @@ export const usePoolChange: UsePoolChange = ({
       }),
     );
 
-    const isSuccess = await signAndSendAllTransactionsInSeries({
-      txnsData,
-      wallet,
-      connection,
-    });
+    if (isVOTranaction) {
+      for (let i = 0; i < txnsDataArray.flat().length; ++i) {
+        const { transaction, signers } = txnsDataArray.flat()[i];
+
+        dispatch(
+          txsLoadingModalActions.setState({
+            visible: true,
+            cards: txnsDataArray
+              .flat()
+              .map(({ loadingModalCard }) => loadingModalCard),
+            amountOfTxs: txnsDataArray.flat().length || 0,
+            currentTxNumber: i + 1 || 0,
+            textStatus: TxsLoadingModalTextStatus.APPROVE,
+          }),
+        );
+
+        try {
+          await signAndConfirmTransaction({
+            transaction,
+            signers,
+            wallet,
+            connection,
+            commitment: 'confirmed',
+          });
+        } catch (error) {
+          captureSentryError({
+            error,
+            wallet,
+          });
+        }
+      }
+    } else {
+      const isSuccess = await signAndSendAllTransactionsInSeries({
+        txnsData,
+        wallet,
+        connection,
+      });
+
+      if (isSuccess) {
+        history.push(`/pools/${pool?.pairPubkey}`);
+      }
+    }
 
     dispatch(txsLoadingModalActions.setVisible(false));
-
-    if (isSuccess) {
-      history.push(`/pools/${pool?.pairPubkey}`);
-    }
   };
 
   return {
