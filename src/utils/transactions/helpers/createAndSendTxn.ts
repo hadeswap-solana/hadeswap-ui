@@ -27,7 +27,14 @@ export const createAndSendTxn: CreateAndSendTxn = async ({
   additionalSigners = [],
   commitment = 'finalized',
 }) => {
+  console.log('wallet.wallet?.adapter: ', wallet.wallet?.adapter);
+  console.log(
+    'wallet.wallet?.adapter?.supportedTransactionVersions: ',
+    wallet.wallet?.adapter?.supportedTransactionVersions,
+  );
+
   const isSupportV0Transaction =
+    wallet.wallet?.adapter?.name !== 'Ledger' ||
     wallet.wallet?.adapter?.supportedTransactionVersions === null ||
     (wallet.wallet?.adapter?.supportedTransactionVersions as any) !== 'legacy';
 
