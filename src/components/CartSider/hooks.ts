@@ -58,15 +58,6 @@ type UseSwap = (params: {
   swap: () => Promise<void>;
 };
 
-type UseExchangeData = (params: { rawSolAmount: number }) => {
-  amount: JSBI;
-  tokenFormattedAmount: string;
-  exchangeLoading: boolean;
-  exchangeFetching: boolean;
-  tokenExchange: TokenItem;
-  rate: number;
-};
-
 export const useCartSider: UseCartSider = () => {
   const cartItems = useSelector(selectCartItems);
   const cartOpened = useSelector(selectCartSiderVisible);
@@ -186,6 +177,15 @@ export const useSwap: UseSwap = ({
   return {
     swap,
   };
+};
+
+type UseExchangeData = (params: { rawSolAmount: number }) => {
+  amount: JSBI;
+  tokenFormattedAmount: string;
+  exchangeLoading: boolean;
+  exchangeFetching: boolean;
+  tokenExchange: TokenItem;
+  rate: number;
 };
 
 export const useExchangeData: UseExchangeData = ({ rawSolAmount }) => {
