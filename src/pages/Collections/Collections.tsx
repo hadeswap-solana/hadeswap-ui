@@ -81,6 +81,7 @@ export const Collections: FC = () => {
               )}
             </div>
             <ItemsList
+              idKey="collectionName"
               onRowClick={onRowClick}
               data={collections}
               mapType={COLLECTION}
