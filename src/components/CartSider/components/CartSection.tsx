@@ -7,6 +7,10 @@ import { TokenItem } from '../../../constants/tokens';
 import { TokenPrice } from '../../TokenPrice';
 
 import styles from './styles.module.scss';
+import {
+  calculateBuyNftPriceWithRoyalty,
+  calculateSellNftPriceWithRoyalty,
+} from '../../../utils';
 
 interface CartSectionProps {
   title: string;
@@ -18,6 +22,7 @@ interface CartSectionProps {
   tokenRate?: number;
   tokenFormattedAmount?: string;
   tokenLoading?: boolean;
+  isBuySection?: boolean;
 }
 
 const CartSection: FC<CartSectionProps> = ({
@@ -30,6 +35,7 @@ const CartSection: FC<CartSectionProps> = ({
   tokenRate,
   tokenFormattedAmount,
   tokenLoading,
+  isBuySection,
 }) => (
   <>
     {!!cartItems.length && (
@@ -65,7 +71,19 @@ const CartSection: FC<CartSectionProps> = ({
               key={item.mint}
               name={item.name}
               imageUrl={item.imageUrl}
-              price={item.price}
+              price={
+                isBuySection
+                  ? calculateBuyNftPriceWithRoyalty(
+                      item.price,
+                      item?.sellerFeeBasisPoints,
+                      item?.isPNFT,
+                    )
+                  : calculateSellNftPriceWithRoyalty(
+                      item.price,
+                      item?.sellerFeeBasisPoints,
+                      item?.isPNFT,
+                    )
+              }
               onDeselect={createOnDeselectHandler(item)}
               token={tokenExchange}
               tokenRate={tokenRate}

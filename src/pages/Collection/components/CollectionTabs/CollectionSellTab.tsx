@@ -8,7 +8,10 @@ import { Typography } from 'antd';
 import { NFTCard } from '../../../../components/NFTCard/NFTCard';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { FakeInfinityScroll } from '../../../../components/FakeInfiinityScroll';
-import { formatBNToString } from '../../../../utils';
+import {
+  calculateSellNftPriceWithRoyalty,
+  formatBNToString,
+} from '../../../../utils';
 import {
   selectAllSellOrdersForMarket,
   selectMarketWalletNftsLoading,
@@ -67,21 +70,27 @@ export const CollectionSellTab: FC = () => {
         <>
           {/* <SweepButton /> */}
           <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
-            {sellOrders.map((order) => (
-              <NFTCard
-                key={order.mint}
-                imageUrl={order.imageUrl}
-                name={order.name}
-                price={
-                  order.price > 0 ? formatBNToString(new BN(order.price)) : ''
-                }
-                //onAddToCart={createOnBtnClick(order)}
-                onCardClick={createOnBtnClick(order)}
-                selected={order?.selected}
-                disabled={order.price <= 0}
-                rarity={order.rarity}
-              />
-            ))}
+            {sellOrders.map((order) => {
+              const price = calculateSellNftPriceWithRoyalty(
+                order.price,
+                order?.sellerFeeBasisPoints,
+                order?.isPNFT,
+              );
+
+              return (
+                <NFTCard
+                  key={order.mint}
+                  imageUrl={order.imageUrl}
+                  name={order.name}
+                  price={formatBNToString(new BN(price))}
+                  //onAddToCart={createOnBtnClick(order)}
+                  onCardClick={createOnBtnClick(order)}
+                  selected={order?.selected}
+                  disabled={order.price <= 0}
+                  rarity={order.rarity}
+                />
+              );
+            })}
           </FakeInfinityScroll>
         </>
       )}

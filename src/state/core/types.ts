@@ -102,6 +102,8 @@ export interface Nft {
   validProof?: Buffer[]; //? Used for validation by merkle tree
   disabled?: boolean;
   rarity?: NftRarity;
+  sellerFeeBasisPoints?: number;
+  isPNFT?: boolean;
 }
 
 export interface NftActivityData {

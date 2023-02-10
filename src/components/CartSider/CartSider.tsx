@@ -60,6 +60,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
           tokenRate={rate}
           tokenFormattedAmount={tokenFormattedAmount}
           tokenLoading={exchangeLoading || exchangeFetching}
+          isBuySection
         />
         <CartSection
           title={titleSell}

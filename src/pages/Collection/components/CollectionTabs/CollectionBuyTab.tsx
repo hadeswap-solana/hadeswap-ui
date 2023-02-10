@@ -12,7 +12,10 @@ import {
   selectMarketPairsLoading,
 } from '../../../../state/core/selectors';
 import { coreActions } from '../../../../state/core/actions';
-import { formatBNToString } from '../../../../utils';
+import {
+  calculateBuyNftPriceWithRoyalty,
+  formatBNToString,
+} from '../../../../utils';
 import {
   CartOrder,
   MarketOrder,
@@ -109,18 +112,26 @@ export const CollectionBuyTab: FC = () => {
           </div>
 
           <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
-            {sortedOrders.map((order) => (
-              <NFTCard
-                key={order.mint}
-                imageUrl={order.imageUrl}
-                name={order.name}
-                price={formatBNToString(new BN(order.price))}
-                onCardClick={createOnBtnClick(order)}
-                selected={order?.selected}
-                onExchange={addBuyOrderToExchange(order)}
-                rarity={order.rarity}
-              />
-            ))}
+            {sortedOrders.map((order) => {
+              const price = calculateBuyNftPriceWithRoyalty(
+                order.price,
+                order?.sellerFeeBasisPoints,
+                order?.isPNFT,
+              );
+
+              return (
+                <NFTCard
+                  key={order.mint}
+                  imageUrl={order.imageUrl}
+                  name={order.name}
+                  price={formatBNToString(new BN(price))}
+                  onCardClick={createOnBtnClick(order)}
+                  selected={order?.selected}
+                  onExchange={addBuyOrderToExchange(order)}
+                  rarity={order.rarity}
+                />
+              );
+            })}
           </FakeInfinityScroll>
         </>
       )}

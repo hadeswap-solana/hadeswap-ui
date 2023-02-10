@@ -180,3 +180,27 @@ export const getRawSpotPrice = ({
       })
     : baseSpotPrice;
 };
+
+export const calculateSellNftPriceWithRoyalty = (
+  price: number,
+  sellerFeeBasisPoints: number,
+  isPNFT: boolean,
+) => {
+  if (!isPNFT) return price;
+
+  const priceWithRoyalty = price - (price * sellerFeeBasisPoints) / 1e4;
+
+  return priceWithRoyalty;
+};
+
+export const calculateBuyNftPriceWithRoyalty = (
+  price: number,
+  sellerFeeBasisPoints: number,
+  isPNFT: boolean,
+) => {
+  if (!isPNFT) return price;
+
+  const priceWithRoyalty = price + (price * sellerFeeBasisPoints) / 1e4;
+
+  return priceWithRoyalty;
+};

@@ -19,7 +19,11 @@ import {
 import { selectTokenExchange } from '../../state/tokenExchange/selectors';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
-import { notify } from '../../utils';
+import {
+  calculateBuyNftPriceWithRoyalty,
+  calculateSellNftPriceWithRoyalty,
+  notify,
+} from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { signAndSendTransactionsInSeries } from '../../utils/transactions';
 import { CartOrder } from '../../state/core/types';
@@ -74,8 +78,27 @@ export const useCartSider: UseCartSider = () => {
   const isCartEmpty = useSelector(selectIsCartEmpty);
 
   const itemsAmount = cartItems.buy.length + cartItems.sell.length;
-  const totalBuy = cartItems.buy.reduce((acc, item) => acc + item.price, 0);
-  const totalSell = cartItems.sell.reduce((acc, item) => acc + item.price, 0);
+  const totalBuy = cartItems.buy.reduce((acc, item) => {
+    return (
+      acc +
+      calculateBuyNftPriceWithRoyalty(
+        item.price,
+        item?.sellerFeeBasisPoints,
+        item?.isPNFT,
+      )
+    );
+  }, 0);
+
+  const totalSell = cartItems.sell.reduce((acc, item) => {
+    return (
+      acc +
+      calculateSellNftPriceWithRoyalty(
+        item.price,
+        item?.sellerFeeBasisPoints,
+        item?.isPNFT,
+      )
+    );
+  }, 0);
 
   const isOneBuyNft = cartItems.buy.length === 1;
   const crossmintConfig = {
