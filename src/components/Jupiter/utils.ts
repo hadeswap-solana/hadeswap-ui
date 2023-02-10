@@ -31,6 +31,7 @@ export const calcAmount = (
   const inputAmount = calcTokenAmount(solAmount, rate);
 
   const rawAmount = Math.ceil(Number(inputAmount) * 10 ** decimals);
+
   return {
     amount: JSBI.BigInt(rawAmount),
     tokenFormattedAmount: inputAmount,

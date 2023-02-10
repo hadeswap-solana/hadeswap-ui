@@ -30,52 +30,54 @@ const CartSection: FC<CartSectionProps> = ({
   tokenRate,
   tokenFormattedAmount,
   tokenLoading,
-}) => (
-  <>
-    {!!cartItems.length && (
-      <div className={styles.cartSection}>
-        <div className={styles.cartHeader}>
-          <div className={styles.cartHeaderTitle}>
-            <h4>{title}</h4>
-            <button
-              className={styles.trashAllButton}
-              onClick={() => onDeselectBulkHandler(cartItems)}
-            >
-              <TrashIcon />
-            </button>
+}) => {
+  return (
+    <>
+      {!!cartItems.length && (
+        <div className={styles.cartSection}>
+          <div className={styles.cartHeader}>
+            <div className={styles.cartHeaderTitle}>
+              <h4>{title}</h4>
+              <button
+                className={styles.trashAllButton}
+                onClick={() => onDeselectBulkHandler(cartItems)}
+              >
+                <TrashIcon />
+              </button>
+            </div>
+            {tokenExchange ? (
+              <TokenPrice
+                token={tokenExchange}
+                tokenAmount={tokenFormattedAmount}
+                tokenLoading={tokenLoading}
+                className={styles.cartHeaderPrice}
+              />
+            ) : (
+              <SolPrice
+                className={styles.cartHeaderPrice}
+                price={totalPrice}
+                raw
+              />
+            )}
           </div>
-          {tokenExchange ? (
-            <TokenPrice
-              token={tokenExchange}
-              tokenAmount={tokenFormattedAmount}
-              tokenLoading={tokenLoading}
-              className={styles.cartHeaderPrice}
-            />
-          ) : (
-            <SolPrice
-              className={styles.cartHeaderPrice}
-              price={totalPrice}
-              raw
-            />
-          )}
+          <div className={styles.cartItems}>
+            {cartItems.map((item) => (
+              <Card
+                key={item.mint}
+                name={item.name}
+                imageUrl={item.imageUrl}
+                price={item.price}
+                onDeselect={createOnDeselectHandler(item)}
+                token={tokenExchange}
+                tokenRate={tokenRate}
+                tokenLoading={tokenLoading}
+              />
+            ))}
+          </div>
         </div>
-        <div className={styles.cartItems}>
-          {cartItems.map((item) => (
-            <Card
-              key={item.mint}
-              name={item.name}
-              imageUrl={item.imageUrl}
-              price={item.price}
-              onDeselect={createOnDeselectHandler(item)}
-              token={tokenExchange}
-              tokenRate={tokenRate}
-              tokenLoading={tokenLoading}
-            />
-          ))}
-        </div>
-      </div>
-    )}
-  </>
-);
+      )}
+    </>
+  );
+};
 
 export default CartSection;

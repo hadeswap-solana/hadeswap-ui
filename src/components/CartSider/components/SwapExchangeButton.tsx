@@ -56,7 +56,7 @@ const SwapExchangeButton: FC<ExchangeButtonProps> = ({
       });
     }
 
-    !exchangeResult.error && (await swap());
+    await swap();
   };
 
   const loading = txnLoading || exchangeLoading || exchangeFetching;

@@ -26,6 +26,7 @@ import store from './state/store';
 import { ENDPOINT } from './config';
 import Confetti from './components/Confetti';
 import { initSentry } from './utils/sentry';
+import { Jupiter } from './components/Jupiter';
 
 const queryClient = new QueryClient();
 initSentry();
@@ -51,8 +52,10 @@ const App: FC = () => {
       <ReduxProvider store={store}>
         <ConnectionProvider endpoint={ENDPOINT}>
           <WalletProvider wallets={wallets} autoConnect>
-            <Router />
-            <Confetti />
+            <Jupiter>
+              <Router />
+              <Confetti />
+            </Jupiter>
           </WalletProvider>
         </ConnectionProvider>
       </ReduxProvider>
