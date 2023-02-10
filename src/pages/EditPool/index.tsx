@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -27,9 +27,12 @@ import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
 import Chart from '../../components/Chart/Chart';
 import { chartIDs } from '../../components/Chart/constants';
+import WithdrawLiquidity from './WithdrawLiquidity/WithdrawLiquidity';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
+
+  const [isV0Transaction, setIsV0Transaction] = useState<boolean>(false);
 
   useFetchAllMarkets();
   useFetchPair();
@@ -93,6 +96,7 @@ export const EditPool: FC = () => {
 
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({
+      isV0Transaction,
       pool,
       selectedNfts,
       buyOrdersAmount,
@@ -130,6 +134,12 @@ export const EditPool: FC = () => {
           <Spinner />
         ) : (
           <>
+            <WithdrawLiquidity
+              isDisabled={!isWithdrawAllAvailable}
+              onClick={withdrawAllLiquidity}
+              checked={isV0Transaction}
+              onChange={() => setIsV0Transaction(!isV0Transaction)}
+            />
             {pairType === PairType.LiquidityProvision && (
               <WithdrawFees
                 className={styles.withdrawBlock}
@@ -175,13 +185,6 @@ export const EditPool: FC = () => {
             <div className={styles.buttonsWrapper}>
               <Button isDisabled={!isChanged} onClick={change}>
                 <span>save changes</span>
-              </Button>
-              <Button
-                outlined
-                isDisabled={!isWithdrawAllAvailable}
-                onClick={withdrawAllLiquidity}
-              >
-                <span>withdraw all liquidity</span>
               </Button>
               <Button
                 outlined

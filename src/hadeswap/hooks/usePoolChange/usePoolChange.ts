@@ -24,6 +24,7 @@ export type UsePoolChange = (props: {
   rawFee: number;
   rawSpotPrice: number;
   rawDelta: number;
+  isV0Transaction?: boolean;
 }) => {
   change: () => Promise<void>;
   withdrawAllLiquidity: () => Promise<void>;
@@ -38,6 +39,7 @@ export const usePoolChange: UsePoolChange = ({
   rawFee,
   rawDelta,
   rawSpotPrice,
+  isV0Transaction,
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -116,7 +118,7 @@ export const usePoolChange: UsePoolChange = ({
     }
   };
 
-  const withdrawAllLiquidity = async (isVOTranaction?: boolean) => {
+  const withdrawAllLiquidity = async () => {
     const txnsDataArray = await buildWithdrawAllLiquidityFromPoolTxnsData({
       pool,
       rawDelta,
@@ -164,7 +166,7 @@ export const usePoolChange: UsePoolChange = ({
       }),
     );
 
-    if (isVOTranaction) {
+    if (isV0Transaction) {
       for (let i = 0; i < txnsDataArray.flat().length; ++i) {
         const { transaction, signers } = txnsDataArray.flat()[i];
 
