@@ -3,12 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CloseOutlined } from '@ant-design/icons';
 import { Typography, Modal, Col, Row } from 'antd';
 import { useParams } from 'react-router-dom';
-import BN from 'bn.js';
 
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { CartOrder, MarketOrder, OrderType } from '../../state/core/types';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
-import { formatBNToString, getFormattedPrice } from '../../utils';
+import { getFormattedPrice } from '../../utils';
 import { FakeInfinityScroll } from '../FakeInfiinityScroll';
 import { coreActions } from '../../state/core/actions';
 import styles from './ExchangeNftModal.module.scss';
