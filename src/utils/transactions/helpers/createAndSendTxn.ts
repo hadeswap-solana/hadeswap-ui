@@ -84,7 +84,7 @@ export const createAndSendTxn: CreateAndSendTxn = async ({
 
     const txid = await connection.sendTransaction(transaction, {
       maxRetries: 5,
-      skipPreflight: true,
+      skipPreflight: false,
     });
 
     notify({
