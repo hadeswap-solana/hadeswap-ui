@@ -33,10 +33,10 @@ export const createAndSendTxn: CreateAndSendTxn = async ({
     wallet.wallet?.adapter?.supportedTransactionVersions,
   );
 
-  const isSupportV0Transaction =
-    wallet.wallet?.adapter?.name !== 'Ledger' ||
-    wallet.wallet?.adapter?.supportedTransactionVersions === null ||
-    (wallet.wallet?.adapter?.supportedTransactionVersions as any) !== 'legacy';
+  const isSupportV0Transaction = false;
+  // wallet.wallet?.adapter?.name !== 'Ledger' ||
+  // wallet.wallet?.adapter?.supportedTransactionVersions === null ||
+  // (wallet.wallet?.adapter?.supportedTransactionVersions as any) !== 'legacy';
 
   if (!isSupportV0Transaction) {
     const transaction = new web3.Transaction().add(...txInstructions);
