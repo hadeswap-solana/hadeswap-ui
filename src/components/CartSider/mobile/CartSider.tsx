@@ -37,7 +37,7 @@ const CartSiderMobile: FC<CartSiderProps> = ({
 
   const {
     amount,
-    tokenFormattedAmount,
+    tokenAmount,
     tokenExchange,
     rate,
     exchangeLoading,
@@ -87,7 +87,7 @@ const CartSiderMobile: FC<CartSiderProps> = ({
                 totalPrice={totalBuy}
                 tokenExchange={tokenExchange}
                 tokenRate={rate}
-                tokenFormattedAmount={tokenFormattedAmount}
+                tokenAmount={tokenAmount}
                 tokenLoading={exchangeLoading || exchangeFetching}
               />
               <CartSection
@@ -105,11 +105,11 @@ const CartSiderMobile: FC<CartSiderProps> = ({
             <div className={styles.submitWrapper}>
               {tokenExchange && (
                 <SwapExchangeButton
-                  rawSolAmount={totalBuy}
                   inputToken={tokenExchange}
+                  rate={rate}
                   swap={swap}
                   amount={amount}
-                  tokenFormattedAmount={tokenFormattedAmount}
+                  tokenAmount={tokenAmount}
                   exchangeLoading={exchangeLoading}
                   exchangeFetching={exchangeFetching}
                 />
