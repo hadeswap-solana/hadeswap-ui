@@ -91,10 +91,8 @@ export const getFormattedPrice = (price: number): string => {
   return price > 0 ? formatBNToString(new BN(price)) : '';
 };
 
-export const formatNumericDigit = (number: number): string => {
-  const value = number.toFixed(3);
-  const integerStr = String(Math.trunc(number));
-
+export const formatNumericDigit = (value: string): string => {
+  const integerStr = String(Math.trunc(Number(value)));
   const numberStr = String(Number(value));
   const dotIndex = numberStr.lastIndexOf('.');
   const tale = numberStr.substring(dotIndex);
@@ -111,6 +109,9 @@ export const formatNumericDigit = (number: number): string => {
       return value;
     });
 
+    if (dotIndex === -1) {
+      return formattedArr.join('');
+    }
     return formattedArr.join('') + tale;
   }
 

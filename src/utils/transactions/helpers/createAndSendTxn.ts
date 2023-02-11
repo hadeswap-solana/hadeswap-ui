@@ -3,6 +3,8 @@ import { web3 } from 'hadeswap-sdk';
 
 import { NotifyType } from '../../solanaUtils';
 import { notify } from '../..';
+import { signAndConfirmTransaction } from './signAndConfirmTransaction';
+import { captureSentryError } from '../../sentry';
 
 interface CreateAndSendTransactionProps {
   txInstructions: web3.TransactionInstruction[];
@@ -25,45 +27,75 @@ export const createAndSendTxn: CreateAndSendTxn = async ({
   additionalSigners = [],
   commitment = 'finalized',
 }) => {
-  onBeforeApprove?.();
+  console.log('wallet.wallet?.adapter: ', wallet.wallet?.adapter);
+  console.log(
+    'wallet.wallet?.adapter?.supportedTransactionVersions: ',
+    wallet.wallet?.adapter?.supportedTransactionVersions,
+  );
 
-  const { blockhash, lastValidBlockHeight } =
-    await connection.getLatestBlockhash(commitment);
+  const isSupportV0Transaction = false;
+  // wallet.wallet?.adapter?.name !== 'Ledger' ||
+  // wallet.wallet?.adapter?.supportedTransactionVersions === null ||
+  // (wallet.wallet?.adapter?.supportedTransactionVersions as any) !== 'legacy';
 
-  const lookupTable = (
-    await connection.getAddressLookupTable(
-      new web3.PublicKey(process.env.LOOKUP_TABLE_PUBKEY),
-    )
-  ).value;
+  if (!isSupportV0Transaction) {
+    const transaction = new web3.Transaction().add(...txInstructions);
 
-  if (!lookupTable) return;
+    try {
+      await signAndConfirmTransaction({
+        transaction,
+        signers: additionalSigners,
+        wallet,
+        connection,
+        commitment: 'confirmed',
+      });
+    } catch (error) {
+      captureSentryError({
+        error,
+        wallet,
+      });
+    }
+  } else {
+    onBeforeApprove?.();
 
-  const messageV0 = new web3.TransactionMessage({
-    payerKey: wallet.publicKey,
-    recentBlockhash: blockhash,
-    instructions: txInstructions,
-  }).compileToV0Message([lookupTable]);
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash(commitment);
 
-  const transaction = new web3.VersionedTransaction(messageV0);
+    const lookupTable = (
+      await connection.getAddressLookupTable(
+        new web3.PublicKey(process.env.LOOKUP_TABLE_PUBKEY),
+      )
+    ).value;
 
-  const signedTransaction = await wallet.signTransaction(transaction);
-  signedTransaction.sign([...additionalSigners]);
+    if (!lookupTable) return;
 
-  onAfterSend?.();
+    const messageV0 = new web3.TransactionMessage({
+      payerKey: wallet.publicKey,
+      recentBlockhash: blockhash,
+      instructions: txInstructions,
+    }).compileToV0Message([lookupTable]);
 
-  const txid = await connection.sendTransaction(transaction, {
-    maxRetries: 5,
-    skipPreflight: true,
-  });
+    const transaction = new web3.VersionedTransaction(messageV0);
 
-  notify({
-    message: 'Transaction sent',
-    type: NotifyType.INFO,
-  });
+    const signedTransaction = await wallet.signTransaction(transaction);
+    signedTransaction.sign([...additionalSigners]);
 
-  await connection.confirmTransaction({
-    signature: txid,
-    blockhash,
-    lastValidBlockHeight,
-  });
+    onAfterSend?.();
+
+    const txid = await connection.sendTransaction(transaction, {
+      maxRetries: 5,
+      skipPreflight: false,
+    });
+
+    notify({
+      message: 'Transaction sent',
+      type: NotifyType.INFO,
+    });
+
+    await connection.confirmTransaction({
+      signature: txid,
+      blockhash,
+      lastValidBlockHeight,
+    });
+  }
 };

@@ -19,7 +19,7 @@ export const SolPrice: FC<SolPriceProps> = ({
   rightIcon,
 }) => {
   const amount: number = raw ? price / 1e9 : price;
-  const value: string = formatNumericDigit(amount);
+  const value: string = formatNumericDigit(amount.toFixed(3));
 
   return (
     <div className={classNames(styles.price, className)}>
