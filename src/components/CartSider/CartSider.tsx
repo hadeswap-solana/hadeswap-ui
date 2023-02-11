@@ -29,7 +29,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
 
   const {
     amount,
-    tokenFormattedAmount,
+    tokenAmount,
     tokenExchange,
     rate,
     exchangeLoading,
@@ -58,7 +58,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
           totalPrice={totalBuy}
           tokenExchange={tokenExchange}
           tokenRate={rate}
-          tokenFormattedAmount={tokenFormattedAmount}
+          tokenAmount={tokenAmount}
           tokenLoading={exchangeLoading || exchangeFetching}
         />
         <CartSection
@@ -73,9 +73,9 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
       <div className={styles.submitWrapper}>
         {!!tokenExchange && (
           <SwapExchangeButton
-            rawSolAmount={totalBuy}
             inputToken={tokenExchange}
-            tokenFormattedAmount={tokenFormattedAmount}
+            tokenAmount={tokenAmount}
+            rate={rate}
             swap={swap}
             amount={amount}
             exchangeLoading={exchangeLoading}
