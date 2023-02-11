@@ -24,7 +24,7 @@ export const calcAmount = (
   rate = 1,
 ): {
   amount: JSBI;
-  tokenFormattedAmount: string;
+  tokenAmount: string;
   rate: number;
 } => {
   const solAmount: string = (rawSolAmount / 1e9).toFixed(3);
@@ -34,7 +34,7 @@ export const calcAmount = (
 
   return {
     amount: JSBI.BigInt(rawAmount),
-    tokenFormattedAmount: inputAmount,
+    tokenAmount: inputAmount,
     rate,
   };
 };

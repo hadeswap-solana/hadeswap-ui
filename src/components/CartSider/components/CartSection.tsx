@@ -16,7 +16,7 @@ interface CartSectionProps {
   totalPrice: number;
   tokenExchange?: TokenItem;
   tokenRate?: number;
-  tokenFormattedAmount?: string;
+  tokenAmount?: string;
   tokenLoading?: boolean;
 }
 
@@ -28,7 +28,7 @@ const CartSection: FC<CartSectionProps> = ({
   totalPrice,
   tokenExchange,
   tokenRate,
-  tokenFormattedAmount,
+  tokenAmount,
   tokenLoading,
 }) => {
   return (
@@ -48,7 +48,7 @@ const CartSection: FC<CartSectionProps> = ({
             {tokenExchange ? (
               <TokenPrice
                 token={tokenExchange}
-                tokenAmount={tokenFormattedAmount}
+                tokenAmount={tokenAmount}
                 tokenLoading={tokenLoading}
                 className={styles.cartHeaderPrice}
               />

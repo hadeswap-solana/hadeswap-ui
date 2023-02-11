@@ -181,7 +181,7 @@ export const useSwap: UseSwap = ({
 
 type UseExchangeData = (params: { rawSolAmount: number }) => {
   amount: JSBI;
-  tokenFormattedAmount: string;
+  tokenAmount: string;
   exchangeLoading: boolean;
   exchangeFetching: boolean;
   tokenExchange: TokenItem;
@@ -202,14 +202,14 @@ export const useExchangeData: UseExchangeData = ({ rawSolAmount }) => {
     return tokensData?.find((item) => item.address === tokenExchange?.value);
   }, [tokensData, tokenExchange?.value]);
 
-  const { amount, tokenFormattedAmount, rate } = useMemo(
+  const { amount, tokenAmount, rate } = useMemo(
     () => calcAmount(rawSolAmount, inputTokenInfo?.decimals, tokenRate?.price),
     [rawSolAmount, inputTokenInfo, tokenRate],
   );
 
   return {
     amount,
-    tokenFormattedAmount,
+    tokenAmount,
     tokenExchange,
     rate,
     exchangeLoading: tokensLoading || rateLoading,
