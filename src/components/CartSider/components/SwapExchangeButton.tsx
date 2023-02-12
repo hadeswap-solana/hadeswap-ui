@@ -6,28 +6,27 @@ import { useJupiterData } from '../../Jupiter/hook';
 import { exchangeToken } from '../../Jupiter/utils';
 import { TokenExchangeLoadingModal } from './TokenExchangeLoadingModal';
 import { TokenItem } from '../../../constants/tokens';
-import { formatBNToString, notify } from '../../../utils';
-import { BN } from 'hadeswap-sdk';
+import { formatNumericDigit, notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
 import JSBI from 'jsbi';
 
 import styles from './styles.module.scss';
 
 interface ExchangeButtonProps {
-  rawSolAmount: number;
   inputToken: TokenItem;
+  rate: number;
   amount: JSBI;
-  tokenFormattedAmount: string;
+  tokenAmount: string;
   swap: () => Promise<void>;
   exchangeLoading: boolean;
   exchangeFetching: boolean;
 }
 
 const SwapExchangeButton: FC<ExchangeButtonProps> = ({
-  rawSolAmount,
   inputToken,
   amount,
-  tokenFormattedAmount,
+  tokenAmount,
+  rate,
   swap,
   exchangeLoading,
   exchangeFetching,
@@ -37,14 +36,16 @@ const SwapExchangeButton: FC<ExchangeButtonProps> = ({
 
   const { jupiter } = useJupiterData({ inputToken, amount });
 
-  const solFormattedAmount = formatBNToString(new BN(rawSolAmount), 9, 3);
+  const estimatedSolAmount = (Number(tokenAmount) / rate).toFixed(3);
+  const estimatedSolAmountFormatted = formatNumericDigit(estimatedSolAmount);
+  const tokenFormattedAmount = formatNumericDigit(tokenAmount);
 
   const swapHandler = async () => {
     setTxnLoading(true);
     const exchangeResult = await exchangeToken({ jupiter, wallet });
     setTxnLoading(false);
 
-    if (exchangeResult.error) {
+    if (exchangeResult.error && exchangeResult.error.code !== 7001) {
       notify({
         message: exchangeResult.error.message,
         type: NotifyType.ERROR,
@@ -56,7 +57,11 @@ const SwapExchangeButton: FC<ExchangeButtonProps> = ({
       });
     }
 
-    !exchangeResult.error && (await swap());
+    if (exchangeResult?.error && exchangeResult?.error?.code !== 7001) {
+      return;
+    } else {
+      await swap();
+    }
   };
 
   const loading = txnLoading || exchangeLoading || exchangeFetching;
@@ -72,7 +77,7 @@ const SwapExchangeButton: FC<ExchangeButtonProps> = ({
       </Button>
       {txnLoading && (
         <TokenExchangeLoadingModal
-          solAmount={solFormattedAmount}
+          solAmount={estimatedSolAmountFormatted}
           tokenAmount={tokenFormattedAmount}
           inputToken={inputToken}
         />
