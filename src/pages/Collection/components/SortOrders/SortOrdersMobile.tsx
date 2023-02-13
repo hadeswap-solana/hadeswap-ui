@@ -9,6 +9,7 @@ import ChevronIcon from '../../../../icons/ChevronIcon';
 import { FilterFormInputsNames, OrderSortValue } from './hooks/useOrdersSort';
 import { SORT_ORDER } from '../../../../types';
 
+import localStyles from './styles.module.scss';
 import styles from '../../../../components/Sorting/mobile/Sorting.module.scss';
 
 interface SortOrdersMobileProps {
@@ -31,18 +32,21 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
   toggle,
 }) => {
   const sortOrder = sort.value.split('_')[1] || SORT_ORDER.ASC;
+  const sortValue = sort.value.split('_')[1]
+    ? sort.value
+    : `${sort.value}_${sortOrder}`;
 
   return (
     <>
-      <BlackButton onClick={toggle}>
-        <>
+      <BlackButton className={localStyles.blackButton} onClick={toggle}>
+        <div>
           <span style={{ marginRight: '12px' }}>{sort.label}</span>
           <ArrowIcon
             className={classNames(styles.arrowIcon, {
               [styles.arrowIconLeft]: sortOrder === SORT_ORDER.ASC,
             })}
           />
-        </>
+        </div>
       </BlackButton>
       {visible && (
         <Modal>
@@ -80,10 +84,10 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
                           <ArrowIcon className={styles.arrowIcon} />
                         }
                         isActiveLeft={
-                          `${value}_${SORT_ORDER.ASC}` === sort.value
+                          `${value}_${SORT_ORDER.ASC}` === sortValue
                         }
                         isActiveRight={
-                          `${value}_${SORT_ORDER.DESC}` === sort.value
+                          `${value}_${SORT_ORDER.DESC}` === sortValue
                         }
                       />
                     </Fragment>

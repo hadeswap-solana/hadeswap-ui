@@ -64,4 +64,9 @@
 
 .blackButton {
   min-width: 136px;
+
+  div {
+    display: flex;
+    align-items: center;
+  }
 }
