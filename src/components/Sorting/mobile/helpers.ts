@@ -1,6 +1,6 @@
 import { createPoolTableRow } from '../../../state/core/helpers';
 import { MarketInfo } from '../../../state/core/types';
-import { SORT_ORDER } from '../../../constants/common';
+import { SORT_ORDER } from '../../../types';
 import { specifyAndSort } from '../../../utils';
 
 type SortProps = MarketInfo[] | ReturnType<typeof createPoolTableRow>[];

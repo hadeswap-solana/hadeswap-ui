@@ -38,12 +38,12 @@ const SortOrdersControll: FC<SortOrdersControllProps> = ({
   const ref = useRef();
   useOnClickOutside(ref, closeSortModal);
 
-  const onChangeSortOrder = (label: JSX.Element, value: string) => {
+  const onChangeSortOrder = (label: JSX.Element | string, value: string) => {
     setValue(FilterFormInputsNames.SORT, { label, value });
   };
 
   return (
-    <div className={styles.sortWrapper} ref={ref}>
+    <>
       {isMobile ? (
         <SortOrdersMobile
           options={optionsMobile}
@@ -55,16 +55,18 @@ const SortOrdersControll: FC<SortOrdersControllProps> = ({
           toggle={toggleSortModal}
         />
       ) : (
-        <SortOrders
-          options={options}
-          onChange={onChangeSortOrder}
-          sort={sort}
-          control={control}
-          visible={sortModalVisible}
-          toggle={toggleSortModal}
-        />
+        <div className={styles.sortWrapper}>
+          <SortOrders
+            options={options}
+            onChange={onChangeSortOrder}
+            sort={sort}
+            control={control}
+            visible={sortModalVisible}
+            toggle={toggleSortModal}
+          />
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
