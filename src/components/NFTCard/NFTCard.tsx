@@ -15,6 +15,9 @@ import { SwapButton } from '../Buttons/SwapButton';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PlusIcon } from '../../icons/PlusIcon';
 import { MinusIcon } from '../../icons/MinusIcon';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectAllSellOrdersForMarket } from '../../state/core/selectors';
 
 interface NFTCardProps {
   className?: string;
@@ -50,6 +53,10 @@ export const NFTCard: FC<NFTCardProps> = ({
   createPool = false,
 }) => {
   const { connected } = useWallet();
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
+  const sellOrders = useSelector((state: never) =>
+    selectAllSellOrdersForMarket(state, marketPublicKey),
+  );
 
   return (
     <div
@@ -100,7 +107,7 @@ export const NFTCard: FC<NFTCardProps> = ({
               {selected ? <MinusIcon /> : <PlusIcon />}
             </Button>
           )}
-          {onExchange && (
+          {onExchange && !!sellOrders.length && (
             <SwapButton
               onClick={(e) => {
                 e.stopPropagation();
