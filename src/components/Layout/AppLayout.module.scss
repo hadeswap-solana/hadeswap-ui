@@ -13,11 +13,6 @@
 .content {
   display: flex;
   overflow-x: clip;
-
-  @media (min-width: 1025px) {
-    overflow-y: hidden;
-    margin-right: -17px;
-  }
 }
 
 .mainWrapper {
@@ -25,7 +20,6 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  overflow-x: hidden;
   padding-inline: var(--body-offset-desktop);
   margin-bottom: var(--body-offset-desktop);
 
