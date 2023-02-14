@@ -1,11 +1,23 @@
 .layoutWrapper {
   display: flex;
   flex-direction: column;
+
+  @media (min-width: 1025px) {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 100vh;
+    margin-right: -17px;
+  }
 }
 
 .content {
   display: flex;
   overflow-x: clip;
+
+  @media (min-width: 1025px) {
+    overflow-y: hidden;
+    margin-right: -17px;
+  }
 }
 
 .mainWrapper {
