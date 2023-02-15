@@ -27,6 +27,7 @@ import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
 import Chart from '../../components/Chart/Chart';
 import { chartIDs } from '../../components/Chart/constants';
+import WithdrawLiquidity from './components/WithdrawLiquidity';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
@@ -38,6 +39,8 @@ export const EditPool: FC = () => {
   const pool = useSelector(selectCertainPair);
   const marketLoading = useSelector(selectAllMarketsLoading);
   const poolLoading = useSelector(selectCertainPairLoading);
+
+  const [isV0Transaction, setIsV0Transaction] = useState<boolean>(true);
 
   const pairType = pool?.type;
 
@@ -99,6 +102,7 @@ export const EditPool: FC = () => {
       rawFee,
       rawDelta,
       rawSpotPrice: changeSpotPrice,
+      isV0Transaction,
     });
 
   const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
@@ -130,6 +134,12 @@ export const EditPool: FC = () => {
           <Spinner />
         ) : (
           <>
+            <WithdrawLiquidity
+              isDisabled={!isWithdrawAllAvailable}
+              onClick={withdrawAllLiquidity}
+              checked={!isV0Transaction}
+              onChange={() => setIsV0Transaction(!isV0Transaction)}
+            />
             {pairType === PairType.LiquidityProvision && (
               <WithdrawFees
                 className={styles.withdrawBlock}
@@ -164,7 +174,7 @@ export const EditPool: FC = () => {
               />
             </div>
 
-            {!!chartData.length && (
+            {!!chartData?.length && (
               <Chart
                 title="price graph"
                 data={chartData}
@@ -175,13 +185,6 @@ export const EditPool: FC = () => {
             <div className={styles.buttonsWrapper}>
               <Button isDisabled={!isChanged} onClick={change}>
                 <span>save changes</span>
-              </Button>
-              <Button
-                outlined
-                isDisabled={!isWithdrawAllAvailable}
-                onClick={withdrawAllLiquidity}
-              >
-                <span>withdraw all liquidity</span>
               </Button>
               <Button
                 outlined
