@@ -140,14 +140,6 @@ export const EditPool: FC = () => {
               checked={!isV0Transaction}
               onChange={() => setIsV0Transaction(!isV0Transaction)}
             />
-            {pairType === PairType.LiquidityProvision && (
-              <WithdrawFees
-                className={styles.withdrawBlock}
-                accumulatedFees={accumulatedFees}
-                onClick={onWithdrawClick}
-                isButtonDisabled={isWithdrawDisabled}
-              />
-            )}
             <div className={styles.settingsBlock}>
               <PriceBlock
                 ref={priceBlockRef}
