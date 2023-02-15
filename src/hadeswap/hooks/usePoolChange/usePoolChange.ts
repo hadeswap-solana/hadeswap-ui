@@ -1,4 +1,4 @@
-import { signAndSendAllTransactionsInSeries } from './../../../utils/transactions/helpers/signAndSendAllTransactionsInSeries';
+import { signAndSendAllTransactionsInSeries } from '../../../utils/transactions';
 import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useHistory } from 'react-router-dom';
