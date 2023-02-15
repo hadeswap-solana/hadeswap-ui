@@ -9,7 +9,7 @@ import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../components/TransactionsLoadingModal';
-import { createAndSendTxn } from '../../utils/transactions';
+import { createAndSendTxn } from '../../utils/transactions/helpers/v0/createAndSendTxn';
 import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenForNftPairTxn';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 import { createPairTxn } from '../../utils/transactions/createPairTxn';
@@ -24,7 +24,7 @@ import { Nft } from '../../state/core/types';
 import { captureSentryError } from '../../utils/sentry';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
-import { signAndSendAllTransactions } from '../../utils/transactions/helpers/signAndSendAllTransactions';
+import { signAndSendAllTransactions } from '../../utils/transactions';
 
 type UseCreatePool = (
   props: Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'>,

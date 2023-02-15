@@ -14,8 +14,8 @@ import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
 import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
-import { signAndConfirmTransaction } from '../../../utils/transactions';
 import { captureSentryError } from '../../../utils/sentry';
+import { signAndSendTransaction } from '../../../utils/transactions';
 
 export type UsePoolChange = (props: {
   pool: Pair;
@@ -183,7 +183,7 @@ export const usePoolChange: UsePoolChange = ({
         );
 
         try {
-          await signAndConfirmTransaction({
+          await signAndSendTransaction({
             transaction,
             signers,
             wallet,
