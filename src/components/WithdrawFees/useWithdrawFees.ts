@@ -1,3 +1,4 @@
+import { signAndSendAllTransactions } from './../../utils/transactions/helpers/signAndSendAllTransactions';
 import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -7,7 +8,6 @@ import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { notify } from '../../utils';
 import { formatRawSol, NotifyType } from '../../utils/solanaUtils';
-import { createAndSendAllTxns } from '../../utils/transactions';
 import { useConnection } from '../../hooks';
 import { Pair } from '../../state/core/types';
 import { useFetchPair } from '../../requests';
@@ -44,7 +44,7 @@ export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
       createIxCardFuncs[IX_TYPE.WITHDRAW_FEES](),
     );
 
-    await createAndSendAllTxns({
+    await signAndSendAllTransactions({
       connection,
       wallet,
       txnsAndSigners: transactions,

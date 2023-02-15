@@ -1,30 +1,34 @@
-import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
+import { WalletContextState } from '@solana/wallet-adapter-react';
 
 import { notify } from '../..';
 import { NotifyType } from '../../solanaUtils';
 
-interface SignAndConfirmTransactionProps {
+interface SignAndSendTransactionProps {
   transaction: web3.Transaction;
   signers?: web3.Signer[];
   connection: web3.Connection;
   wallet: WalletContextState;
   commitment?: web3.Commitment;
+  onBeforeApprove?: () => void;
   onAfterSend?: () => void;
 }
 
-type SignAndConfirmTransaction = (
-  props: SignAndConfirmTransactionProps,
-) => Promise<void>;
+type SignAndSendTransaction = (
+  props: SignAndSendTransactionProps,
+) => Promise<web3.RpcResponseAndContext<web3.SignatureResult>>;
 
-export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
+export const signAndSendTransaction: SignAndSendTransaction = async ({
   transaction,
   signers = [],
   connection,
   wallet,
-  onAfterSend,
   commitment = 'finalized',
+  onBeforeApprove,
+  onAfterSend,
 }) => {
+  onBeforeApprove?.();
+
   const { blockhash, lastValidBlockHeight } =
     await connection.getLatestBlockhash();
 
@@ -36,20 +40,22 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
   }
 
   const signedTransaction = await wallet.signTransaction(transaction);
-  const txid = await connection.sendRawTransaction(
+
+  const signature = await connection.sendRawTransaction(
     signedTransaction.serialize(),
+    { skipPreflight: false },
   );
 
-  onAfterSend?.();
-
   notify({
-    message: 'Transaction sent',
+    message: 'transaction sent!',
     type: NotifyType.INFO,
   });
 
-  await connection.confirmTransaction(
+  onAfterSend?.();
+
+  return await connection.confirmTransaction(
     {
-      signature: txid,
+      signature,
       blockhash,
       lastValidBlockHeight,
     },

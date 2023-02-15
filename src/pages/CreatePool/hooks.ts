@@ -1,3 +1,4 @@
+import { signAndSendAllTransactions } from './../../utils/transactions/helpers/signAndSendAllTransactions';
 import React from 'react';
 import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
@@ -9,10 +10,7 @@ import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../components/TransactionsLoadingModal';
-import {
-  createAndSendAllTxns,
-  createAndSendTxn,
-} from '../../utils/transactions';
+
 import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenForNftPairTxn';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 import { createPairTxn } from '../../utils/transactions/createPairTxn';
@@ -27,6 +25,7 @@ import { Nft } from '../../state/core/types';
 import { captureSentryError } from '../../utils/sentry';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
+import { signAndSendTransaction } from '../../utils/transactions';
 
 type UseCreatePool = (
   props: Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'>,
@@ -51,11 +50,11 @@ export const useCreatePool: UseCreatePool = (props) => {
       const { firstTxnData, restTxnsData } = splittedTxnsData;
 
       //? Run First Txn
-      await createAndSendTxn({
+      await signAndSendTransaction({
         connection,
         wallet,
-        txInstructions: firstTxnData.transaction?.instructions,
-        additionalSigners: firstTxnData.signers,
+        transaction: firstTxnData.transaction,
+        signers: firstTxnData.signers,
         onBeforeApprove: () => {
           dispatch(
             txsLoadingModalActions.setState({
@@ -78,7 +77,7 @@ export const useCreatePool: UseCreatePool = (props) => {
 
       //? Run Rest Txns
       if (restTxnsData?.length) {
-        await createAndSendAllTxns({
+        await signAndSendAllTransactions({
           connection,
           wallet,
           txnsAndSigners: restTxnsData.map(({ transaction, signers }) => ({
