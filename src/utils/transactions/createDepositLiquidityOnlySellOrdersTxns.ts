@@ -32,16 +32,16 @@ export const createDepositLiquidityOnlySellOrdersTxns: CreateDepositLiquidityOnl
             programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
             connection,
             args: {
-              proof: nft?.validProof,
+              proof: nft?.nftValidationAdapter ? [] : nft?.validProof,
               pnft: {},
             },
             accounts: {
               nftValidationAdapter: new web3.PublicKey(
                 nft?.nftValidationAdapter || PUBKEY_PLACEHOLDER,
               ),
-              nftValidationAdapterV2:
-                nft?.nftValidationAdapterV2 &&
-                new web3.PublicKey(nft.nftValidationAdapterV2),
+              nftValidationAdapterV2: nft?.nftValidationAdapter
+                ? undefined
+                : new web3.PublicKey(nft.nftValidationAdapterV2),
               pair: new web3.PublicKey(pairPubkey),
               authorityAdapter: new web3.PublicKey(authorityAdapter),
               userPubkey: wallet.publicKey,

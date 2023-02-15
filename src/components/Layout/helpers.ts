@@ -123,7 +123,7 @@ const createSellNftFromPairIx: CreateIx = async ({
       args: {
         pnft: {},
         minAmountToGet: order.price - PRECISION_CORRECTION,
-        proof: order?.validProof,
+        proof: order?.nftValidationAdapter ? [] : order?.validProof,
         skipFailed: false,
       },
     });
@@ -150,7 +150,7 @@ const createSellNftFromPairIx: CreateIx = async ({
       args: {
         pnft: {},
         minAmountToGet: order.price - PRECISION_CORRECTION,
-        proof: order?.validProof,
+        proof: order?.nftValidationAdapter ? [] : order?.validProof,
         skipFailed: false,
       },
     });

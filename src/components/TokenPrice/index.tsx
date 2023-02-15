@@ -18,7 +18,7 @@ export const TokenPrice: FC<TokenPriceProps> = ({
   tokenLoading,
   className,
 }) => {
-  const value = formatNumericDigit(Number(tokenAmount));
+  const value = formatNumericDigit(tokenAmount);
 
   return (
     <div className={cn(styles.wrapper, className)}>
