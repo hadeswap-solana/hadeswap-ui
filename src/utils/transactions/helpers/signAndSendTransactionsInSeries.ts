@@ -1,8 +1,8 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
 
-import { createAndSendTxn } from './createAndSendTxn';
 import { captureSentryError } from '../../sentry';
+import { signAndSendTransaction } from './signAndSendTransaction';
 
 interface TxnDataWithHandlers {
   transaction: web3.Transaction;
@@ -21,6 +21,7 @@ type SignTransactionsInSeries = (params: {
 
 export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
   async ({ txnData, connection, wallet }) => {
+    console.log('used this?');
     for (let i = 0; i < txnData.length; ++i) {
       const {
         transaction,
@@ -31,11 +32,12 @@ export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
         onAfterSend,
       } = txnData[i];
       try {
-        await createAndSendTxn({
-          txInstructions: transaction?.instructions,
-          additionalSigners: signers,
+        await signAndSendTransaction({
+          transaction,
+          signers,
           connection,
           wallet,
+          commitment: 'finalized',
           onBeforeApprove,
           onAfterSend,
         });

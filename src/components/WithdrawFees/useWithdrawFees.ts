@@ -11,6 +11,7 @@ import { createAndSendAllTxns } from '../../utils/transactions';
 import { useConnection } from '../../hooks';
 import { Pair } from '../../state/core/types';
 import { useFetchPair } from '../../requests';
+import { signAndSendAllTransactions } from '../../utils/transactions/helpers/signAndSendAllTransactions';
 
 type UseWithdrawFees = (props: { pool: Pair }) => {
   onWithdrawClick: () => Promise<void>;
@@ -44,7 +45,7 @@ export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
       createIxCardFuncs[IX_TYPE.WITHDRAW_FEES](),
     );
 
-    await createAndSendAllTxns({
+    await signAndSendAllTransactions({
       connection,
       wallet,
       txnsAndSigners: transactions,

@@ -1,7 +1,7 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
 
-import { createAndSendAllTxns } from './createAndSendAllTxns';
+import { signAndSendAllTransactions } from './signAndSendAllTransactions';
 
 interface TxnsAndSigners {
   transaction: web3.Transaction;
@@ -32,7 +32,7 @@ export const signAndSendAllTransactionsInSeries: SignAndSendAllTransactionsInSer
         onAfterSend,
       } = txnsData[i];
 
-      const result = await createAndSendAllTxns({
+      const result = await signAndSendAllTransactions({
         txnsAndSigners,
         onSuccess,
         onError,

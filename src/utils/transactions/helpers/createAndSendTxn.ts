@@ -27,6 +27,7 @@ export const createAndSendTxn: CreateAndSendTxn = async ({
   additionalSigners = [],
   commitment = 'finalized',
 }) => {
+  console.log('SINGLE TXN');
   console.log('wallet.wallet?.adapter: ', wallet.wallet?.adapter);
   console.log(
     'wallet.wallet?.adapter?.supportedTransactionVersions: ',
