@@ -24,9 +24,7 @@ const WithdrawLiquidity: FC<WithdrawLiquidityProps> = ({
       <div className={styles.content}>
         <div className={styles.checkboxWrapper}>
           <Checkbox
-            label={
-              ' make sure you know that the transactions can go one by one'
-            }
+            label={'make sure you know that the transactions can go one by one'}
             checked={checked}
             onChange={onChange}
           />
