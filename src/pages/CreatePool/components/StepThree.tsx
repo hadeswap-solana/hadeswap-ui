@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
@@ -21,6 +21,7 @@ import { getRawDelta, getRawSpotPrice } from '../../../utils';
 
 import styles from './styles.module.scss';
 import usePriceGraph from '../../../components/Chart/hooks/usePriceGraph';
+import TransactionsWarning from '../../../components/TransactionsWarning/TransactionsWarning';
 
 interface StepThreeProps {
   pairType: PairType;
@@ -84,6 +85,9 @@ export const StepThree: FC<StepThreeProps> = ({
 
   const creationSpotPrice = Math.ceil(formValue.spotPrice * 1e9);
 
+  const [isSupportSignAllTxns, setIsSupportSignAllTxns] =
+    useState<boolean>(true);
+
   const { create: onCreatePoolClick } = useCreatePool({
     pairType,
     buyOrdersAmount,
@@ -94,6 +98,7 @@ export const StepThree: FC<StepThreeProps> = ({
     rawDelta: rawDelta,
     rawFee,
     onAfterTxn: () => history.push('/my-pools'),
+    isSupportSignAllTxns,
   });
 
   const chartData = usePriceGraph({
@@ -116,6 +121,10 @@ export const StepThree: FC<StepThreeProps> = ({
         <Spinner />
       ) : (
         <>
+          <TransactionsWarning
+            checked={!isSupportSignAllTxns}
+            onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
+          />
           <div className={styles.settingsBlock}>
             <PriceBlock
               ref={priceBlockRef}
