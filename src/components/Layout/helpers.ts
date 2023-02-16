@@ -111,9 +111,7 @@ const createSellNftFromPairIx: CreateIx = async ({
         nftValidationAdapter: new web3.PublicKey(
           order?.nftValidationAdapter || PUBKEY_PLACEHOLDER,
         ),
-        nftValidationAdapterV2: order?.nftValidationAdapter
-          ? undefined
-          : new web3.PublicKey(order.nftValidationAdapterV2),
+        nftValidationAdapterV2: undefined,
         pair: new web3.PublicKey(pair.pairPubkey),
         userPubkey: walletPubkey,
         protocolFeeReceiver: new web3.PublicKey(
@@ -123,7 +121,7 @@ const createSellNftFromPairIx: CreateIx = async ({
       args: {
         pnft: {},
         minAmountToGet: order.price - PRECISION_CORRECTION,
-        proof: order?.nftValidationAdapter ? [] : order?.validProof,
+        proof: [],
         skipFailed: false,
       },
     });
@@ -150,7 +148,7 @@ const createSellNftFromPairIx: CreateIx = async ({
       args: {
         pnft: {},
         minAmountToGet: order.price - PRECISION_CORRECTION,
-        proof: order?.nftValidationAdapter ? [] : order?.validProof,
+        proof: [],
         skipFailed: false,
       },
     });
