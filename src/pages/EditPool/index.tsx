@@ -40,7 +40,8 @@ export const EditPool: FC = () => {
   const marketLoading = useSelector(selectAllMarketsLoading);
   const poolLoading = useSelector(selectCertainPairLoading);
 
-  const [isV0Transaction, setIsV0Transaction] = useState<boolean>(true);
+  const [isSupportSignAllTxns, setIsSupportSignAllTxns] =
+    useState<boolean>(true);
 
   const pairType = pool?.type;
 
@@ -102,11 +103,8 @@ export const EditPool: FC = () => {
       rawFee,
       rawDelta,
       rawSpotPrice: changeSpotPrice,
-      isV0Transaction,
+      isSupportSignAllTxns,
     });
-
-  const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
-    useWithdrawFees({ pool });
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
@@ -137,8 +135,8 @@ export const EditPool: FC = () => {
             <WithdrawLiquidity
               isDisabled={!isWithdrawAllAvailable}
               onClick={withdrawAllLiquidity}
-              checked={!isV0Transaction}
-              onChange={() => setIsV0Transaction(!isV0Transaction)}
+              checked={!isSupportSignAllTxns}
+              onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
             />
             <div className={styles.settingsBlock}>
               <PriceBlock
