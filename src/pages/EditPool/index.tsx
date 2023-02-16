@@ -27,7 +27,7 @@ import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
 import Chart from '../../components/Chart/Chart';
 import { chartIDs } from '../../components/Chart/constants';
-import WithdrawLiquidity from './components/WithdrawLiquidity';
+import TransactionsWarning from '../../components/TransactionsWarning/TransactionsWarning';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
@@ -132,7 +132,9 @@ export const EditPool: FC = () => {
           <Spinner />
         ) : (
           <>
-            <WithdrawLiquidity
+            <TransactionsWarning
+              title="withdraw all liquidity"
+              buttonText="withdraw"
               isDisabled={!isWithdrawAllAvailable}
               onClick={withdrawAllLiquidity}
               checked={!isSupportSignAllTxns}

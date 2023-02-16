@@ -76,47 +76,80 @@ export const useCreatePool: UseCreatePool = (props) => {
       });
 
       //? Run Rest Txns
-      if (restTxnsData?.length) {
-        await signAndSendAllTransactions({
-          connection,
-          wallet,
-          txnsAndSigners: restTxnsData.map(({ transaction, signers }) => ({
-            transaction,
-            signers,
-          })),
-          onBeforeApprove: () => {
-            dispatch(
-              txsLoadingModalActions.setState({
-                visible: true,
-                cards: restTxnsData.map(
-                  ({ loadingModalCard }) => loadingModalCard,
+      if (props?.isSupportSignAllTxns) {
+        if (restTxnsData?.length) {
+          await signAndSendAllTransactions({
+            connection,
+            wallet,
+            txnsAndSigners: restTxnsData.map(({ transaction, signers }) => ({
+              transaction,
+              signers,
+            })),
+            onBeforeApprove: () => {
+              dispatch(
+                txsLoadingModalActions.setState({
+                  visible: true,
+                  cards: restTxnsData.map(
+                    ({ loadingModalCard }) => loadingModalCard,
+                  ),
+                  amountOfTxs: restTxnsData.length + 1,
+                  currentTxNumber: restTxnsData.length + 1,
+                  textStatus: TxsLoadingModalTextStatus.APPROVE,
+                }),
+              );
+            },
+            onAfterSend: () => {
+              dispatch(
+                txsLoadingModalActions.setTextStatus(
+                  TxsLoadingModalTextStatus.WAITING,
                 ),
-                amountOfTxs: restTxnsData.length + 1,
-                currentTxNumber: restTxnsData.length + 1,
-                textStatus: TxsLoadingModalTextStatus.APPROVE,
-              }),
-            );
-          },
-          onAfterSend: () => {
-            dispatch(
-              txsLoadingModalActions.setTextStatus(
-                TxsLoadingModalTextStatus.WAITING,
-              ),
-            );
-          },
-          onSuccess: () => {
-            notify({
-              message: 'transaction successful!',
-              type: NotifyType.SUCCESS,
+              );
+            },
+            onSuccess: () => {
+              notify({
+                message: 'transaction successful!',
+                type: NotifyType.SUCCESS,
+              });
+            },
+            onError: () => {
+              notify({
+                message: 'oops... something went wrong!',
+                type: NotifyType.ERROR,
+              });
+            },
+          });
+        }
+      } else {
+        for (let i = 0; i < restTxnsData.flat().length; ++i) {
+          const { transaction, signers } = restTxnsData.flat()[i];
+
+          dispatch(
+            txsLoadingModalActions.setState({
+              visible: true,
+              cards: restTxnsData
+                .flat()
+                .map(({ loadingModalCard }) => loadingModalCard),
+              amountOfTxs: restTxnsData.flat().length || 0,
+              currentTxNumber: i + 1 || 0,
+              textStatus: TxsLoadingModalTextStatus.APPROVE,
+            }),
+          );
+
+          try {
+            await signAndSendTransaction({
+              transaction,
+              signers,
+              wallet,
+              connection,
+              commitment: 'confirmed',
             });
-          },
-          onError: () => {
-            notify({
-              message: 'oops... something went wrong!',
-              type: NotifyType.ERROR,
+          } catch (error) {
+            captureSentryError({
+              error,
+              wallet,
             });
-          },
-        });
+          }
+        }
       }
 
       props?.onAfterTxn();
@@ -157,6 +190,7 @@ interface CreateTxnSplittedDataProps {
   connection: web3.Connection;
   wallet: WalletContextState;
   onAfterTxn?: () => void;
+  isSupportSignAllTxns?: boolean;
 }
 
 type CreateTxnSplittedData = (
