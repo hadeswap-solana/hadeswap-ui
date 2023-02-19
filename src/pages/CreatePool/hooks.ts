@@ -1,4 +1,3 @@
-import { signAndSendAllTransactions } from './../../utils/transactions/helpers/signAndSendAllTransactions';
 import React from 'react';
 import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
@@ -10,7 +9,10 @@ import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../components/TransactionsLoadingModal';
-
+import {
+  createAndSendAllTxns,
+  createAndSendTxn,
+} from '../../utils/transactions';
 import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenForNftPairTxn';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 import { createPairTxn } from '../../utils/transactions/createPairTxn';
@@ -25,7 +27,7 @@ import { Nft } from '../../state/core/types';
 import { captureSentryError } from '../../utils/sentry';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
-import { signAndSendTransaction } from '../../utils/transactions';
+import { signAndSendAllTransactions } from '../../utils/transactions/helpers/signAndSendAllTransactions';
 
 type UseCreatePool = (
   props: Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'>,
@@ -50,11 +52,11 @@ export const useCreatePool: UseCreatePool = (props) => {
       const { firstTxnData, restTxnsData } = splittedTxnsData;
 
       //? Run First Txn
-      await signAndSendTransaction({
+      await createAndSendTxn({
         connection,
         wallet,
-        transaction: firstTxnData.transaction,
-        signers: firstTxnData.signers,
+        txInstructions: firstTxnData.transaction?.instructions,
+        additionalSigners: firstTxnData.signers,
         onBeforeApprove: () => {
           dispatch(
             txsLoadingModalActions.setState({
@@ -76,80 +78,47 @@ export const useCreatePool: UseCreatePool = (props) => {
       });
 
       //? Run Rest Txns
-      if (props?.isSupportSignAllTxns) {
-        if (restTxnsData?.length) {
-          await signAndSendAllTransactions({
-            connection,
-            wallet,
-            txnsAndSigners: restTxnsData.map(({ transaction, signers }) => ({
-              transaction,
-              signers,
-            })),
-            onBeforeApprove: () => {
-              dispatch(
-                txsLoadingModalActions.setState({
-                  visible: true,
-                  cards: restTxnsData.map(
-                    ({ loadingModalCard }) => loadingModalCard,
-                  ),
-                  amountOfTxs: restTxnsData.length + 1,
-                  currentTxNumber: restTxnsData.length + 1,
-                  textStatus: TxsLoadingModalTextStatus.APPROVE,
-                }),
-              );
-            },
-            onAfterSend: () => {
-              dispatch(
-                txsLoadingModalActions.setTextStatus(
-                  TxsLoadingModalTextStatus.WAITING,
+      if (restTxnsData?.length) {
+        await signAndSendAllTransactions({
+          connection,
+          wallet,
+          txnsAndSigners: restTxnsData.map(({ transaction, signers }) => ({
+            transaction,
+            signers,
+          })),
+          onBeforeApprove: () => {
+            dispatch(
+              txsLoadingModalActions.setState({
+                visible: true,
+                cards: restTxnsData.map(
+                  ({ loadingModalCard }) => loadingModalCard,
                 ),
-              );
-            },
-            onSuccess: () => {
-              notify({
-                message: 'transaction successful!',
-                type: NotifyType.SUCCESS,
-              });
-            },
-            onError: () => {
-              notify({
-                message: 'oops... something went wrong!',
-                type: NotifyType.ERROR,
-              });
-            },
-          });
-        }
-      } else {
-        for (let i = 0; i < restTxnsData.flat().length; ++i) {
-          const { transaction, signers } = restTxnsData.flat()[i];
-
-          dispatch(
-            txsLoadingModalActions.setState({
-              visible: true,
-              cards: restTxnsData
-                .flat()
-                .map(({ loadingModalCard }) => loadingModalCard),
-              amountOfTxs: restTxnsData.flat().length || 0,
-              currentTxNumber: i + 1 || 0,
-              textStatus: TxsLoadingModalTextStatus.APPROVE,
-            }),
-          );
-
-          try {
-            await signAndSendTransaction({
-              transaction,
-              signers,
-              wallet,
-              connection,
-              commitment: 'confirmed',
+                amountOfTxs: restTxnsData.length + 1,
+                currentTxNumber: restTxnsData.length + 1,
+                textStatus: TxsLoadingModalTextStatus.APPROVE,
+              }),
+            );
+          },
+          onAfterSend: () => {
+            dispatch(
+              txsLoadingModalActions.setTextStatus(
+                TxsLoadingModalTextStatus.WAITING,
+              ),
+            );
+          },
+          onSuccess: () => {
+            notify({
+              message: 'transaction successful!',
+              type: NotifyType.SUCCESS,
             });
-          } catch (error) {
-            captureSentryError({
-              error,
-              wallet,
+          },
+          onError: () => {
+            notify({
+              message: 'oops... something went wrong!',
+              type: NotifyType.ERROR,
             });
-          }
-        }
+          },
+        });
       }
 
       props?.onAfterTxn();
@@ -190,7 +159,6 @@ interface CreateTxnSplittedDataProps {
   connection: web3.Connection;
   wallet: WalletContextState;
   onAfterTxn?: () => void;
-  isSupportSignAllTxns?: boolean;
 }
 
 type CreateTxnSplittedData = (
