@@ -123,9 +123,10 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
 }) => {
   if (pool.currentSpotPrice == rawSpotPrice || rawSpotPrice == 0) {
     throw Error(
-      'Something is not right with the edit. pool: ' + pool,
-      ', spot price: ',
-      rawSpotPrice,
+      'Something is not right with the edit. pool: ' +
+        pool +
+        ', spot price: ' +
+        rawSpotPrice,
     );
   }
 
