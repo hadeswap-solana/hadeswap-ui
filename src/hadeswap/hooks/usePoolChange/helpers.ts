@@ -126,7 +126,7 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
       (pool?.bondingCurve === BondingCurveType.XYK
         ? pool?.baseSpotPrice
         : pool?.currentSpotPrice) - rawSpotPrice,
-    ) <= 1000 ||
+    ) <= 10000 ||
     rawSpotPrice == 0 ||
     !rawSpotPrice
   ) {
