@@ -121,7 +121,15 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   connection,
   wallet,
 }) => {
-  if (pool.currentSpotPrice == rawSpotPrice || rawSpotPrice == 0) {
+  if (
+    Math.abs(
+      (pool?.bondingCurve === BondingCurveType.XYK
+        ? pool?.baseSpotPrice
+        : pool?.currentSpotPrice) - rawSpotPrice,
+    ) <= 1000 ||
+    rawSpotPrice == 0 ||
+    !rawSpotPrice
+  ) {
     throw Error(
       'Something is not right with the edit. pool: ' +
         pool +
