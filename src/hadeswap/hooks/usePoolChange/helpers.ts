@@ -121,15 +121,19 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   connection,
   wallet,
 }) => {
-  if (
+  console.log('rawSpotPrice: ', rawSpotPrice);
+  console.log('pool: ', pool);
+
+  const isSpotChangingWrong =
     Math.abs(
       (pool?.bondingCurve === BondingCurveType.XYK
         ? pool?.baseSpotPrice
         : pool?.currentSpotPrice) - rawSpotPrice,
     ) <= 10000 ||
     rawSpotPrice == 0 ||
-    !rawSpotPrice
-  ) {
+    !rawSpotPrice;
+
+  if (isSpotChangingWrong) {
     throw Error(
       'Something is not right with the edit. pool: ' +
         pool +
@@ -137,6 +141,7 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
         rawSpotPrice,
     );
   }
+  const isSpotNotChanged = Math.abs(pool?.baseSpotPrice - rawSpotPrice) <= 1000;
 
   const { transaction, signers } = await createModifyPairTxn({
     connection,
@@ -144,7 +149,7 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
     pairPubkey: pool.pairPubkey,
     authorityAdapter: pool.authorityAdapterPubkey,
     delta: rawDelta,
-    spotPrice: rawSpotPrice,
+    spotPrice: isSpotNotChanged ? pool.baseSpotPrice : rawSpotPrice,
     fee: rawFee,
   });
 
