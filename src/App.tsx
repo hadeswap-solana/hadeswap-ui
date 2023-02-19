@@ -1,4 +1,4 @@
-//? Line for service (CI/CD) commits 2
+//? Line for service (CI/CD) commits 1
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {

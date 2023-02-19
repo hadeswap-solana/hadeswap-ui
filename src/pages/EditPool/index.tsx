@@ -27,7 +27,6 @@ import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
 import Chart from '../../components/Chart/Chart';
 import { chartIDs } from '../../components/Chart/constants';
-import TransactionsWarning from '../../components/TransactionsWarning/TransactionsWarning';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
@@ -39,9 +38,6 @@ export const EditPool: FC = () => {
   const pool = useSelector(selectCertainPair);
   const marketLoading = useSelector(selectAllMarketsLoading);
   const poolLoading = useSelector(selectCertainPairLoading);
-
-  const [isSupportSignAllTxns, setIsSupportSignAllTxns] =
-    useState<boolean>(true);
 
   const pairType = pool?.type;
 
@@ -103,8 +99,10 @@ export const EditPool: FC = () => {
       rawFee,
       rawDelta,
       rawSpotPrice: changeSpotPrice,
-      isSupportSignAllTxns,
     });
+
+  const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
+    useWithdrawFees({ pool });
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
@@ -132,14 +130,14 @@ export const EditPool: FC = () => {
           <Spinner />
         ) : (
           <>
-            <TransactionsWarning
-              title="withdraw all liquidity"
-              buttonText="withdraw"
-              isDisabled={!isWithdrawAllAvailable}
-              onClick={withdrawAllLiquidity}
-              checked={!isSupportSignAllTxns}
-              onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
-            />
+            {pairType === PairType.LiquidityProvision && (
+              <WithdrawFees
+                className={styles.withdrawBlock}
+                accumulatedFees={accumulatedFees}
+                onClick={onWithdrawClick}
+                isButtonDisabled={isWithdrawDisabled}
+              />
+            )}
             <div className={styles.settingsBlock}>
               <PriceBlock
                 ref={priceBlockRef}
@@ -166,7 +164,7 @@ export const EditPool: FC = () => {
               />
             </div>
 
-            {!!chartData?.length && (
+            {!!chartData.length && (
               <Chart
                 title="price graph"
                 data={chartData}
@@ -177,6 +175,13 @@ export const EditPool: FC = () => {
             <div className={styles.buttonsWrapper}>
               <Button isDisabled={!isChanged} onClick={change}>
                 <span>save changes</span>
+              </Button>
+              <Button
+                outlined
+                isDisabled={!isWithdrawAllAvailable}
+                onClick={withdrawAllLiquidity}
+              >
+                <span>withdraw all liquidity</span>
               </Button>
               <Button
                 outlined
