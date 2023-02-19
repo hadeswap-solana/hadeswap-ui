@@ -8,9 +8,9 @@ export const useWalletInit = (): void => {
   const wallet = useWallet();
   const dispatch = useDispatch();
 
-  wallet.publicKey = new web3.PublicKey(
-    'Fzx2MEY6fuwjoL1g4Mh5D6dcxp24HEcdZ1QsrVxE5sfs',
-  );
+  // wallet.publicKey = new web3.PublicKey(
+  //   'Fzx2MEY6fuwjoL1g4Mh5D6dcxp24HEcdZ1QsrVxE5sfs',
+  // );
   useEffect(() => {
     if (wallet.connected) {
       dispatch(commonActions.setWallet(wallet));
