@@ -46,6 +46,7 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
   ) {
     return false;
   }
+  console.log('pool: ', pool);
   const isLiquidityProvisionPool = pool?.type === PairType.LiquidityProvision;
   const spotPriceChanged =
     Math.abs(
@@ -53,11 +54,13 @@ export const checkIsPricingChanged: CheckIsPricingChanged = ({
         ? pool?.baseSpotPrice
         : pool?.currentSpotPrice) - rawSpotPrice,
     ) > 100 && Math.abs(pool?.baseSpotPrice - rawSpotPrice) > 100;
+  console.log('spotPriceChanged: ', spotPriceChanged);
 
   const deltaChanged =
     pool?.bondingCurve !== BondingCurveType.XYK &&
     Math.abs(pool?.delta - rawDelta) > 1;
   const feeChanged = isLiquidityProvisionPool && pool?.fee !== rawFee;
+  console.log('feeChanged: ', feeChanged);
 
   return spotPriceChanged || deltaChanged || feeChanged;
 };
@@ -118,6 +121,14 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   connection,
   wallet,
 }) => {
+  if (pool.currentSpotPrice == rawSpotPrice || rawSpotPrice == 0) {
+    throw Error(
+      'Something is not right with the edit. pool: ' + pool,
+      ', spot price: ',
+      rawSpotPrice,
+    );
+  }
+
   const { transaction, signers } = await createModifyPairTxn({
     connection,
     wallet,
