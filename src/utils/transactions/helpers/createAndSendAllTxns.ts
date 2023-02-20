@@ -36,11 +36,6 @@ export const createAndSendAllTxns: CreateAndSendAllTxns = async ({
   onSuccess,
   onError,
 }) => {
-  console.log('wallet.wallet?.adapter: ', wallet.wallet?.adapter);
-  console.log(
-    'wallet.wallet?.adapter?.supportedTransactionVersions: ',
-    wallet.wallet?.adapter?.supportedTransactionVersions,
-  );
   const isSupportV0Transaction = false;
   // wallet.wallet?.adapter?.name !== 'Ledger' ||
   // wallet.wallet?.adapter?.supportedTransactionVersions === null ||
