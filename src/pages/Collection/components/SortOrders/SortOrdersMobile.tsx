@@ -1,14 +1,19 @@
-import { FC } from 'react';
+import React, { FC, Fragment } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
-
 import { BlackButton } from '../../../../components/Buttons/BlackButton';
+import Modal from '../../../../components/Modal/mobile/Modal';
+import { PairButtons } from '../../../../components/Buttons/PairButtons';
+import ArrowIcon from '../../../../icons/ArrowIcon';
+import ChevronIcon from '../../../../icons/ChevronIcon';
 import { FilterFormInputsNames, OrderSortValue } from './hooks/useOrdersSort';
-import styles from './styles.module.scss';
-import { CloseOutlined } from '@ant-design/icons';
+import { SORT_ORDER } from '../../../../types';
+
+import localStyles from './styles.module.scss';
+import styles from '../../../../components/Sorting/mobile/Sorting.module.scss';
 
 interface SortOrdersMobileProps {
-  onChange: (label: JSX.Element, value: string) => void;
+  onChange: (label: JSX.Element | string, value: string) => void;
   options?: OrderSortValue[];
   sort: OrderSortValue;
   control: Control<{ sort: OrderSortValue }>;
@@ -26,68 +31,72 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
   close,
   toggle,
 }) => {
-  const isDescSort = sort.value.split('_')[1] === 'desc';
+  const sortOrder = sort.value.split('_')[1] || SORT_ORDER.ASC;
+  const sortValue = sort.value.split('_')[1]
+    ? sort.value
+    : `${sort.value}_${sortOrder}`;
 
   return (
     <>
-      <BlackButton className={styles.blackButton} onClick={toggle}>
-        <span className={(styles.label, isDescSort && styles.rotate)}>
-          {sort.label}
-        </span>
+      <BlackButton className={localStyles.blackButton} onClick={toggle}>
+        <div>
+          <span style={{ marginRight: '12px' }}>{sort.label}</span>
+          <ArrowIcon
+            className={classNames(styles.arrowIcon, {
+              [styles.arrowIconLeft]: sortOrder === SORT_ORDER.ASC,
+            })}
+          />
+        </div>
       </BlackButton>
       {visible && (
-        <Controller
-          control={control}
-          name={FilterFormInputsNames.SORT}
-          render={() => (
-            <div className={styles.sortModalMobile}>
-              <div className={styles.sortModalClose} onClick={close}>
-                sorting <CloseOutlined />
-              </div>
-              <div className={styles.sortMobileButtons}>
-                {options.map(({ value, label, isDisabled }) => {
-                  const ASC_SORT = value + '_asc';
-                  const DESC_SORT = value + '_desc';
-
-                  const isActiveASC = sort.value === ASC_SORT;
-                  const isActiveDESC = sort.value === DESC_SORT;
-
+        <Modal>
+          <div className={styles.sortingHeader}>
+            <h3>sorting</h3>
+            <div onClick={close}>
+              <ChevronIcon />
+            </div>
+          </div>
+          <Controller
+            control={control}
+            name={FilterFormInputsNames.SORT}
+            render={() => (
+              <div className={styles.sortingBody}>
+                {options.map(({ value, label, isDisabled }, index) => {
                   return (
-                    <>
-                      <span className={styles.label}>{value}</span>
-                      <div className={styles.row}>
-                        <BlackButton
-                          isDisabled={isDisabled}
-                          className={classNames(styles.sortButtonAsc, {
-                            [styles.activeSortMobileButton]: isActiveASC,
-                          })}
-                          onClick={
-                            !isDisabled ? () => onChange(label, ASC_SORT) : null
-                          }
-                        >
-                          {label}
-                        </BlackButton>
-                        <BlackButton
-                          isDisabled={isDisabled}
-                          className={classNames(styles.sortButtonDesc, {
-                            [styles.activeSortMobileButton]: isActiveDESC,
-                          })}
-                          onClick={
-                            !isDisabled
-                              ? () => onChange(label, DESC_SORT)
-                              : null
-                          }
-                        >
-                          {label}
-                        </BlackButton>
-                      </div>
-                    </>
+                    <Fragment key={index}>
+                      <div className={styles.sortTitle}>{label}</div>
+                      <PairButtons
+                        onClickLeft={() =>
+                          isDisabled ? null : onChange(label, value + '_asc')
+                        }
+                        onClickRight={() =>
+                          isDisabled ? null : onChange(label, value + '_desc')
+                        }
+                        valueButtonLeft={
+                          <ArrowIcon
+                            className={classNames(
+                              styles.arrowIcon,
+                              styles.arrowIconLeft,
+                            )}
+                          />
+                        }
+                        valueButtonRight={
+                          <ArrowIcon className={styles.arrowIcon} />
+                        }
+                        isActiveLeft={
+                          `${value}_${SORT_ORDER.ASC}` === sortValue
+                        }
+                        isActiveRight={
+                          `${value}_${SORT_ORDER.DESC}` === sortValue
+                        }
+                      />
+                    </Fragment>
                   );
                 })}
               </div>
-            </div>
-          )}
-        />
+            )}
+          />
+        </Modal>
       )}
     </>
   );

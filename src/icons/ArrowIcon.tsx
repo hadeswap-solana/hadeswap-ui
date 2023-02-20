@@ -17,7 +17,6 @@ const ArrowIcon = ({
     width={width || '28'}
     height={height || '26'}
     viewBox="0 0 28 26"
-    fill="none"
   >
     {icon}
   </svg>
