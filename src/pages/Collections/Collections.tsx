@@ -81,6 +81,7 @@ export const Collections: FC = () => {
               )}
             </div>
             <ItemsList
+              idKey="nftValidationAdapter"
               onRowClick={onRowClick}
               data={collections}
               mapType={COLLECTION}
