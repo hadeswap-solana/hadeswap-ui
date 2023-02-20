@@ -2,9 +2,6 @@ import { FC } from 'react';
 import classNames from 'classnames';
 
 import Button from '../Buttons/Button';
-// import DeleteButton from '../Buttons/DeleteButton';
-// import { PlusIcon } from '../../icons/PlusIcon';
-// import { LoopIcon } from '../../icons/LoopIcon';
 import { SolPrice } from '../SolPrice/SolPrice';
 import { UNTITLED } from '../../constants/common';
 import { NftRarity } from '../../state/core/types';
@@ -70,23 +67,6 @@ export const NFTCard: FC<NFTCardProps> = ({
       onClick={onCardClick && onCardClick}
     >
       <div className={styles.cardImageWrapper}>
-        {/*{!simpleCard && !selected && (*/}
-        {/*  <div className={styles.cardImageHover}>*/}
-        {/*    <Button className={styles.cardButton} onClick={onAddToCart}>*/}
-        {/*      <PlusIcon />*/}
-        {/*      <span>add to cart</span>*/}
-        {/*    </Button>*/}
-        {/*    {onExchange && (*/}
-        {/*      <Button className={styles.cardButton} onClick={onExchange}>*/}
-        {/*        <LoopIcon />*/}
-        {/*        <span>exchange</span>*/}
-        {/*      </Button>*/}
-        {/*    )}*/}
-        {/*  </div>*/}
-        {/*)}*/}
-        {/* {selected && (
-          <DeleteButton className={styles.deleteButton} onClick={onAddToCart} />
-        )} */}
         <img className={styles.cardImage} src={imageUrl} alt={name} />
         {!!rarity && <Rarity rarity={rarity} />}
       </div>
@@ -107,8 +87,9 @@ export const NFTCard: FC<NFTCardProps> = ({
               {selected ? <MinusIcon /> : <PlusIcon />}
             </Button>
           )}
-          {onExchange && !!sellOrders.length && (
+          {onExchange && (
             <SwapButton
+              isDisabled={!sellOrders.length}
               onClick={(e) => {
                 e.stopPropagation();
                 if (connected) {
