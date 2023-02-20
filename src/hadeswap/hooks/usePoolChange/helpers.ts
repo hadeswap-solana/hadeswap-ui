@@ -125,18 +125,19 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   console.log('pool: ', pool);
 
   const isSpotChangingWrong =
-    Math.abs(
-      (pool?.bondingCurve === BondingCurveType.XYK
-        ? pool?.baseSpotPrice
-        : pool?.currentSpotPrice) - rawSpotPrice,
-    ) <= 10000 ||
-    rawSpotPrice == 0 ||
+    (pool?.baseSpotPrice != pool?.currentSpotPrice &&
+      Math.abs(
+        (pool?.bondingCurve === BondingCurveType.XYK
+          ? pool?.baseSpotPrice
+          : pool?.currentSpotPrice) - rawSpotPrice,
+      ) <= 10000) ||
+    rawSpotPrice === 0 ||
     !rawSpotPrice;
 
   if (isSpotChangingWrong) {
     throw Error(
       'Something is not right with the edit. pool: ' +
-        pool +
+        JSON.stringify(pool, null, 2) +
         ', spot price: ' +
         rawSpotPrice,
     );
