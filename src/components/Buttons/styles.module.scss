@@ -7,7 +7,7 @@
   overflow: hidden;
   transition: var(--button-transition);
 
-  &:not(.active):hover {
+  &:not(.active, .disabled):hover {
     opacity: var(--button-hover-opacity);
   }
 }
@@ -44,7 +44,7 @@
     color: var(--blue-color);
   }
 
-  &:hover {
+  &:not(.disabled):hover {
     background: var(--button-hover-outline);
   }
 }
