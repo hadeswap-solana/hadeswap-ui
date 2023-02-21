@@ -7,7 +7,6 @@ import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { notify } from '../../utils';
 import { formatRawSol, NotifyType } from '../../utils/solanaUtils';
-import { createAndSendAllTxns } from '../../utils/transactions';
 import { useConnection } from '../../hooks';
 import { Pair } from '../../state/core/types';
 import { useFetchPair } from '../../requests';

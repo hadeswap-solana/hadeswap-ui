@@ -9,10 +9,7 @@ import {
   createIxCardFuncs,
   IX_TYPE,
 } from '../../components/TransactionsLoadingModal';
-import {
-  createAndSendAllTxns,
-  createAndSendTxn,
-} from '../../utils/transactions';
+import { createAndSendTxn } from '../../utils/transactions';
 import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenForNftPairTxn';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 import { createPairTxn } from '../../utils/transactions/createPairTxn';
