@@ -164,7 +164,7 @@ export const EditPool: FC = () => {
               />
             </div>
 
-            {!!chartData.length && (
+            {!!chartData?.length && (
               <Chart
                 title="price graph"
                 data={chartData}

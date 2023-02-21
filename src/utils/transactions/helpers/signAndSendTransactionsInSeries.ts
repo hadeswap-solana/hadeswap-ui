@@ -21,7 +21,6 @@ type SignTransactionsInSeries = (params: {
 
 export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
   async ({ txnData, connection, wallet }) => {
-    console.log('used this?');
     for (let i = 0; i < txnData.length; ++i) {
       const {
         transaction,
