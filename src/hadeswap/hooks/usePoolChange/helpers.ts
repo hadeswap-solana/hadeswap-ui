@@ -120,7 +120,7 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   wallet,
 }) => {
   const isSpotChangingWrong =
-    (pool?.baseSpotPrice != pool?.currentSpotPrice &&
+    (pool?.baseSpotPrice !== pool?.currentSpotPrice &&
       Math.abs(
         (pool?.bondingCurve === BondingCurveType.XYK
           ? pool?.baseSpotPrice
