@@ -48,9 +48,10 @@ export const usePoolServiceAssets = ({
     !nftsLoading &&
       setNftsByMint((prevState) => ({
         ...prevState,
+        ...createNftsByMint(preSelectedNfts, true),
         ...createNftsByMint(walletNfts, false),
       }));
-  }, [walletNfts, nftsLoading]);
+  }, [preSelectedNfts, walletNfts, nftsLoading]);
 
   const toggleNft = (mint: string): void => {
     setNftsByMint((prevState) => ({
