@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import ItemsList from '../../../../components/ItemsList';
 import { sortCollection } from '../../../../components/Sorting/mobile/helpers';
-import { POOL, SORT_ORDER } from '../../../../constants/common';
-import { PubKeys } from '../../../../types';
+import { POOL } from '../../../../constants/common';
+import { PubKeys, SORT_ORDER } from '../../../../types';
 
 import {
   selectMarketPairsLoading,

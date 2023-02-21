@@ -4,6 +4,11 @@ export enum PubKeys {
   NFT_MINT = 'nftMint',
 }
 
+export enum SORT_ORDER {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
 export enum TableCellAlign {
   left = 'alignLeft',
   center = 'alignCenter',

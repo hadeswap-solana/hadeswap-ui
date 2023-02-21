@@ -1,6 +1,6 @@
 import React, { FC, Fragment } from 'react';
 import classNames from 'classnames';
-import { SORT_ORDER } from '../../../constants/common';
+import { SORT_ORDER } from '../../../types';
 import { PairButtons } from '../../Buttons/PairButtons';
 import ChevronIcon from '../../../icons/ChevronIcon';
 import ArrowIcon from '../../../icons/ArrowIcon';
