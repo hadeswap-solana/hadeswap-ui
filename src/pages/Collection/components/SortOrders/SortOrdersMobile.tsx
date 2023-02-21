@@ -35,12 +35,13 @@ const SortOrdersMobile: FC<SortOrdersMobileProps> = ({
   const sortValue = sort.value.split('_')[1]
     ? sort.value
     : `${sort.value}_${sortOrder}`;
+  const sortLabel = sort.value.split('_')[0];
 
   return (
     <>
       <BlackButton className={localStyles.blackButton} onClick={toggle}>
         <div>
-          <span style={{ marginRight: '12px' }}>{sort.label}</span>
+          <span style={{ marginRight: '12px' }}>{sortLabel}</span>
           <ArrowIcon
             className={classNames(styles.arrowIcon, {
               [styles.arrowIconLeft]: sortOrder === SORT_ORDER.ASC,
