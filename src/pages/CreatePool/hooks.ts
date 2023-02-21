@@ -27,6 +27,7 @@ import { Nft } from '../../state/core/types';
 import { captureSentryError } from '../../utils/sentry';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
+import { signAndSendAllTransactions } from '../../utils/transactions/helpers/signAndSendAllTransactions';
 
 type UseCreatePool = (
   props: Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'>,
@@ -78,7 +79,7 @@ export const useCreatePool: UseCreatePool = (props) => {
 
       //? Run Rest Txns
       if (restTxnsData?.length) {
-        await createAndSendAllTxns({
+        await signAndSendAllTransactions({
           connection,
           wallet,
           txnsAndSigners: restTxnsData.map(({ transaction, signers }) => ({

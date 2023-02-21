@@ -36,11 +36,6 @@ export const createAndSendAllTxns: CreateAndSendAllTxns = async ({
   onSuccess,
   onError,
 }) => {
-  console.log('wallet.wallet?.adapter: ', wallet.wallet?.adapter);
-  console.log(
-    'wallet.wallet?.adapter?.supportedTransactionVersions: ',
-    wallet.wallet?.adapter?.supportedTransactionVersions,
-  );
   const isSupportV0Transaction = false;
   // wallet.wallet?.adapter?.name !== 'Ledger' ||
   // wallet.wallet?.adapter?.supportedTransactionVersions === null ||
@@ -141,3 +136,74 @@ export const createAndSendAllTxns: CreateAndSendAllTxns = async ({
     }
   }
 };
+
+// export const createAndSendAllTxns: CreateAndSendAllTxns = async ({
+//   txnsAndSigners,
+//   connection,
+//   wallet,
+//   commitment = 'finalized',
+//   onBeforeApprove,
+//   onAfterSend,
+//   onSuccess,
+//   onError,
+// }) => {
+//   try {
+//     onBeforeApprove?.();
+
+//     const { blockhash, lastValidBlockHeight } =
+//       await connection.getLatestBlockhash();
+
+//     const transactions = txnsAndSigners.map(({ transaction, signers = [] }) => {
+//       transaction.recentBlockhash = blockhash;
+//       transaction.feePayer = wallet.publicKey;
+
+//       if (signers.length) {
+//         transaction.sign(...signers);
+//       }
+
+//       return transaction;
+//     });
+
+//     const signedTransactions = await wallet.signAllTransactions(transactions);
+
+//     const txnSignatures = await Promise.all(
+//       signedTransactions.map((txn) =>
+//         connection.sendRawTransaction(txn.serialize(), {
+//           skipPreflight: false,
+//         }),
+//       ),
+//     );
+
+//     notify({
+//       message: 'transaction sent!',
+//       type: NotifyType.INFO,
+//     });
+
+//     onAfterSend?.();
+
+//     await Promise.allSettled(
+//       txnSignatures.map((signature) =>
+//         connection.confirmTransaction(
+//           {
+//             signature,
+//             blockhash,
+//             lastValidBlockHeight,
+//           },
+//           commitment,
+//         ),
+//       ),
+//     );
+
+//     onSuccess?.();
+
+//     return true;
+//   } catch (error) {
+//     captureSentryError({
+//       error,
+//       wallet,
+//     });
+
+//     onError?.();
+//     return false;
+//   }
+// };

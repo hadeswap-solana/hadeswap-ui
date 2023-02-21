@@ -19,7 +19,9 @@ export const ItemsList: FC<ItemsListProps> = ({
       columns={mapType}
       dataSource={data}
       pagination={false}
-      rowKey={(record, ...rest) => record[idKey] || rest[0]}
+      rowKey={(record, ...rest) => {
+        return record[idKey] || rest[0];
+      }}
       onRow={(source) => ({
         onClick: () => onRowClick(source[pubKey], source),
       })}

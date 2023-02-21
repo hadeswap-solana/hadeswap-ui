@@ -20,6 +20,11 @@
   border: 0;
   border-radius: 0;
 
+  > span {
+    display: flex;
+    align-items: center;
+  }
+
   &:hover {
     background: var(--border-color-base);
     opacity: 1 !important;
@@ -29,10 +34,28 @@
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
   }
+
   &:last-child {
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
   }
+}
+
+.arrowUp,
+.arrowDown {
+  height: 13px;
+
+  path {
+    fill: var(--primary-white-color);
+  }
+}
+
+.arrowUp {
+  transform: rotate(-90deg);
+}
+
+.arrowDown {
+  transform: rotate(90deg);
 }
 
 .activeSortButton {
@@ -42,107 +65,8 @@
 .blackButton {
   min-width: 136px;
 
-  span {
+  div {
     display: flex;
     align-items: center;
-    gap: 4px;
-  }
-}
-
-.sortModalMobile {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  height: calc(100vh - var(--header-height-mobile) - 20px);
-  width: 100vw;
-  border-radius: 20px 20px 0px 0px;
-  border: var(--border-base);
-  background: var(--component-secondary-background);
-  overflow: hidden;
-  z-index: 2;
-  padding: 24px;
-}
-
-.sortModalClose {
-  font-family: var(--font-family-rubik);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 22px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  margin-bottom: 24px;
-}
-
-.sortMobileButtons {
-  display: flex;
-  flex-direction: column;
-}
-
-.label {
-  font-family: var(--font-family-rubik);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 17px;
-  text-align: center;
-  margin-bottom: 8px;
-}
-
-.row {
-  display: flex;
-  margin-bottom: 16px;
-}
-
-.sortButtonAsc,
-.sortButtonDesc {
-  width: 100%;
-
-  span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  p {
-    display: none;
-  }
-}
-
-.rotate {
-  svg {
-    transform: rotate(-180deg);
-  }
-}
-
-.sortButtonDesc {
-  span > svg {
-    transform: rotate(-180deg);
-  }
-}
-
-.sortButtonAsc {
-  border-width: 1px 0 1px 1px;
-  border-radius: 20px 0 0 20px;
-  &:before {
-    right: -1px;
-  }
-}
-
-.sortButtonDesc {
-  border-width: 1px 1px 1px 0;
-  border-radius: 0 20px 20px 0;
-  &:before {
-    left: -1px;
-  }
-}
-
-.activeSortMobileButton {
-  border-color: var(--blue-color);
-  border-width: 1px;
-
-  svg {
-    fill: var(--blue-color);
   }
 }

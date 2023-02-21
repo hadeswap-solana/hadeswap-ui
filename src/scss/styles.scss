@@ -6,6 +6,12 @@
   color: var(--primary-white-color);
 }
 
+body {
+  @media (min-width: 1025px) {
+    overflow: hidden;
+  }
+}
+
 a {
   &,
   &:hover,

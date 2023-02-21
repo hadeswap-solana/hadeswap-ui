@@ -1,16 +1,15 @@
 import { useMemo } from 'react';
-import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { Control, useForm } from 'react-hook-form';
-
+import ArrowIcon from '../../../../../icons/ArrowIcon';
 import { MarketOrder } from '../../../../../state/core/types';
 import { compareNumbers } from '../../../../../utils';
+import { useSelector } from 'react-redux';
+import { selectScreeMode } from '../../../../../state/common/selectors';
+import { ScreenTypes } from '../../../../../state/common/types';
+import { SORT_ORDER } from '../../../../../types';
+import styles from '../styles.module.scss';
 
-export enum SORT_ORDER {
-  ASC = 'asc',
-  DESC = 'desc',
-}
-
-enum SortField {
+export enum SortField {
   MOON_RANK = 'moonrank',
   HOW_RARE = 'howrare',
   PRICE = 'price',
@@ -21,7 +20,7 @@ export enum FilterFormInputsNames {
 }
 
 export type OrderSortValue = {
-  label: JSX.Element;
+  label: JSX.Element | string;
   value: string;
   isDisabled?: boolean;
 };
@@ -42,9 +41,12 @@ export const useOrdersSort: UseOrdersSort = ({ orders }) => {
   const optionsMobile = sortValuesMobile(isExistHowRarity, isExistMoonRarity);
   const options = sortValues(isExistHowRarity, isExistMoonRarity);
 
+  const screenMode = useSelector(selectScreeMode);
+  const isMobile = screenMode !== ScreenTypes.DESKTOP;
+
   const { control, watch, setValue } = useForm({
     defaultValues: {
-      [FilterFormInputsNames.SORT]: options[0],
+      [FilterFormInputsNames.SORT]: isMobile ? optionsMobile[0] : options[0],
     },
   });
 
@@ -52,7 +54,8 @@ export const useOrdersSort: UseOrdersSort = ({ orders }) => {
 
   const sortedOrders = useMemo(() => {
     if (orders.length) {
-      const [sortField, sortOrder] = sort.value.split('_');
+      const [sortField, sortOrder = SORT_ORDER.ASC] = sort.value.split('_');
+
       return orders.sort((orderA, orderB) => {
         if (sortField === SortField.MOON_RANK) {
           return compareNumbers(
@@ -103,7 +106,7 @@ const sortValues = (
     {
       label: (
         <>
-          price <ArrowUpOutlined />
+          price <ArrowIcon className={styles.arrowUp} />
         </>
       ),
       value: 'price_asc',
@@ -111,7 +114,7 @@ const sortValues = (
     {
       label: (
         <>
-          price <ArrowDownOutlined />
+          price <ArrowIcon className={styles.arrowDown} />
         </>
       ),
       value: 'price_desc',
@@ -119,7 +122,7 @@ const sortValues = (
     {
       label: (
         <>
-          moonrank <ArrowUpOutlined />
+          moonrank <ArrowIcon className={styles.arrowUp} />
         </>
       ),
       value: 'moonrank_asc',
@@ -128,7 +131,7 @@ const sortValues = (
     {
       label: (
         <>
-          moonrank <ArrowDownOutlined />
+          moonrank <ArrowIcon className={styles.arrowDown} />
         </>
       ),
       value: 'moonrank_desc',
@@ -137,7 +140,7 @@ const sortValues = (
     {
       label: (
         <>
-          howrare <ArrowUpOutlined />
+          howrare <ArrowIcon className={styles.arrowUp} />
         </>
       ),
       value: 'howrare_asc',
@@ -146,7 +149,7 @@ const sortValues = (
     {
       label: (
         <>
-          howrare <ArrowDownOutlined />
+          howrare <ArrowIcon className={styles.arrowDown} />
         </>
       ),
       value: 'howrare_desc',
@@ -161,63 +164,18 @@ const sortValuesMobile = (
 ) => {
   return [
     {
-      label: (
-        <>
-          <p>price</p>
-          <ArrowUpOutlined />
-        </>
-      ),
-      value: 'price',
+      label: SortField.PRICE,
+      value: SortField.PRICE,
     },
     {
-      label: (
-        <>
-          <p>moonrank</p>
-          <ArrowUpOutlined />
-        </>
-      ),
+      label: SortField.MOON_RANK,
+      value: SortField.MOON_RANK,
       isDisabled: isExistMoonRarity,
-      value: 'moonrank',
     },
     {
-      label: (
-        <>
-          <p>howrare</p>
-          <ArrowUpOutlined />
-        </>
-      ),
-      value: 'howrare',
+      label: SortField.HOW_RARE,
+      value: SortField.HOW_RARE,
       isDisabled: isExistHowRarity,
     },
   ];
 };
-
-// export const SORT_VALUES_MOBILE: OrderSortValue[] = [
-//   {
-//     label: (
-//       <>
-//         <p>price</p>
-//         <ArrowUpOutlined />
-//       </>
-//     ),
-//     value: 'price',
-//   },
-//   {
-//     label: (
-//       <>
-//         <p>moonrank</p>
-//         <ArrowUpOutlined />
-//       </>
-//     ),
-//     value: 'moonrank',
-//   },
-//   {
-//     label: (
-//       <>
-//         <p>howrare</p>
-//         <ArrowUpOutlined />
-//       </>
-//     ),
-//     value: 'howrare',
-//   },
-// ];
