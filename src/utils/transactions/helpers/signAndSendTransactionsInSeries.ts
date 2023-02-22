@@ -36,7 +36,6 @@ export const signAndSendTransactionsInSeries: SignTransactionsInSeries =
           signers,
           connection,
           wallet,
-          commitment: 'finalized',
           onBeforeApprove,
           onAfterSend,
         });

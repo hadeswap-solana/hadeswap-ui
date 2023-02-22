@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import BN from 'bn.js';
 import { Typography } from 'antd';
-// import { SweepButton } from '../SweepButton';
 import { NFTCard } from '../../../../components/NFTCard/NFTCard';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { FakeInfinityScroll } from '../../../../components/FakeInfiinityScroll';
@@ -64,26 +63,22 @@ export const CollectionSellTab: FC = () => {
         <Typography.Title level={3}>no suitable nfts found</Typography.Title>
       )}
       {!isLoading && connected && !!sellOrders.length && (
-        <>
-          {/* <SweepButton /> */}
-          <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
-            {sellOrders.map((order) => (
-              <NFTCard
-                key={order.mint}
-                imageUrl={order.imageUrl}
-                name={order.name}
-                price={
-                  order.price > 0 ? formatBNToString(new BN(order.price)) : ''
-                }
-                //onAddToCart={createOnBtnClick(order)}
-                onCardClick={createOnBtnClick(order)}
-                selected={order?.selected}
-                disabled={order.price <= 0}
-                rarity={order.rarity}
-              />
-            ))}
-          </FakeInfinityScroll>
-        </>
+        <FakeInfinityScroll itemsPerScroll={21} className={styles.cards}>
+          {sellOrders.map((order) => (
+            <NFTCard
+              key={order.mint}
+              imageUrl={order.imageUrl}
+              name={order.name}
+              price={
+                order.price > 0 ? formatBNToString(new BN(order.price)) : ''
+              }
+              onCardClick={createOnBtnClick(order)}
+              selected={order?.selected}
+              disabled={order.price <= 0}
+              rarity={order.rarity}
+            />
+          ))}
+        </FakeInfinityScroll>
       )}
     </div>
   );
