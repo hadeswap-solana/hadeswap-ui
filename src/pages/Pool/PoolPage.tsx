@@ -57,7 +57,7 @@ export const PoolPage: FC = () => {
           <>
             <PoolHeader market={market} pool={pool} />
             <PoolGeneralInfo pool={pool} />
-            <NftList pool={pool} />
+            {!!pool?.sellOrders?.length && <NftList pool={pool} />}
 
             {!!chartData?.length && (
               <Chart
