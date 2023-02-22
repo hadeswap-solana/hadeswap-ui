@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
 
 import Button from '../Buttons/Button';
@@ -15,6 +15,7 @@ import { MinusIcon } from '../../icons/MinusIcon';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectAllSellOrdersForMarket } from '../../state/core/selectors';
+import plugImage from '../../assets/plug.png';
 
 interface NFTCardProps {
   className?: string;
@@ -27,7 +28,6 @@ interface NFTCardProps {
   price?: string;
   rarity?: NftRarity;
   onCardClick?: () => void;
-  onAddToCart?: () => void;
   onExchange?: () => void;
   withoutAddToCartBtn?: boolean;
   createPool?: boolean;
@@ -44,7 +44,6 @@ export const NFTCard: FC<NFTCardProps> = ({
   price,
   rarity,
   onCardClick,
-  // onAddToCart,
   onExchange,
   withoutAddToCartBtn,
   createPool = false,
@@ -54,6 +53,12 @@ export const NFTCard: FC<NFTCardProps> = ({
   const sellOrders = useSelector((state: never) =>
     selectAllSellOrdersForMarket(state, marketPublicKey),
   );
+
+  const [isLoaded, setLoaded] = useState<boolean>(false);
+
+  const onloadImage = () => {
+    setLoaded(true);
+  };
 
   return (
     <div
@@ -67,7 +72,21 @@ export const NFTCard: FC<NFTCardProps> = ({
       onClick={onCardClick && onCardClick}
     >
       <div className={styles.cardImageWrapper}>
-        <img className={styles.cardImage} src={imageUrl} alt={name} />
+        <img
+          className={classNames(styles.cardImage, {
+            [styles.cardImageVisible]: isLoaded,
+          })}
+          src={imageUrl}
+          alt={name}
+          onLoad={onloadImage}
+        />
+        <img
+          className={classNames(styles.plugImage, {
+            [styles.plugImageHidden]: isLoaded,
+          })}
+          src={plugImage}
+          alt="solana"
+        />
         {!!rarity && <Rarity rarity={rarity} />}
       </div>
       <div className={styles.cardContent}>
