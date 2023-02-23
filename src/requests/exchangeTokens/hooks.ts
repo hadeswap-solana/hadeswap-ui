@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchTokensRate, fetchTokensInfo } from './requests';
-import { TokenInfo, TokenRateData } from './types';
-import { TokensValues } from '../types';
+import { TokenInfo, TokenRateData } from '../types';
+import { TokensValues } from '../../types';
 
 export const SECOND_TO_REFRESH = 30 * 1000;
 

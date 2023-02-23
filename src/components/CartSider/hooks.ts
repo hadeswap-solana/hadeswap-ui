@@ -24,7 +24,7 @@ import { NotifyType } from '../../utils/solanaUtils';
 import { signAndSendTransactionsInSeries } from '../../utils/transactions';
 import { CartOrder } from '../../state/core/types';
 import { TokenItem } from '../../constants/tokens';
-import { useTokenInfo, useTokenRate } from '../../requests/exchangeToken';
+import { useTokenInfo, useTokenRate } from '../../requests';
 import { calcAmount } from '../Jupiter/utils';
 import JSBI from 'jsbi';
 

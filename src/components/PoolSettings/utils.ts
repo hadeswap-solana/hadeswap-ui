@@ -5,6 +5,14 @@ import {
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 
+const checkIsFinite = (number: number): number => {
+  if (isFinite(number)) {
+    return number;
+  } else {
+    return 0;
+  }
+};
+
 const calcStartingPriceWithFees = ({
   price,
   orderType,
@@ -30,13 +38,15 @@ const calcStartingSellingPrice = ({
   spotPrice: number;
   mathCounter: number;
 }): number => {
-  return helpers.calculateNextSpotPrice({
+  const price = helpers.calculateNextSpotPrice({
     orderType: OrderType.Buy,
     delta: delta,
     spotPrice: spotPrice,
     bondingCurveType: curveType,
     counter: mathCounter,
   });
+
+  return checkIsFinite(price);
 };
 
 export const startingBuyingPrice = ({
