@@ -28,10 +28,10 @@ export const fetchMarketWalletNfts = async ({
 };
 
 export const fetchWalletPairs = async (
-  walletPubkey: web3.PublicKey,
+  walletPubkey: string,
 ): Promise<Pair[]> => {
   const response = await fetch(
-    `https://${process.env.BACKEND_DOMAIN}/my-pairs/${walletPubkey.toBase58()}`,
+    `https://${process.env.BACKEND_DOMAIN}/my-pairs/${walletPubkey}`,
   );
 
   if (!response.ok) {

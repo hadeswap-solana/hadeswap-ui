@@ -56,6 +56,7 @@ export const useFetchMarketWalletNfts = (
 export const useFetchWalletPairs = (): void => {
   const dispatch = useDispatch();
   const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
+  const walletPubkey = publicKey.toBase58();
 
   const {
     data,
@@ -66,8 +67,8 @@ export const useFetchWalletPairs = (): void => {
     status: QueryStatus;
     fetchStatus: FetchStatus;
   } = useQuery(
-    ['fetchWalletPairs', `${publicKey}`],
-    () => fetchWalletPairs(publicKey),
+    ['fetchWalletPairs', `${walletPubkey}`],
+    () => fetchWalletPairs(walletPubkey),
     {
       staleTime: 10,
       enabled: !!publicKey,
