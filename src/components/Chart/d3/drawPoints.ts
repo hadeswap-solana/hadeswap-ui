@@ -35,7 +35,12 @@ export const drawPoints: DrawPoints = (
           ? `${yScale(+d.price) - 10}px`
           : `${yScale(+d.price) + 20}px`,
       )
-      .style('left', `${e.x > width - 100 ? e.x - 175 : e.x - 25}px`);
+      .style(
+        'left',
+        `${
+          e.x > width - 100 ? xScale(+d.order) - 40 : xScale(+d.order) + 60
+        }px`,
+      );
     tooltip
       .append('div')
       .classed('orderNumber', true)
