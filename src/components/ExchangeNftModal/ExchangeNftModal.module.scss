@@ -16,7 +16,7 @@
 }
 
 .btn {
-  margin-top: 16px;
+  margin-top: 18px;
   width: 100%;
 }
 
@@ -40,9 +40,63 @@
 }
 
 .priceDifference {
-  color: var(--dark-grey-color);
-  font-family: var(--font-family-rubik);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 22px;
+  margin-top: 32px;
+
+  .text {
+    font-family: var(--font-family-rubik);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    color: var(--dark-grey-color) !important;
+
+    @media (max-width: 1024px) {
+      font-size: 12px;
+    }
+  }
+
+  .value {
+    font-family: var(--font-family-montserrat);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 22px;
+
+    @media (max-width: 1024px) {
+      font-size: 14px;
+    }
+  }
+}
+
+.solLogo {
+  width: 18px;
+  height: 18px;
+
+  @media (max-width: 1024px) {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.notifyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.notifyItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  svg {
+    min-width: 14px;
+    max-width: 14px;
+    height: 14px;
+  }
+
+  span {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 120%;
+  }
 }
