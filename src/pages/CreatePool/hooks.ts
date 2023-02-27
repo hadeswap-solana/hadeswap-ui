@@ -13,6 +13,10 @@ import { createAndSendTxn } from '../../utils/transactions/helpers/v0/createAndS
 import { createTokenForNftPairTxn } from '../../utils/transactions/createTokenForNftPairTxn';
 import { createDepositSolToPairTxn } from '../../utils/transactions/createDepositSolToPairTxn';
 import { createPairTxn } from '../../utils/transactions/createPairTxn';
+import {
+  signAndSendTransaction,
+  signAndSendAllTransactions,
+} from '../../utils/transactions';
 import { createDepositNftsToPairTxns } from '../../utils/transactions/createDepositNftsToPairTxns';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
@@ -24,7 +28,6 @@ import { Nft } from '../../state/core/types';
 import { captureSentryError } from '../../utils/sentry';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
-import { signAndSendAllTransactions } from '../../utils/transactions';
 
 type UseCreatePool = (
   props: Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'>,

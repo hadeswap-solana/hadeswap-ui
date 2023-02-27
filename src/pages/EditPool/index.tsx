@@ -1,6 +1,5 @@
 import { FC, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useFetchAllMarkets, useFetchPair } from '../../requests';
 import {
@@ -17,9 +16,7 @@ import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePool
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
 import { Spinner } from '../../components/Spinner/Spinner';
-import { WithdrawFees } from '../../components/WithdrawFees';
 import Button from '../../components/Buttons/Button';
-import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
 import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import { usePoolChange } from '../../hadeswap/hooks';
