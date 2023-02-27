@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { CartOrder, MarketOrder, OrderType } from '../../state/core/types';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
+import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
 import { getFormattedPrice } from '../../utils';
 import { FakeInfinityScroll } from '../FakeInfiinityScroll';
 import { coreActions } from '../../state/core/actions';
@@ -177,13 +178,25 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
         />
       </Col>
 
-      <Row style={{ marginTop: 32 }} justify="space-between">
-        <Text className={styles.priceDifference}>price difference</Text>
+      <Row className={styles.priceDifference} justify="space-between">
+        <Text className={styles.text}>price difference</Text>
         <Row align="middle" style={{ gap: 5 }}>
-          <Text>{priceDifference.toFixed(2)}</Text>
-          <img width={12} height={12} src={solanaLogo} alt="sol" />
+          <Text className={styles.value}>{priceDifference.toFixed(2)}</Text>
+          <img className={styles.solLogo} src={solanaLogo} alt="sol" />
         </Row>
       </Row>
+      <div className={styles.notifyBlock}>
+        <div className={styles.notifyItem}>
+          <NotifyInfoIcon />
+          <span>price difference may change</span>
+        </div>
+        <div className={styles.notifyItem}>
+          <NotifyInfoIcon />
+          <span>
+            make sure you know swap consists of sell and buy transactions
+          </span>
+        </div>
+      </div>
       <Button isDisabled={isDisabled} className={styles.btn} onClick={swap}>
         <span>exchange for {priceDifference.toFixed(2)} SOL</span>
       </Button>
