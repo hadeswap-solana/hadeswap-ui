@@ -1,4 +1,3 @@
-import { signAndSendAllTransactions } from './../../../utils/transactions/helpers/signAndSendAllTransactions';
 import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import {
@@ -12,7 +11,7 @@ import { createWithdrawLiquidityAllFeesTxns } from '../../../utils/transactions/
 import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
 import { Pair } from '../../../state/core/types';
-import { signAndSendAllTransactions } from '../../../utils/transactions/helpers/signAndSendAllTransactions';
+import { signAndSendAllTransactions } from '../../../utils/transactions';
 
 type UseWithdrawAllFees = (props: { pairs: Pair[] }) => {
   onWithdrawClick: () => Promise<void>;

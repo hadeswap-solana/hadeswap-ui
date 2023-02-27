@@ -1,10 +1,10 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
 
-import { signAndConfirmTransaction } from './signAndConfirmTransaction';
-import { captureSentryError } from '../../sentry';
-import { NotifyType } from '../../solanaUtils';
-import { notify } from '../..';
+import { signAndConfirmTransaction } from '../signAndConfirmTransaction';
+import { captureSentryError } from '../../../sentry';
+import { NotifyType } from '../../../solanaUtils';
+import { notify } from '../../..';
 
 interface TxnsAndSigners {
   transaction: web3.Transaction;
