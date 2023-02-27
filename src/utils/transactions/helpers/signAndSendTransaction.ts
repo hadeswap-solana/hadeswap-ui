@@ -16,21 +16,19 @@ interface SignAndSendTransactionProps {
 
 type SignAndSendTransaction = (
   props: SignAndSendTransactionProps,
-) => Promise<web3.RpcResponseAndContext<web3.SignatureResult>>;
+) => Promise<void>;
 
 export const signAndSendTransaction: SignAndSendTransaction = async ({
   transaction,
   signers = [],
   connection,
   wallet,
-  commitment = 'finalized',
   onBeforeApprove,
   onAfterSend,
 }) => {
   onBeforeApprove?.();
 
-  const { blockhash, lastValidBlockHeight } =
-    await connection.getLatestBlockhash();
+  const { blockhash } = await connection.getLatestBlockhash();
 
   transaction.recentBlockhash = blockhash;
   transaction.feePayer = wallet.publicKey;
@@ -38,13 +36,6 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
   if (signers.length) {
     transaction.sign(...signers);
   }
-
-  const signedTransaction = await wallet.signTransaction(transaction);
-
-  const signature = await connection.sendRawTransaction(
-    signedTransaction.serialize(),
-    { skipPreflight: false },
-  );
 
   notify({
     message: 'transaction sent!',
