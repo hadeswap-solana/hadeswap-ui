@@ -29,7 +29,9 @@ export const useCloseClick = ({
   const wallet = useWallet();
 
   const isClosePoolDisabled = !(
-    pool?.nftsCount === 0 && pool?.buyOrdersAmount === 0
+    pool?.nftsCount === 0 &&
+    pool?.buyOrdersAmount === 0 &&
+    pool?.totalAccumulatedFees === 0
   );
 
   const onCloseClick = async () => {
