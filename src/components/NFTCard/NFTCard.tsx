@@ -1,10 +1,7 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
 
 import Button from '../Buttons/Button';
-// import DeleteButton from '../Buttons/DeleteButton';
-// import { PlusIcon } from '../../icons/PlusIcon';
-// import { LoopIcon } from '../../icons/LoopIcon';
 import { SolPrice } from '../SolPrice/SolPrice';
 import { UNTITLED } from '../../constants/common';
 import { NftRarity } from '../../state/core/types';
@@ -15,6 +12,10 @@ import { SwapButton } from '../Buttons/SwapButton';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PlusIcon } from '../../icons/PlusIcon';
 import { MinusIcon } from '../../icons/MinusIcon';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectAllSellOrdersForMarket } from '../../state/core/selectors';
+import plugImage from '../../assets/plug.png';
 
 interface NFTCardProps {
   className?: string;
@@ -27,7 +28,6 @@ interface NFTCardProps {
   price?: string;
   rarity?: NftRarity;
   onCardClick?: () => void;
-  onAddToCart?: () => void;
   onExchange?: () => void;
   withoutAddToCartBtn?: boolean;
   createPool?: boolean;
@@ -44,12 +44,21 @@ export const NFTCard: FC<NFTCardProps> = ({
   price,
   rarity,
   onCardClick,
-  // onAddToCart,
   onExchange,
   withoutAddToCartBtn,
   createPool = false,
 }) => {
   const { connected } = useWallet();
+  const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
+  const sellOrders = useSelector((state: never) =>
+    selectAllSellOrdersForMarket(state, marketPublicKey),
+  );
+
+  const [isLoaded, setLoaded] = useState<boolean>(false);
+
+  const onloadImage = () => {
+    setLoaded(true);
+  };
 
   return (
     <div
@@ -63,24 +72,21 @@ export const NFTCard: FC<NFTCardProps> = ({
       onClick={onCardClick && onCardClick}
     >
       <div className={styles.cardImageWrapper}>
-        {/*{!simpleCard && !selected && (*/}
-        {/*  <div className={styles.cardImageHover}>*/}
-        {/*    <Button className={styles.cardButton} onClick={onAddToCart}>*/}
-        {/*      <PlusIcon />*/}
-        {/*      <span>add to cart</span>*/}
-        {/*    </Button>*/}
-        {/*    {onExchange && (*/}
-        {/*      <Button className={styles.cardButton} onClick={onExchange}>*/}
-        {/*        <LoopIcon />*/}
-        {/*        <span>exchange</span>*/}
-        {/*      </Button>*/}
-        {/*    )}*/}
-        {/*  </div>*/}
-        {/*)}*/}
-        {/* {selected && (
-          <DeleteButton className={styles.deleteButton} onClick={onAddToCart} />
-        )} */}
-        <img className={styles.cardImage} src={imageUrl} alt={name} />
+        <img
+          className={classNames(styles.cardImage, {
+            [styles.cardImageVisible]: isLoaded,
+          })}
+          src={imageUrl}
+          alt={name}
+          onLoad={onloadImage}
+        />
+        <img
+          className={classNames(styles.plugImage, {
+            [styles.plugImageHidden]: isLoaded,
+          })}
+          src={plugImage}
+          alt="solana"
+        />
         {!!rarity && <Rarity rarity={rarity} />}
       </div>
       <div className={styles.cardContent}>
@@ -102,6 +108,7 @@ export const NFTCard: FC<NFTCardProps> = ({
           )}
           {onExchange && (
             <SwapButton
+              isDisabled={!sellOrders.length}
               onClick={(e) => {
                 e.stopPropagation();
                 if (connected) {

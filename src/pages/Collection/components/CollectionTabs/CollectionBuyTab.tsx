@@ -1,7 +1,6 @@
 import { FC, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BN from 'bn.js';
-// import { SweepButton } from '../SweepButton';
 import { NFTCard } from '../../../../components/NFTCard/NFTCard';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { FakeInfinityScroll } from '../../../../components/FakeInfiinityScroll';
@@ -18,14 +17,14 @@ import {
   MarketOrder,
   OrderType,
 } from '../../../../state/core/types';
-
-import styles from './styles.module.scss';
 import ExchangeNftModal, {
   useExchangeModal,
 } from '../../../../components/ExchangeNftModal';
 import { commonActions } from '../../../../state/common/actions';
 import { useOrdersSort } from '../SortOrders/hooks/useOrdersSort';
 import SortOrdersControll from '../SortOrders/SortOrdersControll';
+
+import styles from './styles.module.scss';
 
 export const CollectionBuyTab: FC = () => {
   const dispatch = useDispatch();
@@ -98,7 +97,6 @@ export const CollectionBuyTab: FC = () => {
       ) : (
         <>
           <div className={styles.sortWrapper}>
-            {/* <SweepButton /> */}
             <SortOrdersControll
               control={control}
               setValue={setValue}

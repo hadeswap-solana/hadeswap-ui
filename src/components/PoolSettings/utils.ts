@@ -5,6 +5,14 @@ import {
 } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { helpers } from 'hadeswap-sdk/lib/hadeswap-core';
 
+const checkIsFinite = (number: number): number => {
+  if (isFinite(number)) {
+    return number;
+  } else {
+    return 0;
+  }
+};
+
 const calcStartingPriceWithFees = ({
   price,
   orderType,
@@ -30,13 +38,15 @@ const calcStartingSellingPrice = ({
   spotPrice: number;
   mathCounter: number;
 }): number => {
-  return helpers.calculateNextSpotPrice({
+  const price = helpers.calculateNextSpotPrice({
     orderType: OrderType.Buy,
-    delta: curveType === BondingCurveType.Exponential ? delta * 100 : delta,
+    delta: delta,
     spotPrice: spotPrice,
     bondingCurveType: curveType,
     counter: mathCounter,
   });
+
+  return checkIsFinite(price);
 };
 
 export const startingBuyingPrice = ({
@@ -63,7 +73,7 @@ export const startingSellingPrice = ({
   fee,
   delta,
   spotPrice,
-  mathCounter,
+  mathCounter = 0,
 }: {
   pairType: PairType;
   curveType: BondingCurveType;
@@ -83,7 +93,12 @@ export const startingSellingPrice = ({
         orderType: OrderType.Sell,
         fee,
       })
-    : calcStartingSellingPrice({ delta, curveType, spotPrice, mathCounter });
+    : calcStartingSellingPrice({
+        delta,
+        curveType,
+        spotPrice,
+        mathCounter,
+      });
 };
 
 export const priceLockedIntoPool = ({
@@ -104,10 +119,11 @@ export const priceLockedIntoPool = ({
   mathCounter: number;
 }): number => {
   const amount =
-    pairType === PairType.TokenForNFT ? buyOrdersAmount : nftsCount;
+    pairType === PairType.LiquidityProvision
+      ? buyOrdersAmount
+      : buyOrdersAmount + nftsCount;
 
-  const rawDelta =
-    curveType === BondingCurveType.Exponential ? delta * 100 : delta;
+  const rawDelta = curveType === BondingCurveType.Linear ? delta / 1e9 : delta;
 
   const { total } = helpers.calculatePricesArray({
     starting_spot_price: spotPrice,
@@ -115,7 +131,7 @@ export const priceLockedIntoPool = ({
     amount,
     bondingCurveType: curveType,
     orderType: OrderType.Sell,
-    counter: mathCounter + 1,
+    counter: mathCounter,
   }) as { total: number };
 
   return total;

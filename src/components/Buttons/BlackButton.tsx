@@ -8,7 +8,7 @@ interface BlackButtonProps {
   className?: string;
   isInvisible?: boolean;
   isDisabled?: boolean;
-  children: JSX.Element;
+  children: JSX.Element | string;
 }
 
 export const BlackButton: FC<BlackButtonProps> = ({
@@ -17,17 +17,19 @@ export const BlackButton: FC<BlackButtonProps> = ({
   isInvisible,
   isDisabled,
   children,
-}) => (
-  <button
-    onClick={onClick}
-    className={classNames(
-      styles.rootButton,
-      styles.blackButton,
-      { [styles.invisible]: isInvisible },
-      { [styles.disabled]: isDisabled },
-      className,
-    )}
-  >
-    <span>{children}</span>
-  </button>
-);
+}) => {
+  return (
+    <button
+      onClick={onClick}
+      className={classNames(
+        styles.rootButton,
+        styles.blackButton,
+        { [styles.invisible]: isInvisible },
+        { [styles.disabled]: isDisabled },
+        className,
+      )}
+    >
+      {children}
+    </button>
+  );
+};

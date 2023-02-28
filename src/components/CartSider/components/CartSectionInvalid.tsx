@@ -3,8 +3,6 @@ import { coreActions } from '../../../state/core/actions';
 import { Typography } from 'antd';
 import classNames from 'classnames';
 import Card from './Card';
-import { formatBNToString } from '../../../utils';
-import BN from 'bn.js';
 import { CartOrder } from '../../../state/core/types';
 
 import styles from './styles.module.scss';
@@ -43,7 +41,7 @@ const CartSectionInvalid: FC<CartSectionInvalidProps> = ({
               key={item.mint}
               name={item.name}
               imageUrl={item.imageUrl}
-              price={formatBNToString(new BN(item.price))}
+              price={item.price}
             />
           ))}
         </div>

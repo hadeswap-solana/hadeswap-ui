@@ -32,7 +32,7 @@ interface TxnData {
 
 type CreateIx = (params: CreateIxParams) => Promise<IxnsData>;
 
-const PRECISION_CORRECTION = 10;
+const PRECISION_CORRECTION = 1000000;
 
 const createBuyNftFromPairIx: CreateIx = async ({
   connection,
@@ -68,6 +68,7 @@ const createBuyNftFromPairIx: CreateIx = async ({
       protocolFeeReceiver: new web3.PublicKey(process.env.PROTOCOL_FEE_PUBKEY),
     },
     args: {
+      pnft: {},
       maxAmountToPay:
         order.price +
         PRECISION_CORRECTION +
@@ -110,9 +111,7 @@ const createSellNftFromPairIx: CreateIx = async ({
         nftValidationAdapter: new web3.PublicKey(
           order?.nftValidationAdapter || PUBKEY_PLACEHOLDER,
         ),
-        nftValidationAdapterV2:
-          order?.nftValidationAdapterV2 &&
-          new web3.PublicKey(order.nftValidationAdapterV2),
+        nftValidationAdapterV2: undefined,
         pair: new web3.PublicKey(pair.pairPubkey),
         userPubkey: walletPubkey,
         protocolFeeReceiver: new web3.PublicKey(
@@ -120,8 +119,9 @@ const createSellNftFromPairIx: CreateIx = async ({
         ),
       },
       args: {
+        pnft: {},
         minAmountToGet: order.price - PRECISION_CORRECTION,
-        proof: order?.validProof,
+        proof: [],
         skipFailed: false,
       },
     });
@@ -136,9 +136,9 @@ const createSellNftFromPairIx: CreateIx = async ({
         nftValidationAdapter: new web3.PublicKey(
           order?.nftValidationAdapter || PUBKEY_PLACEHOLDER,
         ),
-        nftValidationAdapterV2:
-          order?.nftValidationAdapterV2 &&
-          new web3.PublicKey(order.nftValidationAdapterV2),
+        nftValidationAdapterV2: order?.nftValidationAdapter
+          ? undefined
+          : new web3.PublicKey(order.nftValidationAdapterV2),
         pair: new web3.PublicKey(pair.pairPubkey),
         userPubkey: walletPubkey,
         protocolFeeReceiver: new web3.PublicKey(
@@ -146,8 +146,9 @@ const createSellNftFromPairIx: CreateIx = async ({
         ),
       },
       args: {
+        pnft: {},
         minAmountToGet: order.price - PRECISION_CORRECTION,
-        proof: order?.validProof,
+        proof: [],
         skipFailed: false,
       },
     });

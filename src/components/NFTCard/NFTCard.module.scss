@@ -5,7 +5,7 @@
   border-radius: 16px;
   background: var(--component-base-background);
   cursor: pointer;
-  transition: border-color .3s;
+  transition: border-color 0.3s;
 
   &:hover {
     border-color: var(--blue-color);
@@ -62,9 +62,38 @@
 }
 
 .cardImage {
+  display: none;
   width: 100%;
-  display: block;
   object-fit: cover;
+}
+
+.cardImageVisible {
+  display: block;
+}
+
+.plugImage {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  animation-name: flashPlug;
+  animation-duration: 2000ms;
+  animation-iteration-count: infinite;
+}
+
+@keyframes flashPlug {
+  0% {
+    opacity: .3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .3;
+  }
+}
+
+.plugImageHidden {
+  display: none;
 }
 
 .cardContent {
@@ -132,7 +161,7 @@
 .cardButton {
   width: 38px;
   height: 38px;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
 
   svg > path {
     fill: var(--blue-color);
