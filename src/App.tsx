@@ -22,6 +22,7 @@ import {
 } from '@solana/wallet-adapter-react';
 import { FC } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Router } from './router';
 import store from './state/store';
 import { ENDPOINT } from './config';
@@ -50,18 +51,20 @@ const wallets = [
 
 const App: FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ReduxProvider store={store}>
-        <ConnectionProvider endpoint={ENDPOINT}>
-          <WalletProvider wallets={wallets} autoConnect>
-            <Jupiter>
-              <Router />
-              <Confetti />
-            </Jupiter>
-          </WalletProvider>
-        </ConnectionProvider>
-      </ReduxProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ReduxProvider store={store}>
+          <ConnectionProvider endpoint={ENDPOINT}>
+            <WalletProvider wallets={wallets} autoConnect>
+              <Jupiter>
+                <Router />
+                <Confetti />
+              </Jupiter>
+            </WalletProvider>
+          </ConnectionProvider>
+        </ReduxProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 

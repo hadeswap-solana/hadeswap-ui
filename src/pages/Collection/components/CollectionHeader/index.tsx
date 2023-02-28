@@ -1,12 +1,6 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { Cart } from './Cart';
-// import { SocialLink } from './SocialLink';
-// import { GlobeIcon } from '../../../../icons/GlobeIcon';
-// import { DiscordIcon } from '../../../../icons/DiscordIcon';
-// import { TwitterIcon } from '../../../../icons/TwitterIcon';
-// import { ShareIcon } from '../../../../icons/ShareIcon';
-// import { BellThinIcon } from '../../../../icons/BellThinIcon';
 import { SolPrice } from '../../../../components/SolPrice/SolPrice';
 import { Spinner } from '../../../../components/Spinner/Spinner';
 import { CreatePoolButton } from '../../../../components/CreatePoolButton/CreatePoolButton';
@@ -57,40 +51,6 @@ export const CollectionHeader: FC = () => {
                 {market.collectionName}
               </h2>
               <TokensMenu />
-              {/* <div className={styles.collectionDescriptionWrapper}>
-                <p className={styles.collectionDescription}>
-                  {mockData.collectionDescription}
-                </p>
-                <div className={styles.collectionDescriptionSocial}>
-                  <Plate>
-                    <SocialLink
-                      icon={<DiscordIcon />}
-                      href={'https://discord.gg/hadeswap'}
-                    />
-                    <SocialLink
-                      icon={<TwitterIcon />}
-                      href={'https://discord.gg/hadeswap'}
-                    />
-                    <SocialLink
-                      icon={<GlobeIcon />}
-                      href={'https://discord.gg/hadeswap'}
-                    />
-                    <SocialLink
-                      icon={<ShareIcon />}
-                      href={'https://discord.gg/hadeswap'}
-                    />
-                  </Plate>
-                  <Plate
-                    onClick={() => null}
-                    className={styles.collectionSubscribe}
-                  >
-                    <div className={styles.collectionSubscribeInner}>
-                      <BellThinIcon />
-                      <span>subscribe</span>
-                    </div>
-                  </Plate>
-                </div>
-              </div> */}
               <div className={styles.collectionStatWrapper}>
                 {marketStatList.map((item, index) => (
                   <Cart key={index} className={styles.collectionStatItem}>
