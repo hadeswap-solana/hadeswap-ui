@@ -1,4 +1,3 @@
-import { signAndSendAllTransactionsInSeries } from '../../../utils/transactions';
 import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useHistory } from 'react-router-dom';
@@ -15,7 +14,10 @@ import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reduce
 import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
 import { captureSentryError } from '../../../utils/sentry';
-import { signAndSendTransaction } from '../../../utils/transactions';
+import {
+  signAndSendAllTransactionsInSeries,
+  signAndSendTransaction,
+} from '../../../utils/transactions';
 
 export type UsePoolChange = (props: {
   pool: Pair;
