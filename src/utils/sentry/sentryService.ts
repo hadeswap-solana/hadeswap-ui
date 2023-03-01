@@ -14,13 +14,15 @@ export const initSentry = (): void => {
     defaultIntegrations: false,
     tracesSampleRate: 1.0,
   });
+
+  Sentry.Integrations.InboundFilters;
 };
 
 export const captureSentryError = ({
   error,
   wallet,
   transactionName = 'Transaction error',
-  params = 'no params',
+  params,
 }: {
   error: any;
   wallet?: WalletContextState;
