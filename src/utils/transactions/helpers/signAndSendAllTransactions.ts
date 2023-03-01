@@ -89,6 +89,7 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
     captureSentryError({
       error,
       wallet,
+      transactionName: 'signAndSendAllTransactions',
     });
 
     onError?.();

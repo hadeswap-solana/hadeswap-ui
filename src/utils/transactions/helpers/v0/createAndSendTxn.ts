@@ -1,9 +1,10 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
 
-import { NotifyType } from '../../../solanaUtils';
-import { notify } from '../../..';
-import { signAndConfirmTransaction } from '../signAndConfirmTransaction';
+import { NotifyType } from '../../solanaUtils';
+import { notify } from '../..';
+import { signAndConfirmTransaction } from './signAndConfirmTransaction';
+import { captureSentryError } from '../../sentry';
 
 interface CreateAndSendTransactionProps {
   txInstructions: web3.TransactionInstruction[];
@@ -43,7 +44,11 @@ export const createAndSendTxn: CreateAndSendTxn = async ({
         commitment: 'confirmed',
       });
     } catch (error) {
-      console.error(error);
+      captureSentryError({
+        error,
+        wallet,
+        transactionName: 'signAndConfirmTransaction',
+      });
     }
   } else {
     onBeforeApprove?.();

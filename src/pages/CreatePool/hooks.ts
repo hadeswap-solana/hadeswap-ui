@@ -156,7 +156,6 @@ export const useCreatePool: UseCreatePool = (props) => {
 
       props?.onAfterTxn();
     } catch (error) {
-      console.error(error);
       captureSentryError({
         error,
         wallet,

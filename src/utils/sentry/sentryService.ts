@@ -3,7 +3,7 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 
 export const initSentry = (): void => {
   Sentry.init({
-    dsn: 'https://1828f52fa41e4cd8b03eef035be5f220@o1431968.ingest.sentry.io/4503897232900096',
+    dsn: process.env.SENTRY_APP_DSN,
     ignoreErrors: [
       'Registration failed - push service error',
       'We are unable to register the default service worker',
@@ -20,7 +20,7 @@ export const captureSentryError = ({
   error,
   wallet,
   transactionName = 'Transaction error',
-  params,
+  params = 'no params',
 }: {
   error: any;
   wallet?: WalletContextState;
@@ -43,7 +43,6 @@ export const captureSentryError = ({
     Sentry.captureException(error);
   }
 
-  console.error(error);
   if (error?.logs) {
     // eslint-disable-next-line no-console
     console.warn('Transaction logs: ', error?.logs?.join('\n'));
