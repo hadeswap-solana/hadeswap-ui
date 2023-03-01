@@ -37,6 +37,12 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
     transaction.sign(...signers);
   }
 
+  const signedTransaction = await wallet.signTransaction(transaction);
+
+  await connection.sendRawTransaction(signedTransaction.serialize(), {
+    skipPreflight: false,
+  });
+
   notify({
     message: 'transaction sent!',
     type: NotifyType.INFO,

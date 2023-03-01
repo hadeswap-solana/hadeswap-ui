@@ -1,12 +1,12 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
-
 import { signAndSendAllTransactions } from './signAndSendAllTransactions';
 
 interface TxnsAndSigners {
   transaction: web3.Transaction;
   signers?: web3.Signer[];
 }
+
 interface TxnDataWithHandlers {
   txnsAndSigners: TxnsAndSigners[];
   onBeforeApprove?: () => void;
