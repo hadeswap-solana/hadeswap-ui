@@ -35,10 +35,6 @@ export const CollectionActivityTab: FC = memo(() => {
   }, [inView, fetchNextPage, isFetchingNextPage, isListEnded]);
 
   const activityData = useMemo(() => {
-    if (!Array.isArray(data?.pages)) {
-      return [];
-    }
-
     return data?.pages
       ?.map((page) => {
         return page?.data?.filter(
@@ -70,6 +66,7 @@ export const CollectionActivityTab: FC = memo(() => {
         data={activityData}
         mapType={ACTIVITY}
         pubKey={PubKeys.NFT_MINT}
+        onRowClick={() => null}
         tableClassName={styles.activityTable}
       />
       <div ref={ref} />

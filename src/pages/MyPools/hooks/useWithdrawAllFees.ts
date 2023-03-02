@@ -11,7 +11,7 @@ import { createWithdrawLiquidityAllFeesTxns } from '../../../utils/transactions/
 import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
 import { Pair } from '../../../state/core/types';
-import { signAndSendAllTransactions } from '../../../utils/transactions';
+import { signAndSendAllTransactions } from '../../../utils/transactions/helpers/signAndSendAllTransactions';
 
 type UseWithdrawAllFees = (props: { pairs: Pair[] }) => {
   onWithdrawClick: () => Promise<void>;

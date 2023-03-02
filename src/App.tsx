@@ -1,4 +1,4 @@
-//? Line for service (CI/CD) commits 2
+//? Line for service (CI/CD) commits 1
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
@@ -22,7 +22,6 @@ import {
 } from '@solana/wallet-adapter-react';
 import { FC } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { ErrorBoundary } from './components/ErrorBoundary';
 import { Router } from './router';
 import store from './state/store';
 import { ENDPOINT } from './config';
@@ -51,20 +50,18 @@ const wallets = [
 
 const App: FC = () => {
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ReduxProvider store={store}>
-          <ConnectionProvider endpoint={ENDPOINT}>
-            <WalletProvider wallets={wallets} autoConnect>
-              <Jupiter>
-                <Router />
-                <Confetti />
-              </Jupiter>
-            </WalletProvider>
-          </ConnectionProvider>
-        </ReduxProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ReduxProvider store={store}>
+        <ConnectionProvider endpoint={ENDPOINT}>
+          <WalletProvider wallets={wallets} autoConnect>
+            <Jupiter>
+              <Router />
+              <Confetti />
+            </Jupiter>
+          </WalletProvider>
+        </ConnectionProvider>
+      </ReduxProvider>
+    </QueryClientProvider>
   );
 };
 

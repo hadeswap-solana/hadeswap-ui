@@ -10,7 +10,7 @@ import { formatRawSol, NotifyType } from '../../utils/solanaUtils';
 import { useConnection } from '../../hooks';
 import { Pair } from '../../state/core/types';
 import { useFetchPair } from '../../requests';
-import { signAndSendAllTransactions } from '../../utils/transactions';
+import { signAndSendAllTransactions } from '../../utils/transactions/helpers/signAndSendAllTransactions';
 
 type UseWithdrawFees = (props: { pool: Pair }) => {
   onWithdrawClick: () => Promise<void>;

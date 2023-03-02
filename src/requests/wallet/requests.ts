@@ -1,4 +1,5 @@
 import { Nft, Pair } from '../../state/core/types';
+import { web3 } from 'hadeswap-sdk';
 
 export const fetchMarketWalletNfts = async ({
   walletPubkey,
