@@ -53,8 +53,7 @@ export const createAndSendTxn: CreateAndSendTxn = async ({
   } else {
     onBeforeApprove?.();
 
-    const { blockhash, lastValidBlockHeight } =
-      await connection.getLatestBlockhash(commitment);
+    const { blockhash } = await connection.getLatestBlockhash(commitment);
 
     const lookupTable = (
       await connection.getAddressLookupTable(
@@ -77,7 +76,7 @@ export const createAndSendTxn: CreateAndSendTxn = async ({
 
     onAfterSend?.();
 
-    const txid = await connection.sendTransaction(transaction, {
+    await connection.sendTransaction(transaction, {
       maxRetries: 5,
       skipPreflight: false,
     });
@@ -87,10 +86,10 @@ export const createAndSendTxn: CreateAndSendTxn = async ({
       type: NotifyType.INFO,
     });
 
-    await connection.confirmTransaction({
-      signature: txid,
-      blockhash,
-      lastValidBlockHeight,
-    });
+    // await connection.confirmTransaction({
+    //   signature: txid,
+    //   blockhash,
+    //   lastValidBlockHeight,
+    // });
   }
 };
