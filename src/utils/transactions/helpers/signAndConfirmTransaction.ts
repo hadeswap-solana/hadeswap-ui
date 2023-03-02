@@ -25,8 +25,7 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
   onAfterSend,
   commitment = 'finalized',
 }) => {
-  const { blockhash, lastValidBlockHeight } =
-    await connection.getLatestBlockhash();
+  const { blockhash } = await connection.getLatestBlockhash(commitment);
 
   transaction.recentBlockhash = blockhash;
   transaction.feePayer = wallet.publicKey;
@@ -36,9 +35,7 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
   }
 
   const signedTransaction = await wallet.signTransaction(transaction);
-  const txid = await connection.sendRawTransaction(
-    signedTransaction.serialize(),
-  );
+  await connection.sendRawTransaction(signedTransaction.serialize());
 
   onAfterSend?.();
 
@@ -47,12 +44,12 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
     type: NotifyType.INFO,
   });
 
-  await connection.confirmTransaction(
-    {
-      signature: txid,
-      blockhash,
-      lastValidBlockHeight,
-    },
-    commitment,
-  );
+  // await connection.confirmTransaction(
+  //   {
+  //     signature: txid,
+  //     blockhash,
+  //     lastValidBlockHeight,
+  //   },
+  //   commitment,
+  // );
 };
