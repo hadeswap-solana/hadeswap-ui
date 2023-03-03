@@ -91,6 +91,8 @@ export const EditPool: FC = () => {
     mathCounter: pool?.mathCounter,
   });
 
+  const currentRawSpotPrice = formValue.spotPrice;
+
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({
       pool,
@@ -99,6 +101,7 @@ export const EditPool: FC = () => {
       rawFee,
       rawDelta,
       rawSpotPrice: changeSpotPrice,
+      currentRawSpotPrice,
     });
 
   const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =

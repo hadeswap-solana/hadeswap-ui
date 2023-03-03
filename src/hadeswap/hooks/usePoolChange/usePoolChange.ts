@@ -21,6 +21,7 @@ export type UsePoolChange = (props: {
   buyOrdersAmount?: number;
   rawFee: number;
   rawSpotPrice: number;
+  currentRawSpotPrice: number;
   rawDelta: number;
 }) => {
   change: () => Promise<void>;
@@ -36,6 +37,7 @@ export const usePoolChange: UsePoolChange = ({
   rawFee,
   rawDelta,
   rawSpotPrice,
+  currentRawSpotPrice,
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -59,6 +61,7 @@ export const usePoolChange: UsePoolChange = ({
       rawFee,
       rawDelta,
       rawSpotPrice,
+      currentRawSpotPrice,
       wallet,
       connection,
     });
