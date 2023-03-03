@@ -2,6 +2,7 @@ import { FC, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useFetchAllMarkets, useFetchPair } from '../../requests';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import {
   selectAllMarkets,
   selectAllMarketsLoading,
@@ -12,18 +13,20 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
 import { PriceBlock } from '../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../components/PoolSettings/AssetsBlock';
+import { Spinner } from '../../components/Spinner/Spinner';
+import Button from '../../components/Buttons/Button';
+import { WithdrawFees } from '../../components/WithdrawFees';
+import Chart from '../../components/Chart/Chart';
+import { chartIDs } from '../../components/Chart/constants';
+import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
-import { Spinner } from '../../components/Spinner/Spinner';
-import Button from '../../components/Buttons/Button';
+import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
-import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import { usePoolChange } from '../../hadeswap/hooks';
 import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
-import Chart from '../../components/Chart/Chart';
-import { chartIDs } from '../../components/Chart/constants';
 
 export const EditPool: FC = () => {
   const { connected } = useWallet();
