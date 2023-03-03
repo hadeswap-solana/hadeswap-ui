@@ -106,6 +106,7 @@ export const checkIsPoolChanged: CheckIsPoolChanged = ({
 type CreateModifyPairTxnData = (props: {
   pool: Pair;
   rawSpotPrice: number;
+  currentRawSpotPrice: number;
   rawFee: number;
   rawDelta: number;
   connection: web3.Connection;
@@ -114,6 +115,7 @@ type CreateModifyPairTxnData = (props: {
 export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   pool,
   rawSpotPrice,
+  currentRawSpotPrice,
   rawFee,
   rawDelta,
   connection,
@@ -137,15 +139,17 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
         rawSpotPrice,
     );
   }
-  const isSpotNotChanged = Math.abs(pool?.baseSpotPrice - rawSpotPrice) <= 1000;
+  const isSpotNotChanged =
+    Math.abs(pool?.currentSpotPrice - currentRawSpotPrice) <= 1000;
 
+  console.log('currentRawSpotPrice: ', currentRawSpotPrice);
   const { transaction, signers } = await createModifyPairTxn({
     connection,
     wallet,
     pairPubkey: pool.pairPubkey,
     authorityAdapter: pool.authorityAdapterPubkey,
     delta: rawDelta,
-    spotPrice: isSpotNotChanged ? pool.baseSpotPrice : rawSpotPrice,
+    spotPrice: isSpotNotChanged ? pool.currentSpotPrice : currentRawSpotPrice,
     fee: rawFee,
   });
 
@@ -394,6 +398,8 @@ type BuildChangePoolTxnsData = (props: {
   buyOrdersAmount: number;
   rawFee: number;
   rawSpotPrice: number;
+  currentRawSpotPrice: number;
+
   rawDelta: number;
   connection: web3.Connection;
   wallet: WalletContextState;
@@ -405,6 +411,7 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
   rawFee,
   rawDelta,
   rawSpotPrice,
+  currentRawSpotPrice,
   wallet,
   connection,
 }) => {
@@ -427,6 +434,7 @@ export const buildChangePoolTxnsData: BuildChangePoolTxnsData = async ({
     const modifyTxnData = await createModifyPairTxnData({
       pool,
       rawSpotPrice,
+      currentRawSpotPrice,
       rawFee,
       rawDelta,
       connection,

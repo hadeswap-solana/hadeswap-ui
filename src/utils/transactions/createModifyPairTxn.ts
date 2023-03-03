@@ -1,5 +1,6 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { hadeswap, web3 } from 'hadeswap-sdk';
+import { modifyPairByCurrentSpotPrice } from 'hadeswap-sdk/lib/hadeswap-core/functions/market-factory/pair/virtual/mutations';
 
 const { modifyPair } = hadeswap.functions.marketFactory.pair.virtual.mutations;
 
@@ -28,7 +29,7 @@ export const createModifyPairTxn: CreateModifyPairTxn = async ({
   spotPrice,
   fee = 0,
 }) => {
-  const { instructions, signers } = await modifyPair({
+  const { instructions, signers } = await modifyPairByCurrentSpotPrice({
     programId: new web3.PublicKey(process.env.PROGRAM_PUBKEY),
     connection,
     sendTxn: sendTxnPlaceHolder,
@@ -39,7 +40,7 @@ export const createModifyPairTxn: CreateModifyPairTxn = async ({
     },
     args: {
       delta,
-      spotPrice,
+      currentSpotPrice: spotPrice,
       fee,
     },
   });
