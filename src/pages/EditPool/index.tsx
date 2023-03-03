@@ -91,7 +91,7 @@ export const EditPool: FC = () => {
     mathCounter: pool?.mathCounter,
   });
 
-  const currentRawSpotPrice = formValue.spotPrice;
+  const currentRawSpotPrice = formValue.spotPrice * 1e9;
 
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({
