@@ -142,7 +142,6 @@ export const createModifyPairTxnData: CreateModifyPairTxnData = async ({
   const isSpotNotChanged =
     Math.abs(pool?.currentSpotPrice - currentRawSpotPrice) <= 1000;
 
-  console.log('currentRawSpotPrice: ', currentRawSpotPrice);
   const { transaction, signers } = await createModifyPairTxn({
     connection,
     wallet,
