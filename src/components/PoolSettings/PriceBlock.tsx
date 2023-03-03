@@ -171,7 +171,7 @@ export const PriceBlock = forwardRef<HTMLDivElement, PriceBlockProps>(
                   // type="number"
                   min={0}
                   // disabled={editMode && isDisableFields}
-                  disabled={true}
+                  disabled={editMode}
                   addonAfter={deltaType}
                   defaultValue={formValue.delta}
                   onChange={(values) =>
