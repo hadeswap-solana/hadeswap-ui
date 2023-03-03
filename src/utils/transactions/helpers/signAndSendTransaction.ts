@@ -9,7 +9,6 @@ interface SignAndSendTransactionProps {
   signers?: web3.Signer[];
   connection: web3.Connection;
   wallet: WalletContextState;
-  commitment?: web3.Commitment;
   onBeforeApprove?: () => void;
   onAfterSend?: () => void;
 }
@@ -49,4 +48,13 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
   });
 
   onAfterSend?.();
+
+  // return await connection.confirmTransaction(
+  //   {
+  //     signature,
+  //     blockhash,
+  //     lastValidBlockHeight,
+  //   },
+  //   commitment,
+  // );
 };

@@ -1,8 +1,7 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useFetchAllMarkets, useFetchPair } from '../../requests';
-import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import {
   selectAllMarkets,
   selectAllMarketsLoading,
@@ -11,18 +10,17 @@ import {
 } from '../../state/core/selectors';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
+import TransactionsWarning from '../../components/TransactionsWarning';
 import { PriceBlock } from '../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../components/PoolSettings/AssetsBlock';
 import { Spinner } from '../../components/Spinner/Spinner';
 import Button from '../../components/Buttons/Button';
-import { WithdrawFees } from '../../components/WithdrawFees';
 import Chart from '../../components/Chart/Chart';
 import { chartIDs } from '../../components/Chart/constants';
 import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
-import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
 import { usePoolChange } from '../../hadeswap/hooks';
 import { getRawDelta, getRawSpotPrice } from '../../utils';
@@ -33,6 +31,9 @@ export const EditPool: FC = () => {
 
   useFetchAllMarkets();
   useFetchPair();
+
+  const [isSupportSignAllTxns, setIsSupportSignAllTxns] =
+    useState<boolean>(true);
 
   const markets = useSelector(selectAllMarkets);
   const pool = useSelector(selectCertainPair);
@@ -102,10 +103,8 @@ export const EditPool: FC = () => {
       rawDelta,
       rawSpotPrice: changeSpotPrice,
       currentRawSpotPrice,
+      isSupportSignAllTxns,
     });
-
-  const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
-    useWithdrawFees({ pool });
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
@@ -127,20 +126,21 @@ export const EditPool: FC = () => {
   return (
     <AppLayout>
       <PageContentLayout title="edit pool">
-        {!connected ? (
+        {!connected && (
           <h2 className={styles.h2}>connect your wallet for pool creation</h2>
-        ) : isLoading ? (
+        )}
+        {isLoading ? (
           <Spinner />
         ) : (
           <>
-            {pairType === PairType.LiquidityProvision && (
-              <WithdrawFees
-                className={styles.withdrawBlock}
-                accumulatedFees={accumulatedFees}
-                onClick={onWithdrawClick}
-                isButtonDisabled={isWithdrawDisabled}
-              />
-            )}
+            <TransactionsWarning
+              title="withdraw all liquidity"
+              buttonText="withdraw"
+              isDisabled={!isWithdrawAllAvailable}
+              onClick={withdrawAllLiquidity}
+              checked={!isSupportSignAllTxns}
+              onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
+            />
             <div className={styles.settingsBlock}>
               <PriceBlock
                 ref={priceBlockRef}
@@ -178,13 +178,6 @@ export const EditPool: FC = () => {
             <div className={styles.buttonsWrapper}>
               <Button isDisabled={!isChanged} onClick={change}>
                 <span>save changes</span>
-              </Button>
-              <Button
-                outlined
-                isDisabled={!isWithdrawAllAvailable}
-                onClick={withdrawAllLiquidity}
-              >
-                <span>withdraw all liquidity</span>
               </Button>
               <Button
                 outlined

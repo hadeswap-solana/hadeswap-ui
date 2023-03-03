@@ -1,0 +1,49 @@
+.wrapper {
+  background: var(--component-base-background);
+  border: 1px solid var(--border-color-base);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 0 auto;
+  padding: 24px;
+  max-width: 580px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.title {
+  font-family: var(--font-family-rubik);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 29px;
+  text-align: center;
+
+  @media (max-width: 767px) {
+    font-size: 20px;
+  }
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button {
+  max-width: 186px;
+  width: 100%;
+}
