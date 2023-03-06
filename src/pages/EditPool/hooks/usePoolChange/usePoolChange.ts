@@ -7,17 +7,17 @@ import {
   buildWithdrawAllLiquidityFromPoolTxnsData,
   checkIsPoolChanged,
 } from './helpers';
-import { useConnection } from '../../../hooks';
-import { Nft, Pair } from '../../../state/core/types';
-import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
-import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
-import { notify } from '../../../utils';
-import { NotifyType } from '../../../utils/solanaUtils';
-import { captureSentryError } from '../../../utils/sentry';
+import { useConnection } from '../../../../hooks';
+import { Nft, Pair } from '../../../../state/core/types';
+import { txsLoadingModalActions } from '../../../../state/txsLoadingModal/actions';
+import { TxsLoadingModalTextStatus } from '../../../../state/txsLoadingModal/reducers';
+import { notify } from '../../../../utils';
+import { NotifyType } from '../../../../utils/solanaUtils';
+import { captureSentryError } from '../../../../utils/sentry';
 import {
   signAndSendTransaction,
   signAndSendAllTransactionsInSeries,
-} from '../../../utils/transactions';
+} from '../../../../utils/transactions';
 
 export type UsePoolChange = (props: {
   pool: Pair;

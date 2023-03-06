@@ -9,18 +9,18 @@ import { differenceBy } from 'lodash';
 import {
   createIxCardFuncs,
   IX_TYPE,
-} from '../../../components/TransactionsLoadingModal';
-import { Nft, Pair } from '../../../state/core/types';
-import { createDepositNftsToPairTxns } from '../../../utils/transactions/createDepositNftsToPairTxns';
-import { createModifyPairTxn } from '../../../utils/transactions/createModifyPairTxn';
-import { createWithdrawNftsFromPairTxns } from '../../../utils/transactions/createWithdrawNftsFromPairTxns';
-import { createWithdrawSolFromPairTxn } from '../../../utils/transactions/createWithdrawSolFromPairTxn';
-import { createWithdrawLiquidityFromBuyOrdersPair } from '../../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
-import { createWithdrawLiquidityFromSellOrdersPair } from '../../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
+} from '../../../../components/TransactionsLoadingModal';
+import { Nft, Pair } from '../../../../state/core/types';
+import { createDepositNftsToPairTxns } from '../../../../utils/transactions/createDepositNftsToPairTxns';
+import { createModifyPairTxn } from '../../../../utils/transactions/createModifyPairTxn';
+import { createWithdrawNftsFromPairTxns } from '../../../../utils/transactions/createWithdrawNftsFromPairTxns';
+import { createWithdrawSolFromPairTxn } from '../../../../utils/transactions/createWithdrawSolFromPairTxn';
+import { createWithdrawLiquidityFromBuyOrdersPair } from '../../../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
+import { createWithdrawLiquidityFromSellOrdersPair } from '../../../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
 import { TxnData } from './types';
-import { createDepositSolToPairTxn } from '../../../utils/transactions/createDepositSolToPairTxn';
-import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
-import { createDepositLiquidityOnlySellOrdersTxns } from '../../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
+import { createDepositSolToPairTxn } from '../../../../utils/transactions/createDepositSolToPairTxn';
+import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
+import { createDepositLiquidityOnlySellOrdersTxns } from '../../../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';
 
 type CheckIsPricingChanged = (props: {
   pool: Pair;

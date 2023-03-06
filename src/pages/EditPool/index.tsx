@@ -22,7 +22,7 @@ import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePool
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
 import { useCloseClick } from './hooks/useCloseClick';
-import { usePoolChange } from '../../hadeswap/hooks';
+import { usePoolChange } from './hooks/usePoolChange';
 import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
 
