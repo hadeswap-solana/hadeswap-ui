@@ -1,70 +1,55 @@
+import { Dispatch } from 'redux';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
-import { Dispatch } from 'redux';
-import { signAndSendAllTransactions } from './signAndSendAllTransactions';
 import { TxnData } from '../../../pages/EditPool/hooks/usePoolChange/types';
 import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
 import { notify } from '../../index';
 import { NotifyType } from '../../solanaUtils';
-import { ReactNode } from 'react';
+import { signAndSendTransaction } from './signAndSendTransaction';
 
-interface TxnsAndSigners {
-  transaction: web3.Transaction;
-  signers?: web3.Signer[];
-  loadingModalCard?: ReactNode;
-}
-
-interface TxnDataSeries {
-  txnsAndSigners: TxnsAndSigners[];
+interface TxnsDataOneByOne extends TxnData {
   onBeforeApprove?: () => void;
   onAfterSend?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
 }
 
-type SignAndSendAllTransactionsInSeries = (params: {
-  txnsData: TxnDataSeries[];
+type SignAndSendTransactionsOneByOne = (params: {
+  txnsData: TxnsDataOneByOne[];
   connection: web3.Connection;
   wallet: WalletContextState;
 }) => Promise<void>;
 
-export const signAndSendAllTransactionsInSeries: SignAndSendAllTransactionsInSeries =
+export const signAndSendTransactionsOneByOne: SignAndSendTransactionsOneByOne =
   async ({ txnsData, connection, wallet }) => {
     for (let i = 0; i < txnsData.length; ++i) {
-      const {
-        txnsAndSigners,
-        onSuccess,
-        onError,
-        onBeforeApprove,
-        onAfterSend,
-      } = txnsData[i];
-
-      await signAndSendAllTransactions({
-        txnsAndSigners,
-        onSuccess,
-        onError,
-        onBeforeApprove,
-        onAfterSend,
-        wallet,
+      await signAndSendTransaction({
+        transaction: txnsData[i].transaction,
+        signers: txnsData[i].signers,
+        onBeforeApprove: txnsData[i].onBeforeApprove,
+        onAfterSend: txnsData[i].onAfterSend,
+        onSuccess: txnsData[i].onSuccess,
+        onError: txnsData[i].onError,
         connection,
+        wallet,
       });
     }
   };
 
-export const getTxnsDataSeries = (
+export const getTxnsDataOneByOne = (
   txnsDataArray: TxnData[][],
   dispatch: Dispatch,
-): TxnDataSeries[] => {
-  return txnsDataArray.map((txnsData, txnsDataIdx, txnsDataArray) => ({
-    txnsAndSigners: [...txnsData],
+): TxnsDataOneByOne[] => {
+  return txnsDataArray.flat().map((txn, index) => ({
+    ...txn,
     onBeforeApprove: () =>
       dispatch(
         txsLoadingModalActions.setState({
           visible: true,
-          cards: txnsData.map(({ loadingModalCard }) => loadingModalCard),
+          cards: [txn.loadingModalCard],
           amountOfTxs: txnsDataArray?.flat()?.length || 0,
-          currentTxNumber: null,
+          currentTxNumber: index + 1,
           textStatus: TxsLoadingModalTextStatus.APPROVE,
         }),
       ),

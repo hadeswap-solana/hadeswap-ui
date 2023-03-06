@@ -1,7 +1,7 @@
+import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useHistory } from 'react-router-dom';
-
+import { web3 } from 'hadeswap-sdk';
+import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import {
   buildChangePoolTxnsData,
   buildWithdrawAllLiquidityFromPoolTxnsData,
@@ -10,14 +10,13 @@ import {
 import { useConnection } from '../../../../hooks';
 import { Nft, Pair } from '../../../../state/core/types';
 import { txsLoadingModalActions } from '../../../../state/txsLoadingModal/actions';
-import { TxsLoadingModalTextStatus } from '../../../../state/txsLoadingModal/reducers';
-import { notify } from '../../../../utils';
-import { NotifyType } from '../../../../utils/solanaUtils';
-import { captureSentryError } from '../../../../utils/sentry';
 import {
-  signAndSendTransaction,
   signAndSendAllTransactionsInSeries,
+  getTxnsDataSeries,
+  signAndSendTransactionsOneByOne,
+  getTxnsDataOneByOne,
 } from '../../../../utils/transactions';
+import { TxnData } from './types';
 
 export type UsePoolChange = (props: {
   pool: Pair;
@@ -35,6 +34,14 @@ export type UsePoolChange = (props: {
   isWithdrawAllAvailable: boolean;
 };
 
+interface SignAndSend {
+  isSupportSignAllTxns: boolean;
+  txnsDataArray: TxnData[][];
+  dispatch: Dispatch;
+  wallet: WalletContextState;
+  connection: web3.Connection;
+}
+
 export const usePoolChange: UsePoolChange = ({
   pool,
   selectedNfts,
@@ -46,7 +53,6 @@ export const usePoolChange: UsePoolChange = ({
   isSupportSignAllTxns,
 }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const wallet = useWallet();
   const connection = useConnection();
 
@@ -72,89 +78,13 @@ export const usePoolChange: UsePoolChange = ({
       connection,
     });
 
-    const txnsData = txnsDataArray.map(
-      (txnsData, txnsDataIdx, txnsDataArray) => ({
-        txnsAndSigners: txnsData.map(({ transaction, signers }) => ({
-          transaction,
-          signers,
-        })),
-        onBeforeApprove: () => {
-          dispatch(
-            txsLoadingModalActions.setState({
-              visible: true,
-              cards: txnsData.map(({ loadingModalCard }) => loadingModalCard),
-              amountOfTxs: txnsDataArray?.flat()?.length || 0,
-              currentTxNumber:
-                txnsDataArray?.slice(0, txnsDataIdx + 1)?.flat()?.length || 0,
-              textStatus: TxsLoadingModalTextStatus.APPROVE,
-            }),
-          );
-        },
-        onAfterSend: () => {
-          dispatch(
-            txsLoadingModalActions.setTextStatus(
-              TxsLoadingModalTextStatus.WAITING,
-            ),
-          );
-        },
-        onSuccess: () => {
-          notify({
-            message: 'transaction successful!',
-            type: NotifyType.SUCCESS,
-          });
-        },
-        onError: () =>
-          notify({
-            message: 'oops... something went wrong!',
-            type: NotifyType.ERROR,
-          }),
-      }),
-    );
-
-    if (!isSupportSignAllTxns) {
-      for (let i = 0; i < txnsDataArray.flat().length; ++i) {
-        const { transaction, signers } = txnsDataArray.flat()[i];
-
-        dispatch(
-          txsLoadingModalActions.setState({
-            visible: true,
-            cards: txnsDataArray
-              .flat()
-              .map(({ loadingModalCard }) => loadingModalCard),
-            amountOfTxs: txnsDataArray.flat().length || 0,
-            currentTxNumber: i + 1 || 0,
-            textStatus: TxsLoadingModalTextStatus.APPROVE,
-          }),
-        );
-
-        try {
-          await signAndSendTransaction({
-            transaction,
-            signers,
-            wallet,
-            connection,
-            commitment: 'confirmed',
-          });
-        } catch (error) {
-          captureSentryError({
-            error,
-            wallet,
-          });
-        }
-      }
-    } else {
-      const isSuccess = await signAndSendAllTransactionsInSeries({
-        txnsData,
-        wallet,
-        connection,
-      });
-
-      if (isSuccess) {
-        history.push(`/pools/${pool?.pairPubkey}`);
-      }
-    }
-
-    dispatch(txsLoadingModalActions.setVisible(false));
+    signAndSend({
+      isSupportSignAllTxns,
+      txnsDataArray,
+      dispatch,
+      wallet,
+      connection,
+    });
   };
 
   const withdrawAllLiquidity = async () => {
@@ -166,89 +96,13 @@ export const usePoolChange: UsePoolChange = ({
       connection,
     });
 
-    const txnsData = txnsDataArray.map(
-      (txnsData, txnsDataIdx, txnsDataArray) => ({
-        txnsAndSigners: txnsData.map(({ transaction, signers }) => ({
-          transaction,
-          signers,
-        })),
-        onBeforeApprove: () => {
-          dispatch(
-            txsLoadingModalActions.setState({
-              visible: true,
-              cards: txnsData.map(({ loadingModalCard }) => loadingModalCard),
-              amountOfTxs: txnsDataArray?.flat()?.length || 0,
-              currentTxNumber:
-                txnsDataArray?.slice(0, txnsDataIdx + 1)?.flat()?.length || 0,
-              textStatus: TxsLoadingModalTextStatus.APPROVE,
-            }),
-          );
-        },
-        onAfterSend: () => {
-          dispatch(
-            txsLoadingModalActions.setTextStatus(
-              TxsLoadingModalTextStatus.WAITING,
-            ),
-          );
-        },
-        onSuccess: () => {
-          notify({
-            message: 'transaction successful!',
-            type: NotifyType.SUCCESS,
-          });
-        },
-        onError: () =>
-          notify({
-            message: 'oops... something went wrong!',
-            type: NotifyType.ERROR,
-          }),
-      }),
-    );
-
-    if (!isSupportSignAllTxns) {
-      for (let i = 0; i < txnsDataArray.flat().length; ++i) {
-        const { transaction, signers } = txnsDataArray.flat()[i];
-
-        dispatch(
-          txsLoadingModalActions.setState({
-            visible: true,
-            cards: txnsDataArray
-              .flat()
-              .map(({ loadingModalCard }) => loadingModalCard),
-            amountOfTxs: txnsDataArray.flat().length || 0,
-            currentTxNumber: i + 1 || 0,
-            textStatus: TxsLoadingModalTextStatus.APPROVE,
-          }),
-        );
-
-        try {
-          await signAndSendTransaction({
-            transaction,
-            signers,
-            wallet,
-            connection,
-            commitment: 'confirmed',
-          });
-        } catch (error) {
-          captureSentryError({
-            error,
-            wallet,
-          });
-        }
-      }
-    } else {
-      const isSuccess = await signAndSendAllTransactionsInSeries({
-        txnsData,
-        wallet,
-        connection,
-      });
-
-      if (isSuccess) {
-        history.push(`/pools/${pool?.pairPubkey}`);
-      }
-    }
-
-    dispatch(txsLoadingModalActions.setVisible(false));
+    signAndSend({
+      isSupportSignAllTxns,
+      txnsDataArray,
+      dispatch,
+      wallet,
+      connection,
+    });
   };
 
   return {
@@ -257,4 +111,30 @@ export const usePoolChange: UsePoolChange = ({
     withdrawAllLiquidity,
     isWithdrawAllAvailable: !!(pool?.buyOrdersAmount || pool?.nftsCount),
   };
+};
+
+const signAndSend = async ({
+  isSupportSignAllTxns,
+  txnsDataArray,
+  dispatch,
+  wallet,
+  connection,
+}: SignAndSend) => {
+  if (!isSupportSignAllTxns) {
+    const txnsData = getTxnsDataOneByOne(txnsDataArray, dispatch);
+    await signAndSendTransactionsOneByOne({
+      txnsData,
+      wallet,
+      connection,
+    });
+  } else {
+    const txnsData = getTxnsDataSeries(txnsDataArray, dispatch);
+    await signAndSendAllTransactionsInSeries({
+      txnsData,
+      wallet,
+      connection,
+    });
+  }
+
+  dispatch(txsLoadingModalActions.setVisible(false));
 };

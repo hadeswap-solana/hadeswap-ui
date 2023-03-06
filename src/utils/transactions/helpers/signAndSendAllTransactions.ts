@@ -23,13 +23,12 @@ interface SignAndSendAllTransactionsProps {
 
 type SignAndSendAllTransactions = (
   props: SignAndSendAllTransactionsProps,
-) => Promise<boolean>;
+) => Promise<void>;
 
 export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
   txnsAndSigners,
   connection,
   wallet,
-  commitment = 'finalized',
   onBeforeApprove,
   onAfterSend,
   onSuccess,
@@ -38,8 +37,7 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
   try {
     onBeforeApprove?.();
 
-    const { blockhash, lastValidBlockHeight } =
-      await connection.getLatestBlockhash();
+    const { blockhash } = await connection.getLatestBlockhash();
 
     const transactions = txnsAndSigners.map(({ transaction, signers = [] }) => {
       transaction.recentBlockhash = blockhash;
@@ -54,7 +52,7 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
 
     const signedTransactions = await wallet.signAllTransactions(transactions);
 
-    const txnSignatures = await Promise.all(
+    await Promise.all(
       signedTransactions.map((txn) =>
         connection.sendRawTransaction(txn.serialize(), {
           skipPreflight: false,
@@ -67,24 +65,21 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
       type: NotifyType.INFO,
     });
 
+    // await Promise.allSettled(
+    //   txnSignatures.map((signature) =>
+    //     connection.confirmTransaction(
+    //       {
+    //         signature,
+    //         blockhash,
+    //         lastValidBlockHeight,
+    //       },
+    //       commitment,
+    //     ),
+    //   ),
+    // );
+
     onAfterSend?.();
-
-    await Promise.allSettled(
-      txnSignatures.map((signature) =>
-        connection.confirmTransaction(
-          {
-            signature,
-            blockhash,
-            lastValidBlockHeight,
-          },
-          commitment,
-        ),
-      ),
-    );
-
     onSuccess?.();
-
-    return true;
   } catch (error) {
     captureSentryError({
       error,
@@ -92,6 +87,5 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
     });
 
     onError?.();
-    return false;
   }
 };
