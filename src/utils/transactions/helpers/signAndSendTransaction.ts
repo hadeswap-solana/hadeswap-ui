@@ -11,6 +11,7 @@ interface SignAndSendTransactionProps {
   wallet: WalletContextState;
   onBeforeApprove?: () => void;
   onAfterSend?: () => void;
+  commitment?: web3.Commitment;
 }
 
 type SignAndSendTransaction = (
@@ -24,10 +25,12 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
   wallet,
   onBeforeApprove,
   onAfterSend,
+  commitment = 'finalized',
 }) => {
   onBeforeApprove?.();
 
-  const { blockhash } = await connection.getLatestBlockhash();
+  const { blockhash, lastValidBlockHeight } =
+    await connection.getLatestBlockhash();
 
   transaction.recentBlockhash = blockhash;
   transaction.feePayer = wallet.publicKey;
@@ -38,9 +41,10 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
 
   const signedTransaction = await wallet.signTransaction(transaction);
 
-  await connection.sendRawTransaction(signedTransaction.serialize(), {
-    skipPreflight: false,
-  });
+  const signature = await connection.sendRawTransaction(
+    signedTransaction.serialize(),
+    { skipPreflight: false },
+  );
 
   notify({
     message: 'transaction sent!',
@@ -49,12 +53,12 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
 
   onAfterSend?.();
 
-  // return await connection.confirmTransaction(
-  //   {
-  //     signature,
-  //     blockhash,
-  //     lastValidBlockHeight,
-  //   },
-  //   commitment,
-  // );
+  await connection.confirmTransaction(
+    {
+      signature,
+      blockhash,
+      lastValidBlockHeight,
+    },
+    commitment,
+  );
 };

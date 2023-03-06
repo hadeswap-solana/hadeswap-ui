@@ -1,13 +1,15 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import { Spinner } from '../../../components/Spinner/Spinner';
+import TransactionsWarning from '../../../components/TransactionsWarning';
 import { PriceBlock } from '../../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../../components/PoolSettings/AssetsBlock';
 import { usePoolServicePrice } from '../../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { useAssetsSetHeight } from '../../../components/PoolSettings/hooks/useAssetsSetHeight';
+import usePriceGraph from '../../../components/Chart/hooks/usePriceGraph';
 import Button from '../../../components/Buttons/Button';
 import Chart from '../../../components/Chart/Chart';
 import { useCreatePool } from '../hooks';
@@ -18,9 +20,7 @@ import {
 } from '../../../state/core/selectors';
 import { chartIDs } from '../../../components/Chart/constants';
 import { getRawDelta, getRawSpotPrice } from '../../../utils';
-
 import styles from './styles.module.scss';
-import usePriceGraph from '../../../components/Chart/hooks/usePriceGraph';
 
 interface StepThreeProps {
   pairType: PairType;
@@ -35,6 +35,9 @@ export const StepThree: FC<StepThreeProps> = ({
   const history = useHistory();
   const markets = useSelector(selectAllMarkets);
   const marketsLoading = useSelector(selectAllMarketsLoading);
+
+  const [isSupportSignAllTxns, setIsSupportSignAllTxns] =
+    useState<boolean>(true);
 
   const chosenMarket = markets.find(
     (market) => market.marketPubkey === chosenMarketKey,
@@ -94,6 +97,7 @@ export const StepThree: FC<StepThreeProps> = ({
     rawDelta: rawDelta,
     rawFee,
     onAfterTxn: () => history.push('/my-pools'),
+    isSupportSignAllTxns,
   });
 
   const chartData = usePriceGraph({
@@ -116,6 +120,10 @@ export const StepThree: FC<StepThreeProps> = ({
         <Spinner />
       ) : (
         <>
+          <TransactionsWarning
+            checked={!isSupportSignAllTxns}
+            onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
+          />
           <div className={styles.settingsBlock}>
             <PriceBlock
               ref={priceBlockRef}
