@@ -2,7 +2,7 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
 import { Dispatch } from 'redux';
 import { signAndSendAllTransactions } from './signAndSendAllTransactions';
-import { TxnData } from '../../../pages/EditPool/hooks/usePoolChange/types';
+import { TxnData } from '../../../types/transactions';
 import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
 import { notify } from '../../index';

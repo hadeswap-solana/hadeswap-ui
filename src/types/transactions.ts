@@ -5,4 +5,8 @@ export interface TxnData {
   transaction: web3.Transaction;
   signers?: web3.Signer[];
   loadingModalCard?: ReactNode;
+  onBeforeApprove?: () => void;
+  onAfterSend?: () => void;
+  onSuccess?: () => void;
+  onError?: () => void;
 }

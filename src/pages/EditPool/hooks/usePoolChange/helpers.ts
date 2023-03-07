@@ -17,7 +17,7 @@ import { createWithdrawNftsFromPairTxns } from '../../../../utils/transactions/c
 import { createWithdrawSolFromPairTxn } from '../../../../utils/transactions/createWithdrawSolFromPairTxn';
 import { createWithdrawLiquidityFromBuyOrdersPair } from '../../../../utils/transactions/createWithdrawLiquidityFromBuyOrdersPairTxn';
 import { createWithdrawLiquidityFromSellOrdersPair } from '../../../../utils/transactions/createWithdrawLiquidityFromSellOrdersPairTxn';
-import { TxnData } from './types';
+import { TxnData } from '../../../../types/transactions';
 import { createDepositSolToPairTxn } from '../../../../utils/transactions/createDepositSolToPairTxn';
 import { createDepositLiquidityOnlyBuyOrdersTxns } from '../../../../utils/transactions/createDepositLiquidityOnlyBuyOrdersTxns';
 import { createDepositLiquidityOnlySellOrdersTxns } from '../../../../utils/transactions/createDepositLiquidityOnlySellOrdersTxns';

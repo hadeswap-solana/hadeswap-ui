@@ -7,7 +7,6 @@ import { useConnection } from '../../hooks';
 import { createIx, mergeIxsIntoTxn } from '../Layout/helpers';
 import { commonActions } from '../../state/common/actions';
 import { coreActions } from '../../state/core/actions';
-import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { selectCartSiderVisible } from '../../state/common/selectors';
 import {
   selectAllInvalidCartOrders,
@@ -17,16 +16,19 @@ import {
   selectIsCartEmpty,
 } from '../../state/core/selectors';
 import { selectTokenExchange } from '../../state/tokenExchange/selectors';
-import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
-import { signAndSendTransactionsInSeries } from '../../utils/transactions';
+import {
+  getTxnsDataOneByOne,
+  signAndSendTransactionsOneByOne,
+} from '../../utils/transactions';
 import { CartOrder } from '../../state/core/types';
 import { TokenItem } from '../../constants/tokens';
 import { useTokenInfo, useTokenRate } from '../../requests';
 import { calcAmount } from '../Jupiter/utils';
 import JSBI from 'jsbi';
+import { TxnData } from '../../types/transactions';
 
 export interface CrossMintConfig {
   type: string;
@@ -117,61 +119,39 @@ export const useSwap: UseSwap = ({
     );
     const ixsDataChunks = chunk(ixsData, ixsPerTxn);
 
-    const txnsData = ixsDataChunks.map((ixsAndSigners) =>
+    const txnsDataWithMint = ixsDataChunks.map((ixsAndSigners) =>
       mergeIxsIntoTxn(ixsAndSigners),
     );
 
+    const txnsDataArr: TxnData[] = txnsDataWithMint.map((txn) => ({
+      signers: txn.signers,
+      transaction: txn.transaction,
+      loadingModalCard: txn.nftMints.map((mint) =>
+        createIxCardFuncs[IX_TYPE.COMPLETE_ORDER](ordersByMint?.[mint]),
+      ),
+      onSuccess: () => {
+        txn.nftMints.map((nftMint) => {
+          dispatch(coreActions.addFinishedOrderMint(nftMint));
+        });
+        onSuccessTxn?.();
+      },
+    }));
+
+    const txnsData = getTxnsDataOneByOne(txnsDataArr, dispatch);
+
     dispatch(commonActions.setCartSider({ isVisible: false }));
 
-    const allTxnsSuccess = await signAndSendTransactionsInSeries({
-      txnData: txnsData.map((txnData, idx, txnDataArr) => ({
-        ...txnData,
-        onBeforeApprove: () => {
-          dispatch(
-            txsLoadingModalActions.setState({
-              visible: true,
-              cards: txnData.nftMints.map((mint) =>
-                createIxCardFuncs[IX_TYPE.COMPLETE_ORDER](ordersByMint?.[mint]),
-              ),
-              amountOfTxs: txnDataArr.length,
-              currentTxNumber: idx + 1,
-              textStatus: TxsLoadingModalTextStatus.APPROVE,
-            }),
-          );
-        },
-        onAfterSend: () => {
-          dispatch(
-            txsLoadingModalActions.setTextStatus(
-              TxsLoadingModalTextStatus.WAITING,
-            ),
-          );
-        },
-        onSuccess: () => {
-          txnData.nftMints.map((nftMint) => {
-            dispatch(coreActions.addFinishedOrderMint(nftMint));
-          });
-          onSuccessTxn?.();
-          notify({
-            message: 'transaction successful!',
-            type: NotifyType.SUCCESS,
-          });
-        },
-        onError: () => {
-          notify({
-            message: 'oops... something went wrong!',
-            type: NotifyType.ERROR,
-          });
-        },
-      })),
-      connection,
-      wallet,
-    });
-
-    if (!allTxnsSuccess) {
+    try {
+      await signAndSendTransactionsOneByOne({ txnsData, connection, wallet });
+    } catch {
+      notify({
+        message: 'oops... something went wrong!',
+        type: NotifyType.ERROR,
+      });
       onFail?.();
+    } finally {
+      onAfterTxn?.();
     }
-
-    onAfterTxn?.();
   };
 
   return {

@@ -1,22 +1,15 @@
 import { Dispatch } from 'redux';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { web3 } from 'hadeswap-sdk';
-import { TxnData } from '../../../pages/EditPool/hooks/usePoolChange/types';
+import { TxnData } from '../../../types/transactions';
 import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
 import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
 import { notify } from '../../index';
 import { NotifyType } from '../../solanaUtils';
 import { signAndSendTransaction } from './signAndSendTransaction';
 
-export interface TxnsDataOneByOne extends TxnData {
-  onBeforeApprove?: () => void;
-  onAfterSend?: () => void;
-  onSuccess?: () => void;
-  onError?: () => void;
-}
-
 type SignAndSendTransactionsOneByOne = (params: {
-  txnsData: TxnsDataOneByOne[];
+  txnsData: TxnData[];
   connection: web3.Connection;
   wallet: WalletContextState;
 }) => Promise<void>;
@@ -40,10 +33,11 @@ export const signAndSendTransactionsOneByOne: SignAndSendTransactionsOneByOne =
 export const getTxnsDataOneByOne = (
   txnsDataArray: TxnData[],
   dispatch: Dispatch,
-): TxnsDataOneByOne[] => {
+): TxnData[] => {
   return txnsDataArray.map((txn, index) => ({
     ...txn,
-    onBeforeApprove: () =>
+    onBeforeApprove: () => {
+      txn.onBeforeApprove?.();
       dispatch(
         txsLoadingModalActions.setState({
           visible: true,
@@ -52,15 +46,20 @@ export const getTxnsDataOneByOne = (
           currentTxNumber: index + 1,
           textStatus: TxsLoadingModalTextStatus.APPROVE,
         }),
-      ),
-    onAfterSend: () =>
+      );
+    },
+    onAfterSend: () => {
+      txn.onAfterSend?.();
       dispatch(
         txsLoadingModalActions.setTextStatus(TxsLoadingModalTextStatus.WAITING),
-      ),
-    onSuccess: () =>
+      );
+    },
+    onSuccess: () => {
+      txn.onSuccess?.();
       notify({
         message: 'transaction successful!',
         type: NotifyType.SUCCESS,
-      }),
+      });
+    },
   }));
 };

@@ -15,9 +15,8 @@ import { Pair } from '../../../state/core/types';
 import {
   signAndSendTransactionsOneByOne,
   getTxnsDataOneByOne,
-  TxnsDataOneByOne,
 } from '../../../utils/transactions';
-import { TxnData } from './usePoolChange/types';
+import { TxnData } from '../../../types/transactions';
 
 export const useCloseClick = ({
   pool,
@@ -51,10 +50,7 @@ export const useCloseClick = ({
 
     cards.push([createIxCardFuncs[IX_TYPE.CLOSE_POOL]()]);
 
-    const txnsData: TxnsDataOneByOne[] = getTxnsDataOneByOne(
-      transactions,
-      dispatch,
-    );
+    const txnsData: TxnData[] = getTxnsDataOneByOne(transactions, dispatch);
 
     try {
       await signAndSendTransactionsOneByOne({

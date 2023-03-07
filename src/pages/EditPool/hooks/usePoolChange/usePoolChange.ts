@@ -16,7 +16,7 @@ import {
   signAndSendTransactionsOneByOne,
   getTxnsDataOneByOne,
 } from '../../../../utils/transactions';
-import { TxnData } from './types';
+import { TxnData } from '../../../../types/transactions';
 import { useHistory } from 'react-router-dom';
 import { notify } from '../../../../utils';
 import { NotifyType } from '../../../../utils/solanaUtils';
