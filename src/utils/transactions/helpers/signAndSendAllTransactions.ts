@@ -32,7 +32,6 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
   onBeforeApprove,
   onAfterSend,
   onSuccess,
-  onError,
 }) => {
   try {
     onBeforeApprove?.();
@@ -65,19 +64,6 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
       type: NotifyType.INFO,
     });
 
-    // await Promise.allSettled(
-    //   txnSignatures.map((signature) =>
-    //     connection.confirmTransaction(
-    //       {
-    //         signature,
-    //         blockhash,
-    //         lastValidBlockHeight,
-    //       },
-    //       commitment,
-    //     ),
-    //   ),
-    // );
-
     onAfterSend?.();
     onSuccess?.();
   } catch (error) {
@@ -85,7 +71,6 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
       error,
       wallet,
     });
-
-    onError?.();
+    throw new Error('signAndSendAllTransactions');
   }
 };

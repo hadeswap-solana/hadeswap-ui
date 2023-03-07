@@ -17,6 +17,9 @@ import {
   getTxnsDataOneByOne,
 } from '../../../../utils/transactions';
 import { TxnData } from './types';
+import { useHistory } from 'react-router-dom';
+import { notify } from '../../../../utils';
+import { NotifyType } from '../../../../utils/solanaUtils';
 
 export type UsePoolChange = (props: {
   pool: Pair;
@@ -53,6 +56,7 @@ export const usePoolChange: UsePoolChange = ({
   isSupportSignAllTxns,
 }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const wallet = useWallet();
   const connection = useConnection();
 
@@ -78,13 +82,17 @@ export const usePoolChange: UsePoolChange = ({
       connection,
     });
 
-    signAndSend({
+    const success = await signAndSend({
       isSupportSignAllTxns,
       txnsDataArray,
       dispatch,
       wallet,
       connection,
     });
+
+    if (success) {
+      history.push(`/pools/${pool?.pairPubkey}`);
+    }
   };
 
   const withdrawAllLiquidity = async () => {
@@ -96,13 +104,17 @@ export const usePoolChange: UsePoolChange = ({
       connection,
     });
 
-    signAndSend({
+    const success = await signAndSend({
       isSupportSignAllTxns,
       txnsDataArray,
       dispatch,
       wallet,
       connection,
     });
+
+    if (success) {
+      history.push(`/pools/${pool?.pairPubkey}`);
+    }
   };
 
   return {
@@ -119,22 +131,31 @@ const signAndSend = async ({
   dispatch,
   wallet,
   connection,
-}: SignAndSend) => {
-  if (!isSupportSignAllTxns) {
-    const txnsData = getTxnsDataOneByOne(txnsDataArray, dispatch);
-    await signAndSendTransactionsOneByOne({
-      txnsData,
-      wallet,
-      connection,
+}: SignAndSend): Promise<boolean> => {
+  try {
+    if (!isSupportSignAllTxns) {
+      const txnsData = getTxnsDataOneByOne(txnsDataArray.flat(), dispatch);
+      await signAndSendTransactionsOneByOne({
+        txnsData,
+        wallet,
+        connection,
+      });
+    } else {
+      const txnsData = getTxnsDataSeries(txnsDataArray, dispatch);
+      await signAndSendAllTransactionsInSeries({
+        txnsData,
+        wallet,
+        connection,
+      });
+    }
+    return true;
+  } catch {
+    notify({
+      message: 'oops... something went wrong!',
+      type: NotifyType.ERROR,
     });
-  } else {
-    const txnsData = getTxnsDataSeries(txnsDataArray, dispatch);
-    await signAndSendAllTransactionsInSeries({
-      txnsData,
-      wallet,
-      connection,
-    });
+    return false;
+  } finally {
+    dispatch(txsLoadingModalActions.setVisible(false));
   }
-
-  dispatch(txsLoadingModalActions.setVisible(false));
 };

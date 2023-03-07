@@ -8,12 +8,16 @@ import {
   IX_TYPE,
 } from '../../../components/TransactionsLoadingModal';
 import { txsLoadingModalActions } from '../../../state/txsLoadingModal/actions';
-import { TxsLoadingModalTextStatus } from '../../../state/txsLoadingModal/reducers';
 import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
 import { useConnection } from '../../../hooks';
 import { Pair } from '../../../state/core/types';
-import { signAndSendTransactionsInSeries } from '../../../utils/transactions';
+import {
+  signAndSendTransactionsOneByOne,
+  getTxnsDataOneByOne,
+  TxnsDataOneByOne,
+} from '../../../utils/transactions';
+import { TxnData } from './usePoolChange/types';
 
 export const useCloseClick = ({
   pool,
@@ -33,7 +37,7 @@ export const useCloseClick = ({
   );
 
   const onCloseClick = async () => {
-    const transactions = [];
+    const transactions: TxnData[] = [];
     const cards = [];
 
     transactions.push(
@@ -47,49 +51,25 @@ export const useCloseClick = ({
 
     cards.push([createIxCardFuncs[IX_TYPE.CLOSE_POOL]()]);
 
-    const isSuccess = await signAndSendTransactionsInSeries({
-      connection,
-      wallet,
-      txnData: transactions.map((txn, index) => ({
-        signers: txn.signers,
-        transaction: txn.transaction,
-        onBeforeApprove: () => {
-          dispatch(
-            txsLoadingModalActions.setState({
-              visible: true,
-              cards: cards[index],
-              amountOfTxs: transactions.length,
-              currentTxNumber: 1 + index,
-              textStatus: TxsLoadingModalTextStatus.APPROVE,
-            }),
-          );
-        },
-        onAfterSend: () => {
-          dispatch(
-            txsLoadingModalActions.setTextStatus(
-              TxsLoadingModalTextStatus.WAITING,
-            ),
-          );
-        },
-        onSuccess: () => {
-          notify({
-            message: 'transaction successful!',
-            type: NotifyType.SUCCESS,
-          });
-        },
-        onError: () => {
-          notify({
-            message: 'oops... something went wrong!',
-            type: NotifyType.ERROR,
-          });
-        },
-      })),
-    });
+    const txnsData: TxnsDataOneByOne[] = getTxnsDataOneByOne(
+      transactions,
+      dispatch,
+    );
 
-    dispatch(txsLoadingModalActions.setVisible(false));
-
-    if (isSuccess) {
+    try {
+      await signAndSendTransactionsOneByOne({
+        txnsData,
+        connection,
+        wallet,
+      });
       history.push(`/my-pools`);
+    } catch {
+      notify({
+        message: 'oops... something went wrong!',
+        type: NotifyType.ERROR,
+      });
+    } finally {
+      dispatch(txsLoadingModalActions.setVisible(false));
     }
   };
 

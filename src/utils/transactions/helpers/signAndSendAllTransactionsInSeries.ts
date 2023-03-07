@@ -77,10 +77,5 @@ export const getTxnsDataSeries = (
         message: 'transaction successful!',
         type: NotifyType.SUCCESS,
       }),
-    onError: () =>
-      notify({
-        message: 'oops... something went wrong!',
-        type: NotifyType.ERROR,
-      }),
   }));
 };

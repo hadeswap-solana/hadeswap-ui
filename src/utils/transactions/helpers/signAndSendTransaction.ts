@@ -28,7 +28,6 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
   onBeforeApprove,
   onAfterSend,
   onSuccess,
-  onError,
 }) => {
   try {
     onBeforeApprove?.();
@@ -60,16 +59,6 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
       error,
       wallet,
     });
-
-    onError?.();
+    throw new Error('signAndSendTransaction');
   }
-
-  // await connection.confirmTransaction(
-  //   {
-  //     signature,
-  //     blockhash,
-  //     lastValidBlockHeight,
-  //   },
-  //   commitment,
-  // );
 };

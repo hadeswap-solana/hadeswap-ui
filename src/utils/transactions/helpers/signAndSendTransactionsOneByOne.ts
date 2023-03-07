@@ -8,7 +8,7 @@ import { notify } from '../../index';
 import { NotifyType } from '../../solanaUtils';
 import { signAndSendTransaction } from './signAndSendTransaction';
 
-interface TxnsDataOneByOne extends TxnData {
+export interface TxnsDataOneByOne extends TxnData {
   onBeforeApprove?: () => void;
   onAfterSend?: () => void;
   onSuccess?: () => void;
@@ -38,17 +38,17 @@ export const signAndSendTransactionsOneByOne: SignAndSendTransactionsOneByOne =
   };
 
 export const getTxnsDataOneByOne = (
-  txnsDataArray: TxnData[][],
+  txnsDataArray: TxnData[],
   dispatch: Dispatch,
 ): TxnsDataOneByOne[] => {
-  return txnsDataArray.flat().map((txn, index) => ({
+  return txnsDataArray.map((txn, index) => ({
     ...txn,
     onBeforeApprove: () =>
       dispatch(
         txsLoadingModalActions.setState({
           visible: true,
           cards: [txn.loadingModalCard],
-          amountOfTxs: txnsDataArray?.flat()?.length || 0,
+          amountOfTxs: txnsDataArray?.length || 0,
           currentTxNumber: index + 1,
           textStatus: TxsLoadingModalTextStatus.APPROVE,
         }),
@@ -61,11 +61,6 @@ export const getTxnsDataOneByOne = (
       notify({
         message: 'transaction successful!',
         type: NotifyType.SUCCESS,
-      }),
-    onError: () =>
-      notify({
-        message: 'oops... something went wrong!',
-        type: NotifyType.ERROR,
       }),
   }));
 };
