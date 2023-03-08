@@ -57,7 +57,7 @@ export const getTxnsDataSeries = (
   dispatch: Dispatch,
 ): TxnDataSeries[] => {
   return txnsDataArray.map((txnsData, txnsDataIdx, txnsDataArray) => ({
-    txnsAndSigners: [...txnsData],
+    txnsAndSigners: txnsData,
     onBeforeApprove: () =>
       dispatch(
         txsLoadingModalActions.setState({

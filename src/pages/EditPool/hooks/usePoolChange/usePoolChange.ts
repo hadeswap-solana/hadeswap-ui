@@ -104,17 +104,13 @@ export const usePoolChange: UsePoolChange = ({
       connection,
     });
 
-    const success = await signAndSend({
+    await signAndSend({
       isSupportSignAllTxns,
       txnsDataArray,
       dispatch,
       wallet,
       connection,
     });
-
-    if (success) {
-      history.push(`/pools/${pool?.pairPubkey}`);
-    }
   };
 
   return {

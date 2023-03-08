@@ -96,8 +96,8 @@ export const StepThree: FC<StepThreeProps> = ({
     rawSpotPrice: creationSpotPrice,
     rawDelta: rawDelta,
     rawFee,
-    onAfterTxn: () => history.push('/my-pools'),
     isSupportSignAllTxns,
+    onAfterTxn: () => history.push('/my-pools'),
   });
 
   const chartData = usePriceGraph({
