@@ -22,7 +22,7 @@ import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePool
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
 import { useCloseClick } from './hooks/useCloseClick';
-import { usePoolChange } from './hooks/usePoolChange';
+import { usePoolChange, useWithdrawLiquidity } from './hooks/usePoolChange';
 import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
 import { WithdrawFees } from '../../components/WithdrawFees';
@@ -103,17 +103,24 @@ export const EditPool: FC = () => {
   const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
     useWithdrawFees({ pool });
 
-  const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
-    usePoolChange({
+  const { change, isChanged } = usePoolChange({
+    pool,
+    selectedNfts,
+    buyOrdersAmount,
+    rawFee,
+    rawDelta,
+    rawSpotPrice: changeSpotPrice,
+    currentRawSpotPrice,
+  });
+
+  const { withdrawAllLiquidity, isWithdrawAllAvailable } = useWithdrawLiquidity(
+    {
       pool,
-      selectedNfts,
-      buyOrdersAmount,
-      rawFee,
       rawDelta,
-      rawSpotPrice: changeSpotPrice,
-      currentRawSpotPrice,
+      rawSpotPrice,
       isSupportSignAllTxns,
-    });
+    },
+  );
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 

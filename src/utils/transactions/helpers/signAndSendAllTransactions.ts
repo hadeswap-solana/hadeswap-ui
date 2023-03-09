@@ -19,6 +19,7 @@ interface SignAndSendAllTransactionsProps {
   onAfterSend?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
+  signTimeout?: number;
 }
 
 type SignAndSendAllTransactions = (
@@ -32,6 +33,7 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
   onBeforeApprove,
   onAfterSend,
   onSuccess,
+  signTimeout = 0,
 }) => {
   try {
     onBeforeApprove?.();
@@ -49,23 +51,36 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
       return transaction;
     });
 
-    const signedTransactions = await wallet.signAllTransactions(transactions);
-
-    await Promise.all(
-      signedTransactions.map((txn) =>
-        connection.sendRawTransaction(txn.serialize(), {
-          skipPreflight: false,
-        }),
-      ),
+    const signeTransactionsPromise: Promise<web3.Transaction[]> = new Promise(
+      (resolve) => {
+        setTimeout(async () => {
+          resolve(await wallet.signAllTransactions(transactions));
+        }, signTimeout);
+      },
     );
 
-    notify({
-      message: 'transaction sent!',
-      type: NotifyType.INFO,
-    });
+    signeTransactionsPromise
+      .then((result) => {
+        Promise.all(
+          result.map((txn) =>
+            connection.sendRawTransaction(txn.serialize(), {
+              skipPreflight: false,
+            }),
+          ),
+        );
+      })
+      .then(() => {
+        notify({
+          message: 'transaction sent!',
+          type: NotifyType.INFO,
+        });
 
-    onAfterSend?.();
-    onSuccess?.();
+        onAfterSend?.();
+        onSuccess?.();
+      })
+      .catch(() => {
+        throw new Error();
+      });
   } catch (error) {
     captureSentryError({
       error,

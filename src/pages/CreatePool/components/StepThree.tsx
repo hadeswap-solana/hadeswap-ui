@@ -27,6 +27,8 @@ interface StepThreeProps {
   chosenMarketKey: string;
 }
 
+const SIGN_TXN_TIMEOUT = 5000;
+
 export const StepThree: FC<StepThreeProps> = ({
   pairType,
   chosenMarketKey,
@@ -98,6 +100,7 @@ export const StepThree: FC<StepThreeProps> = ({
     rawFee,
     isSupportSignAllTxns,
     onAfterTxn: () => history.push('/my-pools'),
+    signTimeout: SIGN_TXN_TIMEOUT,
   });
 
   const chartData = usePriceGraph({

@@ -27,10 +27,11 @@ type SignAndSendAllTransactionsInSeries = (params: {
   txnsData: TxnDataSeries[];
   connection: web3.Connection;
   wallet: WalletContextState;
+  signTimeout?: number;
 }) => Promise<void>;
 
 export const signAndSendAllTransactionsInSeries: SignAndSendAllTransactionsInSeries =
-  async ({ txnsData, connection, wallet }) => {
+  async ({ txnsData, connection, wallet, signTimeout }) => {
     for (let i = 0; i < txnsData.length; ++i) {
       const {
         txnsAndSigners,
@@ -48,6 +49,7 @@ export const signAndSendAllTransactionsInSeries: SignAndSendAllTransactionsInSer
         onAfterSend,
         wallet,
         connection,
+        signTimeout,
       });
     }
   };

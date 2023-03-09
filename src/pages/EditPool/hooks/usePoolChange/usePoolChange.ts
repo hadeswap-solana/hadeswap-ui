@@ -32,8 +32,16 @@ export type UsePoolChange = (props: {
   isSupportSignAllTxns?: boolean;
 }) => {
   change: () => Promise<void>;
-  withdrawAllLiquidity: () => Promise<void>;
   isChanged: boolean;
+};
+
+export type UseWithdrawLiquidity = (props: {
+  pool: Pair;
+  rawDelta: number;
+  rawSpotPrice: number;
+  isSupportSignAllTxns: boolean;
+}) => {
+  withdrawAllLiquidity: () => Promise<void>;
   isWithdrawAllAvailable: boolean;
 };
 
@@ -95,6 +103,22 @@ export const usePoolChange: UsePoolChange = ({
     }
   };
 
+  return {
+    change,
+    isChanged,
+  };
+};
+
+export const useWithdrawLiquidity: UseWithdrawLiquidity = ({
+  pool,
+  rawDelta,
+  rawSpotPrice,
+  isSupportSignAllTxns,
+}) => {
+  const dispatch = useDispatch();
+  const wallet = useWallet();
+  const connection = useConnection();
+
   const withdrawAllLiquidity = async () => {
     const txnsDataArray = await buildWithdrawAllLiquidityFromPoolTxnsData({
       pool,
@@ -114,15 +138,13 @@ export const usePoolChange: UsePoolChange = ({
   };
 
   return {
-    change,
-    isChanged,
     withdrawAllLiquidity,
     isWithdrawAllAvailable: !!(pool?.buyOrdersAmount || pool?.nftsCount),
   };
 };
 
 const signAndSend = async ({
-  isSupportSignAllTxns,
+  isSupportSignAllTxns = true,
   txnsDataArray,
   dispatch,
   wallet,

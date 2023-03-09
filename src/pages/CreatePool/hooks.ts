@@ -28,9 +28,12 @@ import {
   signAndSendAllTransactionsInSeries,
 } from '../../utils/transactions';
 
-type UseCreatePool = (
-  props: Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'>,
-) => {
+interface CreatePoolProps
+  extends Omit<CreateTxnSplittedDataProps, 'connection' | 'wallet'> {
+  signTimeout?: number;
+}
+
+type UseCreatePool = (props: CreatePoolProps) => {
   create: () => Promise<void>;
 };
 
@@ -45,6 +48,7 @@ export const useCreatePool: UseCreatePool = ({
   rawFee,
   isSupportSignAllTxns,
   onAfterTxn,
+  signTimeout,
 }) => {
   const dispatch = useDispatch();
   const connection = useConnection();
@@ -89,6 +93,7 @@ export const useCreatePool: UseCreatePool = ({
             txnsData,
             wallet,
             connection,
+            signTimeout,
           });
         } else {
           const txnsData = getTxnsDataOneByOne(restTxnsData, dispatch);
