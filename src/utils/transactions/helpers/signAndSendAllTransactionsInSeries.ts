@@ -28,10 +28,11 @@ type SignAndSendAllTransactionsInSeries = (params: {
   connection: web3.Connection;
   wallet: WalletContextState;
   signTimeout?: number;
+  closeModal?: () => void;
 }) => Promise<void>;
 
 export const signAndSendAllTransactionsInSeries: SignAndSendAllTransactionsInSeries =
-  async ({ txnsData, connection, wallet, signTimeout }) => {
+  async ({ txnsData, connection, wallet, signTimeout, closeModal }) => {
     for (let i = 0; i < txnsData.length; ++i) {
       const {
         txnsAndSigners,
@@ -50,6 +51,7 @@ export const signAndSendAllTransactionsInSeries: SignAndSendAllTransactionsInSer
         wallet,
         connection,
         signTimeout,
+        closeModal,
       });
     }
   };
