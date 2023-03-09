@@ -4,15 +4,9 @@
 }
 
 .button {
+  padding-inline: 8px;
+
   @media screen and (max-width: 1024px) {
-    width: 150px;
-    height: 38px;
-
-    span {
-      font-size: 14px;
-      line-height: 17px;
-    }
-
     svg {
       width: 18px;
     }

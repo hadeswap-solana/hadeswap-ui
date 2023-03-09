@@ -120,10 +120,6 @@ export const StepThree: FC<StepThreeProps> = ({
         <Spinner />
       ) : (
         <>
-          <TransactionsWarning
-            checked={!isSupportSignAllTxns}
-            onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
-          />
           <div className={styles.settingsBlock}>
             <PriceBlock
               ref={priceBlockRef}
@@ -157,12 +153,22 @@ export const StepThree: FC<StepThreeProps> = ({
           )}
 
           <div className={styles.settingsButtonsWrapper}>
-            <Button
-              isDisabled={isCreateButtonDisabled}
-              onClick={onCreatePoolClick}
-            >
-              <span>create pool</span>
-            </Button>
+            {pairType === PairType.TokenForNFT ? (
+              <Button
+                isDisabled={isCreateButtonDisabled}
+                onClick={onCreatePoolClick}
+              >
+                <span>create pool</span>
+              </Button>
+            ) : (
+              <TransactionsWarning
+                checked={!isSupportSignAllTxns}
+                onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
+                onClick={onCreatePoolClick}
+                isDisabled={isCreateButtonDisabled}
+                buttonText="create pool"
+              />
+            )}
           </div>
         </>
       )}

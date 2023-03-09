@@ -2,7 +2,7 @@
   text-align: center;
 }
 
-.withdrawBlock {
+.feesSection {
   margin: 0 auto 16px;
 }
 
@@ -15,27 +15,37 @@
 
 .chartWrapper {
   margin-top: 16px;
-}
-
-.buttonsWrapper {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 16px;
-
-  button {
-    width: 186px;
-  }
-
-  @media (max-width: 767px) {
-    flex-wrap: wrap;
-  }
-}
-
-.chartWrapper {
-  margin-top: 16px;
   background: var(--component-base-background);
   border: var(--border-base);
   border-radius: var(--border-radius-base);
   padding: 25px 15px 25px 0;
+}
+
+.buttonsSection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+
+  @media (max-width: 1068px) {
+    justify-content: center;
+  }
+}
+
+.buttonsWrapper {
+  display: inline-flex;
+  flex-grow: 1;
+  justify-content: center;
+  max-width: 550px;
+  padding: 24px;
+  gap: 16px;
+  border: var(--border-base);
+  border-radius: var(--border-radius-base);
+  background: var(--component-base-background);
+
+  button {
+    width: 186px;
+  }
 }

@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
 
-import Button from '../Buttons/Button';
+import RoundIconButton from '../Buttons/RoundIconButton';
 import { SolPrice } from '../SolPrice/SolPrice';
 import { UNTITLED } from '../../constants/common';
 import { NftRarity } from '../../state/core/types';
@@ -97,14 +97,14 @@ export const NFTCard: FC<NFTCardProps> = ({
 
         <div className={styles.cardBtnWrapper}>
           {!simpleCard && !withoutAddToCartBtn && (
-            <Button outlined className={styles.cardButton}>
+            <RoundIconButton className={styles.cardButton}>
               {selected ? <MinusIcon /> : <PlusIcon />}
-            </Button>
+            </RoundIconButton>
           )}
           {createPool && (
-            <Button outlined className={styles.cardButton}>
+            <RoundIconButton className={styles.cardButton}>
               {selected ? <MinusIcon /> : <PlusIcon />}
-            </Button>
+            </RoundIconButton>
           )}
           {onExchange && (
             <SwapButton

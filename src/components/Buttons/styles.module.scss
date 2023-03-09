@@ -14,7 +14,7 @@
 
 .button {
   height: 40px;
-  padding: 8px 10px;
+  padding-inline: 15px;
   border-radius: var(--border-radius-base);
   background-color: var(--blue-color);
 
@@ -23,6 +23,16 @@
     font-weight: 400;
     line-height: 24px;
     font-family: var(--font-family-rubik);
+    letter-spacing: 0.02em;
+  }
+
+  @media screen and (max-width: 768px) {
+    height: 38px;
+
+    span {
+      font-size: 14px;
+      line-height: 17px;
+    }
   }
 }
 

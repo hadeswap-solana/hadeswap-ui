@@ -25,9 +25,12 @@ import { useCloseClick } from './hooks/useCloseClick';
 import { usePoolChange } from './hooks/usePoolChange';
 import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
+import { WithdrawFees } from '../../components/WithdrawFees';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 
 export const EditPool: FC = () => {
-  const { connected } = useWallet();
+  const { connected, publicKey } = useWallet();
 
   useFetchAllMarkets();
   useFetchPair();
@@ -41,6 +44,9 @@ export const EditPool: FC = () => {
   const poolLoading = useSelector(selectCertainPairLoading);
 
   const pairType = pool?.type;
+  const isLiquidityProvision = pairType === PairType.LiquidityProvision;
+
+  const isOwner = publicKey && publicKey?.toBase58() === pool?.assetReceiver;
 
   const chosenMarket = markets.find(
     (item) => item.marketPubkey === pool?.market,
@@ -94,6 +100,9 @@ export const EditPool: FC = () => {
 
   const currentRawSpotPrice = formValue.spotPrice * 1e9;
 
+  const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
+    useWithdrawFees({ pool });
+
   const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
     usePoolChange({
       pool,
@@ -133,14 +142,16 @@ export const EditPool: FC = () => {
           <Spinner />
         ) : (
           <>
-            <TransactionsWarning
-              title="withdraw all liquidity"
-              buttonText="withdraw"
-              isDisabled={!isWithdrawAllAvailable}
-              onClick={withdrawAllLiquidity}
-              checked={!isSupportSignAllTxns}
-              onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
-            />
+            {isOwner && isLiquidityProvision && (
+              <div className={styles.feesSection}>
+                <WithdrawFees
+                  isButtonDisabled={isWithdrawDisabled}
+                  accumulatedFees={accumulatedFees}
+                  onClick={onWithdrawClick}
+                />
+              </div>
+            )}
+
             <div className={styles.settingsBlock}>
               <PriceBlock
                 ref={priceBlockRef}
@@ -175,17 +186,28 @@ export const EditPool: FC = () => {
               />
             )}
 
-            <div className={styles.buttonsWrapper}>
-              <Button isDisabled={!isChanged} onClick={change}>
-                <span>save changes</span>
-              </Button>
-              <Button
-                outlined
-                isDisabled={isClosePoolDisabled}
-                onClick={onCloseClick}
-              >
-                <span>close pool</span>
-              </Button>
+            <div className={styles.buttonsSection}>
+              <TransactionsWarning
+                buttonText="withdraw all liquidity"
+                isDisabled={!isWithdrawAllAvailable}
+                onClick={withdrawAllLiquidity}
+                checked={!isSupportSignAllTxns}
+                onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
+                outlined={true}
+              />
+
+              <div className={styles.buttonsWrapper}>
+                <Button isDisabled={!isChanged} onClick={change}>
+                  <span>save changes</span>
+                </Button>
+                <Button
+                  outlined
+                  isDisabled={isClosePoolDisabled}
+                  onClick={onCloseClick}
+                >
+                  <span>close pool</span>
+                </Button>
+              </div>
             </div>
           </>
         )}

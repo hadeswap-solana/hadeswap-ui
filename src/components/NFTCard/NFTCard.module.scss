@@ -159,9 +159,7 @@
 }
 
 .cardButton {
-  width: 38px;
-  height: 38px;
-  transition: background-color 0.3s;
+  border-color: var(--blue-color);
 
   svg > path {
     fill: var(--blue-color);
