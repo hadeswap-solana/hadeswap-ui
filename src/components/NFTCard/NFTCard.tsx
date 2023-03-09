@@ -15,7 +15,7 @@ import { MinusIcon } from '../../icons/MinusIcon';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectAllSellOrdersForMarket } from '../../state/core/selectors';
-import plugImage from '../../assets/plug.png';
+import plugImage from '../../assets/placeholder.png';
 
 interface NFTCardProps {
   className?: string;
