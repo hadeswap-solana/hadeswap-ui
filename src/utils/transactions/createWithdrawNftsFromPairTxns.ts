@@ -22,7 +22,7 @@ type CreateWithdrawNftsFromPairTxns = (params: {
   }[]
 >;
 
-const IXNS_PER_CHUNK = 2; //? Maybe it will work with 3
+const IXNS_PER_CHUNK = 1; //? Maybe it will work with 3
 
 export const createWithdrawNftsFromPairTxns: CreateWithdrawNftsFromPairTxns =
   async ({ connection, wallet, pairPubkey, authorityAdapter, nfts }) => {
@@ -49,7 +49,7 @@ export const createWithdrawNftsFromPairTxns: CreateWithdrawNftsFromPairTxns =
     ).map(({ instructions, signers }) => ({ instructions, signers }));
 
     const ixsAndSignersChunks = chunk(ixsAndSigners, IXNS_PER_CHUNK);
-
+    console.log({ ixsAndSigners, ixsAndSignersChunks });
     return ixsAndSignersChunks.map((chunk) => {
       const transaction = new web3.Transaction();
       transaction.add(...chunk.map(({ instructions }) => instructions).flat());
