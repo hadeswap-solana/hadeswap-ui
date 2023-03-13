@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import Checkbox from '../Checkbox';
 import Button from '../Buttons/Button';
-import styles from './styles.module.scss';
+import { ButtonsCard } from '../UI/Cards/ButtonsCard';
 
 interface TransactionsWarningProps {
   onChange: () => void;
@@ -24,19 +24,12 @@ const TransactionsWarning: FC<TransactionsWarningProps> = ({
   buttonText,
 }) => {
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.checkboxWrapper}>
-        <Checkbox label={label} checked={checked} onChange={onChange} />
-      </div>
-      <Button
-        className={styles.button}
-        outlined={outlined}
-        isDisabled={isDisabled}
-        onClick={onClick}
-      >
+    <ButtonsCard>
+      <Checkbox label={label} checked={checked} onChange={onChange} />
+      <Button outlined={outlined} isDisabled={isDisabled} onClick={onClick}>
         <span>{buttonText}</span>
       </Button>
-    </div>
+    </ButtonsCard>
   );
 };
 

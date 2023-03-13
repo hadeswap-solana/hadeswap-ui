@@ -3,6 +3,8 @@
 }
 
 .feesSection {
+  display: flex;
+  justify-content: center;
   margin-bottom: 16px;
 }
 
@@ -34,18 +36,18 @@
   }
 }
 
-.buttonsWrapper {
-  display: inline-flex;
-  flex-grow: 1;
-  justify-content: center;
-  max-width: 550px;
-  padding: 24px;
-  gap: 16px;
-  border: var(--border-base);
-  border-radius: var(--border-radius-base);
-  background: var(--component-base-background);
-
-  button {
-    width: 186px;
-  }
-}
+//.buttonsWrapper {
+//  display: inline-flex;
+//  flex-grow: 1;
+//  justify-content: center;
+//  max-width: 550px;
+//  padding: 24px;
+//  gap: 16px;
+//  border: var(--border-base);
+//  border-radius: var(--border-radius-base);
+//  background: var(--component-base-background);
+//
+//  button {
+//    width: 186px;
+//  }
+//}

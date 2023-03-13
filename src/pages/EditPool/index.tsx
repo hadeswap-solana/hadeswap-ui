@@ -11,6 +11,7 @@ import {
 import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
 import TransactionsWarning from '../../components/TransactionsWarning';
+import { ButtonsCard } from '../../components/UI/Cards/ButtonsCard';
 import { PriceBlock } from '../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../components/PoolSettings/AssetsBlock';
 import { Spinner } from '../../components/Spinner/Spinner';
@@ -203,7 +204,7 @@ export const EditPool: FC = () => {
                 outlined={true}
               />
 
-              <div className={styles.buttonsWrapper}>
+              <ButtonsCard>
                 <Button isDisabled={!isChanged} onClick={change}>
                   <span>save changes</span>
                 </Button>
@@ -214,7 +215,7 @@ export const EditPool: FC = () => {
                 >
                   <span>close pool</span>
                 </Button>
-              </div>
+              </ButtonsCard>
             </div>
           </>
         )}
