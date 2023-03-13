@@ -62,7 +62,8 @@ export const getTxnsDataSeries = (
 ): TxnDataSeries[] => {
   return txnsDataArray.map((txnsData, txnsDataIdx, txnsDataArray) => ({
     txnsAndSigners: txnsData,
-    onBeforeApprove: () =>
+    onBeforeApprove: () => {
+      txnsData[txnsDataIdx].onBeforeApprove?.();
       dispatch(
         txsLoadingModalActions.setState({
           visible: true,
@@ -71,15 +72,20 @@ export const getTxnsDataSeries = (
           currentTxNumber: null,
           textStatus: TxsLoadingModalTextStatus.APPROVE,
         }),
-      ),
-    onAfterSend: () =>
+      );
+    },
+    onAfterSend: () => {
+      txnsData[txnsDataIdx].onAfterSend?.();
       dispatch(
         txsLoadingModalActions.setTextStatus(TxsLoadingModalTextStatus.WAITING),
-      ),
-    onSuccess: () =>
+      );
+    },
+    onSuccess: () => {
+      txnsData[txnsDataIdx].onSuccess?.();
       notify({
         message: 'transaction successful!',
         type: NotifyType.SUCCESS,
-      }),
+      });
+    },
   }));
 };

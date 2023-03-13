@@ -58,7 +58,7 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
         try {
           resolve(await wallet.signAllTransactions(transactions));
         } catch {
-          closeModal();
+          closeModal?.();
         }
       }, signTimeout);
     });

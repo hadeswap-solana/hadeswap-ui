@@ -36,22 +36,22 @@ export const useCloseClick = ({
   );
 
   const onCloseClick = async () => {
-    const transactions: TxnData[] = [];
-    const cards = [];
+    const transaction: TxnData = await createClosePairTxn({
+      connection,
+      wallet,
+      pairPubkey: pool.pairPubkey,
+      authorityAdapter: pool.authorityAdapterPubkey,
+    });
 
-    transactions.push(
-      await createClosePairTxn({
-        connection,
-        wallet,
-        pairPubkey: pool.pairPubkey,
-        authorityAdapter: pool.authorityAdapterPubkey,
-      }),
-    );
+    const txnsDataArray: TxnData[] = [
+      {
+        ...transaction,
+        loadingModalCard: [createIxCardFuncs[IX_TYPE.CLOSE_POOL]()],
+      },
+    ];
 
-    cards.push([createIxCardFuncs[IX_TYPE.CLOSE_POOL]()]);
-
-    const txnsData: TxnData[] = getTxnsDataOneByOne(transactions, dispatch);
-
+    const txnsData: TxnData[] = getTxnsDataOneByOne(txnsDataArray, dispatch);
+    const closeModal = () => dispatch(txsLoadingModalActions.setVisible(false));
     try {
       await signAndSendTransactionsOneByOne({
         txnsData,
@@ -65,7 +65,7 @@ export const useCloseClick = ({
         type: NotifyType.ERROR,
       });
     } finally {
-      dispatch(txsLoadingModalActions.setVisible(false));
+      closeModal();
     }
   };
 

@@ -75,7 +75,7 @@ export const useCreatePool: UseCreatePool = ({
     if (!splittedTxnsData) return;
 
     const { firstTxnData, restTxnsData } = splittedTxnsData;
-
+    const closeModal = () => dispatch(txsLoadingModalActions.setVisible(false));
     try {
       //? Run First Txn
       const txnsData = getTxnsDataOneByOne([firstTxnData], dispatch);
@@ -94,6 +94,7 @@ export const useCreatePool: UseCreatePool = ({
             wallet,
             connection,
             signTimeout,
+            closeModal,
           });
         } else {
           const txnsData = getTxnsDataOneByOne(restTxnsData, dispatch);
@@ -112,7 +113,7 @@ export const useCreatePool: UseCreatePool = ({
         type: NotifyType.ERROR,
       });
     } finally {
-      dispatch(txsLoadingModalActions.setVisible(false));
+      closeModal();
     }
   };
 
