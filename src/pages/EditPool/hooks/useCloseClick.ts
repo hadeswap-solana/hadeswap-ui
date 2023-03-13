@@ -57,6 +57,7 @@ export const useCloseClick = ({
         txnsData,
         connection,
         wallet,
+        closeModal,
       });
       history.push(`/my-pools`);
     } catch {

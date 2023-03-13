@@ -138,9 +138,15 @@ export const useSwap: UseSwap = ({
     }));
 
     const txnsData = getTxnsDataOneByOne(txnsDataArr, dispatch);
-
+    const closeModal = () =>
+      dispatch(commonActions.setCartSider({ isVisible: false }));
     try {
-      await signAndSendTransactionsOneByOne({ txnsData, connection, wallet });
+      await signAndSendTransactionsOneByOne({
+        txnsData,
+        connection,
+        wallet,
+        closeModal,
+      });
       onAfterTxn?.();
     } catch {
       notify({
@@ -149,7 +155,7 @@ export const useSwap: UseSwap = ({
       });
       onFail?.();
     } finally {
-      dispatch(commonActions.setCartSider({ isVisible: false }));
+      closeModal();
     }
   };
 

@@ -151,7 +151,6 @@ const signAndSend = async ({
   connection,
 }: SignAndSend): Promise<boolean> => {
   const closeModal = () => dispatch(txsLoadingModalActions.setVisible(false));
-
   try {
     if (!isSupportSignAllTxns) {
       const txnsData = getTxnsDataOneByOne(txnsDataArray.flat(), dispatch);
@@ -159,6 +158,7 @@ const signAndSend = async ({
         txnsData,
         wallet,
         connection,
+        closeModal,
       });
     } else {
       const txnsData = getTxnsDataSeries(txnsDataArray, dispatch);

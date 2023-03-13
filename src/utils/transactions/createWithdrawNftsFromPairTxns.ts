@@ -49,7 +49,7 @@ export const createWithdrawNftsFromPairTxns: CreateWithdrawNftsFromPairTxns =
     ).map(({ instructions, signers }) => ({ instructions, signers }));
 
     const ixsAndSignersChunks = chunk(ixsAndSigners, IXNS_PER_CHUNK);
-    console.log({ ixsAndSigners, ixsAndSignersChunks });
+
     return ixsAndSignersChunks.map((chunk) => {
       const transaction = new web3.Transaction();
       transaction.add(...chunk.map(({ instructions }) => instructions).flat());

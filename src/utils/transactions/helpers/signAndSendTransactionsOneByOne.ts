@@ -12,10 +12,12 @@ type SignAndSendTransactionsOneByOne = (params: {
   txnsData: TxnData[];
   connection: web3.Connection;
   wallet: WalletContextState;
+  signTimeout?: number;
+  closeModal?: () => void;
 }) => Promise<void>;
 
 export const signAndSendTransactionsOneByOne: SignAndSendTransactionsOneByOne =
-  async ({ txnsData, connection, wallet }) => {
+  async ({ txnsData, connection, wallet, signTimeout, closeModal }) => {
     for (let i = 0; i < txnsData.length; ++i) {
       await signAndSendTransaction({
         transaction: txnsData[i].transaction,
@@ -26,6 +28,8 @@ export const signAndSendTransactionsOneByOne: SignAndSendTransactionsOneByOne =
         onError: txnsData[i].onError,
         connection,
         wallet,
+        signTimeout,
+        closeModal,
       });
     }
   };

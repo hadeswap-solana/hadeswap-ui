@@ -14,6 +14,8 @@ interface SignAndSendTransactionProps {
   onAfterSend?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
+  signTimeout?: number;
+  closeModal?: () => void;
 }
 
 type SignAndSendTransaction = (
@@ -28,6 +30,8 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
   onBeforeApprove,
   onAfterSend,
   onSuccess,
+  signTimeout = 0,
+  closeModal,
 }) => {
   try {
     onBeforeApprove?.();
@@ -41,7 +45,15 @@ export const signAndSendTransaction: SignAndSendTransaction = async ({
       transaction.sign(...signers);
     }
 
-    const signedTransaction = await wallet.signTransaction(transaction);
+    const signedTransaction: any = await new Promise((resolve) => {
+      setTimeout(async () => {
+        try {
+          resolve(await wallet.signTransaction(transaction));
+        } catch {
+          closeModal?.();
+        }
+      }, signTimeout);
+    });
 
     await connection.sendRawTransaction(signedTransaction.serialize(), {
       skipPreflight: false,

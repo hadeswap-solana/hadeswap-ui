@@ -83,6 +83,8 @@ export const useCreatePool: UseCreatePool = ({
         txnsData,
         connection,
         wallet,
+        signTimeout,
+        closeModal,
       });
 
       //? Run Rest Txn
@@ -102,6 +104,8 @@ export const useCreatePool: UseCreatePool = ({
             txnsData,
             connection,
             wallet,
+            signTimeout,
+            closeModal,
           });
         }
       }
