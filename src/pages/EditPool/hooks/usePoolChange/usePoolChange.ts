@@ -51,6 +51,7 @@ interface SignAndSend {
   dispatch: Dispatch;
   wallet: WalletContextState;
   connection: web3.Connection;
+  backRoute?: () => void;
 }
 
 export const usePoolChange: UsePoolChange = ({
@@ -77,6 +78,8 @@ export const usePoolChange: UsePoolChange = ({
     buyOrdersAmount,
   });
 
+  const backRoute = () => history.push(`/pools/${pool?.pairPubkey}`);
+
   const change = async () => {
     const txnsDataArray = await buildChangePoolTxnsData({
       pool,
@@ -90,17 +93,14 @@ export const usePoolChange: UsePoolChange = ({
       connection,
     });
 
-    const success = await signAndSend({
+    await signAndSend({
       isSupportSignAllTxns,
       txnsDataArray,
       dispatch,
       wallet,
       connection,
+      backRoute,
     });
-
-    if (success) {
-      history.push(`/pools/${pool?.pairPubkey}`);
-    }
   };
 
   return {
@@ -116,8 +116,11 @@ export const useWithdrawLiquidity: UseWithdrawLiquidity = ({
   isSupportSignAllTxns,
 }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const wallet = useWallet();
   const connection = useConnection();
+
+  const backRoute = () => history.push(`/pools/${pool?.pairPubkey}`);
 
   const withdrawAllLiquidity = async () => {
     const txnsDataArray = await buildWithdrawAllLiquidityFromPoolTxnsData({
@@ -134,6 +137,7 @@ export const useWithdrawLiquidity: UseWithdrawLiquidity = ({
       dispatch,
       wallet,
       connection,
+      backRoute,
     });
   };
 
@@ -149,7 +153,8 @@ const signAndSend = async ({
   dispatch,
   wallet,
   connection,
-}: SignAndSend): Promise<boolean> => {
+  backRoute,
+}: SignAndSend): Promise<void> => {
   const closeModal = () => dispatch(txsLoadingModalActions.setVisible(false));
   try {
     if (!isSupportSignAllTxns) {
@@ -169,13 +174,12 @@ const signAndSend = async ({
         closeModal,
       });
     }
-    return true;
+    backRoute?.();
   } catch {
     notify({
       message: 'oops... something went wrong!',
       type: NotifyType.ERROR,
     });
-    return false;
   } finally {
     closeModal();
   }

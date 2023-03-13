@@ -95,7 +95,6 @@ export const useCreatePool: UseCreatePool = ({
             txnsData,
             wallet,
             connection,
-            signTimeout,
             closeModal,
           });
         } else {
@@ -104,7 +103,6 @@ export const useCreatePool: UseCreatePool = ({
             txnsData,
             connection,
             wallet,
-            signTimeout,
             closeModal,
           });
         }
