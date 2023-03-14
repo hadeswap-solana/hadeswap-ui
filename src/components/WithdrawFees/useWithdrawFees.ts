@@ -4,13 +4,15 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { createWithdrawLiquidityFeesTxns } from '../../utils/transactions/createWithdrawLiquidityFeesTxns';
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
-import { TxsLoadingModalTextStatus } from '../../state/txsLoadingModal/reducers';
 import { notify } from '../../utils';
 import { formatRawSol, NotifyType } from '../../utils/solanaUtils';
 import { useConnection } from '../../hooks';
 import { Pair } from '../../state/core/types';
 import { useFetchPair } from '../../requests';
-import { signAndSendAllTransactions } from '../../utils/transactions/helpers/signAndSendAllTransactions';
+import {
+  getTxnsDataSeries,
+  signAndSendAllTransactionsInSeries,
+} from '../../utils/transactions';
 
 type UseWithdrawFees = (props: { pool: Pair }) => {
   onWithdrawClick: () => Promise<void>;
@@ -28,9 +30,7 @@ export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
   const isWithdrawDisabled = !parseFloat(accumulatedFees);
 
   const onWithdrawClick = async () => {
-    const transactions = [];
-
-    const txns = await createWithdrawLiquidityFeesTxns({
+    const transactions = await createWithdrawLiquidityFeesTxns({
       connection,
       wallet,
       pairPubkey: pool.pairPubkey,
@@ -38,50 +38,29 @@ export const useWithdrawFees: UseWithdrawFees = ({ pool }) => {
       liquidityProvisionOrders: pool.liquidityProvisionOrders,
     });
 
-    transactions.push(...txns);
+    const txnsDataArray = transactions.map((txn) => ({
+      ...txn,
+      loadingModalCard: createIxCardFuncs[IX_TYPE.WITHDRAW_FEES](),
+      onSuccess: () => refetch(),
+    }));
 
-    const cards = transactions.map(() =>
-      createIxCardFuncs[IX_TYPE.WITHDRAW_FEES](),
-    );
-
-    await signAndSendAllTransactions({
-      connection,
-      wallet,
-      txnsAndSigners: transactions,
-      onBeforeApprove: () => {
-        dispatch(
-          txsLoadingModalActions.setState({
-            visible: true,
-            cards,
-            amountOfTxs: transactions.length,
-            currentTxNumber: transactions.length,
-            textStatus: TxsLoadingModalTextStatus.APPROVE,
-          }),
-        );
-      },
-      onAfterSend: () => {
-        dispatch(
-          txsLoadingModalActions.setTextStatus(
-            TxsLoadingModalTextStatus.WAITING,
-          ),
-        );
-      },
-      onError: () => {
-        notify({
-          message: 'oops... something went wrong!',
-          type: NotifyType.ERROR,
-        });
-      },
-      onSuccess: () => {
-        notify({
-          message: 'transaction successful!',
-          type: NotifyType.SUCCESS,
-        });
-        refetch();
-      },
-    });
-
-    dispatch(txsLoadingModalActions.setVisible(false));
+    const txnsData = getTxnsDataSeries([txnsDataArray], dispatch);
+    const closeModal = () => dispatch(txsLoadingModalActions.setVisible(false));
+    try {
+      await signAndSendAllTransactionsInSeries({
+        txnsData,
+        connection,
+        wallet,
+        closeModal,
+      });
+    } catch {
+      notify({
+        message: 'oops... something went wrong!',
+        type: NotifyType.ERROR,
+      });
+    } finally {
+      closeModal();
+    }
   };
 
   return {

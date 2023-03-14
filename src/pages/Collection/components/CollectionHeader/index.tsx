@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { Cart } from './Cart';
+import { Card } from './Card';
 // import { SocialLink } from './SocialLink';
 // import { GlobeIcon } from '../../../../icons/GlobeIcon';
 // import { DiscordIcon } from '../../../../icons/DiscordIcon';
@@ -93,7 +93,7 @@ export const CollectionHeader: FC = () => {
               </div> */}
               <div className={styles.collectionStatWrapper}>
                 {marketStatList.map((item, index) => (
-                  <Cart key={index} className={styles.collectionStatItem}>
+                  <Card key={index} className={styles.collectionStatItem}>
                     <span className={styles.collectionStatTitle}>
                       {item.title}
                     </span>
@@ -108,7 +108,7 @@ export const CollectionHeader: FC = () => {
                         {market[item.key]}
                       </span>
                     )}
-                  </Cart>
+                  </Card>
                 ))}
               </div>
             </div>

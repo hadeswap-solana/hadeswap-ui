@@ -1,8 +1,7 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useFetchAllMarkets, useFetchPair } from '../../requests';
-import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
 import {
   selectAllMarkets,
   selectAllMarketsLoading,
@@ -11,28 +10,34 @@ import {
 } from '../../state/core/selectors';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
+import TransactionsWarning from '../../components/TransactionsWarning';
+import { ButtonsCard } from '../../components/UI/Cards/ButtonsCard';
 import { PriceBlock } from '../../components/PoolSettings/PriceBlock';
 import { AssetsBlock } from '../../components/PoolSettings/AssetsBlock';
 import { Spinner } from '../../components/Spinner/Spinner';
 import Button from '../../components/Buttons/Button';
-import { WithdrawFees } from '../../components/WithdrawFees';
 import Chart from '../../components/Chart/Chart';
 import { chartIDs } from '../../components/Chart/constants';
 import usePriceGraph from '../../components/Chart/hooks/usePriceGraph';
 import { usePoolServicePrice } from '../../components/PoolSettings/hooks/usePoolServicePrice';
 import { usePoolServiceAssets } from '../../components/PoolSettings/hooks/usePoolServiceAssets';
 import { useAssetsSetHeight } from '../../components/PoolSettings/hooks/useAssetsSetHeight';
-import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 import { useCloseClick } from './hooks/useCloseClick';
-import { usePoolChange } from '../../hadeswap/hooks';
+import { usePoolChange, useWithdrawLiquidity } from './hooks/usePoolChange';
 import { getRawDelta, getRawSpotPrice } from '../../utils';
 import styles from './styles.module.scss';
+import { WithdrawFees } from '../../components/WithdrawFees';
+import { PairType } from 'hadeswap-sdk/lib/hadeswap-core/types';
+import { useWithdrawFees } from '../../components/WithdrawFees/useWithdrawFees';
 
 export const EditPool: FC = () => {
-  const { connected } = useWallet();
+  const { connected, publicKey } = useWallet();
 
   useFetchAllMarkets();
   useFetchPair();
+
+  const [isSupportSignAllTxns, setIsSupportSignAllTxns] =
+    useState<boolean>(true);
 
   const markets = useSelector(selectAllMarkets);
   const pool = useSelector(selectCertainPair);
@@ -40,6 +45,9 @@ export const EditPool: FC = () => {
   const poolLoading = useSelector(selectCertainPairLoading);
 
   const pairType = pool?.type;
+  const isLiquidityProvision = pairType === PairType.LiquidityProvision;
+
+  const isOwner = publicKey && publicKey?.toBase58() === pool?.assetReceiver;
 
   const chosenMarket = markets.find(
     (item) => item.marketPubkey === pool?.market,
@@ -93,19 +101,27 @@ export const EditPool: FC = () => {
 
   const currentRawSpotPrice = formValue.spotPrice * 1e9;
 
-  const { change, isChanged, withdrawAllLiquidity, isWithdrawAllAvailable } =
-    usePoolChange({
-      pool,
-      selectedNfts,
-      buyOrdersAmount,
-      rawFee,
-      rawDelta,
-      rawSpotPrice: changeSpotPrice,
-      currentRawSpotPrice,
-    });
-
   const { onWithdrawClick, accumulatedFees, isWithdrawDisabled } =
     useWithdrawFees({ pool });
+
+  const { change, isChanged } = usePoolChange({
+    pool,
+    selectedNfts,
+    buyOrdersAmount,
+    rawFee,
+    rawDelta,
+    rawSpotPrice: changeSpotPrice,
+    currentRawSpotPrice,
+  });
+
+  const { withdrawAllLiquidity, isWithdrawAllAvailable } = useWithdrawLiquidity(
+    {
+      pool,
+      rawDelta,
+      rawSpotPrice,
+      isSupportSignAllTxns,
+    },
+  );
 
   const { onCloseClick, isClosePoolDisabled } = useCloseClick({ pool });
 
@@ -127,20 +143,23 @@ export const EditPool: FC = () => {
   return (
     <AppLayout>
       <PageContentLayout title="edit pool">
-        {!connected ? (
+        {!connected && (
           <h2 className={styles.h2}>connect your wallet for pool creation</h2>
-        ) : isLoading ? (
+        )}
+        {isLoading ? (
           <Spinner />
         ) : (
           <>
-            {pairType === PairType.LiquidityProvision && (
-              <WithdrawFees
-                className={styles.withdrawBlock}
-                accumulatedFees={accumulatedFees}
-                onClick={onWithdrawClick}
-                isButtonDisabled={isWithdrawDisabled}
-              />
+            {isOwner && isLiquidityProvision && (
+              <div className={styles.feesSection}>
+                <WithdrawFees
+                  isButtonDisabled={isWithdrawDisabled}
+                  accumulatedFees={accumulatedFees}
+                  onClick={onWithdrawClick}
+                />
+              </div>
             )}
+
             <div className={styles.settingsBlock}>
               <PriceBlock
                 ref={priceBlockRef}
@@ -175,24 +194,28 @@ export const EditPool: FC = () => {
               />
             )}
 
-            <div className={styles.buttonsWrapper}>
-              <Button isDisabled={!isChanged} onClick={change}>
-                <span>save changes</span>
-              </Button>
-              <Button
-                outlined
+            <div className={styles.buttonsSection}>
+              <TransactionsWarning
+                buttonText="withdraw all liquidity"
                 isDisabled={!isWithdrawAllAvailable}
                 onClick={withdrawAllLiquidity}
-              >
-                <span>withdraw all liquidity</span>
-              </Button>
-              <Button
-                outlined
-                isDisabled={isClosePoolDisabled}
-                onClick={onCloseClick}
-              >
-                <span>close pool</span>
-              </Button>
+                checked={!isSupportSignAllTxns}
+                onChange={() => setIsSupportSignAllTxns(!isSupportSignAllTxns)}
+                outlined={true}
+              />
+
+              <ButtonsCard>
+                <Button isDisabled={!isChanged} onClick={change}>
+                  <span>save changes</span>
+                </Button>
+                <Button
+                  outlined
+                  isDisabled={isClosePoolDisabled}
+                  onClick={onCloseClick}
+                >
+                  <span>close pool</span>
+                </Button>
+              </ButtonsCard>
             </div>
           </>
         )}

@@ -2,10 +2,10 @@ import { FC } from 'react';
 import { Modal, Tabs } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { useFetchAllMarkets } from '../../requests';
-
-import styles from './CreateOfferModal.module.scss';
 import BuyTab from './BuyTab/BuyTab';
 import SellTab from './SellTab/SellTab';
+
+import styles from './CreateOfferModal.module.scss';
 
 const { TabPane } = Tabs;
 
