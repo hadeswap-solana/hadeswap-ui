@@ -3,6 +3,7 @@ import { SolPrice } from '../../SolPrice/SolPrice';
 import { TokenPrice } from '../../TokenPrice';
 import DeleteButton from '../../Buttons/DeleteButton';
 import { Rarity } from '../../NFTCard/NFTCard';
+import { ImageHolder } from '../../UI/ImageHolder';
 import { NftRarity } from '../../../state/core/types';
 import { TokenItem } from '../../../constants/tokens';
 import { calcTokenAmount } from '../../../utils';
@@ -35,7 +36,11 @@ const Card: FC<CardProps> = ({
 
   return (
     <div className={styles.card}>
-      <img className={styles.cardImage} src={imageUrl} alt={name} />
+      <ImageHolder
+        imageUrl={imageUrl}
+        alt={name}
+        className={styles.cardImage}
+      />
       {!!rarity && <Rarity className={styles.rarityWrapper} rarity={rarity} />}
       <div className={styles.cardContent}>
         <h5 className={styles.cardTitle}>{name}</h5>
