@@ -19,7 +19,9 @@ export const TransactionsLoadingModal: FC = () => {
       <div className={styles.content}>
         <Spinner />
         <Typography.Title level={3} style={{ marginTop: 8, marginBottom: 0 }}>
-          Sending transaction ({state.currentTxNumber} / {state.amountOfTxs})
+          {state.currentTxNumber
+            ? `Sending transaction ${state.currentTxNumber} / ${state.amountOfTxs}`
+            : `Sending transactions: ${state.amountOfTxs}`}
         </Typography.Title>
         <Typography.Text>
           {state.textStatus === TxsLoadingModalTextStatus.APPROVE

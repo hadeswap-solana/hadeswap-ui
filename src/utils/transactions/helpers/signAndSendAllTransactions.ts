@@ -19,27 +19,28 @@ interface SignAndSendAllTransactionsProps {
   onAfterSend?: () => void;
   onSuccess?: () => void;
   onError?: () => void;
+  signTimeout?: number;
+  closeModal?: () => void;
 }
 
 type SignAndSendAllTransactions = (
   props: SignAndSendAllTransactionsProps,
-) => Promise<boolean>;
+) => Promise<void>;
 
 export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
   txnsAndSigners,
   connection,
   wallet,
-  commitment = 'finalized',
   onBeforeApprove,
   onAfterSend,
   onSuccess,
-  onError,
+  signTimeout = 0,
+  closeModal,
 }) => {
   try {
     onBeforeApprove?.();
 
-    const { blockhash, lastValidBlockHeight } =
-      await connection.getLatestBlockhash();
+    const { blockhash } = await connection.getLatestBlockhash();
 
     const transactions = txnsAndSigners.map(({ transaction, signers = [] }) => {
       transaction.recentBlockhash = blockhash;
@@ -52,9 +53,17 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
       return transaction;
     });
 
-    const signedTransactions = await wallet.signAllTransactions(transactions);
+    const signedTransactions: any = await new Promise((resolve) => {
+      setTimeout(async () => {
+        try {
+          resolve(await wallet.signAllTransactions(transactions));
+        } catch {
+          closeModal?.();
+        }
+      }, signTimeout);
+    });
 
-    const txnSignatures = await Promise.all(
+    await Promise.all(
       signedTransactions.map((txn) =>
         connection.sendRawTransaction(txn.serialize(), {
           skipPreflight: false,
@@ -68,30 +77,12 @@ export const signAndSendAllTransactions: SignAndSendAllTransactions = async ({
     });
 
     onAfterSend?.();
-
-    await Promise.allSettled(
-      txnSignatures.map((signature) =>
-        connection.confirmTransaction(
-          {
-            signature,
-            blockhash,
-            lastValidBlockHeight,
-          },
-          commitment,
-        ),
-      ),
-    );
-
     onSuccess?.();
-
-    return true;
   } catch (error) {
     captureSentryError({
       error,
       wallet,
     });
-
-    onError?.();
-    return false;
+    throw new Error('signAndSendAllTransactions');
   }
 };
