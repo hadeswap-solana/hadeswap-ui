@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { Cart } from './Cart';
+import { Card } from './Card';
 import { Search } from '../../../../components/Search';
 import RoundIconButton from '../../../../components/Buttons/RoundIconButton';
 import ChevronIcon from '../../../../icons/ChevronIcon';
@@ -58,7 +58,7 @@ export const TokensMenu: FC = () => {
   }, [listVisible]);
 
   return (
-    <Cart className={styles.tokensSelectorWrapper}>
+    <Card className={styles.tokensSelectorWrapper}>
       <div className={styles.dPdMenuWrapper}>
         <div className={styles.tokensSelectorInner}>
           <div className={styles.displayTokenLogoWrapper}>
@@ -118,6 +118,6 @@ export const TokensMenu: FC = () => {
           </div>
         </div>
       </div>
-    </Cart>
+    </Card>
   );
 };

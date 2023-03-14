@@ -9,7 +9,7 @@ interface CartProps {
   onClick?: () => void;
 }
 
-export const Cart: FC<CartProps> = ({
+export const Card: FC<CartProps> = ({
   className,
   children,
   onClick = null,
