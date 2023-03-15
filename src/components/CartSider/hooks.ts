@@ -52,15 +52,6 @@ type UseCartSider = () => {
   crossmintConfig: CrossMintConfig;
 };
 
-type UseSwap = (params: {
-  onAfterTxn: () => void;
-  onFail?: () => void;
-  ixsPerTxn?: number;
-  onSuccessTxn?: () => void;
-}) => {
-  swap: () => Promise<void>;
-};
-
 export const useCartSider: UseCartSider = () => {
   const cartItems = useSelector(selectCartItems);
   const cartOpened = useSelector(selectCartSiderVisible);
@@ -89,6 +80,15 @@ export const useCartSider: UseCartSider = () => {
     isOneBuyNft,
     crossmintConfig,
   };
+};
+
+type UseSwap = (params: {
+  onAfterTxn?: () => void;
+  onFail?: () => void;
+  ixsPerTxn?: number;
+  onSuccessTxn?: () => void;
+}) => {
+  swap: () => Promise<void>;
 };
 
 export const useSwap: UseSwap = ({
@@ -140,7 +140,6 @@ export const useSwap: UseSwap = ({
 
     const txnsData = getTxnsDataOneByOne(txnsDataArr, dispatch);
     const closeModal = () => {
-      dispatch(commonActions.setCartSider({ isVisible: false }));
       dispatch(txsLoadingModalActions.setVisible(false));
     };
 
@@ -152,6 +151,7 @@ export const useSwap: UseSwap = ({
         closeModal,
       });
       onAfterTxn?.();
+      dispatch(commonActions.setCartSider({ isVisible: false }));
     } catch {
       notify({
         message: 'oops... something went wrong!',
