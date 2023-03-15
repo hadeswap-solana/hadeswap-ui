@@ -29,6 +29,7 @@ import { useTokenInfo, useTokenRate } from '../../requests';
 import { calcAmount } from '../Jupiter/utils';
 import JSBI from 'jsbi';
 import { TxnData } from '../../types/transactions';
+import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 
 export interface CrossMintConfig {
   type: string;
@@ -138,8 +139,11 @@ export const useSwap: UseSwap = ({
     }));
 
     const txnsData = getTxnsDataOneByOne(txnsDataArr, dispatch);
-    const closeModal = () =>
+    const closeModal = () => {
       dispatch(commonActions.setCartSider({ isVisible: false }));
+      dispatch(txsLoadingModalActions.setVisible(false));
+    };
+
     try {
       await signAndSendTransactionsOneByOne({
         txnsData,
