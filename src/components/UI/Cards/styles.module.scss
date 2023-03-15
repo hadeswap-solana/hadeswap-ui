@@ -1,0 +1,18 @@
+.wrapper {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  max-width: 565px;
+  padding: 24px;
+  border: var(--border-base);
+  border-radius: var(--border-radius-base);
+  background: var(--component-base-background);
+
+  button {
+    min-width: 186px;
+    max-height: 200px;
+  }
+}
