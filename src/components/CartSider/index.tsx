@@ -10,8 +10,6 @@ import { useCartSider, useSwap, CrossMintConfig } from './hooks';
 import { ScreenTypes } from '../../state/common/types';
 import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
-import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
-import { commonActions } from '../../state/common/actions';
 import { web3 } from 'hadeswap-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
@@ -63,14 +61,11 @@ const CartSider: FC = () => {
 
   const { swap } = useSwap({
     onAfterTxn: async () => {
-      dispatch(txsLoadingModalActions.setVisible(false));
-
       const nfts = await fetchMarketWalletNfts({ walletPubkey, marketPubkey });
       dispatch(
         coreActions.setMarketWalletNfts({ data: nfts, isLoading: false }),
       );
     },
-    onFail: () => dispatch(commonActions.setCartSider({ isVisible: true })),
   });
 
   const createOnDeselectHandler = (order: CartOrder) => () => {

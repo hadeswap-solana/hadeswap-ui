@@ -4,7 +4,6 @@ import { CloseOutlined } from '@ant-design/icons';
 import { Typography, Modal, Col, Row } from 'antd';
 import { useParams } from 'react-router-dom';
 
-import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 import { CartOrder, MarketOrder, OrderType } from '../../state/core/types';
 import solanaLogo from '../../assets/icons/svg/solana-sol-logo.svg';
 import { NotifyInfoIcon } from '../../icons/NotifyInfoIcon';
@@ -58,13 +57,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
   const selectedBuyNft = cartItems?.buy[0] || selectedBuyOrder;
   const selectedSellOrder = cartItems?.sell[0];
 
-  const onAfterTxn = (): void => {
-    dispatch(txsLoadingModalActions.setVisible(false));
-    dispatch(commonActions.setCartSider({ isVisible: false }));
-  };
-
   const { swap } = useSwap({
-    onAfterTxn,
     ixsPerTxn: 1,
     onSuccessTxn: () =>
       dispatch(commonActions.setExchangeModal({ isVisible: false })),
