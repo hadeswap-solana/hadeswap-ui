@@ -61,41 +61,6 @@
   z-index: 2;
 }
 
-.cardImage {
-  display: none;
-  width: 100%;
-  object-fit: cover;
-}
-
-.cardImageVisible {
-  display: block;
-}
-
-.plugImage {
-  display: block;
-  width: 100%;
-  object-fit: cover;
-  animation-name: flashPlug;
-  animation-duration: 2000ms;
-  animation-iteration-count: infinite;
-}
-
-@keyframes flashPlug {
-  0% {
-    opacity: .3;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: .3;
-  }
-}
-
-.plugImageHidden {
-  display: none;
-}
-
 .cardContent {
   padding: 8px;
 }
