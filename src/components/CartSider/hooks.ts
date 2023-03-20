@@ -29,6 +29,7 @@ import { useTokenInfo, useTokenRate } from '../../requests';
 import { calcAmount } from '../Jupiter/utils';
 import JSBI from 'jsbi';
 import { TxnData } from '../../types/transactions';
+import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
 
 export interface CrossMintConfig {
   type: string;
@@ -49,15 +50,6 @@ type UseCartSider = () => {
   totalSell: number;
   isOneBuyNft: boolean;
   crossmintConfig: CrossMintConfig;
-};
-
-type UseSwap = (params: {
-  onAfterTxn: () => void;
-  onFail?: () => void;
-  ixsPerTxn?: number;
-  onSuccessTxn?: () => void;
-}) => {
-  swap: () => Promise<void>;
 };
 
 export const useCartSider: UseCartSider = () => {
@@ -88,6 +80,15 @@ export const useCartSider: UseCartSider = () => {
     isOneBuyNft,
     crossmintConfig,
   };
+};
+
+type UseSwap = (params: {
+  onAfterTxn?: () => void;
+  onFail?: () => void;
+  ixsPerTxn?: number;
+  onSuccessTxn?: () => void;
+}) => {
+  swap: () => Promise<void>;
 };
 
 export const useSwap: UseSwap = ({
@@ -138,8 +139,10 @@ export const useSwap: UseSwap = ({
     }));
 
     const txnsData = getTxnsDataOneByOne(txnsDataArr, dispatch);
-    const closeModal = () =>
-      dispatch(commonActions.setCartSider({ isVisible: false }));
+    const closeModal = () => {
+      dispatch(txsLoadingModalActions.setVisible(false));
+    };
+
     try {
       await signAndSendTransactionsOneByOne({
         txnsData,
@@ -148,6 +151,7 @@ export const useSwap: UseSwap = ({
         closeModal,
       });
       onAfterTxn?.();
+      dispatch(commonActions.setCartSider({ isVisible: false }));
     } catch {
       notify({
         message: 'oops... something went wrong!',
