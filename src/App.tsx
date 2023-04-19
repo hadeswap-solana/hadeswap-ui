@@ -20,11 +20,11 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router } from './router';
 import store from './state/store';
-import { ENDPOINT } from './config';
+import { ENDPOINT, getRightEndpoint } from './config';
 import Confetti from './components/Confetti';
 import { initSentry } from './utils/sentry';
 import { Jupiter } from './components/Jupiter';
@@ -49,10 +49,21 @@ const wallets = [
 ];
 
 const App: FC = () => {
+  const [endpoint, setEndpoint] = useState<string>(null);
+
+  useEffect(() => {
+    (async () => {
+      const endpoint = await getRightEndpoint();
+      setEndpoint(endpoint);
+    })();
+  }, []);
+
+  if (!endpoint) return <></>;
+
   return (
     <QueryClientProvider client={queryClient}>
       <ReduxProvider store={store}>
-        <ConnectionProvider endpoint={ENDPOINT}>
+        <ConnectionProvider endpoint={endpoint}>
           <WalletProvider wallets={wallets} autoConnect>
             <Jupiter>
               <Router />
