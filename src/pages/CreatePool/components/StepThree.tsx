@@ -83,7 +83,6 @@ export const StepThree: FC<StepThreeProps> = ({
   const rawFee = formValue.fee * 100;
 
   const isCreateButtonDisabled =
-    (pairType !== PairType.TokenForNFT && !selectedNfts.length) ||
     (pairType === PairType.TokenForNFT && !buyOrdersAmount) ||
     !formValue.spotPrice;
 
