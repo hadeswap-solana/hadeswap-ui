@@ -14,6 +14,11 @@ export const tokensList: TokenItem[] = [
       'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
   },
   {
+    label: 'MDS',
+    value: TokensValues.MDS,
+    image: 'https://arweave.net/DcmraYTxxarO5sZ1fIKdPIo1f76lRMZB_-q7y1d3Qqw',
+  },
+  {
     label: 'USDC',
     value: TokensValues.USDC,
     image:

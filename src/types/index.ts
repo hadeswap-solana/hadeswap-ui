@@ -16,6 +16,7 @@ export enum TableCellAlign {
 
 export enum TokensValues {
   SOL = 'So11111111111111111111111111111111111111112',
+  MDS = '9TVjnzpF3X8DHsfVqYWoCGphJxtGYh1PDCFN5QmsHW5t',
   USDC = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
   mSOL = 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
   Hades = 'BWXrrYFhT7bMHmNBFoQFWdsSgA3yXoAnMhDK6Fn1eSEn',
