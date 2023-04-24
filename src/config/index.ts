@@ -1,8 +1,6 @@
 import { Connection } from '@solana/web3.js';
 
-export const ENDPOINT = process.env.RPC_ENDPOINT;
-
-export const getRightEndpoint = async () => {
+export const getRightEndpoint = async (): Promise<string> => {
   try {
     const primaryConnection = new Connection(
       process.env.ADBLOCKED_RPC_ENDPOINT,
