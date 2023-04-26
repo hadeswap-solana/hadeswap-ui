@@ -72,7 +72,7 @@ const SwapExchangeButton: FC<ExchangeButtonProps> = ({
         {loading ? (
           <Spinner className={styles.exchangeButtonSpinner} />
         ) : (
-          <span>swap</span>
+          <span>swap exchange</span>
         )}
       </Button>
       {txnLoading && (

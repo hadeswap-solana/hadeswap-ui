@@ -84,7 +84,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
         )}
         {!tokenExchange && (
           <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
-            <span>swap</span>
+            <span>swap sol</span>
           </Button>
         )}
         <CrossmintButton
