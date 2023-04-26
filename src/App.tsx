@@ -2,19 +2,19 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  LedgerWalletAdapter,
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-  SlopeWalletAdapter,
-  GlowWalletAdapter,
-  CoinbaseWalletAdapter,
-  TorusWalletAdapter,
-  MathWalletAdapter,
-  SolletWalletAdapter,
   BackpackWalletAdapter,
-  StrikeWalletAdapter,
-  SafePalWalletAdapter,
+  CoinbaseWalletAdapter,
+  GlowWalletAdapter,
+  LedgerWalletAdapter,
+  MathWalletAdapter,
   NightlyWalletAdapter,
+  PhantomWalletAdapter,
+  SafePalWalletAdapter,
+  SlopeWalletAdapter,
+  SolflareWalletAdapter,
+  SolletWalletAdapter,
+  StrikeWalletAdapter,
+  TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import {
   ConnectionProvider,
@@ -24,7 +24,7 @@ import { FC, useEffect, useState } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router } from './router';
 import store from './state/store';
-import { ENDPOINT, getRightEndpoint } from './config';
+import { getRightEndpoint } from './config';
 import Confetti from './components/Confetti';
 import { initSentry } from './utils/sentry';
 import { Jupiter } from './components/Jupiter';
