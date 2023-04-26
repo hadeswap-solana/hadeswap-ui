@@ -1,0 +1,22 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  padding-inline: 16px;
+  border: var(--border-base);
+  border-radius: 16px;
+  background-color: var(--component-secondary-background);
+
+  @media (min-width: 1025px) {
+    height: 33px;
+  }
+
+  span {
+    font-family: var(--font-family-rubik);
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 120%;
+    color: var(--alert-color);
+  }
+}

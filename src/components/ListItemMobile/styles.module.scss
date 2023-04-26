@@ -13,18 +13,28 @@
 .cardHeader {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 16px;
 
+  .pnftBadge {
+    border: 0;
+  }
+}
+
+.headerTitleBlock {
+  display: flex;
+  align-items: center;
+
   img {
-    width: 48px;
-    height: 48px;
+    width: 32px;
+    height: 32px;
     margin-right: 8px;
   }
 
   span {
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 28px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 19px;
   }
 }
 

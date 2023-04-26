@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
-
+import { PnftBadge } from '../PnftBadge';
 import { SolPrice } from '../../SolPrice/SolPrice';
 import { TableCellAlign } from '../../../types';
 import { UNTITLED_COLLECTION } from '../../../constants/common';
@@ -35,15 +35,19 @@ export const LinkCell: FC<{
 export const TitleCell: FC<{
   imgSrc: string;
   title: string;
-}> = ({ imgSrc, title }) => (
-  <>
-    <img
-      className={styles.titleCellImg}
-      src={imgSrc}
-      alt={title || UNTITLED_COLLECTION}
-    />
-    <span>{title || UNTITLED_COLLECTION}</span>
-  </>
+  isPnft?: boolean;
+}> = ({ imgSrc, title, isPnft }) => (
+  <div className={styles.titleCellWrapper}>
+    <div>
+      <img
+        className={styles.titleCellImg}
+        src={imgSrc}
+        alt={title || UNTITLED_COLLECTION}
+      />
+      <span>{title || UNTITLED_COLLECTION}</span>
+    </div>
+    {isPnft && <PnftBadge className={styles.pnftBadge} />}
+  </div>
 );
 
 export const ColoredTextCell: FC<{

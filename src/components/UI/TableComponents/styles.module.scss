@@ -9,6 +9,17 @@
   justify-content: end;
 }
 
+.titleCellWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .pnftBadge {
+    height: 33px;
+    border: 0;
+  }
+}
+
 .titleCellImg {
   width: 32px;
   height: 32px;
