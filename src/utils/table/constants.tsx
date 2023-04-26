@@ -152,7 +152,11 @@ export const COLLECTION_COLUMNS: ColumnsType<MarketInfo> = [
     sorter: (a, b) => specifyAndSort(a?.collectionName, b?.collectionName),
     showSorterTooltip: false,
     render: (text: string, record: MarketInfo): JSX.Element => (
-      <TitleCell imgSrc={record?.collectionImage} title={text} />
+      <TitleCell
+        imgSrc={record?.collectionImage}
+        title={text}
+        isPnft={!!record.isPnft}
+      />
     ),
   },
   {

@@ -1,18 +1,17 @@
-import { FC } from 'react';
 import { Table } from 'antd';
 import classNames from 'classnames';
 import { ItemsListProps } from './index';
 
 import styles from './styles.module.scss';
 
-export const ItemsList: FC<ItemsListProps> = ({
+export const ItemsList = <T extends Record<string, any>>({
   idKey,
   pubKey,
   data,
   mapType,
   onRowClick,
   tableClassName,
-}) => {
+}: ItemsListProps<T>): JSX.Element => {
   return (
     <Table
       className={classNames(styles.table, tableClassName)}

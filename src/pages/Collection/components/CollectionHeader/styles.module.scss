@@ -87,6 +87,16 @@
   }
 }
 
+.collectionTitleWrapper {
+  display: flex;
+  gap: 16px;
+
+  @media (max-width: 1024px) {
+    justify-content: center;
+    align-items: flex-end;
+  }
+}
+
 .collectionTitle {
   font-family: var(--font-family-rubik);
   font-weight: 600;

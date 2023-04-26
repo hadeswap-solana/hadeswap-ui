@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { Card } from './Card';
+import { PnftBadge } from '../../../../components/UI/PnftBadge';
 // import { SocialLink } from './SocialLink';
 // import { GlobeIcon } from '../../../../icons/GlobeIcon';
 // import { DiscordIcon } from '../../../../icons/DiscordIcon';
@@ -15,7 +16,7 @@ import {
   selectCertainMarket,
   selectCertainMarketLoading,
 } from '../../../../state/core/selectors';
-import { marketStatList } from './CollectionHeader.constants';
+import { marketStatList } from './constants';
 import Button from '../../../../components/Buttons/Button';
 import { useCreateOfferModal } from '../../../../components/CreateOfferModal/hooks';
 import CreateOfferModal from '../../../../components/CreateOfferModal/CreateOfferModal';
@@ -53,9 +54,12 @@ export const CollectionHeader: FC = () => {
               }}
             />
             <div className={styles.collectionInfo}>
-              <h2 className={styles.collectionTitle}>
-                {market.collectionName}
-              </h2>
+              <div className={styles.collectionTitleWrapper}>
+                <h2 className={styles.collectionTitle}>
+                  {market.collectionName}
+                </h2>
+                {market.isPnft && <PnftBadge />}
+              </div>
               <TokensMenu />
               {/* <div className={styles.collectionDescriptionWrapper}>
                 <p className={styles.collectionDescription}>

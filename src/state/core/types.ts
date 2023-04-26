@@ -13,6 +13,7 @@ export type MarketInfo = {
   bestoffer: string;
   offerTVL: string;
   nftValidationAdapter: string;
+  isPnft: boolean;
 };
 
 export enum LpOrderState {
