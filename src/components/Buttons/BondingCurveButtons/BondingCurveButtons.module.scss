@@ -1,11 +1,3 @@
-.bondingCurveButtons {
-  height: 40px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .wrapper {
   width: 100%;
   display: flex;
@@ -20,25 +12,43 @@
   text-overflow: ellipsis;
   overflow: hidden;
   color: var(--primary-white-color);
+
+  @media (max-width: 480px) {
+    flex-flow: wrap;
+  }
 }
 
 .label {
   width: 100%;
   padding: 11px;
-
   border: var(--border-base);
   border-right: 0;
-
   cursor: pointer;
+
+  @media (max-width: 480px) {
+    border: var(--border-base);
+    border-bottom-width: 0;
+  }
 
   &:first-child {
     border-radius: 20px 0 0 20px;
+
+    @media (max-width: 480px) {
+      border-radius: 20px 20px 0 0;
+    }
   }
+
   &:last-child {
     border-radius: 0 20px 20px 0;
     border-right: var(--border-base);
+
+    @media (max-width: 480px) {
+      border-radius: 0 0 20px 20px;
+      border-bottom-width: unset;
+    }
   }
 }
+
 .checked {
   color: var(--blue-color);
   outline: 1px solid var(--blue-color);
