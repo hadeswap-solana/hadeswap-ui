@@ -1,14 +1,13 @@
-import { FC } from 'react';
 import ListItemMobile from '../../ListItemMobile';
 import { ItemsListProps } from '../index';
 
-export const ItemsList: FC<ItemsListProps> = ({
+export const ItemsList = <T extends Record<string, any>>({
   idKey,
   pubKey,
   data,
   mapType,
   onRowClick,
-}) => (
+}: ItemsListProps<T>): JSX.Element => (
   <>
     {data?.map((item) => (
       <ListItemMobile
