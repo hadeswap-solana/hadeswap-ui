@@ -4,27 +4,50 @@
 
 .buttonWrapper {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   margin: 32px 0 24px;
-
-  @media screen and (min-width: 1025px) {
-    justify-content: center;
-  }
 
   @media screen and (max-width: 768px) {
     display: flex;
     justify-content: center;
-    align-items: center;
     margin: 32px 0 24px;
     flex-wrap: wrap;
     gap: 24px;
   }
 }
 
+.feesCard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feesCardTitle {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--dark-grey-color);
+
+  @media (min-width: 1025px) {
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+.feesCardValue {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+
+  @media (min-width: 1025px) {
+    font-size: 18px;
+    line-height: 21px;
+  }
+}
+
 .poolButtonWrapper {
   display: flex;
-  flex-grow: 1;
-  justify-content: center;
   gap: 16px;
 
   @media screen and (max-width: 768px) {
@@ -38,8 +61,6 @@
 
 .sortButtonWrapper {
   display: flex;
-  flex-grow: 100;
-  justify-content: end;
 
   @media screen and (max-width: 550px) {
     justify-content: center;

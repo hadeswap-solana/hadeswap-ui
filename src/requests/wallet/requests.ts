@@ -1,4 +1,5 @@
 import { Nft, Pair } from '../../state/core/types';
+import { WalletAllFees } from '../types';
 
 export const fetchMarketWalletNfts = async ({
   walletPubkey,
@@ -33,6 +34,18 @@ export const fetchWalletPairs = async (
     `https://${process.env.BACKEND_DOMAIN}/my-pairs/${walletPubkey}`,
   );
 
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return await response.json();
+};
+
+export const fetchWalletAllFees = async (
+  walletPubkey: string,
+): Promise<WalletAllFees> => {
+  const response = await fetch(
+    `https://${process.env.BACKEND_DOMAIN}/my-earned-fees/${walletPubkey}`,
+  );
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
