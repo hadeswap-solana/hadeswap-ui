@@ -31,6 +31,7 @@ interface NFTCardProps {
   onExchange?: () => void;
   withoutAddToCartBtn?: boolean;
   createPool?: boolean;
+  isPnft?: boolean;
 }
 
 export const NFTCard: FC<NFTCardProps> = ({
@@ -47,6 +48,7 @@ export const NFTCard: FC<NFTCardProps> = ({
   onExchange,
   withoutAddToCartBtn,
   createPool = false,
+  isPnft,
 }) => {
   const { connected } = useWallet();
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
@@ -86,7 +88,7 @@ export const NFTCard: FC<NFTCardProps> = ({
               {selected ? <MinusIcon /> : <PlusIcon />}
             </RoundIconButton>
           )}
-          {onExchange && (
+          {onExchange && !isPnft && (
             <SwapButton
               isDisabled={!sellOrders.length}
               onClick={(e) => {
