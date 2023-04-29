@@ -142,7 +142,7 @@ export interface CartOrder extends Nft {
 
 export interface MarketOrder extends CartOrder {
   selected: boolean;
-  isPNFT: boolean;
+  isPNFT?: boolean;
 }
 
 export type WalletNfts = Dictionary<{
