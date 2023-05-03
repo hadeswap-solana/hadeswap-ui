@@ -64,6 +64,7 @@ export const CollectionActivityTab: FC = memo(() => {
         swapHistoryLoading={swapHistoryLoading}
         currentPeriod={currentPeriod}
         setCurrentPeriod={setCurrentPeriod}
+        className={styles.chartActivity}
       />
       <ItemsList
         idKey="_id"

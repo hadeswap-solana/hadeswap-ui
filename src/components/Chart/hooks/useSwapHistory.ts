@@ -5,68 +5,40 @@ import {
 } from '../../../requests';
 import { OrderType } from '../../../state/core/types';
 import { Point } from '../types';
+import { ActivityPeriod } from '../components/constants';
 
 type UseSwapHistory = ({ market }: { market?: boolean }) => {
-  chartDataActivity: Point[] | null;
+  chartDataActivity: Point[] | null | any;
   swapHistoryLoading: boolean;
   currentPeriod: string;
   setCurrentPeriod: Dispatch<SetStateAction<string>>;
 };
 
 export const useSwapHistory: UseSwapHistory = ({ market = false }) => {
-  const [currentPeriod, setCurrentPeriod] = useState<string>('day');
+  const [currentPeriod, setCurrentPeriod] = useState<ActivityPeriod>(
+    ActivityPeriod.day,
+  );
   const { swapHistoryDataPool, swapHistoryLoadingPool } =
-    useSwapHistoryDataPool();
+    useSwapHistoryDataPool(currentPeriod);
   const { swapHistoryCollection, swapHistoryLoadingCollection } =
-    useSwapHistoryDataCollection();
+    useSwapHistoryDataCollection(currentPeriod);
 
-  const sortedData = useMemo(() => {
-    const swapHistory = !market ? swapHistoryDataPool : swapHistoryCollection;
-
-    const millisecondInPeriod = {
-      day: 86400000,
-      week: 604800000,
-    };
-
-    if (currentPeriod === 'day') {
-      const res = swapHistory.filter((nftActivityData) => {
-        const timestamp = Date.parse(nftActivityData.timestamp);
-        const dateNow = Date.now();
-        const calc = dateNow - timestamp;
-
-        if (calc <= millisecondInPeriod.day) return nftActivityData;
-      });
-      return res;
-    }
-
-    if (currentPeriod === 'week') {
-      const res = swapHistory.filter((nftActivityData) => {
-        const timestamp = Date.parse(nftActivityData.timestamp);
-        const dateNow = Date.now();
-        const calc = dateNow - timestamp;
-
-        if (calc <= millisecondInPeriod.week) return nftActivityData;
-      });
-      return res;
-    }
-
-    return swapHistory;
-  }, [currentPeriod, swapHistoryDataPool, swapHistoryCollection, market]);
+  const swapHistory = !market ? swapHistoryDataPool : swapHistoryCollection;
 
   const valueForPool = (orderType: OrderType) => {
     return orderType === OrderType.BUY ? OrderType.SELL : OrderType.BUY;
   };
 
-  const chartDataActivity = sortedData?.map(
-    ({ solAmount, orderType, timestamp }): Point => ({
-      price: solAmount,
-      type: !market ? valueForPool(orderType) : orderType,
-      order: Date.parse(timestamp),
+  const chartDataActivity = swapHistory?.map(
+    ({ price, type, order }): Point => ({
+      price: price / 1e9,
+      type: valueForPool(type),
+      order: order * 1000,
     }),
   );
 
   return {
-    chartDataActivity,
+    chartDataActivity: chartDataActivity,
     swapHistoryLoading: swapHistoryLoadingPool || swapHistoryLoadingCollection,
     currentPeriod,
     setCurrentPeriod,
