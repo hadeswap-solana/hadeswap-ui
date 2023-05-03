@@ -14,6 +14,7 @@ export type MarketInfo = {
   offerTVL: string;
   nftValidationAdapter: string;
   isPnft: boolean;
+  royaltyPercent: number;
 };
 
 export enum LpOrderState {

@@ -21,6 +21,8 @@
 }
 
 .cardWrapper {
+  margin-bottom: 32px;
+
   &::before {
     content: '';
     display: block;
@@ -39,9 +41,13 @@
   padding: 16px 0 8px;
 }
 
-.priceDifference {
-  margin-top: 32px;
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
+.priceDifference {
   .text {
     font-family: var(--font-family-rubik);
     font-size: 14px;

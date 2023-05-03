@@ -79,7 +79,6 @@ export const CollectionBuyTab: FC = () => {
       }
 
       openExchangeModal();
-
       setSelectedBuyOrder(order);
     },
     [
@@ -117,7 +116,6 @@ export const CollectionBuyTab: FC = () => {
                 selected={order?.selected}
                 onExchange={addBuyOrderToExchange(order)}
                 rarity={order.rarity}
-                isPnft={order.isPNFT}
               />
             ))}
           </FakeInfinityScroll>
