@@ -32,7 +32,7 @@ export const useSwapHistory: UseSwapHistory = ({ market = false }) => {
   const chartDataActivity = swapHistory?.map(
     ({ price, type, order }): Point => ({
       price: price / 1e9,
-      type: valueForPool(type),
+      type: !market ? valueForPool(type) : type,
       order: order * 1000,
     }),
   );
