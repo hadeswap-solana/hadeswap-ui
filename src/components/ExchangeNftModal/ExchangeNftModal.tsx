@@ -25,6 +25,7 @@ import {
 } from '../../state/core/selectors';
 import { commonActions } from '../../state/common/actions';
 import { useSwap } from '../CartSider/hooks';
+import { useCalcNftRoyalty } from '../../hooks/useCalcNftRoyalty';
 
 const { Title, Text } = Typography;
 
@@ -68,10 +69,11 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
 
   const buyNftPrice = parseFloat(getFormattedPrice(selectedBuyNft?.price));
   const sellNftPrice = parseFloat(getFormattedPrice(selectedSellOrder?.price));
-  const pnftRoyaltyRaw = parseFloat(
-    getFormattedPrice(selectedOrder?.price * (market?.royaltyPercent / 100)),
-  );
-  const pnftRoyalty = isFinite(pnftRoyaltyRaw) ? pnftRoyaltyRaw : 0;
+  const royalty = useCalcNftRoyalty({
+    nftPrice: selectedOrder?.price,
+    royaltyPercent: market?.royaltyPercent,
+    raw: true,
+  });
 
   const priceDifference =
     (selectedOrder?.mint && buyNftPrice - sellNftPrice) || 0;
@@ -186,7 +188,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
         <Row className={styles.priceDifference} justify="space-between">
           <Text className={styles.text}>pnft royalty</Text>
           <Row align="middle" style={{ gap: 5 }}>
-            <Text className={styles.value}>{pnftRoyalty.toFixed(2)}</Text>
+            <Text className={styles.value}>{royalty.toFixed(2)}</Text>
             <img className={styles.solLogo} src={solanaLogo} alt="sol" />
           </Row>
         </Row>
