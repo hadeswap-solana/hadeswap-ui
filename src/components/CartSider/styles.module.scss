@@ -11,6 +11,35 @@
   transition: width var(--base-animation-time);
 }
 
+.payRoyalty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  & .value {
+    display: flex;
+    align-items: center;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+    color: #E3E2E5;
+  }
+
+  & .label {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 22px;
+    color: #535B5F;
+  }
+
+  & svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 .openCart {
   display: flex;
   flex-direction: column;

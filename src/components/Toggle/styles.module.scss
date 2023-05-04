@@ -1,0 +1,64 @@
+.toggler {
+  display: flex;
+  align-items: center;
+  position: relative;
+  user-select: none;
+
+  & input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+}
+
+.sliderWrap {
+  display: flex;
+  align-items: center;
+
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: #535B5F;
+  cursor: pointer;
+
+   span {
+     font-style: normal;
+     font-weight: 600;
+     font-size: 14px;
+     line-height: 22px;
+     color: #535B5F;
+     margin: 0;
+   }
+}
+
+.slider {
+  width: 28px;
+  height: 16px;
+  border-radius: 16px;
+  margin-left: 8px;
+  position: relative;
+  background: #535B5F;
+  transition: background 0.3s;
+
+
+  & span {
+    position: absolute;
+    background: #E3E2E5;
+    border-radius: 16px;
+    width: 12px;
+    height: 12px;
+    top: 2px;
+    left: 2px;
+    transition: left 0.3s;
+  }
+}
+
+.toggler input:checked ~ .sliderWrap > .slider {
+  background: #257CFF;
+
+  & span {
+    left: 13px;
+  }
+}

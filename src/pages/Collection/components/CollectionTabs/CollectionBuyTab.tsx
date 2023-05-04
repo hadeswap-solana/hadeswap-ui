@@ -42,6 +42,11 @@ export const CollectionBuyTab: FC = () => {
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
+      console.log({ order, marketPairs });
+      console.log(
+        'marketPair ',
+        marketPairs.find((pair) => pair.pairPubkey === order.targetPairPukey),
+      );
       order?.selected
         ? dispatch(coreActions.removeOrderFromCart(order.mint))
         : dispatch(

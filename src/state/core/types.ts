@@ -90,6 +90,7 @@ export interface NftRarity {
 }
 
 export interface Nft {
+  isPNFT?: boolean;
   mint: string;
   imageUrl: string;
   name: string;

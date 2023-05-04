@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC, memo, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectExchangeModalVisible,
@@ -15,7 +15,16 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 import { fetchMarketWalletNfts } from '../../requests/wallet/requests';
 
+export interface PayRoyalty {
+  enabled: boolean;
+  isPNFT: boolean;
+  nft: boolean;
+  value: string;
+}
+
 export interface CartSiderProps {
+  onTogglePayRoyalties: () => void;
+  payRoyalty: PayRoyalty;
   createOnDeselectHandler: (arg: CartOrder) => () => void;
   onDeselectBulkHandler: (arg: CartOrder[]) => void;
   swap: () => Promise<void>;
@@ -37,7 +46,6 @@ export interface CartSiderProps {
 
 const CartSider: FC = () => {
   const dispatch = useDispatch();
-
   const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
   const walletPubkey: string = publicKey?.toBase58();
   const { publicKey: marketPubkey } = useParams<{ publicKey: string }>();
@@ -59,6 +67,13 @@ const CartSider: FC = () => {
 
   const isSwapButtonDisabled = !itemsAmount;
 
+  const [payRoyalty, setPayRoyalty] = useState<PayRoyalty>({
+    enabled: false,
+    isPNFT: false,
+    nft: false,
+    value: '',
+  });
+
   const { swap } = useSwap({
     onAfterTxn: async () => {
       const nfts = await fetchMarketWalletNfts({ walletPubkey, marketPubkey });
@@ -78,8 +93,30 @@ const CartSider: FC = () => {
     );
   };
 
+  useEffect(() => {
+    const arr = [...cartItems.buy, ...cartItems.sell];
+
+    setPayRoyalty({
+      enabled: false,
+      isPNFT: !!arr.find((nft) => !!nft?.isPNFT),
+      nft: !!arr.find((nft) => !nft?.isPNFT),
+      value: '(2%) 0.02',
+    });
+  }, [itemsAmount]);
+
+  const onTogglePayRoyalties = () => {
+    setPayRoyalty({
+      ...payRoyalty,
+      enabled: !payRoyalty.enabled,
+    });
+  };
+
+  console.log('cartItems ', cartItems);
+
   return screenMode === ScreenTypes.TABLET ? (
     <CartSiderMobile
+      onTogglePayRoyalties={onTogglePayRoyalties}
+      payRoyalty={payRoyalty}
       createOnDeselectHandler={createOnDeselectHandler}
       onDeselectBulkHandler={onDeselectBulkHandler}
       swap={swap}
@@ -95,6 +132,8 @@ const CartSider: FC = () => {
     />
   ) : (
     <CartSiderDesktop
+      onTogglePayRoyalties={onTogglePayRoyalties}
+      payRoyalty={payRoyalty}
       createOnDeselectHandler={createOnDeselectHandler}
       onDeselectBulkHandler={onDeselectBulkHandler}
       swap={swap}
