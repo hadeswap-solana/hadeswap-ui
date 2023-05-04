@@ -7,6 +7,7 @@ import { FakeInfinityScroll } from '../../../../components/FakeInfiinityScroll';
 import {
   selectAllBuyOrdersForMarket,
   selectCartItems,
+  selectCertainMarket,
   selectMarketPairs,
   selectMarketPairsLoading,
 } from '../../../../state/core/selectors';
@@ -29,6 +30,7 @@ import styles from './styles.module.scss';
 export const CollectionBuyTab: FC = () => {
   const dispatch = useDispatch();
 
+  const market = useSelector(selectCertainMarket);
   const marketPairsLoading = useSelector(selectMarketPairsLoading);
   const marketPairs = useSelector(selectMarketPairs);
   const buyOrders = useSelector(selectAllBuyOrdersForMarket);
@@ -42,19 +44,21 @@ export const CollectionBuyTab: FC = () => {
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
-      console.log({ order, marketPairs });
-      console.log(
-        'marketPair ',
-        marketPairs.find((pair) => pair.pairPubkey === order.targetPairPukey),
-      );
-      order?.selected
-        ? dispatch(coreActions.removeOrderFromCart(order.mint))
+      const updatedOrder = {
+        ...order,
+        isPnft: market?.isPnft,
+        royaltyPercent: market?.royaltyPercent,
+        market: market.marketPubkey,
+      };
+
+      updatedOrder?.selected
+        ? dispatch(coreActions.removeOrderFromCart(updatedOrder.mint))
         : dispatch(
             coreActions.addOrderToCart(
               marketPairs.find(
-                (pair) => pair.pairPubkey === order.targetPairPukey,
+                (pair) => pair.pairPubkey === updatedOrder.targetPairPukey,
               ),
-              order,
+              updatedOrder,
               OrderType.BUY,
             ),
           );
@@ -84,7 +88,6 @@ export const CollectionBuyTab: FC = () => {
       }
 
       openExchangeModal();
-
       setSelectedBuyOrder(order);
     },
     [
@@ -118,11 +121,11 @@ export const CollectionBuyTab: FC = () => {
                 imageUrl={order.imageUrl}
                 name={order.name}
                 price={formatBNToString(new BN(order.price))}
+                royaltyPercent={market?.royaltyPercent}
                 onCardClick={createOnBtnClick(order)}
                 selected={order?.selected}
                 onExchange={addBuyOrderToExchange(order)}
                 rarity={order.rarity}
-                isPnft={order.isPNFT}
               />
             ))}
           </FakeInfinityScroll>

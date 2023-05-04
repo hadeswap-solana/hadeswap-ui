@@ -14,6 +14,7 @@ export type MarketInfo = {
   offerTVL: string;
   nftValidationAdapter: string;
   isPnft: boolean;
+  royaltyPercent: number;
 };
 
 export enum LpOrderState {
@@ -139,11 +140,12 @@ export interface CartOrder extends Nft {
   targetPairPukey: string;
   price: number;
   mathCounter: number;
+  isPnft?: boolean;
+  royaltyPercent?: number;
 }
 
 export interface MarketOrder extends CartOrder {
   selected: boolean;
-  isPNFT?: boolean;
 }
 
 export type WalletNfts = Dictionary<{

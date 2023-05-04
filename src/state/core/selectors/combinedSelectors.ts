@@ -1,11 +1,11 @@
 import { createSelector } from 'reselect';
-import { OrderType, MarketOrder } from '../types';
+import { MarketOrder, OrderType } from '../types';
 import {
   calcNextSpotPrice,
   calcPriceWithFee,
   createPoolTableRow,
 } from '../helpers';
-import { selectCertainMarket, selectAllMarkets } from './marketSelectors';
+import { selectAllMarkets, selectCertainMarket } from './marketSelectors';
 import { selectWalletPairs } from './pairSelectors';
 import {
   selectMarketPairs,

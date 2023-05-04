@@ -29,7 +29,6 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
   onTogglePayRoyalties,
 }) => {
   const dispatch = useDispatch();
-
   const {
     amount,
     tokenAmount,
