@@ -1,5 +1,5 @@
 import { createReducer } from 'typesafe-actions';
-import { Dictionary, clone } from 'lodash';
+import { clone, Dictionary } from 'lodash';
 import { coreActions, coreTypes } from '../actions';
 import { CartOrder, CartPair, OrderType } from '../types';
 import {
@@ -137,7 +137,6 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
     };
 
     const nextSpotPrice = calcNextSpotPrice(affectedPair, orderType);
-
     const appendableOrder: CartOrder = {
       type: orderType,
       targetPairPukey: affectedPair.pairPubkey,
@@ -165,6 +164,8 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
       nftValidationAdapterV2:
         !isBuyOrder && payloadOrder?.nftValidationAdapterV2,
       validProof: !isBuyOrder && payloadOrder?.validProof,
+      isPnft: payloadOrder.isPnft,
+      royaltyPercent: payloadOrder.royaltyPercent,
     };
 
     const affectedPairAfterChanges: CartPair = changePairOnOrderAdd(

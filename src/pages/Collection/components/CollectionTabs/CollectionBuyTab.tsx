@@ -44,19 +44,26 @@ export const CollectionBuyTab: FC = () => {
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
-      order?.selected
-        ? dispatch(coreActions.removeOrderFromCart(order.mint))
+      const updatedOrder = {
+        ...order,
+        isPnft: market?.isPnft,
+        royaltyPercent: market?.royaltyPercent,
+        market: market.marketPubkey,
+      };
+
+      updatedOrder?.selected
+        ? dispatch(coreActions.removeOrderFromCart(updatedOrder.mint))
         : dispatch(
             coreActions.addOrderToCart(
               marketPairs.find(
-                (pair) => pair.pairPubkey === order.targetPairPukey,
+                (pair) => pair.pairPubkey === updatedOrder.targetPairPukey,
               ),
-              order,
+              updatedOrder,
               OrderType.BUY,
             ),
           );
     },
-    [dispatch, marketPairs],
+    [dispatch, marketPairs, market],
   );
 
   const {
@@ -114,7 +121,7 @@ export const CollectionBuyTab: FC = () => {
                 imageUrl={order.imageUrl}
                 name={order.name}
                 price={formatBNToString(new BN(order.price))}
-                royaltyPercent={market.royaltyPercent}
+                royaltyPercent={market?.royaltyPercent}
                 onCardClick={createOnBtnClick(order)}
                 selected={order?.selected}
                 onExchange={addBuyOrderToExchange(order)}

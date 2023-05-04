@@ -26,7 +26,6 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
   crossmintConfig,
 }) => {
   const dispatch = useDispatch();
-
   const {
     amount,
     tokenAmount,
