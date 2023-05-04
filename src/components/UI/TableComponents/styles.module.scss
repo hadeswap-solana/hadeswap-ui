@@ -20,10 +20,15 @@
   }
 }
 
+.titleCellContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .titleCellImg {
   width: 32px;
   height: 32px;
-  margin-right: 8px;
   border-radius: 4px;
 }
 
