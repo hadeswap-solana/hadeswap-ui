@@ -7,6 +7,7 @@ import { formatRawSol } from '../../../utils/solanaUtils';
 
 export interface PayRoyaltyData {
   enabled: boolean;
+  totalRoyaltyPay: BN;
   pnft?: {
     isEmpty: boolean;
     royaltyPercent: BN;

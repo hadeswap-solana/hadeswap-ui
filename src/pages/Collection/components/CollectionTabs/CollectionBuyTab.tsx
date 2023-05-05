@@ -126,6 +126,7 @@ export const CollectionBuyTab: FC = () => {
                 selected={order?.selected}
                 onExchange={addBuyOrderToExchange(order)}
                 rarity={order.rarity}
+                isPnft={!!market?.isPnft}
               />
             ))}
           </FakeInfinityScroll>

@@ -64,6 +64,7 @@ const CartSider: FC = () => {
 
   const [payRoyalty, setPayRoyalty] = useState<PayRoyaltyData>({
     enabled: false,
+    totalRoyaltyPay: new BN(0),
   });
 
   const { swap } = useSwap({
@@ -114,6 +115,9 @@ const CartSider: FC = () => {
 
     setPayRoyalty({
       enabled: false,
+      totalRoyaltyPay: nftsRoyaltyData.totalRoyaltyPay.add(
+        pnftsRoyaltyData.totalRoyaltyPay,
+      ),
       pnft: {
         isEmpty: !pnfts.length,
         ...pnftsRoyaltyData,

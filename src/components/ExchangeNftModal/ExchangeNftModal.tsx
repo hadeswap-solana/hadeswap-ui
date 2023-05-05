@@ -25,8 +25,8 @@ import {
 } from '../../state/core/selectors';
 import { commonActions } from '../../state/common/actions';
 import { useSwap } from '../CartSider/hooks';
-import { useCalcNftRoyalty } from '../../hooks/useCalcNftRoyalty';
 import { formatRawSol } from '../../utils/solanaUtils';
+import { useCalcNftRoyalty } from '../../hooks/useCalcNftRoyalty';
 
 const { Title, Text } = Typography;
 
@@ -166,6 +166,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
               rarity={order.rarity}
               onCardClick={addSellOrderToExchange(order)}
               withoutAddToCartBtn
+              isPnft={market.isPnft}
             />
           ))}
         </FakeInfinityScroll>

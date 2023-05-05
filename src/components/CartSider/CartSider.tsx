@@ -11,6 +11,7 @@ import { CartSiderProps } from './index';
 import styles from './styles.module.scss';
 
 import { PayRoyalty } from './components/PayRoyalty';
+import BN from 'bn.js';
 
 const CartSiderDesktop: FC<CartSiderProps> = ({
   createOnDeselectHandler,
@@ -45,6 +46,8 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
     cartItems.sell.length > 1 ? 'NFTs' : 'NFT'
   }`;
 
+  console.log('payRoyalty ', payRoyalty);
+
   return (
     <div
       className={classNames(styles.cartSider, {
@@ -57,7 +60,9 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
           cartItems={cartItems.buy}
           onDeselectBulkHandler={onDeselectBulkHandler}
           createOnDeselectHandler={createOnDeselectHandler}
-          totalPrice={totalBuy}
+          totalPrice={payRoyalty.totalRoyaltyPay
+            .add(new BN(totalBuy))
+            .toNumber()}
           tokenExchange={tokenExchange}
           tokenRate={rate}
           tokenAmount={tokenAmount}
