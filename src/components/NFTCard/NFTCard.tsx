@@ -17,6 +17,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectAllSellOrdersForMarket } from '../../state/core/selectors';
 import { useCalcNftRoyalty } from '../../hooks/useCalcNftRoyalty';
+import { formatRawSol } from '../../utils/solanaUtils';
 
 interface NFTCardProps {
   className?: string;
@@ -85,10 +86,7 @@ export const NFTCard: FC<NFTCardProps> = ({
         {!!royalty && (
           <div className={styles.royaltyBlock}>
             <span className={styles.title}>pnft royalty:</span>
-            <SolPrice
-              className={styles.price}
-              price={parseFloat(royalty.toFixed(2))}
-            />
+            <SolPrice className={styles.price} price={royalty.toNumber()} />
           </div>
         )}
         <div className={styles.cardBtnWrapper}>
@@ -104,7 +102,6 @@ export const NFTCard: FC<NFTCardProps> = ({
           )}
           {onExchange && (
             <SwapButton
-              isDisabled={!sellOrders.length}
               onClick={(e) => {
                 e.stopPropagation();
                 if (connected) {

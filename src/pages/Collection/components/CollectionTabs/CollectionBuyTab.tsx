@@ -88,7 +88,7 @@ export const CollectionBuyTab: FC = () => {
       }
 
       openExchangeModal();
-      setSelectedBuyOrder(order);
+      setSelectedBuyOrder({ ...order, royaltyPercent: market?.royaltyPercent });
     },
     [
       dispatch,
@@ -131,11 +131,13 @@ export const CollectionBuyTab: FC = () => {
           </FakeInfinityScroll>
         </>
       )}
-      <ExchangeNftModal
-        visible={exchangeModalVisible}
-        onCancel={onCancelExchangeModal}
-        selectedBuyOrder={selectedBuyOrder}
-      />
+      {!!selectedBuyOrder && (
+        <ExchangeNftModal
+          visible={exchangeModalVisible}
+          onCancel={onCancelExchangeModal}
+          selectedBuyOrder={selectedBuyOrder}
+        />
+      )}
     </div>
   );
 };
