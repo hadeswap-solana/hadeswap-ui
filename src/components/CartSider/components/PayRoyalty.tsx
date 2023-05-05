@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { PayRoyaltyCheckBox } from './PayRoyaltyCheckBox';
 import styles from '../styles.module.scss';
 import { SolanaLogo } from '../../../icons/SolanaLogo';
 import { BN } from 'hadeswap-sdk';
 import { formatRawSol } from '../../../utils/solanaUtils';
 
-export interface PayRoyalty {
+export interface PayRoyaltyData {
   enabled: boolean;
   pnft?: {
     isEmpty: boolean;
@@ -21,12 +21,15 @@ export interface PayRoyalty {
   };
 }
 
-interface Props {
+interface PayRoyaltyProps {
   onTogglePayRoyalties: () => void;
-  payRoyalty: PayRoyalty;
+  payRoyalty: PayRoyaltyData;
 }
 
-export const PayRoyalty = ({ payRoyalty, onTogglePayRoyalties }: Props) => {
+export const PayRoyalty: FC<PayRoyaltyProps> = ({
+  payRoyalty,
+  onTogglePayRoyalties,
+}) => {
   const getFormatted = (value?: BN) =>
     value ? formatRawSol(value.toNumber()) : '';
 

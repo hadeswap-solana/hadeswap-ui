@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styles from './styles.module.scss';
 
 interface ToggleProps {
@@ -7,7 +7,7 @@ interface ToggleProps {
   onChange: () => void;
 }
 
-export const Toggle = ({ label, checked, onChange }: ToggleProps) => {
+export const Toggle: FC<ToggleProps> = ({ label, checked, onChange }) => {
   return (
     <div className={styles.toggler}>
       <label>

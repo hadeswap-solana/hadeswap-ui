@@ -15,11 +15,11 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 import { fetchMarketWalletNfts } from '../../requests/wallet/requests';
 import { getRoyalties } from '../../utils';
-import { PayRoyalty } from './components/PayRoyalty';
+import { PayRoyaltyData } from './components/PayRoyalty';
 
 export interface CartSiderProps {
   onTogglePayRoyalties: () => void;
-  payRoyalty: PayRoyalty;
+  payRoyalty: PayRoyaltyData;
   createOnDeselectHandler: (arg: CartOrder) => () => void;
   onDeselectBulkHandler: (arg: CartOrder[]) => void;
   swap: () => Promise<void>;
@@ -62,7 +62,7 @@ const CartSider: FC = () => {
 
   const isSwapButtonDisabled = !itemsAmount;
 
-  const [payRoyalty, setPayRoyalty] = useState<PayRoyalty>({
+  const [payRoyalty, setPayRoyalty] = useState<PayRoyaltyData>({
     enabled: false,
   });
 
@@ -87,8 +87,6 @@ const CartSider: FC = () => {
   };
 
   useEffect(() => {
-    const arr = [...cartItems.buy, ...cartItems.sell];
-
     const pnfts = [...cartItems.buy, ...cartItems.sell].filter(
       ({ isPnft }) => !!isPnft,
     );
