@@ -44,6 +44,7 @@ export const CollectionBuyTab: FC = () => {
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
+      console.log('market ', market);
       const updatedOrder = {
         ...order,
         isPnft: market?.isPnft,

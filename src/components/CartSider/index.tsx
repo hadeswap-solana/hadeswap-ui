@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useMemo, useState } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectExchangeModalVisible,
@@ -10,17 +10,12 @@ import { useCartSider, useSwap, CrossMintConfig } from './hooks';
 import { ScreenTypes } from '../../state/common/types';
 import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
-import { web3 } from 'hadeswap-sdk';
+import { BN, web3 } from 'hadeswap-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 import { fetchMarketWalletNfts } from '../../requests/wallet/requests';
-
-export interface PayRoyalty {
-  enabled: boolean;
-  isPNFT: boolean;
-  nft: boolean;
-  value: string;
-}
+import { getRoyalties } from '../../utils';
+import { PayRoyalty } from './components/PayRoyalty';
 
 export interface CartSiderProps {
   onTogglePayRoyalties: () => void;
@@ -69,12 +64,10 @@ const CartSider: FC = () => {
 
   const [payRoyalty, setPayRoyalty] = useState<PayRoyalty>({
     enabled: false,
-    isPNFT: false,
-    nft: false,
-    value: '',
   });
 
   const { swap } = useSwap({
+    payRoyalty: payRoyalty.enabled,
     onAfterTxn: async () => {
       const nfts = await fetchMarketWalletNfts({ walletPubkey, marketPubkey });
       dispatch(
@@ -96,11 +89,41 @@ const CartSider: FC = () => {
   useEffect(() => {
     const arr = [...cartItems.buy, ...cartItems.sell];
 
+    const pnfts = [...cartItems.buy, ...cartItems.sell].filter(
+      ({ isPnft }) => !!isPnft,
+    );
+    const nfts = [...cartItems.buy, ...cartItems.sell].filter(
+      ({ isPnft }) => !isPnft,
+    );
+
+    const pnftsRoyaltyData = getRoyalties(
+      pnfts.map((item) => ({
+        market: item.market,
+        nftPrice: new BN(item.price),
+        royaltyPercent: item.royaltyPercent,
+        isPnft: item.isPnft,
+      })),
+    );
+
+    const nftsRoyaltyData = getRoyalties(
+      nfts.map((item) => ({
+        market: item.market,
+        nftPrice: new BN(item.price),
+        royaltyPercent: item.royaltyPercent,
+        isPnft: item.isPnft,
+      })),
+    );
+
     setPayRoyalty({
       enabled: false,
-      isPNFT: !!arr.find((nft) => !!nft?.isPNFT),
-      nft: !!arr.find((nft) => !nft?.isPNFT),
-      value: '(2%) 0.02',
+      pnft: {
+        isEmpty: !pnfts.length,
+        ...pnftsRoyaltyData,
+      },
+      nft: {
+        isEmpty: !nfts.length,
+        ...nftsRoyaltyData,
+      },
     });
   }, [itemsAmount]);
 
@@ -110,8 +133,6 @@ const CartSider: FC = () => {
       enabled: !payRoyalty.enabled,
     });
   };
-
-  console.log('cartItems ', cartItems);
 
   return screenMode === ScreenTypes.TABLET ? (
     <CartSiderMobile

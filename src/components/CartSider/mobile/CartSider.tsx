@@ -12,8 +12,7 @@ import { CartSiderProps } from '../index';
 import styles from './styles.module.scss';
 import SwapExchangeButton from '../components/SwapExchangeButton';
 import { useExchangeData } from '../hooks';
-import { PayRoyaltyCheckBox } from '../components/PayRoyaltyCheckBox';
-import { SolanaLogo } from '../../../icons/SolanaLogo';
+import { PayRoyalty } from '../components/PayRoyalty';
 
 const HEADER_HEIGHT = 56;
 
@@ -118,22 +117,10 @@ const CartSiderMobile: FC<CartSiderProps> = ({
                   exchangeFetching={exchangeFetching}
                 />
               )}
-              {payRoyalty.nft && (
-                <PayRoyaltyCheckBox
-                  isPayRoyalty={payRoyalty.enabled}
-                  onChange={onTogglePayRoyalties}
-                  value={payRoyalty.value}
-                />
-              )}
-              {payRoyalty.isPNFT && (
-                <div className={styles.payRoyalty}>
-                  <span className={styles.label}>pnft royalty</span>
-                  <div className={styles.value}>
-                    <span>(2%) 0.02</span>
-                    <SolanaLogo />
-                  </div>
-                </div>
-              )}
+              <PayRoyalty
+                onTogglePayRoyalties={onTogglePayRoyalties}
+                payRoyalty={payRoyalty}
+              />
               {!tokenExchange && (
                 <Button
                   className={styles.mt}

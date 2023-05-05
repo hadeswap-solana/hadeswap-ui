@@ -8,9 +8,9 @@ import { CrossmintButton } from './components/CrossmintButton';
 import SwapExchangeButton from './components/SwapExchangeButton';
 import { useExchangeData } from './hooks';
 import { CartSiderProps } from './index';
-import { SolanaLogo } from '../../icons/SolanaLogo';
 import styles from './styles.module.scss';
-import { PayRoyaltyCheckBox } from './components/PayRoyaltyCheckBox';
+
+import { PayRoyalty } from './components/PayRoyalty';
 
 const CartSiderDesktop: FC<CartSiderProps> = ({
   createOnDeselectHandler,
@@ -85,22 +85,10 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
           />
         )}
 
-        {payRoyalty.nft && (
-          <PayRoyaltyCheckBox
-            isPayRoyalty={payRoyalty.enabled}
-            onChange={onTogglePayRoyalties}
-            value={payRoyalty.value}
-          />
-        )}
-        {payRoyalty.isPNFT && (
-          <div className={styles.payRoyalty}>
-            <span className={styles.label}>pnft royalty</span>
-            <div className={styles.value}>
-              <span>(2%) 0.02</span>
-              <SolanaLogo />
-            </div>
-          </div>
-        )}
+        <PayRoyalty
+          onTogglePayRoyalties={onTogglePayRoyalties}
+          payRoyalty={payRoyalty}
+        />
 
         {!tokenExchange && (
           <Button isDisabled={isSwapButtonDisabled} onClick={swap}>

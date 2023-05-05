@@ -136,11 +136,8 @@ export const cartReducer = createReducer<CartState>(initialCartState, {
       takenMints: [],
     };
 
-    console.log({ payload });
-
     const nextSpotPrice = calcNextSpotPrice(affectedPair, orderType);
     const appendableOrder: CartOrder = {
-      isPNFT: payloadOrder.isPNFT,
       type: orderType,
       targetPairPukey: affectedPair.pairPubkey,
       price: isBuyOrder

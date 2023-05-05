@@ -87,6 +87,7 @@ type UseSwap = (params: {
   onFail?: () => void;
   ixsPerTxn?: number;
   onSuccessTxn?: () => void;
+  payRoyalty?: boolean;
 }) => {
   swap: () => Promise<void>;
 };
@@ -96,6 +97,7 @@ export const useSwap: UseSwap = ({
   onSuccessTxn,
   onFail,
   ixsPerTxn = 1,
+  payRoyalty,
 }) => {
   const connection = useConnection();
   const wallet = useWallet();
@@ -115,6 +117,7 @@ export const useSwap: UseSwap = ({
           walletPubkey: wallet.publicKey,
           pair: pairs[order.targetPairPukey],
           order,
+          payRoyalty,
         }),
       ),
     );
