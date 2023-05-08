@@ -4,7 +4,11 @@ import { web3 } from 'hadeswap-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { FetchStatus, QueryStatus, useQuery } from '@tanstack/react-query';
 import { Nft, Pair } from '../../state/core/types';
-import { fetchMarketWalletNfts, fetchWalletPairs } from './requests';
+import {
+  fetchMarketWalletNfts,
+  fetchWalletAllFees,
+  fetchWalletPairs,
+} from './requests';
 import { coreActions } from '../../state/core/actions';
 import { SHORT_STALE_TIME } from '../constants';
 import { FetchingStatus, LoadingStatus } from '../types';
@@ -84,4 +88,27 @@ export const useFetchWalletPairs = (): void => {
       coreActions.setWalletPairs({ data, isLoading: walletPairsLoading }),
     );
   }, [dispatch, data, walletPairsLoading]);
+};
+
+export const useFetchWalletAllFees = (): {
+  totalFee: string;
+  loading: boolean;
+} => {
+  const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
+  const walletPubkey = publicKey?.toBase58();
+
+  const { data, isFetching } = useQuery(
+    ['walletPubkey'],
+    () => fetchWalletAllFees(walletPubkey),
+    {
+      enabled: !!walletPubkey,
+    },
+  );
+
+  const totalFee = data?.totalFee ? data?.totalFee.toFixed(2) : '0';
+
+  return {
+    totalFee,
+    loading: isFetching,
+  };
 };
