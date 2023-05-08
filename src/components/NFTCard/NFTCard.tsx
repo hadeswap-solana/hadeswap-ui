@@ -34,7 +34,7 @@ interface NFTCardProps {
   onExchange?: () => void;
   withoutAddToCartBtn?: boolean;
   createPool?: boolean;
-  isPnft: boolean;
+  isPnft?: boolean;
 }
 
 export const NFTCard: FC<NFTCardProps> = ({

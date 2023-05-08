@@ -46,8 +46,6 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
     cartItems.sell.length > 1 ? 'NFTs' : 'NFT'
   }`;
 
-  console.log('payRoyalty ', payRoyalty);
-
   return (
     <div
       className={classNames(styles.cartSider, {
