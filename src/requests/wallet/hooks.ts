@@ -91,7 +91,7 @@ export const useFetchWalletPairs = (): void => {
 };
 
 export const useFetchWalletAllFees = (): {
-  totalFee: number;
+  totalFee: string;
   loading: boolean;
 } => {
   const { publicKey }: { publicKey: web3.PublicKey } = useWallet();
@@ -105,8 +105,10 @@ export const useFetchWalletAllFees = (): {
     },
   );
 
+  const totalFee = data?.totalFee ? data?.totalFee.toFixed(2) : '0';
+
   return {
-    totalFee: data?.totalFee,
+    totalFee,
     loading: isFetching,
   };
 };
