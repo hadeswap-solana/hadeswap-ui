@@ -6,7 +6,12 @@ import {
 } from '../../state/common/selectors';
 import CartSiderDesktop from './CartSider';
 import CartSiderMobile from './mobile/CartSider';
-import { useCartSider, useSwap, CrossMintConfig } from './hooks';
+import {
+  useCartSider,
+  useSwap,
+  CrossMintConfig,
+  CartItemsPayRoyalties,
+} from './hooks';
 import { ScreenTypes } from '../../state/common/types';
 import { CartOrder } from '../../state/core/types';
 import { coreActions } from '../../state/core/actions';
@@ -14,12 +19,11 @@ import { BN, web3 } from 'hadeswap-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 import { fetchMarketWalletNfts } from '../../requests/wallet/requests';
-import { getRoyalties } from '../../utils';
-import { PayRoyaltyData } from './components/PayRoyalty';
 
 export interface CartSiderProps {
   onTogglePayRoyalties: () => void;
-  payRoyalty: PayRoyaltyData;
+  payRoyaltyEnabled: boolean;
+  payRoyalty?: CartItemsPayRoyalties;
   createOnDeselectHandler: (arg: CartOrder) => () => void;
   onDeselectBulkHandler: (arg: CartOrder[]) => void;
   swap: () => Promise<void>;
@@ -58,17 +62,15 @@ const CartSider: FC = () => {
     totalSell,
     isOneBuyNft,
     crossmintConfig,
+    payRoyalties,
   } = useCartSider();
 
   const isSwapButtonDisabled = !itemsAmount;
 
-  const [payRoyalty, setPayRoyalty] = useState<PayRoyaltyData>({
-    enabled: false,
-    totalRoyaltyPay: new BN(0),
-  });
+  const [payRoyaltyEnabled, setPayRoyaltyEnabled] = useState<boolean>(false);
 
   const { swap } = useSwap({
-    payRoyalty: payRoyalty.enabled,
+    payRoyalty: payRoyaltyEnabled,
     onAfterTxn: async () => {
       const nfts = await fetchMarketWalletNfts({ walletPubkey, marketPubkey });
       dispatch(
@@ -87,59 +89,54 @@ const CartSider: FC = () => {
     );
   };
 
-  useEffect(() => {
-    const pnfts = [...cartItems.buy, ...cartItems.sell].filter(
-      ({ isPnft }) => !!isPnft,
-    );
-    const nfts = [...cartItems.buy, ...cartItems.sell].filter(
-      ({ isPnft }) => !isPnft,
-    );
-
-    const pnftsRoyaltyData = getRoyalties(
-      pnfts.map((item) => ({
-        market: item.market,
-        nftPrice: new BN(item.price),
-        royaltyPercent: item.royaltyPercent,
-        isPnft: item.isPnft,
-      })),
-    );
-
-    const nftsRoyaltyData = getRoyalties(
-      nfts.map((item) => ({
-        market: item.market,
-        nftPrice: new BN(item.price),
-        royaltyPercent: item.royaltyPercent,
-        isPnft: item.isPnft,
-      })),
-    );
-
-    setPayRoyalty({
-      enabled: false,
-      totalRoyaltyPay: nftsRoyaltyData.totalRoyaltyPay.add(
-        pnftsRoyaltyData.totalRoyaltyPay,
-      ),
-      pnft: {
-        isEmpty: !pnfts.length,
-        ...pnftsRoyaltyData,
-      },
-      nft: {
-        isEmpty: !nfts.length,
-        ...nftsRoyaltyData,
-      },
-    });
-  }, [itemsAmount]);
-
   const onTogglePayRoyalties = () => {
-    setPayRoyalty({
-      ...payRoyalty,
-      enabled: !payRoyalty.enabled,
-    });
+    setPayRoyaltyEnabled(!payRoyaltyEnabled);
   };
+
+  const getTotalBuy = () => {
+    let updatedTotalBuy = new BN(totalBuy);
+
+    if (payRoyaltyEnabled && payRoyalties.buy?.nft) {
+      updatedTotalBuy = updatedTotalBuy.add(
+        payRoyalties.buy?.nft.totalRoyaltyPay,
+      );
+    }
+
+    if (payRoyalties.buy?.pnft) {
+      updatedTotalBuy = updatedTotalBuy.add(
+        payRoyalties.buy?.pnft.totalRoyaltyPay,
+      );
+    }
+
+    return updatedTotalBuy.toNumber();
+  };
+
+  const getTotalSell = () => {
+    let updatedTotalSell = new BN(totalSell);
+
+    if (payRoyaltyEnabled && payRoyalties.sell?.nft) {
+      updatedTotalSell = updatedTotalSell.add(
+        payRoyalties.sell?.nft.totalRoyaltyPay,
+      );
+    }
+
+    if (payRoyalties.sell?.pnft) {
+      updatedTotalSell = updatedTotalSell.add(
+        payRoyalties.sell?.pnft.totalRoyaltyPay,
+      );
+    }
+
+    return updatedTotalSell.toNumber();
+  };
+
+  console.log('payRoyalties ', payRoyalties);
+  console.log('cartItems ', cartItems);
 
   return screenMode === ScreenTypes.TABLET ? (
     <CartSiderMobile
+      payRoyaltyEnabled={payRoyaltyEnabled}
       onTogglePayRoyalties={onTogglePayRoyalties}
-      payRoyalty={payRoyalty}
+      payRoyalty={payRoyalties}
       createOnDeselectHandler={createOnDeselectHandler}
       onDeselectBulkHandler={onDeselectBulkHandler}
       swap={swap}
@@ -148,15 +145,16 @@ const CartSider: FC = () => {
       cartItems={cartItems}
       invalidItems={invalidItems}
       itemsAmount={itemsAmount}
-      totalBuy={totalBuy}
-      totalSell={totalSell}
+      totalBuy={getTotalBuy()}
+      totalSell={getTotalSell()}
       isOneBuyNft={isOneBuyNft}
       crossmintConfig={crossmintConfig}
     />
   ) : (
     <CartSiderDesktop
+      payRoyaltyEnabled={payRoyaltyEnabled}
       onTogglePayRoyalties={onTogglePayRoyalties}
-      payRoyalty={payRoyalty}
+      payRoyalty={payRoyalties}
       createOnDeselectHandler={createOnDeselectHandler}
       onDeselectBulkHandler={onDeselectBulkHandler}
       swap={swap}
@@ -166,8 +164,8 @@ const CartSider: FC = () => {
       cartItems={cartItems}
       invalidItems={invalidItems}
       itemsAmount={itemsAmount}
-      totalBuy={totalBuy}
-      totalSell={totalSell}
+      totalBuy={getTotalBuy()}
+      totalSell={getTotalSell()}
       isExchangeMode={exchangeModalVisible}
       isOneBuyNft={isOneBuyNft}
       crossmintConfig={crossmintConfig}

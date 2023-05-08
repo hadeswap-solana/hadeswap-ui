@@ -88,7 +88,7 @@ export const NFTCard: FC<NFTCardProps> = ({
         {!!royalty && (
           <div className={styles.royaltyBlock}>
             <span className={styles.title}>pnft royalty:</span>
-            <SolPrice className={styles.price} price={royalty.toNumber()} />
+            <SolPrice className={styles.price} price={royalty} />
           </div>
         )}
         <div className={styles.cardBtnWrapper}>

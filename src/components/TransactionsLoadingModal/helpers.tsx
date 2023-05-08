@@ -6,7 +6,9 @@ import { BN } from 'hadeswap-sdk';
 
 const makeBuyOrSellNftIxCard = (order: CartOrder): ReactNode => {
   const { imageUrl, name, type, price } = order;
-  const priceWithRoyaltyPercent = new BN(order?.price)
+
+  const bnPrice = new BN(order?.price);
+  const payRoyalty = bnPrice
     .div(new BN(100))
     .mul(new BN(order?.royaltyPercent));
 
@@ -17,7 +19,7 @@ const makeBuyOrSellNftIxCard = (order: CartOrder): ReactNode => {
         {type === OrderType.BUY ? 'buy ' : 'sell '}
         <strong>{name}</strong>
         {' for '}
-        <SolAmount solAmount={priceWithRoyaltyPercent.toNumber()} />
+        <SolAmount solAmount={bnPrice.add(payRoyalty).toNumber()} />
       </IxCardText>
     </IxCard>
   );

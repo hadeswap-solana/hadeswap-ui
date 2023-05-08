@@ -183,6 +183,7 @@ export const getRawSpotPrice = ({
 };
 
 export interface Royalties {
+  isEmpty?: boolean;
   royaltyPercent: BN;
   totalPrice: BN;
   totalRoyaltyPay: BN;
@@ -198,6 +199,7 @@ export const getRoyalties = (
 ): Royalties => {
   if (!nfts.length) {
     return {
+      isEmpty: true,
       royaltyPercent: new BN(0),
       totalPrice: new BN(0),
       totalRoyaltyPay: new BN(0),
@@ -251,6 +253,7 @@ export const getRoyalties = (
   );
 
   return {
+    isEmpty: false,
     royaltyPercent: totalRoyalties.royaltyValue
       .mul(new BN(100))
       .divRound(totalRoyalties.totalPrice),

@@ -75,11 +75,6 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
     royaltyPercent: market?.royaltyPercent,
   });
 
-  console.log({
-    selectedBuyNft,
-    selectedSellOrder,
-  });
-
   const priceDifference =
     (selectedOrder?.mint && buyNftPrice - sellNftPrice) || 0;
   const isDisabled = !selectedBuyNft || !selectedOrder?.mint;
@@ -196,9 +191,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
         <Row className={styles.priceDifference} justify="space-between">
           <Text className={styles.text}>pnft royalty</Text>
           <Row align="middle" style={{ gap: 5 }}>
-            <Text className={styles.value}>
-              {formatRawSol(royalty.toNumber())}
-            </Text>
+            <Text className={styles.value}>{formatRawSol(royalty)}</Text>
             <img className={styles.solLogo} src={solanaLogo} alt="sol" />
           </Row>
         </Row>
@@ -218,10 +211,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
       <Button isDisabled={isDisabled} className={styles.btn} onClick={swap}>
         <span>
           exchange for{' '}
-          {(priceDifference + Number(formatRawSol(royalty.toNumber()))).toFixed(
-            2,
-          )}{' '}
-          SOL
+          {(priceDifference + Number(formatRawSol(royalty))).toFixed(2)} SOL
         </span>
       </Button>
     </Modal>

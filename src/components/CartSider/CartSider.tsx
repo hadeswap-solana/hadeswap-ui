@@ -28,6 +28,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
   crossmintConfig,
   payRoyalty,
   onTogglePayRoyalties,
+  payRoyaltyEnabled,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -58,9 +59,7 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
           cartItems={cartItems.buy}
           onDeselectBulkHandler={onDeselectBulkHandler}
           createOnDeselectHandler={createOnDeselectHandler}
-          totalPrice={payRoyalty.totalRoyaltyPay
-            .add(new BN(totalBuy))
-            .toNumber()}
+          totalPrice={totalBuy}
           tokenExchange={tokenExchange}
           tokenRate={rate}
           tokenAmount={tokenAmount}
@@ -88,10 +87,13 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
           />
         )}
 
-        <PayRoyalty
-          onTogglePayRoyalties={onTogglePayRoyalties}
-          payRoyalty={payRoyalty}
-        />
+        {payRoyalty && (
+          <PayRoyalty
+            payRoyaltyEnabled={payRoyaltyEnabled}
+            onTogglePayRoyalties={onTogglePayRoyalties}
+            payRoyalty={payRoyalty}
+          />
+        )}
 
         {!tokenExchange && (
           <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
