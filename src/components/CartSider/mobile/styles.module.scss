@@ -8,25 +8,23 @@
   align-items: center;
   justify-content: space-between;
 
-  & .value {
+  .value {
     display: flex;
     align-items: center;
     font-style: normal;
     font-weight: 500;
     font-size: 18px;
     line-height: 22px;
-    color: #E3E2E5;
+    color: #e3e2e5;
   }
-
-  & .label {
+  .label {
     font-style: normal;
     font-weight: 600;
     font-size: 14px;
     line-height: 22px;
     color: #535B5F;
   }
-
-  & svg {
+  svg {
     width: 18px;
     height: 18px;
   }

@@ -43,7 +43,7 @@
   transition: background 0.3s;
 
 
-  & span {
+  span {
     position: absolute;
     background: #E3E2E5;
     border-radius: 16px;
@@ -58,7 +58,7 @@
 .toggler input:checked ~ .sliderWrap > .slider {
   background: #257CFF;
 
-  & span {
+  span {
     left: 13px;
   }
 }

@@ -133,8 +133,6 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
     closeExchangeModal();
   };
 
-  console.log('selectedBuyOrder ', selectedBuyOrder?.royaltyPercent);
-
   return (
     <Modal
       visible={visible}

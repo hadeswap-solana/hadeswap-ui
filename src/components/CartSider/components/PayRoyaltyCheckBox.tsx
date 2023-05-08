@@ -16,13 +16,11 @@ export const PayRoyaltyCheckBox: FC<PayRoyaltyCheckBoxProps> = ({
 }) => {
   return (
     <div className={styles.payRoyalty}>
-      <div>
-        <Toggle
-          label={'pay royalty'}
-          checked={isPayRoyalty}
-          onChange={onChange}
-        />
-      </div>
+      <Toggle
+        label={'pay royalty'}
+        checked={isPayRoyalty}
+        onChange={onChange}
+      />
       <div className={styles.value}>
         <span>{value}</span>
         <SolanaLogo />

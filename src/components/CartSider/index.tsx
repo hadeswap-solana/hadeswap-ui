@@ -129,9 +129,6 @@ const CartSider: FC = () => {
     return updatedTotalSell.toNumber();
   };
 
-  console.log('payRoyalties ', payRoyalties);
-  console.log('cartItems ', cartItems);
-
   return screenMode === ScreenTypes.TABLET ? (
     <CartSiderMobile
       payRoyaltyEnabled={payRoyaltyEnabled}

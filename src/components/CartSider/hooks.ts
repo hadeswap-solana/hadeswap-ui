@@ -199,7 +199,10 @@ export const useSwap: UseSwap = ({
       signers: txn.signers,
       transaction: txn.transaction,
       loadingModalCard: txn.nftMints.map((mint) =>
-        createIxCardFuncs[IX_TYPE.COMPLETE_ORDER](ordersByMint?.[mint]),
+        createIxCardFuncs[IX_TYPE.COMPLETE_ORDER](
+          ordersByMint?.[mint],
+          payRoyalty,
+        ),
       ),
       onSuccess: () => {
         txn.nftMints.map((nftMint) => {

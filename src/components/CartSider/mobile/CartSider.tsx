@@ -31,6 +31,7 @@ const CartSiderMobile: FC<CartSiderProps> = ({
   crossmintConfig,
   payRoyalty,
   onTogglePayRoyalties,
+  payRoyaltyEnabled,
 }) => {
   const dispatch = useDispatch();
 
@@ -120,6 +121,7 @@ const CartSiderMobile: FC<CartSiderProps> = ({
               <PayRoyalty
                 onTogglePayRoyalties={onTogglePayRoyalties}
                 payRoyalty={payRoyalty}
+                payRoyaltyEnabled={payRoyaltyEnabled}
               />
               {!tokenExchange && (
                 <Button
