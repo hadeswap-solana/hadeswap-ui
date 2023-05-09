@@ -115,13 +115,13 @@ const CartSider: FC = () => {
     let updatedTotalSell = new BN(totalSell);
 
     if (payRoyaltyEnabled && payRoyalties.sell?.nft) {
-      updatedTotalSell = updatedTotalSell.add(
+      updatedTotalSell = updatedTotalSell.sub(
         payRoyalties.sell?.nft.totalRoyaltyPay,
       );
     }
 
     if (payRoyalties.sell?.pnft) {
-      updatedTotalSell = updatedTotalSell.add(
+      updatedTotalSell = updatedTotalSell.sub(
         payRoyalties.sell?.pnft.totalRoyaltyPay,
       );
     }

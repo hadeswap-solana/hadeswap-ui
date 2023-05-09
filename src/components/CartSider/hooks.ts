@@ -189,6 +189,7 @@ export const useSwap: UseSwap = ({
         }),
       ),
     );
+
     const ixsDataChunks = chunk(ixsData, ixsPerTxn);
 
     const txnsDataWithMint = ixsDataChunks.map((ixsAndSigners) =>

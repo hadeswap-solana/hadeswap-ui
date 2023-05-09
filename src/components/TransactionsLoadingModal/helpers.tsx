@@ -10,11 +10,6 @@ const makeBuyOrSellNftIxCard = (
 ): ReactNode => {
   const { imageUrl, name, type, price } = order;
 
-  const bnPrice = new BN(order?.price);
-  const payRoyalty = bnPrice
-    .div(new BN(100))
-    .mul(new BN(order?.royaltyPercent));
-
   const getPrice = () => {
     let totalPrice = new BN(order?.price);
 
@@ -22,7 +17,10 @@ const makeBuyOrSellNftIxCard = (
       const payRoyalty = totalPrice
         .div(new BN(100))
         .mul(new BN(order?.royaltyPercent));
-      totalPrice = totalPrice.add(payRoyalty);
+      totalPrice =
+        order.type === 'buy'
+          ? totalPrice.add(payRoyalty)
+          : totalPrice.sub(payRoyalty);
     }
 
     return totalPrice.toNumber();

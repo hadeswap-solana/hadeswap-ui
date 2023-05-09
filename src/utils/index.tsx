@@ -189,14 +189,14 @@ export interface Royalties {
   totalRoyaltyPay: BN;
 }
 
-export const getRoyalties = (
-  nfts: Array<{
-    market: string;
-    nftPrice: BN;
-    royaltyPercent: number;
-    isPnft: boolean;
-  }>,
-): Royalties => {
+interface RoyaltiesProp {
+  market: string;
+  nftPrice: BN;
+  royaltyPercent: number;
+  isPnft: boolean;
+}
+
+export const getRoyalties = (nfts: Array<RoyaltiesProp>): Royalties => {
   if (!nfts.length) {
     return {
       isEmpty: true,
