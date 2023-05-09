@@ -205,3 +205,41 @@ button.xmintBtn {
     height: 48px;
   }
 }
+
+.royaltyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+
+.payRoyalty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  & svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.label {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: #535B5F;
+}
+
+.value {
+  display: flex;
+  align-items: center;
+
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  color: #E3E2E5;
+}

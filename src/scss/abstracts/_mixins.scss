@@ -1,0 +1,14 @@
+$size-values: (
+        '8': 8px,
+        '16': 16px,
+        '24': 24px,
+        '32': 32px,
+);
+
+@mixin margin-bottom($value) {
+  @if map-has-key($size-values, $value) {
+    $size: map-get($size-values, $value);
+
+    margin-bottom: $size;
+  }
+}

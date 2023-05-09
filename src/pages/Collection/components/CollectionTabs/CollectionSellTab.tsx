@@ -13,6 +13,7 @@ import {
   selectMarketWalletNftsLoading,
   selectMarketPairs,
   selectMarketPairsLoading,
+  selectCertainMarket,
 } from '../../../../state/core/selectors';
 import { coreActions } from '../../../../state/core/actions';
 import { MarketOrder, OrderType } from '../../../../state/core/types';
@@ -32,10 +33,19 @@ export const CollectionSellTab: FC = () => {
     selectAllSellOrdersForMarket(state, marketPublicKey),
   );
 
+  const market = useSelector(selectCertainMarket);
+
   const isLoading = nftsLoading || marketPairsLoading;
 
   const createOnBtnClick = useCallback(
     (order: MarketOrder) => () => {
+      const updatedOrder = {
+        ...order,
+        isPnft: market?.isPnft,
+        royaltyPercent: market?.royaltyPercent,
+        market: market.marketPubkey,
+      };
+
       order?.selected
         ? dispatch(coreActions.removeOrderFromCart(order.mint))
         : dispatch(
@@ -43,7 +53,7 @@ export const CollectionSellTab: FC = () => {
               marketPairs.find(
                 (pair) => pair.pairPubkey === order.targetPairPukey,
               ),
-              order,
+              updatedOrder,
               OrderType.SELL,
             ),
           );
@@ -72,10 +82,12 @@ export const CollectionSellTab: FC = () => {
               price={
                 order.price > 0 ? formatBNToString(new BN(order.price)) : ''
               }
+              royaltyPercent={market?.royaltyPercent}
               onCardClick={createOnBtnClick(order)}
               selected={order?.selected}
               disabled={order.price <= 0}
               rarity={order.rarity}
+              isPnft={!!market?.isPnft}
             />
           ))}
         </FakeInfinityScroll>

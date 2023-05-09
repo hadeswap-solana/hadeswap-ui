@@ -12,6 +12,7 @@ import { CartSiderProps } from '../index';
 import styles from './styles.module.scss';
 import SwapExchangeButton from '../components/SwapExchangeButton';
 import { useExchangeData } from '../hooks';
+import { PayRoyalty } from '../components/PayRoyalty';
 
 const HEADER_HEIGHT = 56;
 
@@ -28,6 +29,9 @@ const CartSiderMobile: FC<CartSiderProps> = ({
   totalSell,
   isOneBuyNft,
   crossmintConfig,
+  payRoyalty,
+  onTogglePayRoyalties,
+  payRoyaltyEnabled,
 }) => {
   const dispatch = useDispatch();
 
@@ -114,8 +118,17 @@ const CartSiderMobile: FC<CartSiderProps> = ({
                   exchangeFetching={exchangeFetching}
                 />
               )}
+              <PayRoyalty
+                onTogglePayRoyalties={onTogglePayRoyalties}
+                payRoyalty={payRoyalty}
+                payRoyaltyEnabled={payRoyaltyEnabled}
+              />
               {!tokenExchange && (
-                <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
+                <Button
+                  className={styles.mt}
+                  isDisabled={isSwapButtonDisabled}
+                  onClick={swap}
+                >
                   <span>swap</span>
                 </Button>
               )}

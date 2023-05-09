@@ -16,6 +16,7 @@ import { MinusIcon } from '../../icons/MinusIcon';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectAllSellOrdersForMarket } from '../../state/core/selectors';
+import { useCalcNftRoyalty } from '../../hooks/useCalcNftRoyalty';
 
 interface NFTCardProps {
   className?: string;
@@ -26,6 +27,7 @@ interface NFTCardProps {
   imageUrl: string;
   name: string;
   price?: string;
+  royaltyPercent?: number;
   rarity?: NftRarity;
   onCardClick?: () => void;
   onExchange?: () => void;
@@ -43,6 +45,7 @@ export const NFTCard: FC<NFTCardProps> = ({
   imageUrl,
   name = UNTITLED,
   price,
+  royaltyPercent,
   rarity,
   onCardClick,
   onExchange,
@@ -55,6 +58,15 @@ export const NFTCard: FC<NFTCardProps> = ({
   const sellOrders = useSelector((state: never) =>
     selectAllSellOrdersForMarket(state, marketPublicKey),
   );
+
+  const getPayRoyalty = () => {
+    const royalty = useCalcNftRoyalty({
+      nftPrice: parseFloat(price),
+      royaltyPercent,
+    });
+
+    return royalty;
+  };
 
   return (
     <div
@@ -77,6 +89,13 @@ export const NFTCard: FC<NFTCardProps> = ({
           <SolPrice className={styles.cardPrice} price={parseFloat(price)} />
         )}
 
+        <div className={styles.royaltyBlock}>
+          <span className={styles.title}>
+            {isPnft ? 'pnft royalty:' : 'royalty:'}
+          </span>
+          <SolPrice className={styles.price} price={getPayRoyalty()} />
+        </div>
+
         <div className={styles.cardBtnWrapper}>
           {!simpleCard && !withoutAddToCartBtn && (
             <RoundIconButton className={styles.cardButton}>
@@ -88,7 +107,7 @@ export const NFTCard: FC<NFTCardProps> = ({
               {selected ? <MinusIcon /> : <PlusIcon />}
             </RoundIconButton>
           )}
-          {onExchange && !isPnft && (
+          {onExchange && (
             <SwapButton
               isDisabled={!sellOrders.length}
               onClick={(e) => {

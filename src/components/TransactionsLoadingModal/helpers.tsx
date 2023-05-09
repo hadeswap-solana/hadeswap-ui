@@ -2,9 +2,30 @@ import { ReactNode } from 'react';
 import { CartOrder, Nft, OrderType } from '../../state/core/types';
 import { IxCard, IxCardImage, IxCardText, SolAmount } from './components';
 import { IX_TYPE } from './types';
+import { BN } from 'hadeswap-sdk';
 
-const makeBuyOrSellNftIxCard = (order: CartOrder): ReactNode => {
+const makeBuyOrSellNftIxCard = (
+  order: CartOrder,
+  isPayRoyaltyEnabled?: boolean,
+): ReactNode => {
   const { imageUrl, name, type, price } = order;
+
+  const getPrice = () => {
+    let totalPrice = new BN(order?.price);
+
+    if (order.isPnft || isPayRoyaltyEnabled) {
+      const payRoyalty = totalPrice
+        .div(new BN(100))
+        .mul(new BN(order?.royaltyPercent));
+      totalPrice =
+        order.type === 'buy'
+          ? totalPrice.add(payRoyalty)
+          : totalPrice.sub(payRoyalty);
+    }
+
+    return totalPrice.toNumber();
+  };
+
   return (
     <IxCard>
       <IxCardImage src={imageUrl} alt={name} />
@@ -12,7 +33,7 @@ const makeBuyOrSellNftIxCard = (order: CartOrder): ReactNode => {
         {type === OrderType.BUY ? 'buy ' : 'sell '}
         <strong>{name}</strong>
         {' for '}
-        <SolAmount solAmount={price} />
+        <SolAmount solAmount={getPrice()} />
       </IxCardText>
     </IxCard>
   );
