@@ -133,6 +133,30 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
     closeExchangeModal();
   };
 
+  const getPayRoyalty = () => {
+    let total = 0;
+
+    if (selectedBuyNft && market.isPnft) {
+      const royalty = useCalcNftRoyalty({
+        nftPrice: selectedBuyOrder?.price,
+        royaltyPercent: market?.royaltyPercent,
+      });
+
+      total += royalty;
+    }
+
+    if (selectedOrder?.mint && market.isPnft) {
+      const royalty = useCalcNftRoyalty({
+        nftPrice: selectedSellOrder?.price,
+        royaltyPercent: market?.royaltyPercent,
+      });
+
+      total += royalty;
+    }
+
+    return formatRawSol(total);
+  };
+
   return (
     <Modal
       visible={visible}
@@ -164,9 +188,11 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
           ))}
         </FakeInfinityScroll>
       )}
+
       {!sellOrders?.length && !isLoading && (
         <Title level={5}>no nfts of this collections</Title>
       )}
+
       <Col className={styles.cardWrapper}>
         <p className={styles.cardLabel}>you’ll get</p>
         <Card
@@ -178,6 +204,7 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
           onDeselect={createDeselectHandler(selectedBuyNft)}
         />
       </Col>
+
       <div className={styles.priceBlock}>
         <Row className={styles.priceDifference} justify="space-between">
           <Text className={styles.text}>price difference</Text>
@@ -186,13 +213,16 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
             <img className={styles.solLogo} src={solanaLogo} alt="sol" />
           </Row>
         </Row>
-        <Row className={styles.priceDifference} justify="space-between">
-          <Text className={styles.text}>pnft royalty</Text>
-          <Row align="middle" style={{ gap: 5 }}>
-            <Text className={styles.value}>{formatRawSol(royalty)}</Text>
-            <img className={styles.solLogo} src={solanaLogo} alt="sol" />
+
+        {market.isPnft && (
+          <Row className={styles.priceDifference} justify="space-between">
+            <Text className={styles.text}>pnft royalty</Text>
+            <Row align="middle" style={{ gap: 5 }}>
+              <Text className={styles.value}>{getPayRoyalty()}</Text>
+              <img className={styles.solLogo} src={solanaLogo} alt="sol" />
+            </Row>
           </Row>
-        </Row>
+        )}
       </div>
       <div className={styles.notifyBlock}>
         <div className={styles.notifyItem}>
@@ -208,8 +238,8 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
       </div>
       <Button isDisabled={isDisabled} className={styles.btn} onClick={swap}>
         <span>
-          exchange for{' '}
-          {(priceDifference + Number(formatRawSol(royalty))).toFixed(2)} SOL
+          exchange for {(priceDifference + Number(getPayRoyalty())).toFixed(2)}{' '}
+          SOL
         </span>
       </Button>
     </Modal>
