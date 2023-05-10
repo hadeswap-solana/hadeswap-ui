@@ -52,4 +52,34 @@ export const tokensList: TokenItem[] = [
     image:
       'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ/logo.jpg',
   },
+  {
+    label: 'bSOL',
+    value: TokensValues.bSOL,
+    image:
+      'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1/logo.png',
+  },
+  {
+    label: 'RLB',
+    value: TokensValues.RLB,
+    image:
+      'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/RLBxxFkseAZ4RgJH3Sqn8jXxhmGoz9jWxDNJMh8pL7a/logo.png',
+  },
+  {
+    label: 'RAY',
+    value: TokensValues.RAY,
+    image:
+      'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R/logo.png',
+  },
+  {
+    label: 'GST',
+    value: TokensValues.GST,
+    image:
+      'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/AFbX8oGjGpmVFywbVouvhQSRmiW2aR1mohfahi4Y2AdB/logo.png',
+  },
+  {
+    label: 'ORCA',
+    value: TokensValues.ORCA,
+    image:
+      'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/orcaEKTdK7LKz57vaAYr9QeNsVEPfiu6QeMU1kektZE/logo.png',
+  },
 ];
