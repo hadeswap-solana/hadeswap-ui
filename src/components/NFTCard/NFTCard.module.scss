@@ -86,6 +86,33 @@
   }
 }
 
+.royaltyBlock {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  align-items: center;
+
+  .title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--dark-grey-color);
+  }
+
+  .price {
+    line-height: initial;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    span {
+      font-size: 10px;
+      color: var(--dark-grey-color);
+    }
+  }
+}
+
 .rarityWrapper {
   position: absolute;
   bottom: 0;

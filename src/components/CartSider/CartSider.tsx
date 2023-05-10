@@ -8,8 +8,10 @@ import { CrossmintButton } from './components/CrossmintButton';
 import SwapExchangeButton from './components/SwapExchangeButton';
 import { useExchangeData } from './hooks';
 import { CartSiderProps } from './index';
-
 import styles from './styles.module.scss';
+
+import { PayRoyalty } from './components/PayRoyalty';
+import BN from 'bn.js';
 
 const CartSiderDesktop: FC<CartSiderProps> = ({
   createOnDeselectHandler,
@@ -24,9 +26,11 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
   isExchangeMode,
   isOneBuyNft,
   crossmintConfig,
+  payRoyalty,
+  onTogglePayRoyalties,
+  payRoyaltyEnabled,
 }) => {
   const dispatch = useDispatch();
-
   const {
     amount,
     tokenAmount,
@@ -82,6 +86,15 @@ const CartSiderDesktop: FC<CartSiderProps> = ({
             exchangeFetching={exchangeFetching}
           />
         )}
+
+        {payRoyalty && (
+          <PayRoyalty
+            payRoyaltyEnabled={payRoyaltyEnabled}
+            onTogglePayRoyalties={onTogglePayRoyalties}
+            payRoyalty={payRoyalty}
+          />
+        )}
+
         {!tokenExchange && (
           <Button isDisabled={isSwapButtonDisabled} onClick={swap}>
             <span>swap</span>

@@ -16,6 +16,7 @@ interface CreateIxParams {
   walletPubkey: web3.PublicKey;
   pair: CartPair;
   order: CartOrder;
+  payRoyalty?: boolean;
 }
 
 export interface IxnsData {
@@ -39,6 +40,7 @@ const createBuyNftFromPairIx: CreateIx = async ({
   walletPubkey,
   pair,
   order,
+  payRoyalty,
 }) => {
   // let provisionOrder;
   // const isLiquidityProvision = pair.type === 'liquidityProvision';
@@ -76,6 +78,7 @@ const createBuyNftFromPairIx: CreateIx = async ({
           ? Math.ceil(order.price / 2)
           : 0),
       skipFailed: false,
+      payRoyalty: !!payRoyalty,
     },
   });
 

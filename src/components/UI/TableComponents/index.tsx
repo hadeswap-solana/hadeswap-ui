@@ -5,6 +5,7 @@ import { PnftBadge } from '../PnftBadge';
 import { SolPrice } from '../../SolPrice/SolPrice';
 import { TableCellAlign } from '../../../types';
 import { UNTITLED_COLLECTION } from '../../../constants/common';
+import { ImageHolder } from '../ImageHolder';
 
 import styles from './styles.module.scss';
 
@@ -36,19 +37,17 @@ export const TitleCell: FC<{
   imgSrc: string;
   title: string;
   isPnft?: boolean;
-}> = ({ imgSrc, title, isPnft }) => (
-  <div className={styles.titleCellWrapper}>
-    <div>
-      <img
-        className={styles.titleCellImg}
-        src={imgSrc}
-        alt={title || UNTITLED_COLLECTION}
-      />
-      <span>{title || UNTITLED_COLLECTION}</span>
+}> = ({ imgSrc, title, isPnft }) => {
+  return (
+    <div className={styles.titleCellWrapper}>
+      <div className={styles.titleCellContent}>
+        <ImageHolder imageUrl={imgSrc} className={styles.titleCellImg} />
+        <span>{title || UNTITLED_COLLECTION}</span>
+      </div>
+      {isPnft && <PnftBadge className={styles.pnftBadge} />}
     </div>
-    {isPnft && <PnftBadge className={styles.pnftBadge} />}
-  </div>
-);
+  );
+};
 
 export const ColoredTextCell: FC<{
   cellValue: string;

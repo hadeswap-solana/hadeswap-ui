@@ -48,3 +48,8 @@ export interface TokenRateData {
   vsToken: TokensValues;
   vsTokenSymbol: string;
 }
+
+export interface WalletAllFees {
+  totalFee: number;
+  walletPubkey: string;
+}

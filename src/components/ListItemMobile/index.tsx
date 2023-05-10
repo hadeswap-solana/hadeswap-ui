@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { PnftBadge } from '../UI/PnftBadge';
 import { UNTITLED_COLLECTION } from '../../constants/common';
+import { ImageHolder } from '../UI/ImageHolder';
 
 import styles from './styles.module.scss';
 
@@ -34,7 +35,7 @@ const ListItemMobile: FC<ListItemMobileProps<any>> = ({
     >
       <div className={styles.cardHeader}>
         <div className={styles.headerTitleBlock}>
-          <img src={item[itemMap.imageKey]} alt={item[itemMap.nameKey]} />
+          <ImageHolder imageUrl={item[itemMap.imageKey]} />
           <span>{item[itemMap.nameKey] || UNTITLED_COLLECTION}</span>
         </div>
         {item.isPnft && <PnftBadge className={styles.pnftBadge} />}

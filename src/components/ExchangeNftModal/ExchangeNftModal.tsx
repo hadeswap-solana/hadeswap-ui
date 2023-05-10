@@ -1,7 +1,7 @@
 import { FC, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseOutlined } from '@ant-design/icons';
-import { Typography, Modal, Col, Row } from 'antd';
+import { Col, Modal, Row, Typography } from 'antd';
 import { useParams } from 'react-router-dom';
 
 import { CartOrder, MarketOrder, OrderType } from '../../state/core/types';
@@ -17,6 +17,7 @@ import { Spinner } from '../Spinner/Spinner';
 import Button from '../Buttons/Button';
 import {
   selectCartItems,
+  selectCertainMarket,
   selectMarketPairs,
   selectMarketPairsLoading,
   selectMarketWalletNftsLoading,
@@ -24,6 +25,8 @@ import {
 } from '../../state/core/selectors';
 import { commonActions } from '../../state/common/actions';
 import { useSwap } from '../CartSider/hooks';
+import { formatRawSol } from '../../utils/solanaUtils';
+import { useCalcNftRoyalty } from '../../hooks/useCalcNftRoyalty';
 
 const { Title, Text } = Typography;
 
@@ -39,14 +42,14 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
   selectedBuyOrder,
 }) => {
   const dispatch = useDispatch();
-
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
+
+  const market = useSelector(selectCertainMarket);
   const sellOrders = useSelector((state: never) =>
     selectSellOrdersForExchange(state, marketPublicKey),
   );
 
-  const [selectedOrder, setSelectedOrder] =
-    useState<CartOrder>(selectedBuyOrder);
+  const [selectedOrder, setSelectedOrder] = useState<CartOrder>();
 
   const marketPairsLoading = useSelector(selectMarketPairsLoading);
   const nftsLoading = useSelector(selectMarketWalletNftsLoading);
@@ -67,6 +70,10 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
 
   const buyNftPrice = parseFloat(getFormattedPrice(selectedBuyNft?.price));
   const sellNftPrice = parseFloat(getFormattedPrice(selectedSellOrder?.price));
+  const royalty = useCalcNftRoyalty({
+    nftPrice: selectedBuyOrder?.price,
+    royaltyPercent: market?.royaltyPercent,
+  });
 
   const priceDifference =
     (selectedOrder?.mint && buyNftPrice - sellNftPrice) || 0;
@@ -126,6 +133,30 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
     closeExchangeModal();
   };
 
+  const getPayRoyalty = () => {
+    let total = 0;
+
+    if (selectedBuyNft && market.isPnft) {
+      const royalty = useCalcNftRoyalty({
+        nftPrice: selectedBuyOrder?.price,
+        royaltyPercent: market?.royaltyPercent,
+      });
+
+      total += royalty;
+    }
+
+    if (selectedOrder?.mint && market.isPnft) {
+      const royalty = useCalcNftRoyalty({
+        nftPrice: selectedSellOrder?.price,
+        royaltyPercent: market?.royaltyPercent,
+      });
+
+      total += royalty;
+    }
+
+    return formatRawSol(total);
+  };
+
   return (
     <Modal
       visible={visible}
@@ -152,13 +183,16 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
               rarity={order.rarity}
               onCardClick={addSellOrderToExchange(order)}
               withoutAddToCartBtn
+              isPnft={market.isPnft}
             />
           ))}
         </FakeInfinityScroll>
       )}
+
       {!sellOrders?.length && !isLoading && (
         <Title level={5}>no nfts of this collections</Title>
       )}
+
       <Col className={styles.cardWrapper}>
         <p className={styles.cardLabel}>you’ll get</p>
         <Card
@@ -171,13 +205,25 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
         />
       </Col>
 
-      <Row className={styles.priceDifference} justify="space-between">
-        <Text className={styles.text}>price difference</Text>
-        <Row align="middle" style={{ gap: 5 }}>
-          <Text className={styles.value}>{priceDifference.toFixed(2)}</Text>
-          <img className={styles.solLogo} src={solanaLogo} alt="sol" />
+      <div className={styles.priceBlock}>
+        <Row className={styles.priceDifference} justify="space-between">
+          <Text className={styles.text}>price difference</Text>
+          <Row align="middle" style={{ gap: 5 }}>
+            <Text className={styles.value}>{priceDifference.toFixed(2)}</Text>
+            <img className={styles.solLogo} src={solanaLogo} alt="sol" />
+          </Row>
         </Row>
-      </Row>
+
+        {market.isPnft && (
+          <Row className={styles.priceDifference} justify="space-between">
+            <Text className={styles.text}>pnft royalty</Text>
+            <Row align="middle" style={{ gap: 5 }}>
+              <Text className={styles.value}>{getPayRoyalty()}</Text>
+              <img className={styles.solLogo} src={solanaLogo} alt="sol" />
+            </Row>
+          </Row>
+        )}
+      </div>
       <div className={styles.notifyBlock}>
         <div className={styles.notifyItem}>
           <NotifyInfoIcon />
@@ -191,7 +237,10 @@ const ExchangeNftModal: FC<ExchangeNftModalProps> = ({
         </div>
       </div>
       <Button isDisabled={isDisabled} className={styles.btn} onClick={swap}>
-        <span>exchange for {priceDifference.toFixed(2)} SOL</span>
+        <span>
+          exchange for {(priceDifference + Number(getPayRoyalty())).toFixed(2)}{' '}
+          SOL
+        </span>
       </Button>
     </Modal>
   );

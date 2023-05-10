@@ -17,7 +17,7 @@ import {
 } from '../../state/core/selectors';
 import { selectTokenExchange } from '../../state/tokenExchange/selectors';
 import { createIxCardFuncs, IX_TYPE } from '../TransactionsLoadingModal';
-import { notify } from '../../utils';
+import { getRoyalties, notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import {
   getTxnsDataOneByOne,
@@ -30,12 +30,76 @@ import { calcAmount } from '../Jupiter/utils';
 import JSBI from 'jsbi';
 import { TxnData } from '../../types/transactions';
 import { txsLoadingModalActions } from '../../state/txsLoadingModal/actions';
+import { BN } from 'hadeswap-sdk';
+
+export const getCartItemsPayRoyalties = (cartItems) => {
+  const sellPnfts = [...cartItems.sell].filter(({ isPnft }) => !!isPnft);
+  const sellNfts = [...cartItems.sell].filter(({ isPnft }) => !isPnft);
+
+  const buyPnfts = [...cartItems.buy].filter(({ isPnft }) => !!isPnft);
+  const buyNfts = [...cartItems.buy].filter(({ isPnft }) => !isPnft);
+
+  const buyPnftsRoyaltyData = getRoyalties(
+    buyPnfts.map((item) => ({
+      market: item.market,
+      nftPrice: new BN(item.price),
+      royaltyPercent: item.royaltyPercent,
+      isPnft: item.isPnft,
+    })),
+  );
+
+  const buyNftsRoyaltyData = getRoyalties(
+    buyNfts.map((item) => ({
+      market: item.market,
+      nftPrice: new BN(item.price),
+      royaltyPercent: item.royaltyPercent,
+      isPnft: item.isPnft,
+    })),
+  );
+
+  const sellPnftsRoyaltyData = getRoyalties(
+    sellPnfts.map((item) => ({
+      market: item.market,
+      nftPrice: new BN(item.price),
+      royaltyPercent: item.royaltyPercent,
+      isPnft: item.isPnft,
+    })),
+  );
+
+  const sellNftsRoyaltyData = getRoyalties(
+    sellNfts.map((item) => ({
+      market: item.market,
+      nftPrice: new BN(item.price),
+      royaltyPercent: item.royaltyPercent,
+      isPnft: item.isPnft,
+    })),
+  );
+
+  return {
+    buy: {
+      totalRoyaltyPay: buyNftsRoyaltyData.totalRoyaltyPay.add(
+        buyPnftsRoyaltyData.totalRoyaltyPay,
+      ),
+      pnft: buyPnftsRoyaltyData,
+      nft: buyNftsRoyaltyData,
+    },
+    sell: {
+      totalRoyaltyPay: sellNftsRoyaltyData.totalRoyaltyPay.add(
+        sellPnftsRoyaltyData.totalRoyaltyPay,
+      ),
+      pnft: sellPnftsRoyaltyData,
+      nft: sellNftsRoyaltyData,
+    },
+  };
+};
 
 export interface CrossMintConfig {
   type: string;
   mintHash: string;
   pairPublicKey: string;
 }
+
+export type CartItemsPayRoyalties = ReturnType<typeof getCartItemsPayRoyalties>;
 
 type UseCartSider = () => {
   cartItems: {
@@ -50,6 +114,7 @@ type UseCartSider = () => {
   totalSell: number;
   isOneBuyNft: boolean;
   crossmintConfig: CrossMintConfig;
+  payRoyalties: CartItemsPayRoyalties;
 };
 
 export const useCartSider: UseCartSider = () => {
@@ -69,6 +134,8 @@ export const useCartSider: UseCartSider = () => {
     pairPublicKey: cartItems?.buy[0]?.targetPairPukey,
   };
 
+  const payRoyalties = getCartItemsPayRoyalties(cartItems);
+
   return {
     cartItems,
     cartOpened,
@@ -79,6 +146,7 @@ export const useCartSider: UseCartSider = () => {
     totalSell,
     isOneBuyNft,
     crossmintConfig,
+    payRoyalties,
   };
 };
 
@@ -87,6 +155,7 @@ type UseSwap = (params: {
   onFail?: () => void;
   ixsPerTxn?: number;
   onSuccessTxn?: () => void;
+  payRoyalty?: boolean;
 }) => {
   swap: () => Promise<void>;
 };
@@ -96,6 +165,7 @@ export const useSwap: UseSwap = ({
   onSuccessTxn,
   onFail,
   ixsPerTxn = 1,
+  payRoyalty,
 }) => {
   const connection = useConnection();
   const wallet = useWallet();
@@ -115,9 +185,11 @@ export const useSwap: UseSwap = ({
           walletPubkey: wallet.publicKey,
           pair: pairs[order.targetPairPukey],
           order,
+          payRoyalty,
         }),
       ),
     );
+
     const ixsDataChunks = chunk(ixsData, ixsPerTxn);
 
     const txnsDataWithMint = ixsDataChunks.map((ixsAndSigners) =>
@@ -128,7 +200,10 @@ export const useSwap: UseSwap = ({
       signers: txn.signers,
       transaction: txn.transaction,
       loadingModalCard: txn.nftMints.map((mint) =>
-        createIxCardFuncs[IX_TYPE.COMPLETE_ORDER](ordersByMint?.[mint]),
+        createIxCardFuncs[IX_TYPE.COMPLETE_ORDER](
+          ordersByMint?.[mint],
+          payRoyalty,
+        ),
       ),
       onSuccess: () => {
         txn.nftMints.map((nftMint) => {

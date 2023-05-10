@@ -181,3 +181,83 @@ export const getRawSpotPrice = ({
       })
     : baseSpotPrice;
 };
+
+export interface Royalties {
+  isEmpty?: boolean;
+  royaltyPercent: BN;
+  totalPrice: BN;
+  totalRoyaltyPay: BN;
+}
+
+interface RoyaltiesProp {
+  market: string;
+  nftPrice: BN;
+  royaltyPercent: number;
+  isPnft: boolean;
+}
+
+export const getRoyalties = (nfts: Array<RoyaltiesProp>): Royalties => {
+  if (!nfts.length) {
+    return {
+      isEmpty: true,
+      royaltyPercent: new BN(0),
+      totalPrice: new BN(0),
+      totalRoyaltyPay: new BN(0),
+    };
+  }
+
+  const nftsByMarket = nfts.reduce((acc, item) => {
+    if (acc[item.market]) {
+      acc[item.market] = {
+        nfts: [...acc[item.market], item],
+        royaltyPercent: new BN(item.royaltyPercent),
+        totalNftsPrice: acc[item.market].totalNftsPrice.add(item.nftPrice),
+      };
+
+      return acc;
+    }
+
+    acc[item.market] = {
+      nfts: [item],
+      royaltyPercent: new BN(item.royaltyPercent),
+      totalNftsPrice: item.nftPrice,
+    };
+    return acc;
+  }, {});
+
+  const marketsRoyalties = Object.keys(nftsByMarket).reduce((acc, item) => {
+    const market = nftsByMarket[item];
+
+    acc[item] = {
+      totalPrice: market.totalNftsPrice,
+      percent: market.royaltyPercent,
+      royaltyValue: market.totalNftsPrice
+        .div(new BN(100))
+        .mul(market.royaltyPercent),
+    };
+    return acc;
+  }, {});
+
+  const totalRoyalties = Object.keys(marketsRoyalties).reduce(
+    (acc, k) => {
+      acc.totalPercent = acc.totalPercent.add(marketsRoyalties[k].percent);
+      acc.royaltyValue = acc.royaltyValue.add(marketsRoyalties[k].royaltyValue);
+      acc.totalPrice = acc.totalPrice.add(marketsRoyalties[k].totalPrice);
+      return acc;
+    },
+    {
+      totalPercent: new BN(0),
+      totalPrice: new BN(0),
+      royaltyValue: new BN(0),
+    },
+  );
+
+  return {
+    isEmpty: false,
+    royaltyPercent: totalRoyalties.royaltyValue
+      .mul(new BN(100))
+      .divRound(totalRoyalties.totalPrice),
+    totalPrice: totalRoyalties.totalPrice,
+    totalRoyaltyPay: totalRoyalties.royaltyValue,
+  };
+};

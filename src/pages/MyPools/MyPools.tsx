@@ -3,11 +3,16 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { useFetchWalletPairs, useFetchAllMarkets } from '../../requests';
+import {
+  useFetchAllMarkets,
+  useFetchWalletAllFees,
+  useFetchWalletPairs,
+} from '../../requests';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import PageContentLayout from '../../components/Layout/PageContentLayout';
 import { CreatePoolButton } from '../../components/CreatePoolButton/CreatePoolButton';
 import Button from '../../components/Buttons/Button';
+import { Card } from '../../components/Card';
 import { Spinner } from '../../components/Spinner/Spinner';
 import ItemsList from '../../components/ItemsList';
 import Sorting from '../../components/Sorting/mobile/Sorting';
@@ -18,9 +23,9 @@ import { POOL } from '../../constants/common';
 import { PubKeys, SORT_ORDER } from '../../types';
 import {
   selectAllMarketsLoading,
-  selectWalletPairsLoading,
   selectMyPoolsPageTableInfo,
   selectWalletPairs,
+  selectWalletPairsLoading,
 } from '../../state/core/selectors';
 import { selectScreeMode } from '../../state/common/selectors';
 import { ScreenTypes } from '../../state/common/types';
@@ -53,6 +58,7 @@ export const MyPools: FC = () => {
 
   useFetchAllMarkets();
   useFetchWalletPairs();
+  const { totalFee } = useFetchWalletAllFees();
 
   const walletPairs = useSelector(selectMyPoolsPageTableInfo);
   const pairs = useSelector(selectWalletPairs);
@@ -81,6 +87,10 @@ export const MyPools: FC = () => {
         )}
         {connected && !isLoading && (
           <div className={styles.buttonWrapper}>
+            <Card className={styles.feesCard}>
+              <span className={styles.feesCardTitle}>total fees earned</span>
+              <span className={styles.feesCardValue}>{totalFee} SOL</span>
+            </Card>
             <div className={styles.poolButtonWrapper}>
               <CreatePoolButton />
               {connected && !isLoading && !!walletPairs.length && (
