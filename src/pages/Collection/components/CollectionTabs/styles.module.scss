@@ -149,3 +149,9 @@
   position: relative;
   width: 100%;
 }
+
+.chartActivity {
+  @media (max-width: 768px) {
+    margin-bottom: 16px;
+  }
+}

@@ -1,14 +1,19 @@
+export enum ActivityPeriod {
+  day = 'daily',
+  week = 'weekly',
+}
+
 export const radioBtnPeriod = [
   {
     period: 'day',
     type: 'radio',
     name: 'period',
-    value: 'day',
+    value: ActivityPeriod.day,
   },
   {
     period: 'week',
     type: 'radio',
     name: 'period',
-    value: 'week',
+    value: ActivityPeriod.week,
   },
 ];

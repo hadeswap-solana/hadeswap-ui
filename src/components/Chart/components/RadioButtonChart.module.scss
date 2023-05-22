@@ -23,6 +23,8 @@
 .label {
   width: 71px;
   padding: 8px;
+  white-space: nowrap;
+  text-align: center;
 
   border: var(--border-base);
   border-right: 0;
@@ -43,6 +45,8 @@
 }
 
 input[type='radio'] {
+  width: 0;
+  height: 0;
   appearance: none;
   background-color: transparent;
   margin: 0;
