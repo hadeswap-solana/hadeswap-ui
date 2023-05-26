@@ -114,6 +114,18 @@ export const CollectionHeader: FC = () => {
                     )}
                   </Card>
                 ))}
+                {market.totalFee && (
+                  <Card className={styles.collectionStatItem}>
+                    <span className={styles.collectionStatTitle}>
+                      total fees
+                    </span>
+                    <SolPrice
+                      className={styles.collectionStatValue}
+                      price={parseFloat(market.totalFee.toString())}
+                      rightIcon
+                    />
+                  </Card>
+                )}
               </div>
             </div>
           </div>
