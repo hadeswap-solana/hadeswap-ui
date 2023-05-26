@@ -14,8 +14,9 @@ import useD3 from './hooks/useD3';
 import { renderChart } from './d3/renderChart';
 import { Point } from './types';
 import { chartIDs } from './constants';
-import styles from './Chart.module.scss';
 import { Spinner } from '../Spinner/Spinner';
+import styles from './Chart.module.scss';
+import classNames from 'classnames';
 
 interface ChartProps {
   title?: string;
@@ -63,13 +64,10 @@ const Chart: FC<ChartProps> = ({
   );
 
   return (
-    <div className={styles.chartFrame}>
-      <div
-        id={chartID}
-        ref={containerRef}
-        className={`${styles.root} ${className || ''}`}
-      >
+    <div className={classNames(styles.chartFrame, className)}>
+      <div id={chartID} ref={containerRef} className={styles.root}>
         {!!title && <p className={styles.title}>{title}</p>}
+
         {chartID === chartIDs.swapHistory && (
           <RadioButtonChart
             currentPeriod={currentPeriod}

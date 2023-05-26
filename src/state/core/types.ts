@@ -15,6 +15,7 @@ export type MarketInfo = {
   nftValidationAdapter: string;
   isPnft: boolean;
   royaltyPercent: number;
+  totalFee?: string;
 };
 
 export enum LpOrderState {

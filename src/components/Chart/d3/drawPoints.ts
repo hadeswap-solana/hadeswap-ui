@@ -42,7 +42,7 @@ export const drawPoints: DrawPoints = (
       .text(
         chartID === chartIDs.priceGraph
           ? `${getNumberWithOrdinal(Math.abs(d.order))} NFT`
-          : moment(d.order).format('DD MMMM, YYYY, hh:mm:ss A'),
+          : moment(d.order).local().format('DD MMMM, YYYY, hh:mm:ss A'),
       );
 
     const price = tooltip.append('div').classed('price', true);
@@ -59,9 +59,7 @@ export const drawPoints: DrawPoints = (
     price
       .append('span')
       .classed('priceValue', true)
-      .text(
-        chartID === chartIDs.priceGraph ? `${d.price.toFixed(2)}` : d.price,
-      );
+      .text(`${Math.trunc(d.price * 100) / 100}`);
   };
 
   const pointsGroup = selection.append('g');

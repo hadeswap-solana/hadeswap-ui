@@ -1,5 +1,6 @@
 import { axisLeft, select, ScaleLinear, axisBottom, timeFormat } from 'd3';
 import { chartIDs } from '../constants';
+import { ActivityPeriod } from '../components';
 
 type DrawAxes = (
   selection: ReturnType<typeof select>,
@@ -27,8 +28,8 @@ export const drawAxes: DrawAxes = (
 
   // xAxis function init
   const dateFormat = {
-    ['day']: timeFormat('%I %p'),
-    ['week']: timeFormat('%a %d'),
+    [ActivityPeriod.day]: timeFormat('%I %p'),
+    [ActivityPeriod.week]: timeFormat('%a %d'),
   };
 
   const xAxis = axisBottom(xScale)

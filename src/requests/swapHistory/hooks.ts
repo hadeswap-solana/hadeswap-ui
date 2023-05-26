@@ -2,16 +2,19 @@ import { NftActivityData } from '../../state/core/types';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSwapHistoryCollection, fetchSwapHistoryPool } from './requsts';
+import { ActivityPeriod } from '../../components/Chart/components';
 
-export const useSwapHistoryDataPool = (): {
+export const useSwapHistoryDataPool = (
+  currentPeriod: ActivityPeriod,
+): {
   swapHistoryDataPool: NftActivityData[];
   swapHistoryLoadingPool: boolean;
 } => {
   const { poolPubkey: publicKey } = useParams<{ poolPubkey: string }>();
 
   const { data, isLoading } = useQuery(
-    ['swapHistory', `${publicKey}`],
-    () => fetchSwapHistoryPool(publicKey),
+    ['swapHistory', publicKey, currentPeriod],
+    () => fetchSwapHistoryPool(publicKey, currentPeriod),
     {
       networkMode: 'offlineFirst',
       staleTime: Infinity,
@@ -25,15 +28,17 @@ export const useSwapHistoryDataPool = (): {
   };
 };
 
-export const useSwapHistoryDataCollection = (): {
-  swapHistoryCollection: NftActivityData[];
+export const useSwapHistoryDataCollection = (
+  currentPeriod: ActivityPeriod,
+): {
+  swapHistoryCollection: any[];
   swapHistoryLoadingCollection: boolean;
 } => {
   const { publicKey: marketPublicKey } = useParams<{ publicKey: string }>();
 
   const { data, isLoading } = useQuery(
-    ['swapHistory', `${marketPublicKey}`],
-    () => fetchSwapHistoryCollection(marketPublicKey),
+    ['swapHistory', marketPublicKey, currentPeriod],
+    () => fetchSwapHistoryCollection(marketPublicKey, currentPeriod),
     {
       networkMode: 'offlineFirst',
       refetchOnWindowFocus: false,
