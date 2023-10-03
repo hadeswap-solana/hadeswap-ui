@@ -63,7 +63,7 @@ export const CollectionBuyTab: FC = () => {
             ),
           );
     },
-    [dispatch, marketPairs],
+    [dispatch, marketPairs, market?.marketPubkey],
   );
 
   const {
@@ -95,6 +95,7 @@ export const CollectionBuyTab: FC = () => {
       cartItems?.buy.length,
       cartItems?.sell.length,
       openExchangeModal,
+      market?.marketPubkey,
     ],
   );
 
