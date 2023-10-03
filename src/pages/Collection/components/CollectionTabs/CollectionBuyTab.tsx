@@ -63,7 +63,7 @@ export const CollectionBuyTab: FC = () => {
             ),
           );
     },
-    [dispatch, marketPairs, market],
+    [dispatch, marketPairs, market?.marketPubkey],
   );
 
   const {
